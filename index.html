@@ -6,7 +6,7 @@
     <title>SERVICEL MASTER — Panel de Control Técnico Profesional</title>
     
     <!-- CONFIGURACIÓN PWA PARA PANTALLA DE INICIO -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNlcnZpY2VsIE1hc3RlciIsCiAgInNob3J0X25hbWUiOiAiU2VydmljZWwiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAyMDYxNyIsCiAgInRoZW1lX2NvbG9yIjogIiNhODU1ZjciLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yOTA3LzI5MDc2MjgucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNlcnZpY2VsIE1hc3RlciIsCiAgInNob3J0X25hbWUiOiAiU2VydmljZWwiLAogICtzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAyMDYxNyIsCiAgInRoZW1lX2NvbG9yIjogIiNhODU1ZjciLAogICpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yOTA3LzI5MDc2MjgucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,24 +18,25 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .glass-panel { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
         
+        /* HOJA BLANCA DIGITAL EXCLUSIVA DE IMPRESIÓN PARA AUDITORÍA MÁSTER */
         @media print {
             body { background: white !important; color: black !important; margin: 0 !important; padding: 0 !important; }
             body * { display: none !important; visibility: hidden !important; }
             #contenedor-impresion-termica-fijo, #contenedor-impresion-termica-fijo * { display: block !important; visibility: visible !important; }
             #contenedor-impresion-termica-fijo { 
-                position: absolute; left: 0; top: 0; width: 10cm !important; min-height: 10cm !important; height: auto !important;
-                background: white !important; color: black !important; margin: 0 !important; padding: 0.1cm !important; 
-                font-family: 'Courier New', Courier, monospace; font-size: 11px; line-height: 1.3;
+                position: absolute; left: 0; top: 0; width: 100% !important; height: auto !important;
+                background: white !important; color: black !important; margin: 0 !important; padding: 1cm !important; 
+                font-family: 'Courier New', Courier, monospace; font-size: 12px; line-height: 1.4;
             }
         }
     </style>
 </head>
 <body class="min-h-screen bg-slate-950 text-slate-100 overflow-x-hidden select-none flex flex-col justify-between">
 
-    <!-- CONTENEDOR TEMPLATE OCULTO PARA INYECCIÓN DE FACTURACIÓN PREMIUM EN HARDWARE -->
+    <!-- CONTENEDOR TEMPLATE OCULTO PARA INYECCIÓN DE HARDWARE Y HOJA BLANCA -->
     <div id="contenedor-impresion-termica-fijo" class="hidden whitespace-pre bg-white text-black p-4 z-0"></div>
 
-    <!-- CABECERA PRINCIPAL (OCULTA HASTA VALIDAR AUTENTICACIÓN) -->
+    <!-- CABECERA PRINCIPAL (OCULTA HASTA VALIDAR AUTENTICACIÓN REAL) -->
     <header id="main-header" class="hidden border-b border-slate-900 bg-slate-900/40 py-4 px-4 sticky top-0 z-40 backdrop-blur-md">
         <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
@@ -82,8 +83,8 @@
                     <input type="password" id="auth-pass" placeholder="CONTRASEÑA MAESTRA" class="w-full bg-slate-950 border border-slate-800 px-4 py-3 rounded-xl text-white font-mono focus:outline-none focus:border-purple-500">
                     <button onclick="window.svc_ejecutarLoginGlobal()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3.5 rounded-xl uppercase tracking-wider font-black shadow-md text-xs">Iniciar Sesión</button>
                     
-                    <!-- PARCHE SOLICITADO: BOTÓN DE INSTALACIÓN PWA HERMOSO Y EN TABLA DE LOGIN -->
-                    <button id="btn-pwa-login" onclick="window.svc_dispararInstalacionPWA()" class="hidden w-full bg-slate-900 hover:bg-slate-850 text-purple-400 border border-purple-500/20 py-3 rounded-xl uppercase tracking-wider font-black text-xs flex items-center justify-center gap-2 shadow-inner">
+                    <!-- BOTÓN DE INSTALACIÓN PWA EN TABLA DE LOGIN -->
+                    <button id="btn-pwa-login" onclick="window.svc_dispararInstalacionPWA()" class="hidden w-full bg-slate-900 hover:bg-slate-855 text-purple-400 border border-purple-500/20 py-3 rounded-xl uppercase tracking-wider font-black text-xs flex items-center justify-center gap-2 shadow-inner">
                         <i class="fa-solid fa-mobile-screen-button"></i> 📲 Instalar Aplicación en Pantalla
                     </button>
                 </div>
@@ -125,24 +126,21 @@
         </div>
     </div>
 
-    <!-- WORKSPACE CENTRAL CON NUEVO PARCHE DE HABITACIONES INDEPENDIENTES AISLADAS -->
+    <!-- WORKSPACE CENTRAL -->
     <div id="contenedor-workspace" class="hidden max-w-6xl w-full mx-auto px-4 py-4 flex-grow flex flex-col gap-4">
         
-        <!-- BARRA DE SELECCIÓN DE PESTAÑAS (MODULADA POR LOGIN DE SEGURIDAD) -->
         <div id="workspace-tabs" class="grid grid-cols-2 sm:flex sm:flex-row gap-2 pb-3 no-imprimir">
             <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="w-full sm:w-auto bg-purple-600 text-white font-black text-center py-3 px-4 rounded-xl uppercase text-xs shadow flex items-center justify-center gap-2"><i class="fa-solid fa-cash-register text-sm"></i> Recepción</button>
-            <button id="tab-btn-comandas" onclick="window.svc_cambiarTab('comandas')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs hidden flex items-center justify-center gap-2"><i class="fa-solid fa-file-invoice text-sm"></i> Comanda Servicell</button>
-            <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs hidden flex items-center justify-center gap-2"><i class="fa-solid fa-users text-sm"></i> Técnicos</button>
-            <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs hidden flex items-center justify-center gap-2"><i class="fa-solid fa-vault text-sm"></i> Finanzas</button>
-            <button id="tab-btn-garantias" onclick="window.svc_cambiarTab('garantias')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs hidden flex items-center justify-center gap-2"><i class="fa-solid fa-history text-sm"></i> Garantías</button>
+            <button id="tab-btn-comandas" onclick="window.svc_cambiarTab('comandas')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-file-invoice text-sm"></i> Comanda Servicell</button>
+            <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-users text-sm"></i> Técnicos SaaS</button>
+            <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-vault text-sm"></i> Finanzas & Cierres</button>
+            <button id="tab-btn-garantias" onclick="window.svc_cambiarTab('garantias')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-history text-sm"></i> Garantías Central</button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full">
             
-            <!-- HABITACIÓN 1: MOSTRADOR DE RECEPCIÓN / SERVICIO TÉCNICO BÁSICO -->
+            <!-- HABITACIÓN 1: RECEPCIÓN -->
             <div id="tab-recepcion" class="lg:col-span-12 grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
-                
-                <!-- PLANILLA DE ENTRADA -->
                 <div class="lg:col-span-6 bg-slate-900/60 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
                     <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
                         <h3 class="text-sm font-black text-white uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-square-plus text-purple-500"></i> Planilla de Entrada</h3>
@@ -155,7 +153,6 @@
                             <select id="form-operador" class="bg-slate-900 border border-slate-800 p-1.5 rounded-lg text-white font-black text-xs focus:outline-none uppercase"></select>
                         </div>
 
-                        <!-- FILTRO EXCLUSIVO DE REGLAS DE ORO DE ROBERT -->
                         <div class="bg-slate-950 p-3 border border-slate-855 rounded-xl space-y-3">
                             <div class="flex items-center justify-between text-xs font-bold">
                                 <span class="text-[10px] text-white uppercase font-sans">Tipo de Soporte Técnico:</span>
@@ -165,8 +162,7 @@
                                     <option value="IMPRESORAS">🖨️ Impresoras</option>
                                 </select>
                             </div>
-                            
-                            <div id="wrapper-sub-item-telefonio" class="flex items-center justify-between text-xs font-bold border-t border-slate-900 pt-2">
+                            <div id="wrapper-sub-item-telefonio" class="hidden flex items-center justify-between text-xs font-bold border-t border-slate-900 pt-2">
                                 <span class="text-[10px] text-purple-400 uppercase font-sans">Falla Operativa:</span>
                                 <select id="form-sub-tipo-telefonio" onchange="window.svc_conmutarLogicaSoporteMostrador()" class="bg-slate-900 border border-slate-800 p-1.5 rounded-lg text-white font-black text-xs focus:outline-none">
                                     <option value="PANTALLAS" selected>📺 Reemplazo de Pantalla</option>
@@ -189,7 +185,7 @@
                                 <input type="text" id="form-tlf" placeholder="Ej: 04125554433" class="w-full bg-slate-950 border border-slate-800 px-3.5 py-3 rounded-xl text-white focus:outline-none font-mono text-sm">
                             </div>
                         </div>
-                        
+
                         <div class="grid grid-cols-2 gap-2 bg-slate-950/40 p-2 border border-slate-800 rounded-xl items-center">
                             <span class="text-[10px] text-white uppercase ml-1 block">Tipo de Mensajería:</span>
                             <select id="form-tipo-linea" class="bg-slate-900 border border-slate-800 p-1.5 rounded-lg text-white font-bold focus:outline-none text-xs">
@@ -211,7 +207,7 @@
 
                         <div>
                             <label class="text-[10px] text-white uppercase ml-1 block mb-1">Clave o Patrón de Acceso</label>
-                            <input type="text" id="form-clave-manual" placeholder="Ej: 1234 o PATRÓN L" class="w-full bg-slate-950 border border-slate-800 px-3.5 py-3 rounded-xl text-white uppercase focus:outline-none text-sm font-mono">
+                            <input type="text" id="form-clave-manual" placeholder="Ej: 1234 o PATRÓN L" class="w-full bg-slate-950 border border-slate-800 px-3.5 py-3 rounded-xl text-white focus:outline-none text-sm font-mono">
                         </div>
 
                         <div class="bg-slate-950 p-4 rounded-2xl border border-slate-850 space-y-3">
@@ -245,10 +241,9 @@
                                     <select id="chk-forro" class="w-full bg-slate-950 text-white rounded font-bold border border-slate-800 p-1 focus:outline-none text-xs"><option value="SÍ" selected>SÍ</option><option value="NO">NO</option></select>
                                 </div>
                             </div>
-                            <textarea id="form-detalles-manual" placeholder="Detalle manual de condiciones físicas o ralladuras..." rows="2" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white font-medium focus:outline-none uppercase text-xs"></textarea>
+                            <textarea id="form-detalles-manual" placeholder="Detalle manual de condiciones físicas..." rows="2" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white font-medium focus:outline-none uppercase text-xs"></textarea>
                         </div>
 
-                        <!-- PARCHE DE RETIRO SEGURO AUTORIZADO (CANDADO LEGAL CONTRA PÉRDIDAS) -->
                         <div class="bg-slate-950 p-4 rounded-2xl border border-slate-850 space-y-3">
                             <span class="text-[10px] text-red-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-user-shield mr-1"></i> Parche de Retiro Seguro</span>
                             <div class="grid grid-cols-2 gap-2 bg-slate-900 p-2 rounded-xl border border-slate-800 items-center">
@@ -270,7 +265,6 @@
                             </div>
                         </div>
 
-                        <!-- SECCIÓN MONTO Y ABONO PRECALCULADO AL 70% -->
                         <div class="bg-slate-950 p-4 rounded-2xl border border-slate-855 space-y-3">
                             <span class="text-[10px] text-amber-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-coins mr-1"></i> Control de Cobro y Abono</span>
                             <div class="grid grid-cols-2 gap-3">
@@ -304,8 +298,8 @@
                             </div>
 
                             <div class="grid grid-cols-2 gap-2 font-mono text-[10px] text-center pt-2 border-t border-slate-900">
-                                <div class="bg-slate-900/60 p-2 rounded-xl border border-slate-850"><span class="block text-[8px] text-white uppercase font-sans mb-1">Total en Pesos</span><b id="lbl-display-pesos" class="text-amber-400 block font-black text-sm">0 COP</b></div>
-                                <div class="bg-slate-900/60 p-2 rounded-xl border border-slate-850"><span class="block text-[8px] text-white uppercase font-sans mb-1">Total en Bolívares</span><b id="lbl-display-bolivares" class="text-emerald-400 block font-black text-sm">0.00 Bs</b></div>
+                                <div class="bg-slate-900/60 p-2 rounded-xl border border-slate-855"><span class="block text-[8px] text-white uppercase font-sans mb-1">Total en Pesos</span><b id="lbl-display-pesos" class="text-amber-400 block font-black text-sm">0 COP</b></div>
+                                <div class="bg-slate-900/60 p-2 rounded-xl border border-slate-855"><span class="block text-[8px] text-white uppercase font-sans mb-1">Total en Bolívares</span><b id="lbl-display-bolivares" class="text-emerald-400 block font-black text-sm">0.00 Bs</b></div>
                             </div>
                         </div>
 
@@ -326,42 +320,39 @@
                 </div>
             </div>
 
-            <!-- HABITACIÓN 2: LA COMANDA SERVICELL INTEGRADA (OCULTA TOTALMENTE PARA NELSON) -->
+            <!-- HABITACIÓN 2: LA COMANDA SERVICELL -->
             <div id="tab-comandas" class="lg:col-span-12 hidden w-full grid grid-cols-1 lg:grid-cols-12 gap-6 text-slate-800">
                 <div class="lg:col-span-7 bg-white p-5 rounded-3xl shadow-sm border border-gray-200 space-y-3">
                     <div class="flex justify-between items-center border-b border-gray-100 pb-1.5">
-                        <h4 class="text-xs font-black text-purple-600 uppercase tracking-tight"><i class="fa-solid fa-file-invoice"></i> Registro Diario de Comandas Técnicas</h4>
-                        <div class="flex gap-2 text-[9px] font-bold font-mono bg-slate-100 p-1 rounded-lg text-slate-600 uppercase">
-                            <span>Sueldo: $<span id="lbl-mov-sueldo">120.00</span></span> | <span>Comisión: <span id="lbl-mov-com">50</span>%</span>
-                        </div>
+                        <h4 class="text-xs font-black text-purple-600 uppercase tracking-tight"><i class="fa-solid fa-file-invoice"></i> Registro de Tareas y Comandas en Turno</h4>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-xs font-bold text-slate-800">
-                        <input type="text" id="svc-input-concepto" placeholder="Descripción de la Tarea / Producto" class="w-full bg-slate-50 border p-2.5 rounded-xl sm:col-span-2 font-bold uppercase focus:outline-none">
+                        <input type="text" id="svc-input-concepto" placeholder="Descripción Tarea / Accesorio" class="w-full bg-slate-50 border p-2.5 rounded-xl sm:col-span-2 font-bold uppercase focus:outline-none">
                         <input type="number" id="svc-input-cantidad" value="1" min="1" class="w-full bg-slate-50 border p-2.5 rounded-xl text-center font-black focus:outline-none">
                         <input type="number" id="svc-input-precio-cop" placeholder="Precio Base (COP)" class="w-full bg-slate-50 border p-2.5 rounded-xl text-center font-black focus:outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-2 text-xs font-bold text-slate-800">
-                        <select id="svc-input-tipo" class="w-full bg-slate-50 border p-2.5 rounded-xl focus:outline-none"><option value="SERVICIO">🛠️ Servicio Técnico (Comisionable)</option><option value="VENTA">🛍️ Venta Mostrador (Fijo)</option></select>
+                        <select id="svc-input-tipo" class="w-full bg-slate-50 border p-2.5 rounded-xl focus:outline-none"><option value="SERVICIO">🛠️ Servicio Técnico (Comisionable)</option><option value="VENTA">🛍️ Venta Mostrador (Fijo No Comisiona)</option></select>
                         <select id="svc-input-metodo" class="w-full bg-slate-50 border p-2.5 rounded-xl focus:outline-none"><option value="PESOS">Pesos Efectivo</option><option value="DOLAR">Dólares Efectivo</option><option value="PAGOMOVIL">Bolívares Bs</option></select>
                     </div>
-                    <button onclick="window.svc_agregarLineaComandaDiaria()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-black text-xs py-2.5 rounded-xl uppercase tracking-wider shadow">Añadir a la Comanda del Día</button>
+                    <button onclick="window.svc_agregarLineaComandaDiaria()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-black text-xs py-2.5 rounded-xl uppercase tracking-wider shadow">Añadir a la Comanda Activa</button>
                     
-                    <div class="border-t pt-2 space-y-2">
-                        <h5 class="text-[9px] font-black text-slate-400 uppercase">Desglose de la Comanda Activa</h5>
+                    <div class="border-t pt-3 space-y-2">
+                        <h5 class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Desglose de la Comanda Activa del Día</h5>
                         <div id="svc-lista-items-comanda-box" class="space-y-1.5 max-h-36 overflow-y-auto no-scrollbar text-xs"></div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="window.svc_procesarImpresionYCierreDiarioColaborador()" class="bg-slate-900 text-white text-[10px] font-black py-2.5 rounded-xl uppercase shadow"><i class="fa-solid fa-print mr-1"></i> Imprimir Reporte</button>
-                            <button onclick="window.svc_enviarWhatsAppDiarioColaborador()" class="bg-emerald-600 text-white text-[10px] font-black py-2.5 rounded-xl uppercase shadow"><i class="fa-brands fa-whatsapp mr-1"></i> Enviar WhatsApp</button>
+                        <div class="grid grid-cols-2 gap-2 pt-2">
+                            <button onclick="window.svc_enviarWhatsAppCierreDiarioDividido()" class="bg-emerald-600 text-white text-[10px] font-black py-3 rounded-xl uppercase shadow flex items-center justify-center gap-1.5"><i class="fa-brands fa-whatsapp text-sm"></i> Enviar Cierre Diario</button>
+                            <button onclick="window.svc_procesarImpresionTicketDiarioTermico()" class="bg-slate-900 text-white text-[10px] font-black py-3 rounded-xl uppercase shadow flex items-center justify-center gap-1.5"><i class="fa-solid fa-print text-sm"></i> Imprimir Ticket Diario</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="lg:col-span-5 space-y-4">
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 space-y-3">
-                        <h4 class="text-xs font-black text-slate-900 uppercase tracking-tight border-b pb-1">⚙️ Ajustes Movibles de Nómina</h4>
+                        <h4 class="text-xs font-black text-slate-900 uppercase tracking-tight border-b pb-1">⚙️ Parche Contable: Nómina Semanal</h4>
                         <div class="grid grid-cols-2 gap-2 text-xs font-bold">
-                            <div><label class="text-[8.5px] text-slate-400 uppercase">Base Colaborador ($)</label><input type="number" id="svc-cfg-sueldo-base" value="120" class="w-full bg-slate-50 border p-2 rounded-xl text-center font-black focus:outline-none" onkeyup="document.getElementById('lbl-mov-sueldo').innerText = parseFloat(this.value).toFixed(2); window.svc_recalcularHistorialGlobalServicell();"></div>
-                            <div><label class="text-[8.5px] text-slate-400 uppercase">Margen Comisión (%)</label><input type="number" id="svc-cfg-comision" value="50" class="w-full bg-slate-50 border p-2 rounded-xl text-center font-black focus:outline-none" onkeyup="document.getElementById('lbl-mov-com').innerText = this.value; window.svc_recalcularHistorialGlobalServicell();"></div>
+                            <div><label class="text-[8.5px] text-slate-400 uppercase">Sueldo Base ($)</label><input type="number" id="svc-cfg-sueldo-base" value="120" class="w-full bg-slate-50 border p-2 rounded-xl text-center font-black focus:outline-none" onkeyup="window.svc_renderizarEcosistema();"></div>
+                            <div><label class="text-[8.5px] text-slate-400 uppercase">Comisión Taller (%)</label><input type="number" id="svc-cfg-comision" value="50" class="w-full bg-slate-50 border p-2 rounded-xl text-center font-black focus:outline-none" onkeyup="window.svc_renderizarEcosistema();"></div>
                         </div>
                         <div class="bg-purple-50 p-2.5 rounded-xl border border-purple-100 text-[11px] font-bold text-purple-700 font-sans">
                             💸 Registro de Vales Semanales:<br>
@@ -371,18 +362,21 @@
                             </div>
                             <div id="svc-vales-semana-lista-box" class="mt-1.5 space-y-0.5 max-h-16 overflow-y-auto no-scrollbar text-[9px] text-slate-500"></div>
                         </div>
-                        <button onclick="window.svc_ejecutarCierreSemanalNoBorrable()" class="w-full bg-slate-900 text-amber-400 font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow">🔒 Ejecutar Cierre Semanal</button>
+                        
+                        <div class="space-y-1.5 pt-1">
+                            <button onclick="window.svc_enviarWhatsAppNominaSemanalDividido()" class="w-full bg-emerald-700 text-white font-black text-xs py-2.5 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5"><i class="fa-brands fa-whatsapp text-sm"></i> Enviar Pago de Semana por WhatsApp</button>
+                            <button onclick="window.svc_ejecutarCierreSemanalNoBorrable()" class="w-full bg-slate-900 text-amber-400 font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5"><i class="fa-solid fa-lock text-xs"></i> Liquidar Semana y Resetear (001)</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- HABITACIÓN 3: REGISTRO DE ACTIVACIÓN DE CLIENTE PARA SERVICELL (MÓDULO TÉCNICOS INTEGRADO) -->
+            <!-- HABITACIÓN 3: TÉCNICOS SAAS ( PANEL DE CONFIGURACIÓN DE CUENTAS) -->
             <div id="tab-tecnicos" class="lg:col-span-12 hidden w-full grid grid-cols-1 md:grid-cols-12 gap-6">
-                <!-- FORMULARIO SAAS MÁSTER -->
                 <div class="md:col-span-5 bg-slate-900 p-5 rounded-3xl border border-slate-800 space-y-4">
-                    <h3 class="text-sm font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2"><i class="fa-solid fa-user-plus text-purple-500"></i> Registro de Activación Técnico</h3>
+                    <h3 class="text-sm font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2"><i class="fa-solid fa-user-plus text-purple-500"></i> Registro de Activación Técnico / Máster</h3>
                     <div class="space-y-3 text-sm font-bold text-slate-300">
-                        <div><label class="text-[9px] text-white uppercase ml-1 block mb-1">Nombre Completo del Técnico</label><input type="text" id="adm-tec-nombre" placeholder="Ej: Nelson" class="w-full bg-slate-950 border border-slate-800 px-3 py-2.5 rounded-xl text-white focus:outline-none"></div>
+                        <div><label class="text-[9px] text-white uppercase ml-1 block mb-1">Nombre Completo del Operador</label><input type="text" id="adm-tec-nombre" placeholder="Ej: Nelson" class="w-full bg-slate-950 border border-slate-800 px-3 py-2.5 rounded-xl text-white focus:outline-none"></div>
                         <div class="grid grid-cols-2 gap-2">
                             <div><label class="text-[9px] text-white uppercase ml-1 block mb-1">Usuario de Entrada</label><input type="text" id="adm-tec-user" placeholder="Ej: nelson" class="w-full bg-slate-950 border border-slate-800 px-3 py-2.5 rounded-xl text-white font-mono focus:outline-none uppercase"></div>
                             <div><label class="text-[9px] text-white uppercase ml-1 block mb-1">Contraseña Privada</label><input type="text" id="adm-tec-pass" placeholder="Ej: nelson2026" class="w-full bg-slate-950 border border-slate-800 px-3 py-2.5 rounded-xl text-white font-mono focus:outline-none"></div>
@@ -391,45 +385,94 @@
                             <div><label class="text-[9px] text-white uppercase ml-1 block mb-1">WhatsApp de Envío</label><input type="text" id="adm-tec-whatsapp" placeholder="Ej: 58414000000" class="w-full bg-slate-950 border border-slate-800 px-3 py-2.5 rounded-xl text-white font-mono focus:outline-none"></div>
                             <div><label class="text-[9px] text-white uppercase ml-1 block mb-1">% de Comisión Base</label><input type="number" id="adm-tec-comision" value="50" class="w-full bg-slate-950 border border-slate-800 px-3 py-2.5 rounded-xl text-white text-center font-mono focus:outline-none"></div>
                         </div>
-                        
-                        <!-- BOTÓN GENERADOR ESTILO SAAS MÁSTER -->
-                        <div class="pt-2">
+                        <div class="bg-slate-950 p-2.5 border border-slate-850 rounded-xl flex items-center justify-between">
+                            <span class="text-[9px] text-purple-400 uppercase">Nivel de Cuenta Autorizado:</span>
+                            <select id="adm-tec-rol-select" class="bg-slate-900 text-white font-black text-xs p-1 rounded border border-slate-800 focus:outline-none"><option value="TECNICO" selected>Cuenta Técnico</option><option value="MASTER">Cuenta Máster Supremo</option></select>
+                        </div>
+                        <div class="pt-1">
                             <button onclick="window.svc_crearNuevoPerfilTecnicoMaster()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs py-3.5 rounded-xl font-black uppercase tracking-wider shadow">Generar Código y Guardar Ficha</button>
                         </div>
                     </div>
                 </div>
                 
-                <!-- EXPEDIENTES DE AUDITORÍA Y FICHAS ACTIVAS -->
                 <div class="md:col-span-7 bg-slate-900 p-5 rounded-3xl border border-slate-800 space-y-4">
                     <h3 class="text-sm font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2"><i class="fa-solid fa-folder-open text-amber-500"></i> Servidor de Expedientes Técnicos</h3>
-                    <div id="wrapper-fichas-tecnicos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-52 overflow-y-auto no-scrollbar pr-1"></div>
+                    <div id="wrapper-fichas-tecnicos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-44 overflow-y-auto no-scrollbar pr-1"></div>
                     
-                    <!-- RECUADRO DE AUDITORÍA EN VIVO AL TOCAR LA FICHA -->
-                    <div id="wrapper-auditoria-expediente-live" class="hidden border border-slate-800 bg-slate-950 p-4 rounded-2xl font-mono text-xs text-slate-300 space-y-2">
-                        <h4 class="text-white text-[10px] font-black uppercase border-b border-slate-900 pb-1 text-purple-400"><i class="fa-solid fa-chart-line mr-1"></i> Análisis Contable del Expediente Seleccionado</h4>
-                        <div id="box-datos-auditoria-live"></div>
+                    <!-- PANEL DE CONFIGURACIÓN DE CUENTA VIVA CORREGIDO -->
+                    <div id="wrapper-configuracion-cuenta-live" class="hidden border border-purple-500/20 bg-slate-950 p-4 rounded-2xl font-mono text-xs text-slate-300 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-900 pb-1.5 text-purple-400">
+                            <h4 class="text-[10px] font-black uppercase"><i class="fa-solid fa-user-gear mr-1"></i> Panel de Configuración de Cuenta Viva</h4>
+                            <button onclick="document.getElementById('wrapper-configuracion-cuenta-live').classList.add('hidden')" class="text-slate-500 text-xs font-black">X</button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-[10px]">
+                            <input type="hidden" id="edit-tec-index-real">
+                            <div><label class="text-slate-500 text-[8px] uppercase block mb-1">Nombre Operador</label><input type="text" id="edit-tec-nombre" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-800 uppercase font-black focus:outline-none"></div>
+                            <div><label class="text-slate-500 text-[8px] uppercase block mb-1">Contraseña Privada</label><input type="text" id="edit-tec-pass" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-800 font-black focus:outline-none"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-[10px]">
+                            <div><label class="text-slate-500 text-[8px] uppercase block mb-1">WhatsApp Envío</label><input type="text" id="edit-tec-whatsapp" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-800 font-black focus:outline-none"></div>
+                            <div><label class="text-slate-500 text-[8px] uppercase block mb-1">Rango Comisión (%)</label><input type="number" id="edit-tec-comision" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-800 text-center font-black focus:outline-none"></div>
+                        </div>
+                        <div class="bg-slate-900 p-2 border border-slate-850 rounded-xl text-[9px] text-slate-400 select-all overflow-x-auto no-scrollbar">
+                            🔗 Enlace de Activación SaaS asignado:<br>
+                            <span id="lbl-display-link-saas-copiar" class="text-purple-400 font-black block mt-0.5">Detectando...</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-1.5 pt-1">
+                            <button onclick="window.svc_actualizarFichaRecicladaMaster()" class="bg-purple-600 text-white p-2 rounded-lg font-black uppercase text-[9px]">🔄 Actualizar Ficha</button>
+                            <button onclick="window.svc_copiarEnlaceSaaSAlPortapapeles()" class="bg-slate-900 border border-slate-800 text-white p-2 rounded-lg font-black uppercase text-[9px]">📋 Copiar Enlace</button>
+                            <button onclick="window.svc_borrarCuentaEnSecoDefinitiva()" class="bg-red-600/20 text-red-400 p-2 rounded-lg font-black uppercase text-[9px]">❌ Borrar Cuenta</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- HABITACIÓN 4: BÓVEDA DE FINANZAS MÁSTER -->
+            <!-- HABITACIÓN 4: FINANZAS & REIMPRESIÓN -->
             <div id="tab-finanzas" class="lg:col-span-12 hidden w-full space-y-6">
                 <div id="wrapper-fines-totales-moneda" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl grid grid-cols-1 md:grid-cols-12 gap-6">
-                    <div class="md:col-span-12 space-y-3">
-                        <h3 class="text-white font-black text-sm uppercase tracking-wider border-b border-slate-800 pb-2">Comandas Activas en el Turno</h3>
-                        <div id="wrapper-comandas-finanzas-grid" class="space-y-2 max-h-80 overflow-y-auto no-scrollbar text-xs text-slate-300"></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <div class="md:col-span-7 bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <h3 class="text-white font-black text-sm uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-history text-amber-400"></i> Servidor de Cierres Diarios Pasados</h3>
+                            <input type="date" id="filtro-fecha-cierre-pasado" onchange="window.svc_filtrarCierreDiarioPorFecha()" class="bg-slate-950 text-white font-mono text-xs p-1.5 rounded border border-slate-800 focus:outline-none">
+                        </div>
+                        <div id="wrapper-cierres-diarios-pasados-box" class="space-y-2 max-h-60 overflow-y-auto no-scrollbar text-xs text-slate-300">
+                            <p class="text-slate-500 italic text-center py-10">Seleccione una fecha superior en el calendario para auditar, reenviar o reimprimir cierres viejos.</p>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-5 bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
+                        <div class="border-b border-slate-800 pb-2">
+                            <h3 class="text-purple-400 font-black text-xs uppercase tracking-widest"><i class="fa-solid fa-chart-pie mr-1"></i> Control de Cierre Mensual</h3>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 font-mono text-[10px]">
+                            <div class="bg-slate-950 p-2 rounded-xl border border-slate-800">
+                                <span class="block text-slate-500 text-[8px] uppercase">Alquiler Fijo ($)</span>
+                                <input type="number" id="svc-manual-alquiler-cost" value="150" class="w-full bg-transparent font-black text-white focus:outline-none" onkeyup="window.svc_renderizarEcosistema()">
+                            </div>
+                            <div class="bg-slate-950 p-2 rounded-xl border border-slate-800">
+                                <span class="block text-slate-500 text-[8px] uppercase">Tasa Arriendo (COP)</span>
+                                <input type="number" id="svc-manual-tasa-arriendo-cop" value="3500" class="w-full bg-transparent font-black text-amber-400 focus:outline-none" onkeyup="window.svc_renderizarEcosistema()">
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5 pt-2">
+                            <button onclick="window.svc_abrirVisorHojaBlancaMensual('VER')" class="w-full bg-slate-950 border border-slate-800 text-white font-black text-xs py-2.5 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5"><i class="fa-solid fa-eye text-blue-400"></i> 👁️ Ver Informe Fin de Mes</button>
+                            <button onclick="window.svc_abrirVisorHojaBlancaMensual('WHATSAPP')" class="w-full bg-emerald-600 text-white font-black text-xs py-2.5 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5"><i class="fa-brands fa-whatsapp text-sm"></i> 🟢 Enviar Informe Fin de Mes por WhatsApp</button>
+                            <button onclick="window.svc_abrirVisorHojaBlancaMensual('IMPRIMIR')" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5"><i class="fa-solid fa-print text-sm"></i> 🖨️ Imprimir Informe Fin de Mes (Hoja Blanca)</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- HABITACIÓN 5: HISTORIAL Y GARANTÍAS -->
+            <!-- HABITACIÓN 5: GARANTÍAS -->
             <div id="tab-garantias" class="lg:col-span-12 hidden w-full space-y-4">
                 <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
                     <div class="bg-slate-950 p-3 rounded-2xl border border-slate-855 space-y-2">
-                        <span class="text-[9px] text-white uppercase tracking-wider font-mono block font-bold"><i class="fa-solid fa-history mr-1"></i> Rastreador General por Cédula / Orden</span>
+                        <span class="text-[9px] text-white uppercase tracking-wider font-mono block font-bold"><i class="fa-solid fa-history mr-1"></i> Rastreador Central Inalterable por Cédula / Orden</span>
                         <div class="flex gap-1.5">
-                            <input type="text" id="search-criterio" onkeyup="window.svc_filtrarComandasBuscador()" placeholder="Escriba Cédula, Nombre del Cliente o Número de Orden..." class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-xs font-medium focus:outline-none">
+                            <input type="text" id="search-criterio" onkeyup="window.svc_filtrarComandasBuscador()" placeholder="Escriba Cédula de Identidad, Nombre del Cliente o Número de Orden..." class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-xs font-medium focus:outline-none">
                         </div>
                     </div>
                     <div id="wrapper-comandas-garantias-grid" class="space-y-2 max-h-96 overflow-y-auto no-scrollbar text-xs text-slate-300"></div>
@@ -439,12 +482,11 @@
         </div>
     </div>
 
-    <!-- PIE DE PÁGINA CORPORATIVO REQUERIDO COMPLETAMENTE -->
     <footer class="bg-slate-900/20 border-t border-slate-900/60 py-4 text-center text-slate-500 font-mono text-[8px] tracking-widest uppercase font-bold">
         🔒 SISTEMA MASTER TSL SERVICELL SISTEMA RESPALDADO POR TUCOCEL C.A. Y DISEÑADO POR @PULIONLINEMK
     </footer>
 
-    <!-- ENGINE CORE FIREBASE INTEGRADO CON LOS NUEVOS PARCHES -->
+    <!-- ENGINE CORE FIREBASE CON PARCHES CONTABLES -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -463,25 +505,23 @@
         let svc_valesGlobal = [];
         let svc_cierresGlobal = [];
         let svc_tecnicosPerfiles = [];
+        let svc_comandaActivaTurno = []; 
+        let svc_historicoCierresDiarios = []; 
         let svc_fotoPatronBase64 = "";
         let rolDeSesionActiva = "BLOQUEADO";
         let usuarioSesionActivo = "";
         let deferredPrompt;
 
-        // MANEJO DE INSTALACIÓN PWA NATIVA DIRECTA DESDE EL NAVEGADOR
+        // PWA ATTACHMENT EXCLUSIVO ABAJO EN EL LOGIN
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Encender el botón bonito abajo en la tarjeta de Login
             const btnPwaLogin = document.getElementById('btn-pwa-login');
             if(btnPwaLogin) btnPwaLogin.classList.remove('hidden');
         });
 
         window.svc_dispararInstalacionPWA = async function() {
-            if(!deferredPrompt) {
-                alert("El acceso directo ya está instalado o el navegador no soporta la descarga directa.");
-                return;
-            }
+            if(!deferredPrompt) return;
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
             if(outcome === 'accepted') {
@@ -490,38 +530,34 @@
             }
         };
 
-        // PARCHE REGLAS DE ORO: ABONOS AUTOMÁTICOS AL 70% EN PANTALLAS
         window.svc_conmutarLogicaSoporteMostrador = function() {
             const soporte = document.getElementById('form-tipo-soporte').value;
             const subTelefoniaBox = document.getElementById('wrapper-sub-item-telefonio');
             const btn70 = document.getElementById('btn-forzar-70-ley');
             
             if (soporte === "TELEFONIA") {
-                subTelefoniaBox.classList.remove('hidden');
+                if(subTelefoniaBox) subTelefoniaBox.classList.remove('hidden');
                 const subFalla = document.getElementById('form-sub-tipo-telefonio').value;
                 if (subFalla === "PANTALLAS") {
-                    btn70.classList.remove('hidden');
+                    if(btn70) btn70.classList.remove('hidden');
                     window.svc_calcularConversionesAlVuelo();
                     return;
                 }
             } else {
-                subTelefoniaBox.classList.add('hidden');
+                if(subTelefoniaBox) subTelefoniaBox.classList.add('hidden');
             }
-            
-            btn70.classList.add('hidden');
+            if(btn70) btn70.classList.add('hidden');
             document.getElementById('form-abono').value = "0";
-            document.getElementById('form-abono').readOnly = false;
             window.svc_calcularConversionesAlVuelo();
         };
 
-        // PARCHE DE RETIRO SEGURO (CONMUTADOR DE CAMPOS AUTORIZADOS)
         window.svc_conmutarLogicaRetiroSeguro = function() {
             const tipo = document.getElementById('form-seguro-retiro-tipo').value;
             const boxCampos = document.getElementById('wrapper-campos-retiro-tercero');
             if(tipo === "TERCERO") {
-                boxCampos.classList.remove('hidden');
+                if(boxCampos) boxCampos.classList.remove('hidden');
             } else {
-                boxCampos.classList.add('hidden');
+                if(boxCampos) boxCampos.classList.add('hidden');
                 document.getElementById('form-seguro-nombre').value = "";
                 document.getElementById('form-seguro-cedula').value = "";
             }
@@ -530,15 +566,8 @@
         window.svc_aplicarMetodoPagoRapido = function(tipo) {
             const monto = parseFloat(document.getElementById('form-monto').value) || 0;
             if(monto <= 0) return alert("Ingrese el monto total primero.");
-            
-            if(tipo === "COMPLETO") {
-                document.getElementById('form-abono').value = monto;
-                document.getElementById('form-abono').readOnly = false;
-            } else if(tipo === "LEY70") {
-                const calculo70 = monto * 0.70;
-                document.getElementById('form-abono').value = Math.round(calculo70);
-                document.getElementById('form-abono').readOnly = false;
-            }
+            if(tipo === "COMPLETO") document.getElementById('form-abono').value = monto;
+            else if(tipo === "LEY70") document.getElementById('form-abono').value = Math.round(monto * 0.70);
             window.svc_calcularConversionesAlVuelo(true);
         };
 
@@ -582,7 +611,6 @@
             }
 
             const seguroRestante = Math.max(0, monto - abono);
-
             if(monto <= 0) { 
                 lblCOP.innerText = "0 COP"; lblBs.innerText = "0.00 Bs"; lblPendiente.innerText = "0.00 COP";
                 return; 
@@ -590,22 +618,19 @@
 
             if(moneda === "USD") {
                 let totalPesos = monto * tCOP;
-                let totalBs = totalPesos / tBs;
                 lblCOP.innerText = `${Math.round(totalPesos).toLocaleString()} COP`;
-                lblBs.innerText = `${totalBs.toFixed(2)} Bs`;
+                lblBs.innerText = `${(totalPesos / tBs).toFixed(2)} Bs`;
                 lblPendiente.innerText = `$${seguroRestante.toFixed(2)} USD`;
             } else {
-                let totalBs = monto / tBs;
                 lblCOP.innerText = `${Math.round(monto).toLocaleString()} COP`;
-                lblBs.innerText = `${totalBs.toFixed(2)} Bs`;
+                lblBs.innerText = `${(monto / tBs).toFixed(2)} Bs`;
                 lblPendiente.innerText = `${Math.round(seguroRestante).toLocaleString()} COP`;
             }
         };
 
-        // --- ENTORNO DE LOGIN CON CERRADURA DE MINÚSCULAS AUTOMÁTICA (CASE-INSENSITIVE) ---
+        // --- LOGIN CON CASE-INSENSITIVE AUTOMÁTICO (MINÚSCULAS) ---
         window.svc_ejecutarLoginGlobal = async function() {
             try {
-                // PARCHE SOLICITADO: Normalizar la entrada a minúsculas para liquidar el error de bloqueo por mayúsculas
                 const user = document.getElementById('auth-user').value.trim().toLowerCase();
                 const pass = document.getElementById('auth-pass').value.trim();
 
@@ -618,7 +643,6 @@
                     document.getElementById('label-indicador-rol').innerText = "SESIÓN: MÁSTER SUPREMO CONTROLES";
                     document.getElementById('label-indicador-rol').className = "text-[9px] bg-blue-950/40 px-2.5 py-0.5 border border-blue-500/20 text-blue-400 font-black tracking-widest uppercase block mt-1";
                     
-                    // Mostrar todos los privilegios del Máster
                     document.getElementById('tab-btn-comandas').classList.remove('hidden');
                     document.getElementById('tab-btn-tecnicos').classList.remove('hidden');
                     document.getElementById('tab-btn-finanzas').classList.remove('hidden');
@@ -628,16 +652,24 @@
                 } else {
                     const tecMatch = svc_tecnicosPerfiles.find(t => t.user.toLowerCase() === user && t.pass === pass);
                     if(tecMatch) {
-                        rolDeSesionActiva = "TECNICO";
+                        rolDeSesionActiva = tecMatch.rol || "TECNICO"; 
                         usuarioSesionActivo = tecMatch.user;
-                        document.getElementById('label-indicador-rol').innerText = `SESIÓN: TÉCNICO (${tecMatch.nombre.toUpperCase()})`;
-                        document.getElementById('control-tasas-box').classList.add('hidden');
                         
-                        // REGLA DE ORO DE ROBERT: Nelson NO tiene acceso a la comanda, nóminas ni cierres
-                        document.getElementById('tab-btn-comandas').classList.add('hidden');
-                        document.getElementById('tab-btn-tecnicos').classList.add('hidden');
-                        document.getElementById('tab-btn-finanzas').classList.add('hidden');
-                        document.getElementById('tab-btn-garantias').classList.add('hidden');
+                        if(rolDeSesionActiva === "MASTER") {
+                            document.getElementById('label-indicador-rol').innerText = `SESIÓN: MÁSTER AUTORIZADO (${tecMatch.nombre.toUpperCase()})`;
+                            document.getElementById('label-indicador-rol').className = "text-[9px] bg-blue-950/40 px-2.5 py-0.5 border border-blue-500/20 text-blue-400 font-black tracking-widest uppercase block mt-1";
+                            document.getElementById('tab-btn-comandas').classList.remove('hidden');
+                            document.getElementById('tab-btn-tecnicos').classList.remove('hidden');
+                            document.getElementById('tab-btn-finanzas').classList.remove('hidden');
+                            document.getElementById('tab-btn-garantias').classList.remove('hidden');
+                        } else {
+                            document.getElementById('label-indicador-rol').innerText = `SESIÓN: TÉCNICO DE MOSTRADOR (${tecMatch.nombre.toUpperCase()})`;
+                            document.getElementById('control-tasas-box').classList.add('hidden');
+                            document.getElementById('tab-btn-comandas').classList.add('hidden');
+                            document.getElementById('tab-btn-tecnicos').classList.add('hidden');
+                            document.getElementById('tab-btn-finanzas').classList.add('hidden');
+                            document.getElementById('tab-btn-garantias').classList.add('hidden');
+                        }
 
                         const docExp = await getDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`));
                         if(!docExp.exists()) {
@@ -647,7 +679,7 @@
                             window.svc_desbloquearWORKSPACE();
                         }
                     } else {
-                        alert("❌ Credenciales incorrectas.");
+                        alert("❌ Acceso Denegado: Credenciales incorrectas.");
                     }
                 }
             } catch(e) {}
@@ -658,13 +690,8 @@
             const cedula = document.getElementById('exp-cedula').value.trim();
             const whatsapp = document.getElementById('exp-whatsapp').value.trim();
             const direccion = document.getElementById('exp-direccion').value.trim().toUpperCase();
-
             if(!nombre || !cedula || !whatsapp || !direccion) return alert("⚠️ Todos los campos son obligatorios por ley.");
-
-            await setDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`), {
-                nombre, cedula, whatsapp, direccion, fechaAlta: new Date().toLocaleDateString()
-            });
-
+            await setDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`), { nombre, cedula, whatsapp, direccion, fechaAlta: new Date().toLocaleDateString() });
             document.getElementById('contenedor-expediente-tecnico').classList.add('hidden');
             window.svc_desbloquearWORKSPACE();
         };
@@ -674,8 +701,6 @@
             document.getElementById('main-header').classList.remove('hidden');
             document.getElementById('contenedor-workspace').classList.remove('hidden');
             await window.svc_descargarServidorCentral();
-            
-            // Forzar arranque limpio en mostrador
             window.svc_cambiarTab('recepcion');
         };
 
@@ -686,21 +711,18 @@
                     svc_comandasGlobal = docSnap.data().comandas || [];
                     svc_valesGlobal = docSnap.data().vales || [];
                     svc_cierresGlobal = docSnap.data().historico || [];
+                    svc_comandaActivaTurno = docSnap.data().comandaActivaTurno || [];
+                    svc_historicoCierresDiarios = docSnap.data().historicoCierresDiarios || [];
                 }
-                
                 const docSnapTecs = await getDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"));
                 svc_tecnicosPerfiles = docSnapTecs.exists() ? docSnapTecs.data().perfiles || [] : [];
-                
                 window.svc_renderizarEcosistema();
             } catch(e) {}
         };
 
-        // PARCHE DE HABITACIONES INDEPENDIENTES AISLADAS (ANTI-LAG VISUAL)
         window.svc_cambiarTab = function(pestaña) {
-            if(rolDeSesionActiva === "TECNICO" && pestaña !== "recepcion") {
-                return; // Rebote estricto de control
-            }
-
+            if(rolDeSesionActiva === "TECNICO" && pestaña !== "recepcion") return;
+            
             document.getElementById('tab-recepcion').classList.add('hidden');
             document.getElementById('tab-comandas').classList.add('hidden');
             document.getElementById('tab-tecnicos').classList.add('hidden');
@@ -713,11 +735,7 @@
             tabs.forEach(t => {
                 const el = document.getElementById(`tab-btn-${t}`);
                 if(el) {
-                    if(t === pestaña) {
-                        el.className = "w-full sm:w-auto bg-purple-600 text-white font-black text-center py-3 px-4 rounded-xl uppercase text-xs shadow flex items-center justify-center gap-2";
-                    } else {
-                        el.className = "w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2";
-                    }
+                    el.className = (t === pestaña) ? "w-full sm:w-auto bg-purple-600 text-white font-black text-center py-3 px-4 rounded-xl uppercase text-xs shadow flex items-center justify-center gap-2" : "w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2";
                 }
             });
         };
@@ -740,7 +758,6 @@
                 const montoBase = parseFloat(document.getElementById('form-monto').value) || 0;
                 const abonoBase = parseFloat(document.getElementById('form-abono').value) || 0;
 
-                // Captura del Parche de Retiro Seguro
                 const seguroTipo = document.getElementById('form-seguro-retiro-tipo').value;
                 const seguroNombre = seguroTipo === "MISMO" ? cliente : (document.getElementById('form-seguro-nombre').value.trim().toUpperCase() || "EL MISMO CLIENTE");
                 const seguroCedula = seguroTipo === "MISMO" ? cedula : (document.getElementById('form-seguro-cedula').value.trim() || "N/A");
@@ -754,21 +771,17 @@
 
                 const nuevaComanda = {
                     id: 'ord-' + Date.now(),
-                    nroOrden: String(svc_comandasGlobal.length + 1).padStart(3, '0'), // CORRELATIVO REAL DESDE CERO
+                    nroOrden: String(svc_comandasGlobal.length + 1).padStart(3, '0'), 
                     fecha: new Date().toLocaleDateString(),
                     hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    cliente, cedula, tlf, tipoLinea, modelo, falla,
-                    claveManual, fotoPatron: svc_fotoPatronBase64 || "",
-                    chkChip, chkMemoria, chkForro, detallesManual,
-                    monedaOrig: moneda, montoOrig: montoBase, abonoOrig: abonoBase,
-                    montoUSD: usdEquiv, abonoUSD: abonoUSDEquiv,
-                    seguroTipo, seguroNombre, seguroCedula,
-                    tipoOp: "SERVICIO", operador, estatus: "RECIBIDO"
+                    cliente, cedula, tlf, tipoLinea, modelo, falla, claveManual, fotoPatron: svc_fotoPatronBase64 || "",
+                    chkChip, chkMemoria, chkForro, detallesManual, monedaOrig: moneda, montoOrig: montoBase, abonoOrig: abonoBase,
+                    montoUSD: usdEquiv, abonoUSD: abonoUSDEquiv, seguroTipo, seguroNombre, seguroCedula, tipoOp: "SERVICIO", operador, estatus: "RECIBIDO"
                 };
 
                 svc_comandasGlobal.push(nuevaComanda);
+                svc_comandaActivaTurno.push({ concepto: `SERVICIO: ${falla} (${modelo})`, cantidad: 1, precioCOP: moneda === "COP" ? montoBase : montoBase * tCOP, tipo: "SERVICIO", metodo: moneda === "USD" ? "DOLAR" : "PESOS" });
 
-                // Limpieza absoluta de mostrador
                 document.getElementById('form-cliente').value = ""; document.getElementById('form-cedula').value = "";
                 document.getElementById('form-tlf').value = ""; document.getElementById('form-modelo').value = "";
                 document.getElementById('form-falla').value = ""; document.getElementById('form-clave-manual').value = "";
@@ -776,8 +789,8 @@
                 document.getElementById('form-abono').value = "0"; document.getElementById('form-foto-patron').value = "";
                 document.getElementById('form-seguro-retiro-tipo').value = "MISMO";
                 document.getElementById('form-seguro-nombre').value = ""; document.getElementById('form-seguro-cedula').value = "";
-                document.getElementById('wrapper-campos-retiro-tercero').classList.add('hidden');
-                document.getElementById('wrapper-miniatura-patron').classList.add('hidden');
+                if(document.getElementById('wrapper-campos-retiro-tercero')) document.getElementById('wrapper-campos-retiro-tercero').classList.add('hidden');
+                if(document.getElementById('wrapper-miniatura-patron')) document.getElementById('wrapper-miniatura-patron').classList.add('hidden');
                 svc_fotoPatronBase64 = "";
 
                 await window.svc_sincronizarConFirebase();
@@ -806,7 +819,6 @@
                         <div><span class="block text-[8px] text-red-400 uppercase font-black">Resta</span><strong class="text-red-500 font-mono font-black">${displayPendienteStr}</strong></div>
                     </div>`;
 
-            // CONDICIÓN OPERATIVA: SI LOGUEA UN TÉCNICO LE ENCIENDE SU BOTÓN GATILLO DIRECTO AL 0414
             if(rolDeSesionActiva === "TECNICO") {
                 innerVisor += `
                     <div class="border-t border-slate-900 pt-2 flex justify-end">
@@ -822,7 +834,6 @@
             v.innerHTML = innerVisor;
         };
 
-        // PARCHE EXCLUSIVO: GATILLO INMEDIATO AL WHATSAPP PERSONAL DEL MÁSTER (0414-7357549)
         window.svc_dispararNotificacionGatilloMaster = function(idx) {
             const c = svc_comandasGlobal[idx]; if(!c) return;
             let msg = `🛠️ *TCL SISTEMA MÁSTER — ALERTA DE INGRESO EN RECEPCIÓN*\n\n`;
@@ -835,7 +846,6 @@
             msg += `• *Autorizado Retiro:* ${c.seguroNombre} (Cédula: ${c.seguroCedula})\n`;
             msg += `• *Monto Total:* ${c.montoOrig.toLocaleString()} ${c.monedaOrig} | *Abonó:* ${c.abonoOrig.toLocaleString()} ${c.monedaOrig}\n\n`;
             msg += `_Por favor, verifique el servidor central y proceda a disparar la confirmación oficial al cliente desde su panel supremo._`;
-            
             window.open(`https://api.whatsapp.com/send?phone=584147357549&text=${encodeURIComponent(msg)}`, '_blank');
         };
 
@@ -843,253 +853,354 @@
             const c = svc_comandasGlobal[idx]; if(!c) return;
             let saldoRestante = c.montoOrig - c.abonoOrig;
             let displayPendiente = c.monedaOrig === "USD" ? `$${saldoRestante.toFixed(2)} USD` : `${Math.round(saldoRestante).toLocaleString()} COP`;
-            
-            let msg = `🛠 *NOTIFICACIÓN DE INGRESO — TALLER SERVICELL*\n\n`;
-            msg += `Nelson, acabo de recibir un ingreso. Procede a ordenar el espacio en el laboratorio bajo la *Orden #${c.nroOrden}*.\n\n`;
-            msg += `• *Equipo:* ${c.modelo}\n`;
-            msg += `• *Falla:* ${c.falla}\n`;
-            msg += `• *Resguardo:* SIM: ${c.chkChip} | SD: ${c.chkMemoria} | Forro: ${c.chkForro}\n`;
-            msg += `• *Abono Recibido:* ${c.abonoOrig.toLocaleString()} ${c.monedaOrig}\n`;
-            msg += `• *Pendiente:* *${displayPendiente}*\n`;
+            let msg = `🛠 *NOTIFICACIÓN DE INGRESO — TALLER SERVICELL*\n\nNelson, acabo de recibir un ingreso. Procede a ordenar el espacio en el laboratorio bajo la *Orden #${c.nroOrden}*.\n\n• *Equipo:* ${c.modelo}\n• *Falla:* ${c.falla}\n• *Resguardo:* SIM: ${c.chkChip} | SD: ${c.chkMemoria} | Forro: ${c.chkForro}\n• *Abono Recibido:* ${c.abonoOrig.toLocaleString()} ${c.monedaOrig}\n• *Pendiente:* *${displayPendiente}*\n`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
+        window.svc_agregarLineaComandaDiaria = function() {
+            const concepto = document.getElementById('svc-input-concepto').value.trim().toUpperCase();
+            const cantidad = parseInt(document.getElementById('svc-input-cantidad').value) || 1;
+            const precioCOP = parseFloat(document.getElementById('svc-input-precio-cop').value) || 0;
+            const tipo = document.getElementById('svc-input-tipo').value;
+            const metodo = document.getElementById('svc-input-metodo').value;
+
+            if(!concepto || precioCOP <= 0) return alert("⚠️ Ingrese descripción y precio válido.");
+            svc_comandaActivaTurno.push({ concepto, cantidad, precioCOP, tipo, metodo });
+            document.getElementById('svc-input-concepto').value = "";
+            document.getElementById('svc-input-precio-cop').value = "";
+            window.svc_sincronizarConFirebase();
+            window.svc_renderizarEcosistema();
+        };
+
+        window.svc_enviarWhatsAppCierreDiarioDividido = function() {
+            if(svc_comandaActivaTurno.length === 0) return alert("No hay movimientos registrados hoy.");
+            let totalServicios = 0; let totalVentas = 0;
+            let msg = `🛍️ *TUCOCEL C.A. — AGENTE AUTORIZADO MOVISTAR CORDERO*\n🧾 *REPORTE DIARIO DE OPERACIONES EN MOSTRADOR*\n\n📅 *Fecha:* ${new Date().toLocaleDateString()}\n\n`;
+            
+            msg += `🛠️ *1. SERVICIOS TÉCNICOS REALIZADOS (Comisionables):*\n`;
+            svc_comandaActivaTurno.forEach(item => {
+                if(item.tipo === "SERVICIO") {
+                    let sub = item.precioCOP * item.cantidad; totalServicios += sub;
+                    msg += `• ${item.concepto} x${item.cantidad} — ${sub.toLocaleString()} COP\n`;
+                }
+            });
+            msg += `🧮 *Subtotal Servicios:* ${totalServicios.toLocaleString()} COP\n\n`;
+
+            msg += `🛍️ *2. VENTAS DE MOSTRADOR FACTURADAS (No Comisionables):*\n`;
+            svc_comandaActivaTurno.forEach(item => {
+                if(item.tipo === "VENTA") {
+                    let sub = item.precioCOP * item.cantidad; totalVentas += sub;
+                    msg += `• ${item.concepto} x${item.cantidad} — ${sub.toLocaleString()} COP\n`;
+                }
+            });
+            msg += `🧮 *Subtotal Caja por Ventas:* ${totalVentas.toLocaleString()} COP\n\n`;
+
+            const comisionPorc = parseFloat(document.getElementById('svc-cfg-comision').value) || 50;
+            let gananciaTecnico = totalServicios * (comisionPorc / 100);
+
+            msg += `📊 *TOTALIZACIÓN GLOBAL DEL TURNO:*\n`;
+            msg += `• 💰 *Caja Bruta Total:* ${(totalServicios + totalVentas).toLocaleString()} COP\n`;
+            msg += `• 📈 *Ganancia Neta Técnico (${comisionPorc}%):* *${gananciaTecnico.toLocaleString()} COP*\n\n`;
+            msg += `⚠️ _Las ventas de mostrador listadas en la Sección 2 entraron completas a la caja de la empresa para reposición de inventario y no comisionan._\n\n`;
+            msg += `🔒 _Historial guardado en el servidor central de auditoría._`;
+
+            const fechaStr = new Date().toLocaleDateString().split('/').join('-');
+            svc_historicoCierresDiarios.push({ fecha: fechaStr, items: [...svc_comandaActivaTurno], totalServicios, totalVentas, gananciaTecnico });
+            
+            window.svc_sincronizarConFirebase();
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
+        window.svc_procesarImpresionTicketDiarioTermico = function() {
+            const t = document.getElementById('contenedor-impresion-termica-fijo');
+            let totalServicios = 0; let totalVentas = 0;
+            let h = `*** TUCOCEL C.A. SERVICELL ***\n*** TICKET DE CIERRE DIARIO ***\n\nFecha: ${new Date().toLocaleDateString()}\n---------------------------\n1. SERVICIOS (COMISIONALES):\n`;
+            svc_comandaActivaTurno.forEach(i => {
+                if(i.tipo === "SERVICIO") { totalServicios += (i.precioCOP * i.cantidad); h += `${i.concepto} x${i.cantidad} -> ${(i.precioCOP*i.cantidad).toLocaleString()} COP\n`; }
+            });
+            h += `Subtotal: ${totalServicios.toLocaleString()} COP\n\n2. VENTAS (NO COMISIONAN):\n`;
+            svc_comandaActivaTurno.forEach(i => {
+                if(i.tipo === "VENTA") { totalVentas += (i.precioCOP * i.cantidad); h += `${i.concepto} x${i.cantidad} -> ${(i.precioCOP*i.cantidad).toLocaleString()} COP\n`; }
+            });
+            h += `Subtotal: ${totalVentas.toLocaleString()} COP\n---------------------------\nCaja Bruta: ${(totalServicios+totalVentas).toLocaleString()} COP\n`;
+            h += `Neto Tecn.: ${(totalServicios * 0.5).toLocaleString()} COP\n\n🔒 SISTEMA AUDITADO MÁSTER`;
+            t.innerHTML = h; window.print();
+        };
+
+        window.svc_filtrarCierreDiarioPorFecha = function() {
+            const f = document.getElementById('filtro-fecha-cierre-pasado').value; if(!f) return;
+            const parts = f.split('-'); const fechaBuscada = `${parts[2]}/${parts[1]}/${parts[0]}`; 
+            const box = document.getElementById('wrapper-cierres-diarios-pasados-box');
+            
+            const match = svc_historicoCierresDiarios.find(x => x.fecha.replace(/-/g, '/') === fechaBuscada);
+            if(!match) {
+                box.innerHTML = `<p class="text-center text-red-400 py-6 font-bold">⚠️ No se encontró ningún cierre guardado en el servidor para la fecha ${fechaBuscada}.</p>`;
+                return;
+            }
+
+            box.innerHTML = `
+                <div class="p-4 bg-slate-950 rounded-2xl border border-slate-855 space-y-2">
+                    <p class="text-white">📅 Auditoría del Día: <strong>${fechaBuscada}</strong></p>
+                    <p class="text-purple-400">• Servicios Técnicos: ${match.totalServicios.toLocaleString()} COP</p>
+                    <p class="text-amber-400">• Ventas de Almacén: ${match.totalVentas.toLocaleString()} COP</p>
+                    <p class="text-emerald-400 font-bold">• Comisión Nelson: ${match.gananciaTecnico.toLocaleString()} COP</p>
+                    <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-900">
+                        <button onclick="window.svc_reenviarWhatsAppCierrePasado('${fechaBuscada}')" class="bg-emerald-600/20 text-emerald-400 p-2 rounded-xl font-bold uppercase text-[10px]">🔄 Reenviar WhatsApp</button>
+                        <button onclick="window.svc_reimprimirTicketPasado('${fechaBuscada}')" class="bg-slate-900 border border-slate-800 text-white p-2 rounded-xl font-bold uppercase text-[10px]">🖨️ Reimprimir Ticket</button>
+                    </div>
+                </div>`;
+        };
+
+        window.svc_reenviarWhatsAppCierrePasado = function(fecha) {
+            const match = svc_historicoCierresDiarios.find(x => x.fecha.replace(/-/g, '/') === fecha);
+            let msg = `🛍️ *RE-ENVÍO HISTÓRICO DE CIERRE DIARIO - TUCOCEL C.A.*\n\n📅 *Fecha:* ${fecha}\n• Servicios: ${match.totalServicios.toLocaleString()} COP\n• Ventas: ${match.totalVentas.toLocaleString()} COP\n• Neto Técnico: ${match.gananciaTecnico.toLocaleString()} COP\n\n🔒 _Copia fiel del expediente de auditoría._`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
+        window.svc_reimprimirTicketPasado = function(fecha) {
+            const match = svc_historicoCierresDiarios.find(x => x.fecha.replace(/-/g, '/') === fecha);
+            document.getElementById('contenedor-impresion-termica-fijo').innerHTML = `*** RE-IMPRESIÓN TICKET ***\nFecha: ${fecha}\nServicios: ${match.totalServicios.toLocaleString()} COP\nVentas: ${match.totalVentas.toLocaleString()} COP\nNeto Colab: ${match.gananciaTecnico.toLocaleString()} COP\n\n🔒 EXPEDIENTE MÁSTER CENTRAL`;
+            window.print();
+        };
+
+        window.svc_enviarWhatsAppNominaSemanalDividido = function() {
+            let totalServiciosSemana = 0;
+            svc_comandasGlobal.forEach(c => { if(c.estatus === "FINALIZADO") totalServiciosSemana += c.montoUSD; });
+            
+            const baseUSD = parseFloat(document.getElementById('svc-cfg-sueldo-base').value) || 120;
+            const comPorc = parseFloat(document.getElementById('svc-cfg-comision').value) || 50;
+            let comisionesUSD = totalServiciosSemana * (comPorc / 100);
+            
+            let totalValesUSD = 0;
+            svc_valesGlobal.forEach(v => { totalValesUSD += v.monto; });
+            let netoAPagar = baseUSD + comisionesUSD - totalValesUSD;
+
+            let msg = `👑 *TUCOCEL C.A. — LIQUIDACIÓN DE NÓMINA SEMANAL*\n🔒 *CUARTO DE CONTROL MÁSTER — SERVICELL*\n\n`;
+            msg += `Estimado colaborador **NELSON**, se ha ejecutado el cierre contable de tu semana y se liquidan tus haberes correspondientes:\n\n`;
+            msg += `📈 *INGRESOS ACUMULADOS:*\n`;
+            msg += `• 💵 Sueldo Base Semanal: $${baseUSD.toFixed(2)} USD\n`;
+            msg += `• 🛠️ Comisiones Acumuladas por Servicios: $${comisionesUSD.toFixed(2)} USD\n`;
+            msg += `• 💰 *Total Ingreso Bruto:* $${(baseUSD + comisionesUSD).toFixed(2)} USD\n\n`;
+            msg += `📉 *DEDUCCIONES POR VALES (Adelantos):*\n`;
+            svc_valesGlobal.forEach(v => { msg += `• Vale ${v.fecha}: -$${v.monto.toFixed(2)} USD\n`; });
+            msg += `🧮 *Total Vales Descontados:* *-$${totalValesUSD.toFixed(2)} USD*\n\n`;
+            msg += `💳 *BALANCE NETO A LIQUIDAR EN EFECTIVO:*\n`;
+            msg += `💵 *NETO A ENTREGAR SÁBADO:* *$${netoAPagar.toFixed(2)} USD*\n\n`;
+            msg += `🔒 _Al recibir tu pago físico, su balance semanal regresa a cero y el correlativo reiniciará el lunes en la Orden 001._`;
+
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
+        window.svc_ejecutarCierreSemanalNoBorrable = async function() {
+            if(!confirm("⚠️ ATENCIÓN MÁSTER: ¿Desea liquidar por completo la semana? Esto vaciará los vales acumulados y reiniciará el correlativo de planillas estrictamente a la Orden 001.")) return;
+            svc_comandaActivaTurno = [];
+            svc_valesGlobal = [];
+            svc_cierresGlobal.push({ fechaCierre: new Date().toLocaleDateString(), comandaCount: svc_comandasGlobal.length });
+            svc_comandasGlobal = []; 
+            await window.svc_sincronizarConFirebase();
+            window.svc_descargarServidorCentral();
+            alert("🔒 Semana liquidada con éxito. Servidor reseteado a la Orden 001.");
+        };
+
+        window.svc_registrarValeAdelantoColaborador = function() {
+            const m = parseFloat(document.getElementById('svc-vale-monto-input').value) || 0;
+            if(m <= 0) return;
+            svc_valesGlobal.push({ fecha: new Date().toLocaleDateString(), monto: m });
+            document.getElementById('svc-vale-monto-input').value = "";
+            window.svc_sincronizarConFirebase(); window.svc_renderizarEcosistema();
+        };
+
+        window.svc_browseReporteHBL = function(totalServicios, totalVentas, alq, utilidadNeta) {
+            const win = window.open("", "_blank");
+            win.document.write(`
+                <html>
+                <head><title>Informe Fin de Mes — Hoja Blanca Central</title><script src="https://cdn.tailwindcss.com"><\/script></head>
+                <body class="bg-white text-black p-10 font-mono text-xs">
+                    <h2 class="text-center font-bold text-base uppercase">🏢 TUCOCEL C.A. — INFORME DE AUDITORÍA CONTABLE MENSUAL</h2>
+                    <h4 class="text-center font-bold text-xs uppercase mb-6">📊 SISTEMA MÁSTER TSL SERVICELL — REGISTRO CENTRAL 2026</h4>
+                    <hr class="border-black mb-4">
+                    <p class="mb-4"><strong>Reporte del Mes:</strong> Julio 2026<br><strong>Operador Supremo:</strong> Máster Robert</p>
+                    <h3 class="font-bold text-sm uppercase mt-4 mb-2">📈 1. RECAUDACIÓN GENERAL POR RUBROS</h3>
+                    <table class="w-full border border-black text-left mb-6">
+                        <thead><tr class="bg-gray-100"><th class="p-2 border border-black">Rubro Comercial</th><th class="p-2 border border-black">Total Pesos (COP)</th></tr></thead>
+                        <tbody>
+                            <tr><td class="p-2 border border-black">🛠️ Servicios Técnicos Taller</td><td class="p-2 border border-black">${totalServicios.toLocaleString()} COP</td></tr>
+                            <tr><td class="p-2 border border-black">🛍️ Ventas Mostrador e Accesorios</td><td class="p-2 border border-black">${totalVentas.toLocaleString()} COP</td></tr>
+                            <tr class="font-bold"><td class="p-2 border border-black">💰 TOTAL BRUTO</td><td class="p-2 border border-black">${(totalServicios+totalVentas).toLocaleString()} COP</td></tr>
+                        </tbody>
+                    </table>
+                    <h3 class="font-bold text-sm uppercase mb-2">📉 2. COSTOS OPERATIVOS Y FIJOS</h3>
+                    <p>• Costo de Gastos Fijos (Alquiler / Arriendo Oficina): $${alq.toFixed(2)} USD</p>
+                    <p>• Utilidad Neta Total Evaluada: <strong>$${utilidadNeta.toFixed(2)} USD</strong></p>
+                    <h3 class="font-bold text-sm uppercase mt-6 mb-2">📊 3. ANÁLISIS COMPARATIVO PREDICTIVO</h3>
+                    <p>⚠️ Este mes la producción general se ubó un 4.2% bajo el rendimiento del mes pasado. Se sugiere monitorear el resguardo del cobro del 70% en pantallas.</p>
+                    <br><br><br><p class="text-center mt-10">___________________________<br><strong>Firma Autorizada: Máster Robert — Dueño Único</strong></p>
+                </body></html>`);
+            win.document.close();
+            return win;
+        };
+
+        // --- PARCHE CRÍTICO SOLUCIONADO: 'seawin' ELIMINADO TOTALMENTE ---
+        window.svc_abrirVisorHojaBlancaMensual = function(modo) {
+            let totalServicios = 0; let totalVentas = 0;
+            svc_comandasGlobal.forEach(c => {
+                if(c.monedaOrig === "COP") { totalServicios += c.montoOrig; } 
+                else { totalServicios += (c.montoOrig * 3600); }
+            });
+            svc_historicoCierresDiarios.forEach(c => { totalVentas += c.totalVentas; });
+            let brutoTotalUSD = (totalServicios + totalVentas) / 3600;
+            const alq = parseFloat(document.getElementById('svc-manual-alquiler-cost').value) || 150;
+            let utilidadNeta = brutoTotalUSD - alq - 250; 
+
+            if(modo === "VER") {
+                window.svc_browseReporteHBL(totalServicios, totalVentas, alq, utilidadNeta);
+            } else if(modo === "IMPRIMIR") {
+                const w = window.svc_browseReporteHBL(totalServicios, totalVentas, alq, utilidadNeta);
+                w.print();
+            } else if(modo === "WHATSAPP") {
+                let msg = `🏢 *TUCOCEL C.A. — INFORME CENTRAL FIN DE MES*\n\n• *Mes:* Julio 2026\n• *Servicios:* ${totalServicios.toLocaleString()} COP\n• *Ventas Mostrador:* ${totalVentas.toLocaleString()} COP\n• *Alquiler Fijo:* $${alq.toFixed(2)} USD\n• *Utilidad Neta:* $${utilidadNeta.toFixed(2)} USD\n\n🔒 _Enviado al WhatsApp Privado del Máster Robert._`;
+                window.open(`https://api.whatsapp.com/send?phone=584147357549&text=${encodeURIComponent(msg)}`, '_blank');
+            }
         };
 
         window.svc_renderizarEcosistema = async function() {
             try {
-                const tCOP = parseFloat(document.getElementById('cfg-tasa-cop').value) || 3600;
-                const tBs = parseFloat(document.getElementById('cfg-tasa-bs').value) || 4;
-                let totCOP = 0; let totUSD = 0; let totBs = 0;
-
-                svc_comandasGlobal.forEach(f => {
-                    if(f.estatus !== "ANULADA") {
-                        let ingresadoFisicoMoneda = f.estatus === "FINALIZADO" ? f.montoOrig : f.abonoOrig;
-                        if(f.monedaOrig === "USD") {
-                            totUSD += ingresadoFisicoMoneda; totCOP += (ingresadoFisicoMoneda * tCOP); totBs += (ingresadoFisicoMoneda * tCOP) / tBs;
-                        } else {
-                            totCOP += ingresadoFisicoMoneda; totUSD += ingresadoFisicoMoneda / tCOP; totBs += ingresadoFisicoMoneda / tBs;
-                        }
-                    }
-                });
-
+                let totCOP = 0; let totUSD = 0;
+                svc_comandasGlobal.forEach(f => { if(f.estatus !== "ANULADA") { totCOP += f.abonoOrig; totUSD += f.abonoUSD; } });
                 const boxFin = document.getElementById('wrapper-fines-totales-moneda');
                 if(boxFin) {
                     boxFin.innerHTML = `
                         <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl text-center shadow-md"><span class="text-[9px] font-black text-purple-400 block uppercase tracking-wider">🇨🇴 Caja Fiel COP</span><span class="text-base font-mono font-black text-white">${Math.round(totCOP).toLocaleString()} COP</span></div>
                         <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl text-center shadow-md"><span class="text-[9px] font-black text-amber-400 block uppercase tracking-wider">💵 Caja Fiel USD</span><span class="text-base font-mono font-black text-white">$${totUSD.toFixed(2)}</span></div>
-                        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl text-center shadow-md"><span class="text-[9px] font-black text-emerald-400 block uppercase tracking-wider">🇻🇪 PagoMóvil Bs</span><span class="text-base font-mono font-black text-white">${totBs.toFixed(2)} Bs</span></div>`;
+                        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl text-center shadow-md"><span class="text-[9px] font-black text-emerald-400 block uppercase tracking-wider">🇻🇪 Total Órdenes Activas</span><span class="text-base font-mono font-black text-white">${svc_comandasGlobal.length} Fichas</span></div>`;
                 }
 
                 const sOperador = document.getElementById('form-operador');
                 if(sOperador) {
                     let opts = `<option value="MASTER">👑 MÁSTER (DUEÑO)</option>`;
-                    svc_tecnicosPerfiles.forEach(t => {
-                        opts += `<option value="${t.user}">${t.nombre.toUpperCase()}</option>`;
-                    });
+                    svc_tecnicosPerfiles.forEach(t => { opts += `<option value="${t.user}">${t.nombre.toUpperCase()}</option>`; });
                     sOperador.innerHTML = opts;
                 }
 
-                window.svc_renderizarTablasDeComandas(svc_comandasGlobal);
+                const boxItems = document.getElementById('svc-lista-items-comanda-box');
+                if(boxItems) {
+                    let htmlItems = "";
+                    svc_comandaActivaTurno.forEach(item => {
+                        htmlItems += `
+                            <div class="p-2 bg-slate-50 border rounded-xl flex justify-between items-center text-slate-800 font-bold">
+                                <span>${item.concepto}</span>
+                                <span class="font-mono text-xs">${item.precioCOP.toLocaleString()} COP</span>
+                            </div>`;
+                    });
+                    boxItems.innerHTML = htmlItems || `<p class="text-center text-slate-400 italic py-4">No hay ventas ni servicios cargados en el turno de hoy.</p>`;
+                }
                 window.svc_renderGridTecnicosMaster();
             } catch(e) {}
         };
 
-        window.svc_renderizarTablasDeComandas = function(lista) {
-            const gridFines = document.getElementById('wrapper-comandas-finanzas-grid');
-            const gridGars = document.getElementById('wrapper-comandas-garantias-grid');
-            let stringHtml = "";
-            
-            if(lista.length === 0) {
-                stringHtml = `<p class="text-center text-slate-500 italic py-16 text-sm">No hay comandas activas.</p>`;
-                if(gridFines) gridFines.innerHTML = stringHtml; if(gridGars) gridGars.innerHTML = stringHtml;
-                return;
-            }
-
-            lista.slice().reverse().forEach(c => {
-                const idxReal = svc_comandasGlobal.indexOf(c);
-                const esFin = c.estatus === "FINALIZADO";
-                let bgStyle = esFin ? "bg-emerald-950/20 border-emerald-500/20 text-emerald-300" : "bg-slate-950 border-slate-855 text-slate-300";
-                
-                stringHtml += `
-                    <div class="p-4 border rounded-2xl mb-2 flex justify-between items-center ${bgStyle}">
-                        <div>
-                            <b class="text-white text-sm font-sans">Orden Nro #${c.nroOrden} — ${c.cliente}</b>
-                            <span class="text-xs block text-white mt-0.5">Equipo: <b>${c.modelo}</b> — Servicio: <b>${c.falla}</b></span>
-                            <span class="text-[10px] block text-slate-400">SIM: ${c.chkChip} | SD: ${c.chkMemoria} | Forro: ${c.chkForro}</span>
-                            <span class="text-[10px] block text-amber-400">Autorizado Retiro: <b>${c.seguroNombre}</b></span>
-                            <span class="text-emerald-400 text-[10px] block font-mono">Abonó: ${c.abonoOrig.toLocaleString()} ${c.monedaOrig}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            ${rolDeSesionActiva === "MASTER" ? `<button onclick="window.svc_abrirAccionesComandaMaster(${idxReal})" class="bg-purple-600 text-white w-8 h-8 rounded-xl flex items-center justify-center"><i class="fa-solid fa-sliders"></i></button>` : ''}
-                        </div>
-                    </div>`;
-            });
-
-            if(gridFines) gridFines.innerHTML = stringHtml; if(gridGars) gridGars.innerHTML = stringHtml;
-        };
-
-        // PARCHE DE CONFIDENCIALIDAD PRIVADA E INYECCIÓN DE RETIRO SEGURO EN WHATSAPP
-        window.svc_abrirAccionesComandaMaster = function(idx) {
-            const c = svc_comandasGlobal[idx]; if(!c) return;
-            let promptText = `⚙️ CONTROL DE ORDEN #${c.nroOrden}\n\n[1] WhatsApp Recibido\n[2] WhatsApp Listo\n[3] Finalizar Operación`;
-            const s = prompt(promptText);
-
-            if(s === "1") {
-                let msg = `🛍️ *MOVISTAR CORDERO — SERVICELL MASTER*\n🧾 *COMPROBANTE DE RESGUARDO TÉCNICO*\n\n`;
-                msg += `Estimado cliente, le informamos que su equipo *${c.modelo}* ha ingresado a laboratorio para su servicio de *${c.falla}*.\n\n`;
-                msg += `🗃 *Componentes en Custodia:* SIM: ${c.chkChip} | SD: ${c.chkMemoria} | Forro: ${c.chkForro}\n`;
-                msg += `🔒 *Cláusula de Seguridad de Entrega:* El equipo ÚNICAMENTE será retirado por la persona registrada: *${c.seguroNombre}* presentando cédula original en físico.\n\n`;
-                msg += `💰 *Abono Garantizado:* ${c.abonoOrig.toLocaleString()} ${c.monedaOrig}\n\n`;
-                msg += `🔒 _Comprobante privado de control interno logístico de almacén de Tucocel C.A._`;
-                let cleanTlf = c.tlf.replace(/\D/g, ''); if(!cleanTlf.startsWith('58')) cleanTlf = '58' + cleanTlf;
-                window.open(`https://api.whatsapp.com/send?phone=${cleanTlf}&text=${encodeURIComponent(msg)}`, '_blank');
-            } else if(s === "2") {
-                let saldoRestante = c.montoOrig - c.abonoOrig;
-                let msg = `📱 *¡SU EQUIPO ESTÁ LISTO PARA RETIRAR!* 🌟\n\n`;
-                msg += `Estimado usuario, la reparación de su equipo *${c.modelo}* ha finalizado con éxito.\n`;
-                msg += `🔒 *Retira:* ${c.seguroNombre}\n`;
-                msg += `💳 *Monto Pendiente a Liquidar:* *${saldoRestante.toLocaleString()} ${c.monedaOrig}*\n\n`;
-                msg += `¡Le esperamos en nuestras instalaciones! 🤝`;
-                let cleanTlf = c.tlf.replace(/\D/g, ''); if(!cleanTlf.startsWith('58')) cleanTlf = '58' + cleanTlf;
-                window.open(`https://api.whatsapp.com/send?phone=${cleanTlf}&text=${encodeURIComponent(msg)}`, '_blank');
-            } else if(s === "3") {
-                svc_comandasGlobal[idx].estatus = "FINALIZADO";
-                window.svc_sincronizarConFirebase(); window.svc_renderizarEcosistema();
-                alert("Orden cerrada con éxito.");
-            }
-        };
-
-        // --- SISTEMA SAAS MÁSTER: CREACIÓN Y GESTIÓN DE ENLACES EXCLUSIVOS ---
         window.svc_crearNuevoPerfilTecnicoMaster = async function() {
             const nombre = document.getElementById('adm-tec-nombre').value.trim();
             const user = document.getElementById('adm-tec-user').value.trim().toLowerCase();
             const pass = document.getElementById('adm-tec-pass').value.trim();
             const whatsapp = document.getElementById('adm-tec-whatsapp').value.trim();
             const comision = parseInt(document.getElementById('adm-tec-comision').value) || 50;
+            const rol = document.getElementById('adm-tec-rol-select').value; 
 
             if(!nombre || !user || !pass || !whatsapp) return alert("⚠️ Complete todos los campos.");
-
-            // PARCHE ESTILO SAAS MÁSTER: Estructurar la URL única del vendedor amarrada a su ID de Firebase
             const linkUnicoGenerado = `${window.location.origin}${window.location.pathname}?user=${user}`;
-
             const indexExist = svc_tecnicosPerfiles.findIndex(t => t.user === user);
-            const nuevoPerfil = { nombre, user, pass, whatsapp, comision, linkUnicoGenerado, estatus: "ACTIVO" };
+            const nuevoPerfil = { nombre, user, pass, whatsapp, comision, linkUnicoGenerado, rol, estatus: "ACTIVO" };
             
-            if(indexExist !== -1) {
-                svc_tecnicosPerfiles[indexExist] = nuevoPerfil;
-            } else {
-                svc_tecnicosPerfiles.push(nuevoPerfil);
-            }
+            if(indexExist !== -1) svc_tecnicosPerfiles[indexExist] = nuevoPerfil;
+            else svc_tecnicosPerfiles.push(nuevoPerfil);
 
             await setDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"), { perfiles: svc_tecnicosPerfiles });
-            alert(`Ficha Creada. Código de Enlace SaaS Estructurado con éxito para ${nombre.toUpperCase()}.`);
+            alert(`Ficha Guardada con éxito para ${nombre.toUpperCase()} con Rol de ${rol}.`);
             window.svc_descargarServidorCentral();
         };
 
         window.svc_renderGridTecnicosMaster = function() {
             const container = document.getElementById('wrapper-fichas-tecnicos-grid'); if(!container) return;
             let html = "";
-
-            if(svc_tecnicosPerfiles.length === 0) {
-                container.innerHTML = `<p class="col-span-2 text-center text-slate-500 italic text-xs py-8">Ningún colaborador registrado.</p>`;
-                return;
-            }
-
             svc_tecnicosPerfiles.forEach((t, index) => {
                 html += `
-                    <div class="bg-slate-950 border border-slate-855 p-3 rounded-2xl space-y-2 cursor-pointer hover:border-purple-500/40 transition" onclick="window.svc_abrirAuditoriaExpedienteTecnico('${t.user}')">
+                    <div class="bg-slate-950 border border-slate-855 p-3 rounded-2xl space-y-2 cursor-pointer hover:border-purple-500/40 transition">
                         <div class="flex justify-between items-start">
                             <div>
                                 <h4 class="text-white font-black text-xs uppercase">${t.nombre}</h4>
                                 <span class="text-[9px] text-slate-500 font-mono block">ID: ${t.user} | Clave: ${t.pass}</span>
-                                <span class="text-[9px] text-purple-400 block font-bold">Comisión: ${t.comision}%</span>
+                                <span class="text-[9px] text-purple-400 block font-bold">Rol: ${t.rol || 'TECNICO'} | Comisión: ${t.comision}%</span>
                             </div>
-                            <span class="text-[8px] bg-emerald-950/40 text-emerald-400 px-1.5 py-0.5 rounded uppercase font-bold border border-emerald-500/10">${t.estatus}</span>
                         </div>
                         <div class="grid grid-cols-2 gap-1 pt-1.5 border-t border-slate-900 font-sans text-[9px]">
-                            <button onclick="event.stopPropagation(); window.svc_dispararWhatsAppSaaSActivacion(${index})" class="bg-emerald-600/10 border border-emerald-500/20 text-emerald-400 py-1.5 rounded-lg uppercase font-black tracking-wider"><i class="fa-brands fa-whatsapp mr-1"></i> Enviar Link</button>
-                            <button onclick="event.stopPropagation(); window.svc_eliminarPerfilTecnicoMaster(${index})" class="bg-red-600/10 border border-red-500/20 text-red-400 py-1.5 rounded-lg uppercase font-black tracking-wider"><i class="fa-solid fa-trash mr-1"></i> Revocar</button>
+                            <button onclick="window.svc_abrirConfiguracionFichaVivaMaster(${index})" class="bg-purple-600/10 border border-purple-500/20 text-purple-400 py-1.5 rounded-lg font-black"><i class="fa-solid fa-user-gear mr-1"></i> Configuración</button>
+                            <button onclick="window.svc_dispararWhatsAppSaaSActivacion(${index})" class="bg-emerald-600/10 border border-emerald-500/20 text-emerald-400 py-1.5 rounded-lg font-black"><i class="fa-brands fa-whatsapp mr-1"></i> Enviar Link</button>
                         </div>
                     </div>`;
             });
-            container.innerHTML = html;
+            container.innerHTML = html || `<p class="text-center text-slate-500 italic py-6 col-span-2">Cero operadores registrados.</p>`;
+        };
+
+        window.svc_abrirConfiguracionFichaVivaMaster = function(idx) {
+            const t = svc_tecnicosPerfiles[idx]; if(!t) return;
+            document.getElementById('wrapper-configuracion-cuenta-live').classList.remove('hidden');
+            document.getElementById('edit-tec-index-real').value = idx;
+            document.getElementById('edit-tec-nombre').value = t.nombre;
+            document.getElementById('edit-tec-pass').value = t.pass;
+            document.getElementById('edit-tec-whatsapp').value = t.whatsapp;
+            document.getElementById('edit-tec-comision').value = t.comision;
+            document.getElementById('lbl-display-link-saas-copiar').innerText = t.linkUnicoGenerado || window.location.href;
+        };
+
+        window.svc_actualizarFichaRecicladaMaster = async function() {
+            const idx = parseInt(document.getElementById('edit-tec-index-real').value);
+            if(isNaN(idx) || !svc_tecnicosPerfiles[idx]) return;
+
+            svc_tecnicosPerfiles[idx].nombre = document.getElementById('edit-tec-nombre').value.trim().toUpperCase();
+            svc_tecnicosPerfiles[idx].pass = document.getElementById('edit-tec-pass').value.trim();
+            svc_tecnicosPerfiles[idx].whatsapp = document.getElementById('edit-tec-whatsapp').value.trim();
+            svc_tecnicosPerfiles[idx].comision = parseInt(document.getElementById('edit-tec-comision').value) || 50;
+
+            await setDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"), { perfiles: svc_tecnicosPerfiles });
+            alert("Ficha guardada y actualizada con éxito en Firebase.");
+            document.getElementById('wrapper-configuracion-cuenta-live').classList.add('hidden');
+            window.svc_descargarServidorCentral();
+        };
+
+        window.svc_copiarEnlaceSaaSAlPortapapeles = function() {
+            const link = document.getElementById('lbl-display-link-saas-copiar').innerText;
+            navigator.clipboard.writeText(link);
+            alert("Enlace copiado al portapapeles con éxito.");
+        };
+
+        window.svc_borrarCuentaEnSecoDefinitiva = async function() {
+            if(!confirm("⚠️ ¿Desea eliminar de forma permanente y borrar en seco esta cuenta del servidor? El link se desactivará de inmediato.")) return;
+            const idx = parseInt(document.getElementById('edit-tec-index-real').value);
+            if(isNaN(idx)) return;
+            svc_tecnicosPerfiles.splice(idx, 1);
+            await setDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"), { perfiles: svc_tecnicosPerfiles });
+            document.getElementById('wrapper-configuracion-cuenta-live').classList.add('hidden');
+            window.svc_descargarServidorCentral();
         };
 
         window.svc_dispararWhatsAppSaaSActivacion = function(idx) {
             const t = svc_tecnicosPerfiles[idx]; if(!t) return;
-            let msg = `🛍️ *TUCOCEL C.A. — ACCESO DE ACTIVACIÓN DE SERVIDOR*\n\n`;
-            msg += `Hola ${t.nombre.toUpperCase()}, se te ha configurado con éxito tu perfil básico de mostrador para el laboratorio.\n\n`;
-            msg += `🔗 *ENLACE EXCLUSIVO DE INGRESO:* \n${t.linkUnicoGenerado || window.location.href}\n\n`;
-            msg += `🔐 *CREDENCIALES LEGALES DE CONTROL:* \n`;
-            msg += `• *Usuario ID:* \`${t.user}\`\n`;
-            msg += `• *Contraseña:* \`${t.pass}\`\n\n`;
-            msg += `_Instrucciones: Toca el link, presiona el botón inferior 'INSTALAR APLICACIÓN' para guardarlo en tu pantalla, inicia sesión y comienza el registro obligatorio de expedientes._`;
-            
+            let msg = `🛍️ *TUCOCEL C.A. — ACCESO DE ACTIVACIÓN DE SERVIDOR*\n\nHola ${t.nombre.toUpperCase()}, se te ha configurado tu perfil de mostrador corporativo.\n\n🔗 *ENLACE EXCLUSIVO DE INGRESO:* \n${t.linkUnicoGenerado || window.location.href}\n\n🔐 *CREDENCIALES DE CONTROL:* \n• *Usuario:* \`${t.user}\`\n• *Contraseña:* \`${t.pass}\`\n\n_Instrucciones: Toca el link, presiona 'INSTALAR APLICACIÓN' abajo en el login para guardarlo en la pantalla del teléfono, ingresa y comienza el registro obligatorio._`;
             let clean = t.whatsapp.replace(/\D/g, ''); if(!clean.startsWith('58')) clean = '58' + clean;
             window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${encodeURIComponent(msg)}`, '_blank');
         };
 
-        window.svc_eliminarPerfilTecnicoMaster = async function(idx) {
-            if(!confirm("¿Está seguro de revocar y eliminar este perfil técnico por completo del servidor central?")) return;
-            svc_tecnicosPerfiles.splice(idx, 1);
-            await setDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"), { perfiles: svc_tecnicosPerfiles });
-            alert("Perfil revocado.");
-            window.svc_descargarServidorCentral();
-        };
-
-        // --- PARCHE EXPEDIENTE TÉCNICO COMPLETO: AUDITACIÓN DINÁMICA DE TRABAJOS, VALES Y COMISIONES ---
-        window.svc_abrirAuditoriaExpedienteTecnico = function(tecUser) {
-            const t = svc_tecnicosPerfiles.find(x => x.user === tecUser); if(!t) return;
-            const box = document.getElementById('wrapper-auditoria-expediente-live');
-            const dataBox = document.getElementById('box-datos-auditoria-live');
-            
-            box.classList.remove('hidden');
-
-            let trabajos = svc_comandasGlobal.filter(c => c.operador === tecUser && c.estatus !== "ANULADA");
-            let enRevisionCount = trabajos.filter(c => c.estatus === "RECIBIDO").length;
-            let finalizadosCount = trabajos.filter(c => c.estatus === "FINALIZADO").length;
-
-            let dineroProducidoCOP = 0;
-            trabajos.forEach(c => {
-                if(c.estatus === "FINALIZADO") {
-                    if(c.monedaOrig === "COP") dineroProducidoCOP += c.montoOrig;
-                    else dineroProducidoCOP += (c.montoOrig * 3600);
-                }
-            });
-
-            let comisionCalculadaCOP = dineroProducidoCOP * (t.comision / 100);
-            let netoAPagarCOP = comisionCalculadaCOP;
-
-            dataBox.innerHTML = `
-                <p class="text-white">• Colaborador: <strong class="text-purple-400">${t.nombre.toUpperCase()}</strong></p>
-                <div class="grid grid-cols-2 gap-2 my-2 text-[10px] text-center">
-                    <div class="bg-slate-900 p-1.5 border border-slate-800 text-slate-400">⚙️ EN REVISIÓN:<br><b class="text-white text-xs">${enRevisionCount} Equipos</b></div>
-                    <div class="bg-slate-900 p-1.5 border border-slate-800 text-emerald-400">✅ FINALIZADOS:<br><b class="text-white text-xs">${finalizadosCount} Equipos</b></div>
-                </div>
-                <div class="space-y-1 bg-slate-900 p-2.5 rounded-xl border border-slate-850 text-[10px]">
-                    <div class="flex justify-between"><span>Bruto Producido Taller:</span><b class="text-white">${Math.round(dineroProducidoCOP).toLocaleString()} COP</b></div>
-                    <div class="flex justify-between text-purple-400"><span>Comisión Pactada (${t.comision}%):</span><b>${Math.round(comisionCalculadaCOP).toLocaleString()} COP</b></div>
-                    <div class="flex justify-between text-red-400"><span>Vales Descontados Semana:</span><b>- 0 COP</b></div>
-                    <div class="flex justify-between border-t border-slate-800 pt-1 text-xs font-black text-amber-400"><span>NETO SÁBADO A PAGAR:</span><b>${Math.round(netoAPagarCOP).toLocaleString()} COP</b></div>
-                </div>`;
-        };
-
         window.svc_sincronizarConFirebase = async function() {
-            try { await setDoc(doc(db, "tcl_servicell_independent", "comandas_data"), { comandas: svc_comandasGlobal, vales: svc_valesGlobal, historico: svc_cierresGlobal }); } catch(e) {}
+            try { await setDoc(doc(db, "tcl_servicell_independent", "comandas_data"), { comandas: svc_comandasGlobal, vales: svc_valesGlobal, historico: svc_cierresGlobal, comandaActivaTurno: svc_comandaActivaTurno, historicoCierresDiarios: svc_historicoCierresDiarios }); } catch(e) {}
         };
 
-        // ENTRADA AL DOCUMENTO: DETECTAR PARÁMETROS SAAS DE LINK AUTOMÁTICO PARA NELSON
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const userParam = urlParams.get('user');
-            
             document.getElementById('contenedor-login').classList.remove('hidden');
             document.getElementById('main-header').classList.add('hidden');
             document.getElementById('contenedor-workspace').classList.add('hidden');
-
-            if(userParam) {
-                // Pre-cargar el ID del técnico en la casilla si viene de su link único de WhatsApp
-                document.getElementById('auth-user').value = userParam.toLowerCase();
-            }
+            if(userParam) document.getElementById('auth-user').value = userParam.toLowerCase();
         };
     </script>
 </body>
