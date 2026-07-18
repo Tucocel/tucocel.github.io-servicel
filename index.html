@@ -64,7 +64,7 @@
         </div>
     </header>
 
-    <!-- PANTALLA 1: LOGIN DE ENTRADA OBLIGATORIO (DISEÑO PREMIUM ORIGINAL COMPLETO RESTAURADO) -->
+    <!-- PANTALLA 1: LOGIN DE ENTRADA OBLIGATORIO -->
     <div id="contenedor-login" class="flex-grow flex items-center justify-center p-4">
         <div class="w-full max-w-md p-0.5 rounded-3xl bg-gradient-to-br from-purple-600 via-slate-800 to-indigo-600 shadow-2xl">
             <div class="glass-panel rounded-[22px] p-6 space-y-5">
@@ -83,7 +83,6 @@
                     <input type="password" id="auth-pass" placeholder="CONTRASEÑA MAESTRA" class="w-full bg-slate-950 border border-slate-800 px-4 py-3 rounded-xl text-white font-mono focus:outline-none focus:border-purple-500">
                     <button onclick="window.svc_ejecutarLoginGlobal()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3.5 rounded-xl uppercase tracking-wider font-black shadow-md text-xs">Iniciar Sesión</button>
                     
-                    <!-- BOTÓN DE INSTALACIÓN PWA EN TABLA DE LOGIN -->
                     <button id="btn-pwa-login" onclick="window.svc_dispararInstalacionPWA()" class="hidden w-full bg-slate-900 hover:bg-slate-855 text-purple-400 border border-purple-500/20 py-3 rounded-xl uppercase tracking-wider font-black text-xs flex items-center justify-center gap-2 shadow-inner">
                         <i class="fa-solid fa-mobile-screen-button"></i> 📲 Instalar Aplicación en Pantalla
                     </button>
@@ -126,15 +125,15 @@
         </div>
     </div>
 
-    <!-- WORKSPACE CENTRAL CON CERRADURA DE FRONT-END COMPLETA (TABS VACÍOS AL ARRANQUE) -->
+    <!-- WORKSPACE CENTRAL -->
     <div id="contenedor-workspace" class="hidden max-w-6xl w-full mx-auto px-4 py-4 flex-grow flex flex-col gap-4">
         
-        <!-- SWITCH DE INYECCIÓN DE PESTAÑAS EXCLUSIVAS (SE CONTROLAN DESDE JS PARA EVITAR DESVÍOS) -->
+        <!-- SWITCH DE INYECCIÓN DE PESTAÑAS DINÁMICAS POR SEGURIDAD -->
         <div id="workspace-tabs" class="grid grid-cols-2 sm:flex sm:flex-row gap-2 pb-3 no-imprimir"></div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full">
             
-            <!-- HABITACIÓN 1: RECEPCIÓN MOSTRADOR -->
+            <!-- HABITACIÓN 1: RECEPCIÓN MOSTRADOR (EQUIPOS FISICOS - INALTERABLES) -->
             <div id="tab-recepcion" class="lg:col-span-12 hidden w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <div class="lg:col-span-6 bg-slate-900/60 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
                     <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
@@ -143,7 +142,7 @@
                     </div>
 
                     <div class="space-y-4 text-sm font-bold text-slate-300">
-                        <div class="bg-slate-950 p-3 border border-slate-850 rounded-xl flex items-center justify-between">
+                        <div class="bg-slate-950 p-3 border border-slate-855 rounded-xl flex items-center justify-between">
                             <span class="text-[10px] text-white uppercase font-sans">Operador que Recibe:</span>
                             <select id="form-operador" class="bg-slate-900 border border-slate-800 p-1.5 rounded-lg text-white font-black text-xs focus:outline-none uppercase"></select>
                         </div>
@@ -205,7 +204,7 @@
                             <input type="text" id="form-clave-manual" placeholder="Ej: 1234 o PATRÓN L" class="w-full bg-slate-950 border border-slate-800 px-3.5 py-3 rounded-xl text-white uppercase focus:outline-none text-sm font-mono">
                         </div>
 
-                        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-850 space-y-3">
+                        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-855 space-y-3">
                             <span class="text-[10px] text-purple-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-camera mr-1"></i> Dibujo / Foto de Patrón en Papel</span>
                             <div class="grid grid-cols-2 gap-3 items-center">
                                 <div class="flex flex-col items-center justify-center w-full">
@@ -315,11 +314,11 @@
                 </div>
             </div>
 
-            <!-- HABITACIÓN 2: LA COMANDA SERVICELL -->
+            <!-- HABITACIÓN 2: LA COMANDA SERVICELL (CAJA / RESET SEMANAL SEPARADO) -->
             <div id="tab-comandas" class="lg:col-span-12 hidden w-full grid grid-cols-1 lg:grid-cols-12 gap-6 text-slate-800">
                 <div class="lg:col-span-7 bg-white p-5 rounded-3xl shadow-sm border border-gray-200 space-y-3">
                     <div class="flex justify-between items-center border-b border-gray-100 pb-1.5">
-                        <h4 class="text-xs font-black text-purple-600 uppercase tracking-tight"><i class="fa-solid fa-file-invoice"></i> Registro de Tareas y Comandas en Turno</h4>
+                        <h4 class="text-xs font-black text-purple-600 uppercase tracking-tight"><i class="fa-solid fa-file-invoice"></i> Libro Diario Contable y Cobros</h4>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-xs font-bold text-slate-800">
                         <input type="text" id="svc-input-concepto" placeholder="Descripción Tarea / Accesorio" class="w-full bg-slate-50 border p-2.5 rounded-xl sm:col-span-2 font-bold uppercase focus:outline-none">
@@ -346,13 +345,13 @@
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 space-y-3">
                         <h4 class="text-xs font-black text-slate-900 uppercase tracking-tight border-b pb-1">⚙️ Parche Contable: Nómina Semanal</h4>
                         <div class="grid grid-cols-2 gap-2 text-xs font-bold">
-                            <div><label class="text-[8.5px] text-slate-400 uppercase">Sueldo Base ($)</label><input type="number" id="svc-cfg-sueldo-base" value="120" class="w-full bg-slate-50 border p-2 rounded-xl text-center font-black focus:outline-none" onkeyup="window.svc_renderizerEcosistema();"></div>
-                            <div><label class="text-[8.5px] text-slate-400 uppercase">Comisión Taller (%)</label><input type="number" id="svc-cfg-comision" value="50" class="w-full bg-slate-50 border p-2 rounded-xl text-center font-black focus:outline-none" onkeyup="window.svc_renderizerEcosistema();"></div>
+                            <div><label class="text-[8.5px] text-slate-400 uppercase">Sueldo Base ($)</label><input type="number" id="svc-cfg-sueldo-base" value="120" class="w-full bg-slate-50 border p-2 rounded-xl text-center font-black focus:outline-none" onkeyup="window.svc_renderizarEcosistema();"></div>
+                            <div><label class="text-[8.5px] text-slate-400 uppercase">Comisión Taller (%)</label><input type="number" id="svc-cfg-comision" value="50" class="w-full bg-slate-50 border p-2 rounded-xl text-center font-black focus:outline-none" onkeyup="window.svc_renderizarEcosistema();"></div>
                         </div>
                         <div class="bg-purple-50 p-2.5 rounded-xl border border-purple-100 text-[11px] font-bold text-purple-700 font-sans">
                             💸 Registro de Vales Semanales:<br>
                             <div class="flex gap-1 mt-1">
-                                <input type="number" id="svc-vale-monto-input" placeholder="Monto $" class="w-20 bg-white border px-2 py-1 rounded text-center focus:outline-none font-mono">
+                                <input type="number" id="svc-vale-monto-input" placeholder="Monto COP" class="w-24 bg-white border px-2 py-1 rounded text-center focus:outline-none font-mono">
                                 <button onclick="window.svc_registrarValeAdelantoColaborador()" class="bg-purple-600 text-white px-2 rounded uppercase text-[9px] font-black">Abonar Vale</button>
                             </div>
                             <div id="svc-vales-semana-lista-box" class="mt-1.5 space-y-0.5 max-h-16 overflow-y-auto no-scrollbar text-[9px] text-slate-500"></div>
@@ -366,10 +365,10 @@
                 </div>
             </div>
 
-            <!-- HABITACIÓN 3: TÉCNICOS SAAS (PANEL SUPREMO) -->
+            <!-- HABITACIÓN 3: TÉCNICOS SAAS (PANEL MÁSTER CENTRAL DE CONFIGURACIÓN) -->
             <div id="tab-tecnicos" class="lg:col-span-12 hidden w-full grid grid-cols-1 md:grid-cols-12 gap-6">
                 <div class="md:col-span-5 bg-slate-900 p-5 rounded-3xl border border-slate-800 space-y-4">
-                    <h3 class="text-sm font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2"><i class="fa-solid fa-user-plus text-purple-500"></i> Registro de Activación Técnico / Máster</h3>
+                    <h3 class="text-sm font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2"><i class="fa-solid fa-user-plus text-purple-500"></i> Registro de Personal Autorizado</h3>
                     <div class="space-y-3 text-sm font-bold text-slate-300">
                         <div><label class="text-[9px] text-white uppercase ml-1 block mb-1">Nombre Completo del Operador</label><input type="text" id="adm-tec-nombre" placeholder="Ej: Nelson" class="w-full bg-slate-950 border border-slate-800 px-3 py-2.5 rounded-xl text-white focus:outline-none"></div>
                         <div class="grid grid-cols-2 gap-2">
@@ -394,6 +393,7 @@
                     <h3 class="text-sm font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2"><i class="fa-solid fa-folder-open text-amber-500"></i> Servidor de Expedientes Técnicos</h3>
                     <div id="wrapper-fichas-tecnicos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-44 overflow-y-auto no-scrollbar pr-1"></div>
                     
+                    <!-- PANEL DE CONFIGURACIÓN DE CUENTA VIVA CON BORRADOS RESTRUCTURADOS -->
                     <div id="wrapper-configuracion-cuenta-live" class="hidden border border-purple-500/20 bg-slate-950 p-4 rounded-2xl font-mono text-xs text-slate-300 space-y-3">
                         <div class="flex justify-between items-center border-b border-slate-900 pb-1.5 text-purple-400">
                             <h4 class="text-[10px] font-black uppercase"><i class="fa-solid fa-user-gear mr-1"></i> Panel de Configuración de Cuenta Viva</h4>
@@ -421,14 +421,14 @@
                 </div>
             </div>
 
-            <!-- HABITACIÓN 4: FINANZAS & REIMPRESIÓN -->
+            <!-- HABITACIÓN 4: FINANZAS, AUDITORÍA Y HOJA BLANCA -->
             <div id="tab-finanzas" class="lg:col-span-12 hidden w-full space-y-6">
                 <div id="wrapper-fines-totales-moneda" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
                     <div class="md:col-span-7 bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3">
                         <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                            <h3 class="text-white font-black text-sm uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-history text-amber-400"></i> Servidor de Cierres Diarios Pasados</h3>
+                            <h3 class="text-white font-black text-sm uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-history text-amber-400"></i> Historial Inalterable de Cierres Pasados</h3>
                             <input type="date" id="filtro-fecha-cierre-pasado" onchange="window.svc_filtrarCierreDiarioPorFecha()" class="bg-slate-950 text-white font-mono text-xs p-1.5 rounded border border-slate-800 focus:outline-none">
                         </div>
                         <div id="wrapper-cierres-diarios-pasados-box" class="space-y-2 max-h-60 overflow-y-auto no-scrollbar text-xs text-slate-300">
@@ -443,11 +443,11 @@
                         <div class="grid grid-cols-2 gap-2 font-mono text-[10px]">
                             <div class="bg-slate-950 p-2 rounded-xl border border-slate-800">
                                 <span class="block text-slate-500 text-[8px] uppercase">Alquiler Fijo ($)</span>
-                                <input type="number" id="svc-manual-alquiler-cost" value="150" class="w-full bg-transparent font-black text-white focus:outline-none" onkeyup="window.svc_renderizerEcosistema();">
+                                <input type="number" id="svc-manual-alquiler-cost" value="150" class="w-full bg-transparent font-black text-white focus:outline-none" onkeyup="window.svc_renderizarEcosistema()">
                             </div>
                             <div class="bg-slate-950 p-2 rounded-xl border border-slate-800">
                                 <span class="block text-slate-500 text-[8px] uppercase">Tasa Arriendo (COP)</span>
-                                <input type="number" id="svc-manual-tasa-arriendo-cop" value="3500" class="w-full bg-transparent font-black text-amber-400 focus:outline-none" onkeyup="window.svc_renderizerEcosistema();">
+                                <input type="number" id="svc-manual-tasa-arriendo-cop" value="3500" class="w-full bg-transparent font-black text-amber-400 focus:outline-none" onkeyup="window.svc_renderizarEcosistema()">
                             </div>
                         </div>
 
@@ -460,7 +460,7 @@
                 </div>
             </div>
 
-            <!-- HABITACIÓN 5: GARANTÍAS -->
+            <!-- HABITACIÓN 5: GARANTÍAS CENTRAL (HISTORIAL DE RECEPCION) -->
             <div id="tab-garantias" class="lg:col-span-12 hidden w-full space-y-4">
                 <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
                     <div class="bg-slate-950 p-3 rounded-2xl border border-slate-855 space-y-2">
@@ -480,7 +480,7 @@
         🔒 SISTEMA MASTER TSL SERVICELL SISTEMA RESPALDADO POR TUCOCEL C.A. Y DISEÑADO POR @PULIONLINEMK
     </footer>
 
-    <!-- ENGINE CORE FIREBASE CON NUEVOS PARCHES DE ACCIONES SEPARADAS -->
+    <!-- ENGINE CORE FIREBASE CON PARCHES CONTABLES SEPARADOS -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -506,7 +506,6 @@
         let usuarioSesionActivo = "";
         let deferredPrompt;
 
-        // PWA ATTACHMENT EXCLUSIVO ABAJO EN EL LOGIN
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
@@ -622,7 +621,7 @@
             }
         };
 
-        // --- ENTORNO DE LOGIN CON PARCHE DE INYECCIÓN DE ROLES EN EL FRONT-END ---
+        // --- ENTORNO DE LOGIN CON PARCHE DE SEGURIDAD VISUAL COMPLETA EN EL DOM ---
         window.svc_ejecutarLoginGlobal = async function() {
             try {
                 const user = document.getElementById('auth-user').value.trim().toLowerCase();
@@ -641,7 +640,7 @@
                     
                     // PARCHE DE SEGURIDAD VISUAL REAL: Dibujar los botones administrativos SÓLO para el Máster
                     tabsContainer.innerHTML = `
-                        <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-cash-register"></i> Recepción</button>
+                        <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow"><i class="fa-solid fa-cash-register"></i> Recepción</button>
                         <button id="tab-btn-comandas" onclick="window.svc_cambiarTab('comandas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-file-invoice"></i> Comanda Servicell</button>
                         <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-users"></i> Técnicos SaaS</button>
                         <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-vault"></i> Finanzas & Cierres</button>
@@ -658,7 +657,7 @@
                             document.getElementById('label-indicador-rol').innerText = `SESIÓN: MÁSTER AUTORIZADO (${tecMatch.nombre.toUpperCase()})`;
                             document.getElementById('label-indicador-rol').className = "text-[9px] bg-blue-950/40 px-2.5 py-0.5 border border-blue-500/20 text-blue-400 font-black tracking-widest uppercase block mt-1";
                             tabsContainer.innerHTML = `
-                                <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-cash-register"></i> Recepción</button>
+                                <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow"><i class="fa-solid fa-cash-register"></i> Recepción</button>
                                 <button id="tab-btn-comandas" onclick="window.svc_cambiarTab('comandas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-file-invoice"></i> Comanda Servicell</button>
                                 <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-users"></i> Técnicos SaaS</button>
                                 <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-vault"></i> Finanzas & Cierres</button>
@@ -669,7 +668,7 @@
                             
                             // PARCHE CRÍTICO: Nelson queda 100% capado en el código, el DOM solo le dibuja la Recepción
                             tabsContainer.innerHTML = `
-                                <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-cash-register"></i> Recepción Mostrador</button>`;
+                                <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow"><i class="fa-solid fa-cash-register"></i> Recepción Mostrador</button>`;
                         }
 
                         const docExp = await getDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`));
@@ -781,15 +780,13 @@
                 };
 
                 svc_comandasGlobal.push(nuevaComanda);
-                svc_comandaActivaTurno.push({ operador, concepto: `SERVICIO: ${falla} (${modelo})`, cantidad: 1, precioCOP: moneda === "COP" ? montoBase : montoBase * tCOP, tipo: "SERVICIO", metodo: moneda === "USD" ? "DOLAR" : "PESOS" });
+                svc_comandaActivaTurno.push({ idItem: nuevaComanda.id, operador, concepto: `SERVICIO: ${falla} (${modelo})`, cantidad: 1, precioCOP: moneda === "COP" ? montoBase : montoBase * tCOP, tipo: "SERVICIO", metodo: moneda === "USD" ? "DOLAR" : "PESOS", valeDia: 0 });
 
                 document.getElementById('form-cliente').value = ""; document.getElementById('form-cedula').value = "";
                 document.getElementById('form-tlf').value = ""; document.getElementById('form-modelo').value = "";
                 document.getElementById('form-falla').value = ""; document.getElementById('form-clave-manual').value = "";
                 document.getElementById('form-detalles-manual').value = ""; document.getElementById('form-monto').value = "";
                 document.getElementById('form-abono').value = "0"; document.getElementById('form-foto-patron').value = "";
-                document.getElementById('form-seguro-retiro-tipo').value = "MISMO";
-                document.getElementById('form-seguro-nombre').value = ""; document.getElementById('form-seguro-cedula').value = "";
                 svc_fotoPatronBase64 = "";
 
                 await window.svc_sincronizarConFirebase();
@@ -838,7 +835,7 @@
             let msg = `🛠️ *TCL SISTEMA MÁSTER — ALERTA DE INGRESO EN RECEPCIÓN*\n\n`;
             msg += `Estimado Máster Robert, le notifico que acabo de procesar la entrada de un nuevo equipo en el laboratorio de servicio técnico.\n\n`;
             msg += `📋 *Ficha Creada:* \n`;
-            msg += `• *Orden:* #${c.nroOrden}\n`;
+            msg += `• *Orden:* Gom-${c.nroOrden}\n`;
             msg += `• *Cliente:* ${c.cliente} (Cédula: ${c.cedula})\n`;
             msg += `• *Dispositivo:* ${c.modelo} — *Falla:* ${c.falla}\n`;
             msg += `• *Resguardo:* SIM: ${c.chkChip} | SD: ${c.chkMemoria} | Forro: ${c.chkForro}\n`;
@@ -864,48 +861,68 @@
             const metodo = document.getElementById('svc-input-metodo').value;
 
             if(!concepto || precioCOP <= 0) return alert("⚠️ Ingrese descripción y precio válido.");
-            svc_comandaActivaTurno.push({ operador: usuarioSesionActivo, concepto, cantidad, precioCOP, tipo, metodo });
+            svc_comandaActivaTurno.push({ idItem: 'manual-' + Date.now(), operador: usuarioSesionActivo, concepto, cantidad, precioCOP, tipo, metodo, valeDia: 0 });
             document.getElementById('svc-input-concepto').value = "";
             document.getElementById('svc-input-precio-cop').value = "";
             window.svc_sincronizarConFirebase();
             window.svc_renderizarEcosistema();
         };
 
-        // PARCHE DEL MENSAJE DIARIO REESTRUCTURADO POR PARTES (MUESTRA PERO NO COMISIONA)
+        // --- ENVIAR CIERRE DIARIO TOTALMENTE ORGANIZADO POR BLOQUES (CON PARCHE CONDICIONAL DE VALES DIARIOS REAL) ---
         window.svc_enviarWhatsAppCierreDiarioDividido = function() {
             if(svc_comandaActivaTurno.length === 0) return alert("No hay movimientos registrados hoy.");
-            let totalServicios = 0; let totalVentas = 0;
-            let msg = `🛍️ *TUCOCEL C.A. — AGENTE AUTORIZADO MOVISTAR CORDERO*\n🧾 *REPORTE DIARIO DE OPERACIONES EN MOSTRADOR*\n\n📅 *Fecha:* ${new Date().toLocaleDateString()}\n\n`;
+            let totalServicios = 0; let totalVentas = 0; let valesDelDiaAcum = 0;
             
-            msg += `🛠️ *1. SERVICIOS TÉCNICOS REALIZADOS (Comisionables):*\n`;
+            let msg = `🛍️ *DOCUMENTO CONTABLE CORPORATIVO — TUCOCEL C.A.*\n`;
+            msg += `🧾 *REPORTE INTEGRAL DIARIO DE OPERACIONES DE CAJA*\n`;
+            msg += `──────────────────────────────\n`;
+            msg += `📅 *FECHA DE CORTE:* ${new Date().toLocaleDateString()}\n`;
+            msg += `🕒 *HORA EMISIÓN:* ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}\n`;
+            msg += `👤 *RESPONSABLE MÁSTER:* ROBERT MASTER SUPREMO\n`;
+            msg += `──────────────────────────────\n\n`;
+            
+            msg += `🛠️ *SECCIÓN 1: SERVICIOS TÉCNICOS EFECTUADOS (Comisionables)*\n`;
+            let tieneServicios = false;
             svc_comandaActivaTurno.forEach(item => {
                 if(item.tipo === "SERVICIO") {
-                    let sub = item.precioCOP * item.amount || item.precioCOP; totalServicios += sub;
-                    msg += `• ${item.concepto} x${item.cantidad || 1} — ${sub.toLocaleString()} COP\n`;
+                    let sub = item.precioCOP * item.cantidad; totalServicios += sub; tieneServicios = true;
+                    msg += `  ▪️ Tarea: ${item.concepto}\n      Cant: x${item.cantidad}   |   Subtotal: ${sub.toLocaleString()} COP\n`;
                 }
+                if(item.valeDia > 0) { valesDelDiaAcum += item.valeDia; }
             });
-            msg += `🧮 *Subtotal Servicios:* ${totalServicios.toLocaleString()} COP\n\n`;
+            if(!tieneServicios) msg += `  _(Ningún servicio técnico registrado en este turno)_\n`;
+            msg += `  📊 *TOTAL SERVICIOS LIQUIDADOS:* ${totalServicios.toLocaleString()} COP\n\n`;
 
-            msg += `🛍️ *2. VENTAS DE MOSTRADOR FACTURADAS (No Comisionables):*\n`;
+            msg += `🛍️ *SECCIÓN 2: VENTAS DE MOSTRADOR Y ACCESORIOS (No Comisionables)*\n`;
+            let tieneVentas = false;
             svc_comandaActivaTurno.forEach(item => {
-                if(item.tipo === "VENTA") {
-                    let sub = item.precioCOP * item.amount || item.precioCOP; totalVentas += sub;
-                    msg += `• ${item.concepto} x${item.cantidad || 1} — ${sub.toLocaleString()} COP\n`;
+                if(item.tipo === "VENTA" && item.valeDia == 0) {
+                    let sub = item.precioCOP * item.cantidad; totalVentas += sub; tieneVentas = true;
+                    msg += `  ▪️ Artículo: ${item.concepto}\n      Cant: x${item.cantidad}   |   Subtotal: ${sub.toLocaleString()} COP\n`;
                 }
             });
-            msg += `🧮 *Subtotal Caja por Ventas:* ${totalVentas.toLocaleString()} COP\n\n`;
+            if(!tieneVentas) msg += `  _(Ninguna venta facturada en este turno)_\n`;
+            msg += `  📊 *TOTAL CAJA INTERNA VENTAS:* ${totalVentas.toLocaleString()} COP\n`;
+            msg += `──────────────────────────────\n\n`;
+
+            // PARCHE CONDICIONAL MAESTRO SOLICITADO: Solo se muestra si hubo un vale real hoy
+            if(valesDelDiaAcum > 0) {
+                msg += `📉 *SECCIÓN 3: RETIROS DE CAJA Y ADELANTOS REGISTRADOS HOY*\n`;
+                msg += `  🚫 Se descontó de forma inalterable 1 vale hoy por: -${valesDelDiaAcum.toLocaleString()} COP\n`;
+                msg += `──────────────────────────────\n\n`;
+            }
 
             const comisionPorc = parseFloat(document.getElementById('svc-cfg-comision').value) || 50;
             let gananciaTecnico = totalServicios * (comisionPorc / 100);
 
-            msg += `📊 *TOTALIZACIÓN GLOBAL DEL TURNO:*\n`;
-            msg += `• 💰 *Caja Bruta Total:* ${(totalServicios + totalVentas).toLocaleString()} COP\n`;
-            msg += `• 📈 *Ganancia Neta Técnico (${comisionPorc}%):* *${gananciaTecnico.toLocaleString()} COP*\n\n`;
-            msg += `⚠️ _Las ventas de mostrador listadas en la Sección 2 entraron completas a la caja de la empresa para reposición de inventario y no comisionan._\n\n`;
-            msg += `🔒 _Historial guardado en el servidor central de auditoría._`;
+            msg += `🧮 *AUDITORÍA Y CIERRE GLOBAL DE GAVETA*\n`;
+            msg += `• 💰 *Caja Bruta Líquida Total:* ${(totalServicios + totalVentas).toLocaleString()} COP\n`;
+            msg += `• 📈 *Comisión Acumulada Colaborador (${comisionPorc}%):* *${gananciaTecnico.toLocaleString()} COP*\n\n`;
+            msg += `⚠️ _Declaración Legal: Las ventas de mostrador de la Sección 2 pertenecen en un 100% al inventario de la empresa y no generan comisiones divisibles al personal._\n\n`;
+            msg += `🔒 *REGISTRO ENCRIPTADO Y ARCHIVADO EN EL SERVIDOR SUPREMO DE FIREBASE*`;
 
             const fechaStr = new Date().toLocaleDateString().split('/').join('-');
-            svc_historicoCierresDiarios.push({ fecha: fechaStr, items: [...svc_comandaActivaTurno], totalServicios, totalVentas, gananciaTecnico });
+            svc_historicoCierresDiarios.push({ fecha: fechaStr, items: [...svc_comandaActivaTurno], totalServicios, totalVentas, gananciaTecnico, valesDelDiaAcum });
             
             window.svc_sincronizarConFirebase();
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
@@ -963,6 +980,7 @@
             window.print();
         };
 
+        // --- RECIBO DE PAGO SEMANAL POR WHATSAPP (CON CONVERSIÓN FIJA REAL DE COP A USD) ---
         window.svc_enviarWhatsAppNominaSemanalDividido = function() {
             let totalServiciosSemana = 0;
             svc_comandasGlobal.forEach(c => { if(c.estatus === "FINALIZADO") totalServiciosSemana += c.montoUSD; });
@@ -971,22 +989,39 @@
             const comPorc = parseFloat(document.getElementById('svc-cfg-comision').value) || 50;
             let comisionesUSD = totalServiciosSemana * (comPorc / 100);
             
-            let totalValesUSD = 0;
-            svc_valesGlobal.forEach(v => { totalValesUSD += v.monto; });
-            let netoAPagar = baseUSD + comisionesUSD - totalValesUSD;
+            // PARCHE MAESTRO MATEMÁTICO: Evita saldos negativos de locura convirtiendo los vales COP a USD reales
+            const tCOP = parseFloat(document.getElementById('cfg-tasa-cop').value) || 3600;
+            let totalValesCOP = 0;
+            svc_valesGlobal.forEach(v => { totalValesCOP += v.monto; });
+            
+            let totalValesUSDConverted = totalValesCOP / tCOP;
+            let netoAPagar = baseUSD + comisionesUSD - totalValesUSDConverted;
 
-            let msg = `👑 *TUCOCEL C.A. — LIQUIDACIÓN DE NÓMINA SEMANAL*\n🔒 *CUARTO DE CONTROL MÁSTER — SERVICELL*\n\n`;
-            msg += `Estimado colaborador **NELSON**, se ha ejecutado el cierre contable de tu semana y se liquidan tus haberes correspondientes:\n\n`;
-            msg += `📈 *INGRESOS ACUMULADOS:*\n`;
-            msg += `• 💵 Sueldo Base Semanal: $${baseUSD.toFixed(2)} USD\n`;
-            msg += `• 🛠️ Comisiones Acumuladas por Servicios: $${comisionesUSD.toFixed(2)} USD\n`;
-            msg += `• 💰 *Total Ingreso Bruto:* $${(baseUSD + comisionesUSD).toFixed(2)} USD\n\n`;
-            msg += `📉 *DEDUCCIONES POR VALES (Adelantos):*\n`;
-            svc_valesGlobal.forEach(v => { msg += `• Vale ${v.fecha}: -$${v.monto.toFixed(2)} USD\n`; });
-            msg += `🧮 *Total Vales Descontados:* *-$${totalValesUSD.toFixed(2)} USD*\n\n`;
-            msg += `💳 *BALANCE NETO A LIQUIDAR EN EFECTIVO:*\n`;
-            msg += `💵 *NETO A ENTREGAR SÁBADO:* *$${netoAPagar.toFixed(2)} USD*\n\n`;
-            msg += `🔒 _Al recibir tu pago físico, su balance semanal regresa a cero y el correlativo reiniciará el lunes en la Orden 001._`;
+            let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN DE NÓMINA SEMANAL*\n`;
+            msg += `🔒 *CUARTO DE CONTROL ADMINISTRATIVO MÁSTER — SERVICELL*\n`;
+            msg += `──────────────────────────────\n`;
+            msg += `📅 *RANGO LIQUIDADO:* Ciclo Operativo Semanal\n`;
+            msg += `👤 *COLABORADOR ADSCRITO:* NELSON\n`;
+            msg += `──────────────────────────────\n\n`;
+            
+            msg += `📈 *BLOQUE 1: GANANCIAS BRUTAS ACUMULADAS*\n`;
+            msg += `  ▪️ Asignación de Sueldo Base: $${baseUSD.toFixed(2)} USD\n`;
+            msg += `  ▪️ Porcentajes de Taller Acumulados: $${comisionesUSD.toFixed(2)} USD\n`;
+            msg += `  💰 *TOTAL DEVENGADO BRUTO:* $${(baseUSD + comisionesUSD).toFixed(2)} USD\n\n`;
+            
+            msg += `📉 *BLOQUE 2: ADELANTOS DE CAJA REGISTRADOS (Vales Descontados)*\n`;
+            if(svc_valesGlobal.length === 0) {
+                msg += `  ▪️ Sin registros de adelantos pendientes en este ciclo contable.\n`;
+            } else {
+                svc_valesGlobal.forEach(v => { msg += `  🚫 Vale Retirado (${v.fecha}): -${v.monto.toLocaleString()} COP\n`; });
+            }
+            msg += `  🧮 *VALOR TOTAL VALES RETIRADOS (A Tasa ${tCOP}):* *-$${totalValesUSDConverted.toFixed(2)} USD*\n`;
+            msg += `──────────────────────────────\n\n`;
+            
+            msg += `💳 *BALANCE GENERAL Y DESPACHO EN MOSTRADOR*\n`;
+            msg += `💵 *MONTO EFECTIVO NETO A LIQUIDAR SÁBADO:* *$${netoAPagar.toFixed(2)} USD*\n\n`;
+            msg += `🔒 _Advertencia Contable: Al procesar el cobro físico en caja, la base de datos semanal de vales regresará automáticamente a ceros. El correlativo administrativo reiniciará el lunes a las 08:00 AM estrictamente en la Orden 001._\n\n`;
+            msg += `🔒 *PLATAFORMA RESPALDADA LEGALMENTE BAJO REGISTRO DE TUCOCEL C.A.*`;
 
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
         };
@@ -1006,8 +1041,13 @@
             const m = parseFloat(document.getElementById('svc-vale-monto-input').value) || 0;
             if(m <= 0) return;
             svc_valesGlobal.push({ fecha: new Date().toLocaleDateString(), monto: m });
+            
+            // Registrar el vale en la comanda del turno para que el gatillo diario del if condicional lo lea
+            svc_comandaActivaTurno.push({ idItem: 'vale-' + Date.now(), operador: usuarioSesionActivo, concepto: `DEDUCCIÓN: ADELANTO DE VALE EN GAVETA`, cantidad: 1, precioCOP: 0, tipo: "VENTA", metodo: "PESOS", valeDia: m });
+            
             document.getElementById('svc-vale-monto-input').value = "";
-            window.svc_sincronizarConFirebase(); window.svc_renderizarEcosistema();
+            window.svc_sincronizarConFirebase(); 
+            window.svc_renderizarEcosistema();
         };
 
         window.svc_browseReporteHBL = function(totalServicios, totalVentas, alq, utilidadNeta) {
@@ -1081,14 +1121,19 @@
                     sOperador.innerHTML = opts;
                 }
 
+                // PARCHE MAESTRO: Botón "X" integrado al lado de cada línea para borrar al vuelo
                 const boxItems = document.getElementById('svc-lista-items-comanda-box');
                 if(boxItems) {
                     let htmlItems = "";
-                    svc_comandaActivaTurno.forEach(item => {
+                    svc_comandaActivaTurno.forEach((item, index) => {
+                        let labelMontoDisplay = item.precioCOP > 0 ? `${item.precioCOP.toLocaleString()} COP` : `VALE: -${item.valeDia.toLocaleString()} COP`;
                         htmlItems += `
                             <div class="p-2 bg-slate-50 border rounded-xl flex justify-between items-center text-slate-800 font-bold">
                                 <span>${item.concepto}</span>
-                                <span class="font-mono text-xs">${item.precioCOP.toLocaleString()} COP</span>
+                                <div class="flex items-center gap-3">
+                                    <span class="font-mono text-xs">${labelMontoDisplay}</span>
+                                    <button onclick="window.svc_eliminarLineaIndividualComandaAlVuelo(${index})" class="text-red-600 hover:text-red-700 text-xs font-black px-1.5 py-0.5 rounded border border-red-200 bg-red-50">X</button>
+                                </div>
                             </div>`;
                     });
                     boxItems.innerHTML = htmlItems || `<p class="text-center text-slate-400 italic py-4">No hay ventas ni servicios cargados en el turno de hoy.</p>`;
@@ -1097,7 +1142,13 @@
             } catch(e) {}
         };
 
-        // --- SISTEMA MÁSTER CENTRAL DE ACTIVACIÓN ---
+        window.svc_eliminarLineaIndividualComandaAlVuelo = function(index) {
+            if(!confirm("¿Desea borrar esta línea específica de la comanda diaria antes del cierre?")) return;
+            svc_comandaActivaTurno.splice(index, 1);
+            window.svc_sincronizarConFirebase();
+            window.svc_renderizarEcosistema();
+        };
+
         window.svc_crearNuevoPerfilTecnicoMaster = async function() {
             const nombre = document.getElementById('adm-tec-nombre').value.trim();
             const user = document.getElementById('adm-tec-user').value.trim().toLowerCase();
@@ -1173,7 +1224,7 @@
             alert("Enlace copiado al portapapeles con éxito.");
         };
 
-        // PARCHE CRÍTICO: DETECTAR SI ES BORRADO EN SECO (DEMO) O CONSERVACIÓN HISTÓRICA (DESPIDO)
+        // PARCHE DE BORRADO SECO (1 = PRUEBA / 2 = DESPIDO CON CONSERVACIÓN HISTÓRICA VIVAS)
         window.svc_borrarCuentaConSelectorInteligente = async function() {
             const idx = parseInt(document.getElementById('edit-tec-index-real').value);
             if(isNaN(idx) || !svc_tecnicosPerfiles[idx]) return;
@@ -1185,16 +1236,14 @@
             const ans = prompt(stringPrompt);
 
             if (ans === "1") {
-                // Modo Prueba: Eliminar de raíz al operador y sus ítems de comanda cargados
                 svc_comandaActivaTurno = svc_comandaActivaTurno.filter(item => item.operador !== tecUser);
                 svc_tecnicosPerfiles.splice(idx, 1);
                 alert("Ficha de prueba y dinero fantasma eliminados del servidor.");
             } else if (ans === "2") {
-                // Modo Despido: Revocar el acceso eliminando el perfil SaaS, pero manteniendo el persistente
                 svc_tecnicosPerfiles.splice(idx, 1);
                 alert(`Acceso revocado de inmediato para el ID [${tecUser}]. El histórico contable de Tucocel C.A. ha quedado conservado.`);
             } else {
-                return; // Cancelar operación
+                return; 
             }
 
             await window.svc_sincronizarConFirebase();
@@ -1224,4 +1273,4 @@
         };
     </script>
 </body>
-</html>
+    </html>
