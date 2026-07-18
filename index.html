@@ -6,7 +6,7 @@
     <title>SERVICEL MASTER — Panel de Control Técnico Profesional</title>
     
     <!-- CONFIGURACIÓN PWA PARA PANTALLA DE INICIO -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNlcnZpY2VsIE1hc3RlciIsCiAgInNob3J0X25hbWUiOiAiU2VydmljZWwiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAyMDYxNyIsCiAgInRoZW1lX2NvbG9yIjogIiNhODU1ZjciLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yOTA3LzI5MDc2MjgucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAg  fQogIF0KfQ==">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNlcnZpY2VsIE1hc3RlciIsCiAgInNob3J0X25hbWUiOiAiU2VydmljZWwiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAyMDYxNyIsCiAgInRoZW1lX2NvbG9yIjogIiNhODU1ZjciLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yOTA3LzI5MDc2MjgucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -63,7 +63,7 @@
         </div>
     </header>
 
-    <!-- PANTALLA 1: LOGIN DE ENTRADA OBLIGATORIO CON PARCHE DE BOTÓN PWA INTEGRADO -->
+    <!-- PANTALLA 1: LOGIN DE ENTRADA OBLIGATORIO (DISEÑO PREMIUM ORIGINAL COMPLETO RESTAURADO) -->
     <div id="contenedor-login" class="flex-grow flex items-center justify-center p-4">
         <div class="w-full max-w-md p-0.5 rounded-3xl bg-gradient-to-br from-purple-600 via-slate-800 to-indigo-600 shadow-2xl">
             <div class="glass-panel rounded-[22px] p-6 space-y-5">
@@ -82,7 +82,7 @@
                     <input type="password" id="auth-pass" placeholder="CONTRASEÑA MAESTRA" class="w-full bg-slate-950 border border-slate-800 px-4 py-3 rounded-xl text-white font-mono focus:outline-none focus:border-purple-500">
                     <button onclick="window.svc_ejecutarLoginGlobal()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3.5 rounded-xl uppercase tracking-wider font-black shadow-md text-xs">Iniciar Sesión</button>
                     
-                    <!-- PARCHE SOLICITADO: BOTÓN DE INSTALACIÓN PWA BONITO ABAJO EN EL LOGIN -->
+                    <!-- PARCHE SOLICITADO: BOTÓN DE INSTALACIÓN PWA HERMOSO Y EN TABLA DE LOGIN -->
                     <button id="btn-pwa-login" onclick="window.svc_dispararInstalacionPWA()" class="hidden w-full bg-slate-900 hover:bg-slate-850 text-purple-400 border border-purple-500/20 py-3 rounded-xl uppercase tracking-wider font-black text-xs flex items-center justify-center gap-2 shadow-inner">
                         <i class="fa-solid fa-mobile-screen-button"></i> 📲 Instalar Aplicación en Pantalla
                     </button>
@@ -125,22 +125,24 @@
         </div>
     </div>
 
-    <!-- WORKSPACE CENTRAL CON HABITACIONES INDEPENDIENTES AISLADAS ANTI-LAG -->
+    <!-- WORKSPACE CENTRAL CON NUEVO PARCHE DE HABITACIONES INDEPENDIENTES AISLADAS -->
     <div id="contenedor-workspace" class="hidden max-w-6xl w-full mx-auto px-4 py-4 flex-grow flex flex-col gap-4">
         
-        <!-- BARRA DE SELECCIÓN DE PESTAÑAS (MODULADA POR ROLES EN JS) -->
+        <!-- BARRA DE SELECCIÓN DE PESTAÑAS (MODULADA POR LOGIN DE SEGURIDAD) -->
         <div id="workspace-tabs" class="grid grid-cols-2 sm:flex sm:flex-row gap-2 pb-3 no-imprimir">
             <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="w-full sm:w-auto bg-purple-600 text-white font-black text-center py-3 px-4 rounded-xl uppercase text-xs shadow flex items-center justify-center gap-2"><i class="fa-solid fa-cash-register text-sm"></i> Recepción</button>
-            <button id="tab-btn-comandas" onclick="window.svc_cambiarTab('comandas')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-file-invoice text-sm"></i> Comanda Servicell</button>
-            <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-users text-sm"></i> Técnicos</button>
-            <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-vault text-sm"></i> Finanzas</button>
-            <button id="tab-btn-garantias" onclick="window.svc_cambiarTab('garantias')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-history text-sm"></i> Garantías</button>
+            <button id="tab-btn-comandas" onclick="window.svc_cambiarTab('comandas')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs hidden flex items-center justify-center gap-2"><i class="fa-solid fa-file-invoice text-sm"></i> Comanda Servicell</button>
+            <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs hidden flex items-center justify-center gap-2"><i class="fa-solid fa-users text-sm"></i> Técnicos</button>
+            <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs hidden flex items-center justify-center gap-2"><i class="fa-solid fa-vault text-sm"></i> Finanzas</button>
+            <button id="tab-btn-garantias" onclick="window.svc_cambiarTab('garantias')" class="w-full sm:w-auto bg-slate-900 text-slate-400 border border-slate-800 font-black text-center py-3 px-4 rounded-xl uppercase text-xs hidden flex items-center justify-center gap-2"><i class="fa-solid fa-history text-sm"></i> Garantías</button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full">
             
             <!-- HABITACIÓN 1: MOSTRADOR DE RECEPCIÓN / SERVICIO TÉCNICO BÁSICO -->
             <div id="tab-recepcion" class="lg:col-span-12 grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
+                
+                <!-- PLANILLA DE ENTRADA -->
                 <div class="lg:col-span-6 bg-slate-900/60 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
                     <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
                         <h3 class="text-sm font-black text-white uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-square-plus text-purple-500"></i> Planilla de Entrada</h3>
@@ -148,12 +150,12 @@
                     </div>
 
                     <div class="space-y-4 text-sm font-bold text-slate-300">
-                        <div class="bg-slate-950 p-3 border border-slate-855 rounded-xl flex items-center justify-between">
+                        <div class="bg-slate-950 p-3 border border-slate-850 rounded-xl flex items-center justify-between">
                             <span class="text-[10px] text-white uppercase font-sans">Operador que Recibe:</span>
                             <select id="form-operador" class="bg-slate-900 border border-slate-800 p-1.5 rounded-lg text-white font-black text-xs focus:outline-none uppercase"></select>
                         </div>
 
-                        <!-- REGLA DE ORO SELECCIÓN OBLIGATORIA POR RUBRO -->
+                        <!-- FILTRO EXCLUSIVO DE REGLAS DE ORO DE ROBERT -->
                         <div class="bg-slate-950 p-3 border border-slate-855 rounded-xl space-y-3">
                             <div class="flex items-center justify-between text-xs font-bold">
                                 <span class="text-[10px] text-white uppercase font-sans">Tipo de Soporte Técnico:</span>
@@ -163,6 +165,7 @@
                                     <option value="IMPRESORAS">🖨️ Impresoras</option>
                                 </select>
                             </div>
+                            
                             <div id="wrapper-sub-item-telefonio" class="flex items-center justify-between text-xs font-bold border-t border-slate-900 pt-2">
                                 <span class="text-[10px] text-purple-400 uppercase font-sans">Falla Operativa:</span>
                                 <select id="form-sub-tipo-telefonio" onchange="window.svc_conmutarLogicaSoporteMostrador()" class="bg-slate-900 border border-slate-800 p-1.5 rounded-lg text-white font-black text-xs focus:outline-none">
@@ -246,7 +249,7 @@
                         </div>
 
                         <!-- PARCHE DE RETIRO SEGURO AUTORIZADO (CANDADO LEGAL CONTRA PÉRDIDAS) -->
-                        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-855 space-y-3">
+                        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-850 space-y-3">
                             <span class="text-[10px] text-red-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-user-shield mr-1"></i> Parche de Retiro Seguro</span>
                             <div class="grid grid-cols-2 gap-2 bg-slate-900 p-2 rounded-xl border border-slate-800 items-center">
                                 <span class="text-[9px] text-white uppercase block">¿Quién Retira el Equipo?</span>
@@ -267,7 +270,7 @@
                             </div>
                         </div>
 
-                        <!-- COBRO RESGUARDADO Y MULTIMONEDA CON CÁLCULO AL VUELO -->
+                        <!-- SECCIÓN MONTO Y ABONO PRECALCULADO AL 70% -->
                         <div class="bg-slate-950 p-4 rounded-2xl border border-slate-855 space-y-3">
                             <span class="text-[10px] text-amber-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-coins mr-1"></i> Control de Cobro y Abono</span>
                             <div class="grid grid-cols-2 gap-3">
@@ -316,7 +319,7 @@
                 <div class="lg:col-span-6 space-y-4">
                     <div class="bg-slate-900/60 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
                         <h3 class="text-sm font-black text-white uppercase tracking-widest border-b border-slate-800 pb-2 flex items-center gap-1.5"><i class="fa-solid fa-eye text-blue-400"></i> Última Recepción Registrada</h3>
-                        <div id="wrapper-ultimo-visor" class="p-4 bg-slate-950 rounded-2xl border border-slate-850 text-sm space-y-3">
+                        <div id="wrapper-ultimo-visor" class="p-4 bg-slate-950 rounded-2xl border border-slate-855 text-sm space-y-3">
                             <p class="text-slate-500 text-center italic py-20">Ningún registro procesado en esta sesión.</p>
                         </div>
                     </div>
@@ -436,8 +439,9 @@
         </div>
     </div>
 
-    <footer class="bg-slate-900/20 border-t border-slate-900/60 py-3 text-center text-slate-500 font-mono text-[8px] tracking-widest">
-        🔒 SERVICEL MASTER PLENARY PLATFORMS — REGISTRADA 2026
+    <!-- PIE DE PÁGINA CORPORATIVO REQUERIDO COMPLETAMENTE -->
+    <footer class="bg-slate-900/20 border-t border-slate-900/60 py-4 text-center text-slate-500 font-mono text-[8px] tracking-widest uppercase font-bold">
+        🔒 SISTEMA MASTER TSL SERVICELL SISTEMA RESPALDADO POR TUCOCEL C.A. Y DISEÑADO POR @PULIONLINEMK
     </footer>
 
     <!-- ENGINE CORE FIREBASE INTEGRADO CON LOS NUEVOS PARCHES -->
@@ -464,11 +468,11 @@
         let usuarioSesionActivo = "";
         let deferredPrompt;
 
-        // MANEJO DE INSTALACIÓN PWA NATIVA DESDE EL NAVEGADOR
+        // MANEJO DE INSTALACIÓN PWA NATIVA DIRECTA DESDE EL NAVEGADOR
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Encender el botón bonito en el Login de forma inmediata
+            // Encender el botón bonito abajo en la tarjeta de Login
             const btnPwaLogin = document.getElementById('btn-pwa-login');
             if(btnPwaLogin) btnPwaLogin.classList.remove('hidden');
         });
@@ -598,9 +602,10 @@
             }
         };
 
-        // --- ENTORNO DE LOGIN GLOBAL CON CERRADURA INFRANQUEABLE ---
+        // --- ENTORNO DE LOGIN CON CERRADURA DE MINÚSCULAS AUTOMÁTICA (CASE-INSENSITIVE) ---
         window.svc_ejecutarLoginGlobal = async function() {
             try {
+                // PARCHE SOLICITADO: Normalizar la entrada a minúsculas para liquidar el error de bloqueo por mayúsculas
                 const user = document.getElementById('auth-user').value.trim().toLowerCase();
                 const pass = document.getElementById('auth-pass').value.trim();
 
@@ -613,7 +618,7 @@
                     document.getElementById('label-indicador-rol').innerText = "SESIÓN: MÁSTER SUPREMO CONTROLES";
                     document.getElementById('label-indicador-rol').className = "text-[9px] bg-blue-950/40 px-2.5 py-0.5 border border-blue-500/20 text-blue-400 font-black tracking-widest uppercase block mt-1";
                     
-                    // Revelar habitaciones para el Máster
+                    // Mostrar todos los privilegios del Máster
                     document.getElementById('tab-btn-comandas').classList.remove('hidden');
                     document.getElementById('tab-btn-tecnicos').classList.remove('hidden');
                     document.getElementById('tab-btn-finanzas').classList.remove('hidden');
@@ -628,7 +633,7 @@
                         document.getElementById('label-indicador-rol').innerText = `SESIÓN: TÉCNICO (${tecMatch.nombre.toUpperCase()})`;
                         document.getElementById('control-tasas-box').classList.add('hidden');
                         
-                        // REGLA DE ORO DE ROBERT: Nelson NO tiene acceso a la comanda, técnicos ni balances
+                        // REGLA DE ORO DE ROBERT: Nelson NO tiene acceso a la comanda, nóminas ni cierres
                         document.getElementById('tab-btn-comandas').classList.add('hidden');
                         document.getElementById('tab-btn-tecnicos').classList.add('hidden');
                         document.getElementById('tab-btn-finanzas').classList.add('hidden');
@@ -749,7 +754,7 @@
 
                 const nuevaComanda = {
                     id: 'ord-' + Date.now(),
-                    nroOrden: String(svc_comandasGlobal.length + 1).padStart(3, '0'), // CORRELATIVO DESDE CERO REAL
+                    nroOrden: String(svc_comandasGlobal.length + 1).padStart(3, '0'), // CORRELATIVO REAL DESDE CERO
                     fecha: new Date().toLocaleDateString(),
                     hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     cliente, cedula, tlf, tipoLinea, modelo, falla,
@@ -801,7 +806,7 @@
                         <div><span class="block text-[8px] text-red-400 uppercase font-black">Resta</span><strong class="text-red-500 font-mono font-black">${displayPendienteStr}</strong></div>
                     </div>`;
 
-            // CONDICIÓN OPERATIVA DE SEGURIDAD EXCLUSIVA SOLICITADA POR ROBERT
+            // CONDICIÓN OPERATIVA: SI LOGUEA UN TÉCNICO LE ENCIENDE SU BOTÓN GATILLO DIRECTO AL 0414
             if(rolDeSesionActiva === "TECNICO") {
                 innerVisor += `
                     <div class="border-t border-slate-900 pt-2 flex justify-end">
@@ -922,7 +927,7 @@
             if(gridFines) gridFines.innerHTML = stringHtml; if(gridGars) gridGars.innerHTML = stringHtml;
         };
 
-        // PARCHE DE CONFIDENCIALIDAD PRIVADA: ELIMINADA LA CLAVE DEL WHATSAPP DE SALIDA
+        // PARCHE DE CONFIDENCIALIDAD PRIVADA E INYECCIÓN DE RETIRO SEGURO EN WHATSAPP
         window.svc_abrirAccionesComandaMaster = function(idx) {
             const c = svc_comandasGlobal[idx]; if(!c) return;
             let promptText = `⚙️ CONTROL DE ORDEN #${c.nroOrden}\n\n[1] WhatsApp Recibido\n[2] WhatsApp Listo\n[3] Finalizar Operación`;
@@ -963,7 +968,7 @@
 
             if(!nombre || !user || !pass || !whatsapp) return alert("⚠️ Complete todos los campos.");
 
-            // Generar enlace limpio estructurado estilo SaaS Máster amarrado a su id
+            // PARCHE ESTILO SAAS MÁSTER: Estructurar la URL única del vendedor amarrada a su ID de Firebase
             const linkUnicoGenerado = `${window.location.origin}${window.location.pathname}?user=${user}`;
 
             const indexExist = svc_tecnicosPerfiles.findIndex(t => t.user === user);
@@ -976,7 +981,7 @@
             }
 
             await setDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"), { perfiles: svc_tecnicosPerfiles });
-            alert(` Ficha Creada. Código de Enlace SaaS Estructurado con éxito para ${nombre.toUpperCase()}.`);
+            alert(`Ficha Creada. Código de Enlace SaaS Estructurado con éxito para ${nombre.toUpperCase()}.`);
             window.svc_descargarServidorCentral();
         };
 
@@ -991,7 +996,7 @@
 
             svc_tecnicosPerfiles.forEach((t, index) => {
                 html += `
-                    <div class="bg-slate-950 border border-slate-850 p-3 rounded-2xl space-y-2 cursor-pointer hover:border-purple-500/40 transition" onclick="window.svc_abrirAuditoriaExpedienteTecnico('${t.user}')">
+                    <div class="bg-slate-950 border border-slate-855 p-3 rounded-2xl space-y-2 cursor-pointer hover:border-purple-500/40 transition" onclick="window.svc_abrirAuditoriaExpedienteTecnico('${t.user}')">
                         <div class="flex justify-between items-start">
                             <div>
                                 <h4 class="text-white font-black text-xs uppercase">${t.nombre}</h4>
@@ -1013,7 +1018,7 @@
             const t = svc_tecnicosPerfiles[idx]; if(!t) return;
             let msg = `🛍️ *TUCOCEL C.A. — ACCESO DE ACTIVACIÓN DE SERVIDOR*\n\n`;
             msg += `Hola ${t.nombre.toUpperCase()}, se te ha configurado con éxito tu perfil básico de mostrador para el laboratorio.\n\n`;
-            msg += `🔗 *ENLACE EXCLUSIVO DE INGRESO:* \n${t.linkUnicoGenerated || window.location.href}\n\n`;
+            msg += `🔗 *ENLACE EXCLUSIVO DE INGRESO:* \n${t.linkUnicoGenerado || window.location.href}\n\n`;
             msg += `🔐 *CREDENCIALES LEGALES DE CONTROL:* \n`;
             msg += `• *Usuario ID:* \`${t.user}\`\n`;
             msg += `• *Contraseña:* \`${t.pass}\`\n\n`;
@@ -1039,27 +1044,20 @@
             
             box.classList.remove('hidden');
 
-            // Filtrar todos los trabajos asignados estrictamente a ese operador
             let trabajos = svc_comandasGlobal.filter(c => c.operador === tecUser && c.estatus !== "ANULADA");
             let enRevisionCount = trabajos.filter(c => c.estatus === "RECIBIDO").length;
             let finalizadosCount = trabajos.filter(c => c.estatus === "FINALIZADO").length;
 
-            // Calcular dinero acumulado total producido por sus manos
             let dineroProducidoCOP = 0;
             trabajos.forEach(c => {
                 if(c.estatus === "FINALIZADO") {
                     if(c.monedaOrig === "COP") dineroProducidoCOP += c.montoOrig;
-                    else dineroProducidoCOP += (c.montoOrig * 3600); // Conversión base estándar si fue en USD
+                    else dineroProducidoCOP += (c.montoOrig * 3600);
                 }
             });
 
             let comisionCalculadaCOP = dineroProducidoCOP * (t.comision / 100);
-
-            // Filtrar vales semanales registrados en el sistema del colaborador
-            let valesDelTecnico = svc_valesGlobal || []; // Si utilizas una estructura de vales unificada
-            let totalValesCOP = 0; // Ejemplo matemático base o enlace a tu Firebase
-
-            let netoAPagarCOP = comisionCalculadaCOP - totalValesCOP;
+            let netoAPagarCOP = comisionCalculadaCOP;
 
             dataBox.innerHTML = `
                 <p class="text-white">• Colaborador: <strong class="text-purple-400">${t.nombre.toUpperCase()}</strong></p>
@@ -1089,8 +1087,8 @@
             document.getElementById('contenedor-workspace').classList.add('hidden');
 
             if(userParam) {
-                // Pre-cargar el ID del técnico en la casilla si viene de su link de WhatsApp
-                document.getElementById('auth-user').value = userParam.toUpperCase();
+                // Pre-cargar el ID del técnico en la casilla si viene de su link único de WhatsApp
+                document.getElementById('auth-user').value = userParam.toLowerCase();
             }
         };
     </script>
