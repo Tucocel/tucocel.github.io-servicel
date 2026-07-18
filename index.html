@@ -6,7 +6,7 @@
     <title>SERVICEL MASTER — Panel de Control Técnico Profesional</title>
     
     <!-- CONFIGURACIÓN PWA PARA PANTALLA DE INICIO -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNlcnZpY2VsIE1hc3RlciIsCiAgInNob3J0X25hbWUiOiAiU2VydmljZWwiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAyMDYxNyIsCiAgInRoZW1lX2NvbG9yIjogIiNhODU1ZjciLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yOTA3LzI5MDc2MjgucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNlcnZpY2VsIE1hc3RlciIsCiAgInNob3J0X25hbWUiOiAiU2VydmljZWwiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAyMDYxNyIsCiAgInRoZW1lX2NvbG9yIjogIiNhODU1ZjciLAogICpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yOTA3LzI5MDc2MjgucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -35,22 +35,7 @@
     <!-- CONTENEDOR TEMPLATE OCULTO PARA INYECCIÓN DE FACTURACIÓN PREMIUM EN HARDWARE -->
     <div id="contenedor-impresion-termica-fijo" class="hidden whitespace-pre bg-white text-black p-4 z-0"></div>
 
-    <!-- AVISO DE INSTALACIÓN PWA (BOTÓN EXCLUSIVO PARA ACCESO DIRECTO DEL TÉCNICO) -->
-    <div id="pwa-install-banner" class="hidden fixed bottom-4 right-4 left-4 sm:left-auto sm:w-96 bg-slate-900 border border-purple-500/30 p-4 rounded-2xl shadow-2xl z-50 glass-panel">
-        <div class="flex items-start gap-3">
-            <div class="text-purple-400 text-2xl mt-1"><i class="fa-solid fa-mobile-screen-button"></i></div>
-            <div class="space-y-1.5 flex-grow">
-                <h4 class="text-sm font-extrabold text-white uppercase">Instalar en tu Pantalla</h4>
-                <p class="text-xs text-slate-400 leading-relaxed">Añade Servicel Master a tu pantalla de inicio o computadora para un acceso directo sin buscar links.</p>
-                <div class="flex gap-2 justify-end">
-                    <button onclick="window.svc_descartarInstalacionPWA()" class="text-xs font-bold text-slate-500 uppercase px-2 py-1">Descartar</button>
-                    <button onclick="window.svc_dispararInstalacionPWA()" class="bg-purple-600 text-white text-xs font-black uppercase px-3 py-1.5 rounded-lg shadow-md">Instalar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CABECERA PRINCIPAL (OCULTA HASTA LOGUEARSE) -->
+    <!-- CABECERA PRINCIPAL (OCULTA HASTA VALIDAR AUTENTICACIÓN) -->
     <header id="main-header" class="hidden border-b border-slate-900 bg-slate-900/40 py-4 px-4 sticky top-0 z-40 backdrop-blur-md">
         <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
@@ -58,8 +43,13 @@
                     <i class="fa-solid fa-screwdriver-wrench"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg font-black tracking-tight text-white uppercase">SERVICEL MASTER</h1>
-                    <span id="label-indicador-rol" class="text-[9px] bg-purple-950/40 px-2.5 py-0.5 border border-purple-500/20 text-purple-400 font-black tracking-widest uppercase block mt-1">ROL: DETECTANDO...</span>
+                    <h1 class="text-[9px] font-black tracking-widest text-purple-400 uppercase leading-none">TUCOCEL C.A. — AGENTE AUTORIZADO</h1>
+                    <h2 class="text-sm font-black tracking-tight text-white uppercase mt-1">MOVISTAR CORDERO — SERVICELL</h2>
+                    <div class="flex gap-2 items-center mt-1">
+                        <span id="label-indicador-rol" class="text-[8px] bg-purple-950/40 px-2 py-0.5 border border-purple-500/20 text-purple-400 font-black tracking-widest uppercase block w-max">ROL: DETECTANDO...</span>
+                        <!-- PARCHE SOLICITADO: BOTÓN DE INSTALACIÓN ADAPTABLE SIEMPRE A LA MANO -->
+                        <button id="btn-pwa-header" onclick="window.svc_dispararInstalacionPWA()" class="hidden bg-purple-600 hover:bg-purple-700 text-white font-black text-[9px] px-2 py-0.5 rounded-md uppercase tracking-wider shadow"><i class="fa-solid fa-mobile-screen-button mr-1"></i> Instalar Aplicación</button>
+                    </div>
                 </div>
             </div>
             
@@ -77,7 +67,7 @@
         </div>
     </header>
 
-    <!-- PANTALLA 1: LOGIN DE ENTRADA OBLIGATORIO (BLOQUEO DE ARRANQUE) -->
+    <!-- PANTALLA 1: LOGIN DE ENTRADA OBLIGATORIO (CERRADURA DE ARRANQUE REAL) -->
     <div id="contenedor-login" class="flex-grow flex items-center justify-center p-4">
         <div class="w-full max-w-md p-0.5 rounded-3xl bg-gradient-to-br from-purple-600 via-slate-800 to-indigo-600 shadow-2xl">
             <div class="glass-panel rounded-[22px] p-6 space-y-5">
@@ -87,7 +77,6 @@
                     <p class="text-slate-400 text-xs">Coloque sus credenciales autorizadas de acceso.</p>
                 </div>
                 
-                <!-- ADVERTENCIA PRIVADA -->
                 <div class="bg-red-950/20 border border-red-500/30 p-4 rounded-2xl text-xs text-white font-bold leading-relaxed text-justify">
                     ⚠️ <b class="text-red-400 uppercase">DECLARACIÓN DE RESPONSABILIDAD:</b> El uso de esta plataforma es único y exclusivo. Usted es responsable de cada monto, repuesto y equipo registrado. Es una obligación ineludible indexar hasta el más mínimo trabajo de soporte técnico realizado en Servicel Master.
                 </div>
@@ -135,7 +124,7 @@
         </div>
     </div>
 
-    <!-- WORKSPACE CENTRAL CON NUEVO PARCHE DE HABITACIONES INDEPENDIENTES (ANTI-LAG) -->
+    <!-- WORKSPACE CENTRAL CON HABITACIONES INDEPENDIENTES AISLADAS ANTI-LAG -->
     <div id="contenedor-workspace" class="hidden max-w-6xl w-full mx-auto px-4 py-4 flex-grow flex flex-col gap-4">
         
         <!-- BARRA DE SELECCIÓN CON NUEVO BOTÓN INTEGRADO DE COMANDAS -->
@@ -149,7 +138,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full">
             
-            <!-- HABITACIÓN 1: MOSTRADOR DE RECEPCIÓN (ACCESIBLE POR TÉCNICOS) -->
+            <!-- HABITACIÓN 1: MOSTRADOR DE RECEPCIÓN / SERVICIO TÉCNICO BÁSICO -->
             <div id="tab-recepcion" class="lg:col-span-12 grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
                 
                 <!-- PLANILLA DE ENTRADA -->
@@ -160,12 +149,12 @@
                     </div>
 
                     <div class="space-y-4 text-sm font-bold text-slate-300">
-                        <div class="bg-slate-950 p-3 border border-slate-855 rounded-xl flex items-center justify-between">
+                        <div class="bg-slate-950 p-3 border border-slate-850 rounded-xl flex items-center justify-between">
                             <span class="text-[10px] text-white uppercase font-sans">Operador que Recibe:</span>
                             <select id="form-operador" class="bg-slate-900 border border-slate-800 p-1.5 rounded-lg text-white font-black text-xs focus:outline-none uppercase"></select>
                         </div>
 
-                        <!-- FILTRO EXCLUSIVO DE REGLAS DE ORO DE ROBERT: RUBROS TÉCNICOS -->
+                        <!-- FILTRO DE SELECCIÓN OBLIGATORIA POR RUBRO -->
                         <div class="bg-slate-950 p-3 border border-slate-855 rounded-xl space-y-3">
                             <div class="flex items-center justify-between text-xs font-bold">
                                 <span class="text-[10px] text-white uppercase font-sans">Tipo de Soporte Técnico:</span>
@@ -219,7 +208,12 @@
                             </div>
                         </div>
 
-                        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-850 space-y-3">
+                        <div>
+                            <label class="text-[10px] text-white uppercase ml-1 block mb-1">Clave o Patrón de Acceso</label>
+                            <input type="text" id="form-clave-manual" placeholder="Ej: 1234 o PATRÓN L" class="w-full bg-slate-950 border border-slate-800 px-3.5 py-3 rounded-xl text-white uppercase focus:outline-none text-sm font-mono">
+                        </div>
+
+                        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-855 space-y-3">
                             <span class="text-[10px] text-purple-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-camera mr-1"></i> Dibujo / Foto de Patrón en Papel</span>
                             <div class="grid grid-cols-2 gap-3 items-center">
                                 <div class="flex flex-col items-center justify-center w-full">
@@ -234,7 +228,7 @@
                             </div>
                         </div>
 
-                        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-850 space-y-3">
+                        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-855 space-y-3">
                             <span class="text-[10px] text-purple-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-clipboard-check mr-1"></i> Ficha Física de Resguardo</span>
                             <div class="grid grid-cols-3 gap-2 font-mono text-xs text-center">
                                 <div class="bg-slate-900 p-2 rounded-xl border border-slate-800">
@@ -251,6 +245,28 @@
                                 </div>
                             </div>
                             <textarea id="form-detalles-manual" placeholder="Detalle manual de condiciones físicas o ralladuras..." rows="2" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white font-medium focus:outline-none uppercase text-xs"></textarea>
+                        </div>
+
+                        <!-- PARCHE DE RETIRO SEGURO AUTORIZADO (CANDADO LEGAL CONTRA PÉRDIDAS) -->
+                        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-850 space-y-3">
+                            <span class="text-[10px] text-red-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-user-shield mr-1"></i> Parche de Retiro Seguro</span>
+                            <div class="grid grid-cols-2 gap-2 bg-slate-900 p-2 rounded-xl border border-slate-800 items-center">
+                                <span class="text-[9px] text-white uppercase block">¿Quién Retira el Equipo?</span>
+                                <select id="form-seguro-retiro-tipo" onchange="window.svc_conmutarLogicaRetiroSeguro()" class="bg-slate-950 border border-slate-800 p-1.5 rounded-lg text-white font-bold text-xs focus:outline-none">
+                                    <option value="MISMO" selected>👤 El Mismo Cliente</option>
+                                    <option value="TERCERO">👥 Tercero Autorizado</option>
+                                </select>
+                            </div>
+                            <div id="wrapper-campos-retiro-tercero" class="hidden grid grid-cols-2 gap-2 pt-2 border-t border-slate-900">
+                                <div>
+                                    <label class="text-[9px] text-white uppercase block mb-1">Nombre de Quién Retira</label>
+                                    <input type="text" id="form-seguro-nombre" placeholder="Ej: MARIA ALVARADO" class="w-full bg-slate-900 border border-slate-800 px-3 py-2 rounded-xl text-white uppercase text-xs focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="text-[9px] text-white uppercase block mb-1">Cédula de Quién Retira</label>
+                                    <input type="text" id="form-seguro-cedula" placeholder="Ej: V-18444555" class="w-full bg-slate-900 border border-slate-800 px-3 py-2 rounded-xl text-white text-xs font-mono focus:outline-none">
+                                </div>
+                            </div>
                         </div>
 
                         <!-- SECCIÓN MONTO Y ABONO PRECALCULADO AL 70% -->
@@ -303,13 +319,13 @@
                     <div class="bg-slate-900/60 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
                         <h3 class="text-sm font-black text-white uppercase tracking-widest border-b border-slate-800 pb-2 flex items-center gap-1.5"><i class="fa-solid fa-eye text-blue-400"></i> Última Recepción Registrada</h3>
                         <div id="wrapper-ultimo-visor" class="p-4 bg-slate-950 rounded-2xl border border-slate-850 text-sm space-y-3">
-                            <p class="text-slate-500 text-center italic py-20">Ningún registro processed en esta sesión.</p>
+                            <p class="text-slate-500 text-center italic py-20">Ningún registro procesado en esta sesión.</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- HABITACIÓN 2: LA COMANDA SERVICELL INTEGRADA (OCULTA PARA TÉCNICOS) -->
+            <!-- HABITACIÓN 2: LA COMANDA SERVICELL INTEGRADA (OCULTA TOTALMENTE PARA NELSON) -->
             <div id="tab-comandas" class="lg:col-span-12 hidden w-full grid grid-cols-1 lg:grid-cols-12 gap-6 text-slate-800">
                 <div class="lg:col-span-7 bg-white p-5 rounded-3xl shadow-sm border border-gray-200 space-y-3">
                     <div class="flex justify-between items-center border-b border-gray-100 pb-1.5">
@@ -380,7 +396,7 @@
                 </div>
             </div>
 
-            <!-- HABITACIÓN 3: GESTIÓN DE TÉCNICOS (OCULTA PARA TÉCNICOS) -->
+            <!-- HABITACIÓN 3: GESTIÓN DE TÉCNICOS -->
             <div id="tab-tecnicos" class="lg:col-span-12 hidden w-full grid grid-cols-1 md:grid-cols-12 gap-6">
                 <div class="md:col-span-5 bg-slate-900 p-5 rounded-3xl border border-slate-800 space-y-4">
                     <h3 class="text-sm font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2"><i class="fa-solid fa-user-plus text-purple-500"></i> Crear Perfil para Técnico</h3>
@@ -403,7 +419,7 @@
                 </div>
             </div>
 
-            <!-- HABITACIÓN 4: BÓVEDA DE FINANZAS (OCULTA PARA TÉCNICOS) -->
+            <!-- HABITACIÓN 4: BÓVEDA DE FINANZAS MÁSTER -->
             <div id="tab-finanzas" class="lg:col-span-12 hidden w-full space-y-6">
                 <div id="wrapper-fines-totales-moneda" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
                 <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl grid grid-cols-1 md:grid-cols-12 gap-6">
@@ -424,7 +440,7 @@
                 </div>
             </div>
 
-            <!-- HABITACIÓN 5: GARANTÍAS (OCULTA PARA TÉCNICOS) -->
+            <!-- HABITACIÓN 5: HISTORIAL Y GARANTÍAS -->
             <div id="tab-garantias" class="lg:col-span-12 hidden w-full space-y-4">
                 <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
                     <div class="bg-slate-950 p-3 rounded-2xl border border-slate-855 space-y-2">
@@ -468,32 +484,30 @@
         let usuarioSesionActivo = "";
         let deferredPrompt;
 
-        // PARCHE DE INSTALACIÓN PWA DIRECTA EN PANTALLA
+        // PARCHE DE INSTALACIÓN PWA DIRECTA MEDIANTE BOTÓN
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            const descartado = localStorage.getItem('servicel_pwa_descartado');
-            if(!descartado) {
-                document.getElementById('pwa-install-banner').classList.remove('hidden');
-            }
+            // Al detectar que es instalable, hacemos visible el botón de la cabecera
+            const btnPwa = document.getElementById('btn-pwa-header');
+            if(btnPwa) btnPwa.classList.remove('hidden');
         });
 
         window.svc_dispararInstalacionPWA = async function() {
-            if(!deferredPrompt) return;
+            if(!deferredPrompt) {
+                alert("La aplicación ya está instalada o tu navegador no soporta la instalación directa en este momento.");
+                return;
+            }
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
             if(outcome === 'accepted') {
-                localStorage.setItem('servicel_pwa_descartado', 'true');
+                const btnPwa = document.getElementById('btn-pwa-header');
+                if(btnPwa) btnPwa.classList.add('hidden');
+                deferredPrompt = null;
             }
-            document.getElementById('pwa-install-banner').classList.add('hidden');
         };
 
-        window.svc_descartarInstalacionPWA = function() {
-            localStorage.setItem('servicel_pwa_descartado', 'true');
-            document.getElementById('pwa-install-banner').classList.add('hidden');
-        };
-
-        // PARCHE REGLAS DE ORO DE ROBERT: CALCULADOR DE ABONOS AL 70% EN PANTALLAS
+        // PARCHE REGLAS DE ORO: ABONOS AUTOMÁTICOS AL 70% EN PANTALLAS
         window.svc_conmutarLogicaSoporteMostrador = function() {
             const soporte = document.getElementById('form-tipo-soporte').value;
             const subTelefoniaBox = document.getElementById('wrapper-sub-item-telefonio');
@@ -517,7 +531,22 @@
             window.svc_calcularConversionesAlVuelo();
         };
 
-        window.svc_aplicetodoPagoRapido = function(tipo) {
+        // PARCHE DE RETIRO SEGURO (CONMUTADOR DE CAMPOS AUTORIZADOS)
+        window.svc_conmutarLogicaRetiroSeguro = function() {
+            const tipo = document.getElementById('form-seguro-retiro-tipo').value;
+            const boxCampos = document.getElementById('wrapper-campos-retiro-tercero');
+            if(tipo === "TERCERO") {
+                boxCampos.classList.remove('hidden');
+                document.getElementById('form-seguro-nombre').required = true;
+                document.getElementById('form-seguro-cedula').required = true;
+            } else {
+                boxCampos.classList.add('hidden');
+                document.getElementById('form-seguro-nombre').value = "";
+                document.getElementById('form-seguro-cedula').value = "";
+            }
+        };
+
+        window.svc_aplicarMetodoPagoRapido = function(tipo) {
             const monto = parseFloat(document.getElementById('form-monto').value) || 0;
             if(monto <= 0) return alert("Ingrese el monto total primero.");
             
@@ -592,7 +621,7 @@
             }
         };
 
-        // --- SISTEMA DE LOGINS CON CERRADURA DE ARRANQUE INFRANQUEABLE ---
+        // --- ENTORNO DE LOGIN CON CERRADURA INFRANQUEABLE ---
         window.svc_ejecutarLoginGlobal = async function() {
             try {
                 const user = document.getElementById('auth-user').value.trim().toLowerCase();
@@ -607,7 +636,7 @@
                     document.getElementById('label-indicador-rol').innerText = "SESIÓN: MÁSTER SUPREMO CONTROLES";
                     document.getElementById('label-indicador-rol').className = "text-[9px] bg-blue-950/40 px-2.5 py-0.5 border border-blue-500/20 text-blue-400 font-black tracking-widest uppercase block mt-1";
                     
-                    // Abrir todos los privilegios del Máster
+                    // Mostrar todos los módulos del panel Máster
                     document.getElementById('tab-btn-comandas').classList.remove('hidden');
                     document.getElementById('tab-btn-tecnicos').classList.remove('hidden');
                     document.getElementById('tab-btn-finanzas').classList.remove('hidden');
@@ -622,7 +651,7 @@
                         document.getElementById('label-indicador-rol').innerText = `SESIÓN: TÉCNICO (${tecMatch.nombre.toUpperCase()})`;
                         document.getElementById('control-tasas-box').classList.add('hidden');
                         
-                        // REGLA DE ORO DE ROBERT: Nelson NO tiene acceso a la comanda ni al panel Máster
+                        // REGLA DE ORO DE ROBERT: Nelson NO tiene acceso a la comanda, nóminas ni cierres
                         document.getElementById('tab-btn-comandas').classList.add('hidden');
                         document.getElementById('tab-btn-tecnicos').classList.add('hidden');
                         document.getElementById('tab-btn-finanzas').classList.add('hidden');
@@ -664,7 +693,7 @@
             document.getElementById('contenedor-workspace').classList.remove('hidden');
             await window.svc_descargarServidorCentral();
             
-            // Forzar inicio en la pestaña permitida por rol
+            // Forzar arranque limpio en mostrador
             window.svc_cambiarTab('recepcion');
         };
 
@@ -682,9 +711,8 @@
 
         // PARCHE DE HABITACIONES INDEPENDIENTES AISLADAS (ANTI-LAG)
         window.svc_cambiarTab = function(pestaña) {
-            // Nelson solo puede ver recepción, rebote estricto de seguridad por si altera el HTML
             if(rolDeSesionActiva === "TECNICO" && pestaña !== "recepcion") {
-                return;
+                return; // Rebote estricto si intentan vulnerar el DOM
             }
 
             document.getElementById('tab-recepcion').classList.add('hidden');
@@ -726,7 +754,13 @@
                 const montoBase = parseFloat(document.getElementById('form-monto').value) || 0;
                 const abonoBase = parseFloat(document.getElementById('form-abono').value) || 0;
 
+                // Captura del Parche de Retiro Seguro
+                const seguroTipo = document.getElementById('form-seguro-retiro-tipo').value;
+                const seguroNombre = seguroTipo === "MISMO" ? cliente : (document.getElementById('form-seguro-nombre').value.trim().toUpperCase() || "EL MISMO CLIENTE");
+                const seguroCedula = seguroTipo === "MISMO" ? cedula : (document.getElementById('form-seguro-cedula').value.trim() || "N/A");
+
                 if(!cliente || !cedula || !modelo || montoBase <= 0) return alert("⚠️ Error: Complete los campos obligatorios.");
+                if(seguroTipo === "TERCERO" && (!document.getElementById('form-seguro-nombre').value.trim() || !document.getElementById('form-seguro-cedula').value.trim())) return alert("⚠️ Complete los datos de la persona autorizada.");
 
                 const tCOP = parseFloat(document.getElementById('cfg-tasa-cop').value) || 3600;
                 let usdEquiv = moneda === "USD" ? montoBase : montoBase / tCOP;
@@ -734,7 +768,7 @@
 
                 const nuevaComanda = {
                     id: 'ord-' + Date.now(),
-                    nroOrden: String(svc_comandasGlobal.length + 1).padStart(3, '0'), // CORRELATIVO DESDE CERO
+                    nroOrden: String(svc_comandasGlobal.length + 1).padStart(3, '0'), // CORRELATIVO REAL DESDE CERO
                     fecha: new Date().toLocaleDateString(),
                     hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     cliente, cedula, tlf, tipoLinea, modelo, falla,
@@ -742,17 +776,21 @@
                     chkChip, chkMemoria, chkForro, detallesManual,
                     monedaOrig: moneda, montoOrig: montoBase, abonoOrig: abonoBase,
                     montoUSD: usdEquiv, abonoUSD: abonoUSDEquiv,
+                    seguroTipo, seguroNombre, seguroCedula,
                     tipoOp: "SERVICIO", operador, estatus: "RECIBIDO"
                 };
 
                 svc_comandasGlobal.push(nuevaComanda);
 
-                // Limpieza de mostrador
+                // Limpieza absoluta de mostrador
                 document.getElementById('form-cliente').value = ""; document.getElementById('form-cedula').value = "";
                 document.getElementById('form-tlf').value = ""; document.getElementById('form-modelo').value = "";
                 document.getElementById('form-falla').value = ""; document.getElementById('form-clave-manual').value = "";
                 document.getElementById('form-detalles-manual').value = ""; document.getElementById('form-monto').value = "";
                 document.getElementById('form-abono').value = "0"; document.getElementById('form-foto-patron').value = "";
+                document.getElementById('form-seguro-retiro-tipo').value = "MISMO";
+                document.getElementById('form-seguro-nombre').value = ""; document.getElementById('form-seguro-cedula').value = "";
+                document.getElementById('wrapper-campos-retiro-tercero').classList.add('hidden');
                 document.getElementById('wrapper-miniatura-patron').classList.add('hidden');
                 svc_fotoPatronBase64 = "";
 
@@ -767,23 +805,52 @@
             let saldoRestante = c.montoOrig - c.abonoOrig;
             let displayPendienteStr = c.monedaOrig === "USD" ? `$${saldoRestante.toFixed(2)} USD` : `${Math.round(saldoRestante).toLocaleString()} COP`;
 
-            v.innerHTML = `
-                <div class="space-y-3">
+            let innerVisor = `
+                <div class="space-y-3 text-slate-300">
                     <div class="flex justify-between items-center border-b border-slate-900 pb-2">
                         <b class="text-white text-sm">Orden Nro #${c.nroOrden}</b>
                         <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-purple-400 font-mono font-bold">${c.fecha}</span>
                     </div>
-                    <p class="text-slate-300">• Cliente: <strong class="text-white">${c.cliente}</strong></p>
-                    <p class="text-slate-300">• Equipo: <strong class="text-white">${c.modelo} — Falla: ${c.falla}</strong></p>
-                    <p class="text-slate-300">• Custodia: SIM: ${c.chkChip} | SD: ${c.chkMemoria} | Forro: ${c.chkForro}</p>
+                    <p>• Cliente: <strong class="text-white">${c.cliente}</strong></p>
+                    <p>• Equipo: <strong class="text-white">${c.modelo} — Falla: ${c.falla}</strong></p>
+                    <p>• Custodia: SIM: ${c.chkChip} | SD: ${c.chkMemoria} | Forro: ${c.chkForro}</p>
+                    <p>• Autorizado Retiro: <strong class="text-amber-400">${c.seguroNombre}</strong></p>
                     <div class="grid grid-cols-2 gap-2 bg-slate-900/60 p-2 rounded-xl border border-slate-855 text-center text-xs">
                         <div><span class="block text-[8px] text-slate-500 uppercase">Abonado</span><strong class="text-emerald-400 font-mono">${c.abonoOrig.toLocaleString()} ${c.monedaOrig}</strong></div>
                         <div><span class="block text-[8px] text-red-400 uppercase font-black">Resta</span><strong class="text-red-500 font-mono font-black">${displayPendienteStr}</strong></div>
-                    </div>
+                    </div>`;
+
+            // CONDICIÓN OPERATIVA: SI LOGUEA UN TÉCNICO LE ENCIENDE SU BOTÓN GATILLO DIRECTO AL 0414
+            if(rolDeSesionActiva === "TECNICO") {
+                innerVisor += `
+                    <div class="border-t border-slate-900 pt-2 flex justify-end">
+                        <button onclick="window.svc_dispararNotificacionGatilloMaster(${svc_comandasGlobal.indexOf(c)})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black py-2.5 rounded-xl uppercase tracking-wider shadow-md"><i class="fa-solid fa-paper-plane mr-1"></i> Enviar Ingreso al Máster</button>
+                    </div>`;
+            } else {
+                innerVisor += `
                     <div class="border-t border-slate-900 pt-2 flex justify-end">
                         <button onclick="window.svc_notificarTallerNelson(${svc_comandasGlobal.indexOf(c)})" class="bg-purple-600 hover:bg-purple-700 text-white text-[10px] font-black px-4 py-2 rounded-xl uppercase tracking-wider"><i class="fa-solid fa-paper-plane mr-1"></i> Despachar a Nelson</button>
-                    </div>
-                </div>`;
+                    </div>`;
+            }
+            innerVisor += `</div>`;
+            v.innerHTML = innerVisor;
+        };
+
+        // PARCHE EXCLUSIVO: GATILLO INMEDIATO AL WHATSAPP PERSONAL DEL MÁSTER (0414-7357549)
+        window.svc_dispararNotificacionGatilloMaster = function(idx) {
+            const c = svc_comandasGlobal[idx]; if(!c) return;
+            let msg = `🛠️ *TCL SISTEMA MÁSTER — ALERTA DE INGRESO EN RECEPCIÓN*\n\n`;
+            msg += `Estimado Máster Robert, le notifico que acabo de procesar la entrada de un nuevo equipo en el laboratorio de servicio técnico.\n\n`;
+            msg += `📋 *Ficha Creada:* \n`;
+            msg += `• *Orden:* #${c.nroOrden}\n`;
+            msg += `• *Cliente:* ${c.cliente} (Cédula: ${c.cedula})\n`;
+            msg += `• *Dispositivo:* ${c.modelo} — *Falla:* ${c.falla}\n`;
+            msg += `• *Resguardo:* SIM: ${c.chkChip} | SD: ${c.chkMemoria} | Forro: ${c.chkForro}\n`;
+            msg += `• *Autorizado Retiro:* ${c.seguroNombre} (Cédula: ${c.seguroCedula})\n`;
+            msg += `• *Monto Total:* ${c.montoOrig.toLocaleString()} ${c.monedaOrig} | *Abonó:* ${c.abonoOrig.toLocaleString()} ${c.monedaOrig}\n\n`;
+            msg += `_Por favor, verifique el servidor central y proceda a disparar la confirmación oficial al cliente desde su panel._`;
+            
+            window.open(`https://api.whatsapp.com/send?phone=584147357549&text=${encodeURIComponent(msg)}`, '_blank');
         };
 
         window.svc_notificarTallerNelson = function(idx) {
@@ -847,7 +914,7 @@
             lista.slice().reverse().forEach(c => {
                 const idxReal = svc_comandasGlobal.indexOf(c);
                 const esFin = c.estatus === "FINALIZADO";
-                let bgStyle = esFin ? "bg-emerald-950/20 border-emerald-500/20 text-emerald-300" : "bg-slate-950 border-slate-850 text-slate-300";
+                let bgStyle = esFin ? "bg-emerald-950/20 border-emerald-500/20 text-emerald-300" : "bg-slate-950 border-slate-855 text-slate-300";
                 
                 stringHtml += `
                     <div class="p-4 border rounded-2xl mb-2 flex justify-between items-center ${bgStyle}">
@@ -855,6 +922,7 @@
                             <b class="text-white text-sm font-sans">Orden Nro #${c.nroOrden} — ${c.cliente}</b>
                             <span class="text-xs block text-white mt-0.5">Equipo: <b>${c.modelo}</b> — Servicio: <b>${c.falla}</b></span>
                             <span class="text-[10px] block text-slate-400">SIM: ${c.chkChip} | SD: ${c.chkMemoria} | Forro: ${c.chkForro}</span>
+                            <span class="text-[10px] block text-amber-400">Autorizado Retiro: <b>${c.seguroNombre}</b></span>
                             <span class="text-emerald-400 text-[10px] block font-mono">Abonó: ${c.abonoOrig.toLocaleString()} ${c.monedaOrig}</span>
                         </div>
                         <div class="flex items-center gap-2">
@@ -866,24 +934,26 @@
             if(gridFines) gridFines.innerHTML = stringHtml; if(gridGars) gridGars.innerHTML = stringHtml;
         };
 
-        // PARCHE DE PRIVACIDAD ABSOLUTA: ELIMINADO EL CAMPO CLAVE DEL WHATSAPP DE SALIDA
+        // PARCHE DE CONFIDENCIALIDAD PRIVADA E INYECCIÓN DE RETIRO SEGURO EN WHATSAPP
         window.svc_abrirAccionesComandaMaster = function(idx) {
             const c = svc_comandasGlobal[idx]; if(!c) return;
             let promptText = `⚙️ CONTROL DE ORDEN #${c.nroOrden}\n\n[1] WhatsApp Recibido\n[2] WhatsApp Listo\n[3] Finalizar Operación`;
             const s = prompt(promptText);
 
             if(s === "1") {
-                let msg = `🛍️ *MOVISTAR CORDERO — SERCEL MASTER RECEPCIÓN*\n\n`;
+                let msg = `🛍️ *MOVISTAR CORDERO — SERVICELL MASTER*\n🧾 *COMPROBANTE DE RESGUARDO TÉCNICO*\n\n`;
                 msg += `Estimado cliente, le informamos que su equipo *${c.modelo}* ha ingresado a soporte para el servicio de *${c.falla}*.\n\n`;
                 msg += `🗃️ *Componentes en Custodia:* SIM: ${c.chkChip} | SD: ${c.chkMemoria} | Forro: ${c.chkForro}\n`;
+                msg += `🔒 *Cláusula de Seguridad de Entrega:* Este equipo ÚNICAMENTE será entregado a la persona registrada: *${c.seguroNombre}* presentando cédula en físico.\n\n`;
                 msg += `💰 *Abono Garantizado:* ${c.abonoOrig.toLocaleString()} ${c.monedaOrig}\n\n`;
-                msg += `🔒 _Comprobante privado de control interno logístico._`;
+                msg += `🔒 _Comprobante privado de control interno de almacén de Tucocel C.A._`;
                 let cleanTlf = c.tlf.replace(/\D/g, ''); if(!cleanTlf.startsWith('58')) cleanTlf = '58' + cleanTlf;
                 window.open(`https://api.whatsapp.com/send?phone=${cleanTlf}&text=${encodeURIComponent(msg)}`, '_blank');
             } else if(s === "2") {
                 let saldoRestante = c.montoOrig - c.abonoOrig;
                 let msg = `📱 *¡SU EQUIPO ESTÁ LISTO PARA RETIRAR!* 🌟\n\n`;
                 msg += `Estimado usuario, la reparación de su equipo *${c.modelo}* ha finalizado con éxito.\n`;
+                msg += `🔒 *Retira:* ${c.seguroNombre}\n`;
                 msg += `💳 *Monto Pendiente a Liquidar:* *${saldoRestante.toLocaleString()} ${c.monedaOrig}*\n\n`;
                 msg += `¡Le esperamos en nuestras instalaciones! 🤝`;
                 let cleanTlf = c.tlf.replace(/\D/g, ''); if(!cleanTlf.startsWith('58')) cleanTlf = '58' + cleanTlf;
@@ -891,7 +961,7 @@
             } else if(s === "3") {
                 svc_comandasGlobal[idx].estatus = "FINALIZADO";
                 window.svc_sincronizarConFirebase(); window.svc_renderizarEcosistema();
-                alert("Orden cerrada.");
+                alert("Orden cerrada con éxito.");
             }
         };
 
@@ -920,7 +990,7 @@
             window.svc_renderizarEcosistema();
         };
 
-        // AL CARGAR, EL SISTEMA SE CONGELA EN EL LOGIN SIEMPRE POR SEGURIDAD
+        // AL CARGAR EL ARCHIVO, SE CONGELA EN EL LOGIN OBLIGATORIO POR SEGURIDAD
         window.onload = function() {
             document.getElementById('contenedor-login').classList.remove('hidden');
             document.getElementById('main-header').classList.add('hidden');
