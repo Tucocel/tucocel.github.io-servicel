@@ -398,36 +398,49 @@
                         </div>
                     </div>
 
-                    <!-- CRIPTO MERCADO: BINANCE USDT (COTIZACIÓN EN RANGO LIMPIO) + BITCOIN BTC -->
-                    <div class="bg-neutral-950 border border-neutral-800 p-4 rounded-2xl space-y-2 sm:col-span-2">
+                    <!-- CRIPTO MERCADO: BINANCE USDT Y BITCOIN BTC CON HORARIOS INDEPENDIENTES Y FLECHA JUNTO AL MONTO -->
+                    <div class="bg-neutral-950 border border-neutral-800 p-4 rounded-2xl space-y-3 sm:col-span-2">
                         <div class="flex justify-between items-center border-b border-neutral-900 pb-2">
                             <span class="text-xs font-bold text-slate-300">🪙 Mercado Cripto (Binance P2P & Global)</span>
                             <span class="text-[9px] text-emerald-400 font-mono font-bold"><i class="fa-solid fa-circle-dot animate-pulse"></i> Sincronizado</span>
                         </div>
+                        
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                            <div class="bg-neutral-900 p-3 rounded-xl border border-neutral-800 space-y-1">
-                                <span class="text-[9.5px] text-amber-400 uppercase font-black block flex items-center justify-between">
-                                    <span>Binance USDT (VES)</span>
-                                    <span id="trend-usdt-binance" class="text-xs font-mono animate-pulse text-amber-400">–</span>
-                                </span>
-                                <div class="pt-1 text-slate-300 font-mono text-xs font-bold">
-                                    <span class="text-[10px] text-slate-400 block mb-0.5">Se cotiza en este momento entre:</span>
-                                    <strong id="val-usdt-rango" class="text-emerald-400 text-sm sm:text-base">8.90 / 9.00 Bs.</strong>
+                            
+                            <!-- SUB-TARJETA BINANCE USDT (CON SU PROPIO HORARIO DENTRO) -->
+                            <div class="bg-neutral-900 p-3.5 rounded-xl border border-neutral-800 space-y-2 flex flex-col justify-between">
+                                <div>
+                                    <span class="text-[9.5px] text-amber-400 uppercase font-black block">Binance USDT (VES)</span>
+                                    <div class="pt-1.5 text-slate-300 font-mono text-xs font-bold">
+                                        <span class="text-[10px] text-slate-400 block mb-0.5">Se cotiza en este momento entre:</span>
+                                        <div class="flex items-center gap-2">
+                                            <span id="trend-usdt-binance" class="text-sm font-mono animate-pulse text-amber-400">–</span>
+                                            <strong id="val-usdt-rango" class="text-emerald-400 text-sm sm:text-base">8.90 / 9.00 Bs.</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-t border-neutral-800/80 pt-2 text-right mt-1">
+                                    <span id="time-binance" class="text-[10px] text-emerald-400 font-mono font-bold block">⚡ Última actualización: En espera...</span>
                                 </div>
                             </div>
-                            <div class="bg-neutral-900 p-3 rounded-xl border border-neutral-800 space-y-1">
-                                <span class="text-[9.5px] text-amber-400 uppercase font-black block">Bitcoin (BTC / USD Global)</span>
-                                <div class="flex justify-between items-center font-mono text-xs font-bold pt-2">
-                                    <span class="text-slate-400">Cotización:</span>
-                                    <span class="flex items-center gap-1 font-mono font-black text-emerald-400 text-sm">
-                                        <span id="trend-btc-usd" class="text-xs animate-pulse text-amber-400">–</span>
-                                        <span id="val-btc-usd">Cargando...</span>
-                                    </span>
+
+                            <!-- SUB-TARJETA BITCOIN (CON SU PROPIO HORARIO INDEPENDIENTE DENTRO) -->
+                            <div class="bg-neutral-900 p-3.5 rounded-xl border border-neutral-800 space-y-2 flex flex-col justify-between">
+                                <div>
+                                    <span class="text-[9.5px] text-amber-400 uppercase font-black block">Bitcoin (BTC / USD Global)</span>
+                                    <div class="flex justify-between items-center font-mono text-xs font-bold pt-2">
+                                        <span class="text-slate-400">Cotización:</span>
+                                        <span class="flex items-center gap-1 font-mono font-black text-emerald-400 text-sm">
+                                            <span id="trend-btc-usd" class="text-xs animate-pulse text-amber-400">–</span>
+                                            <span id="val-btc-usd">Cargando...</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="border-t border-neutral-800/80 pt-2 text-right mt-1">
+                                    <span id="time-btc" class="text-[10px] text-slate-400 font-mono font-bold block">🌐 Mercado Global en Vivo (24/7)</span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="border-t border-neutral-900/60 pt-2 text-right">
-                            <span id="time-binance" class="text-[10px] sm:text-[10.5px] text-emerald-400 font-mono font-bold">Última actualización: En espera...</span>
+
                         </div>
                     </div>
 
@@ -518,7 +531,7 @@
                                 <button onclick="window.procesarSuccionLegoInteligenteTexto()" class="w-full bg-neutral-900 border border-neutral-800 hover:border-red-600/30 text-slate-300 font-black text-[10px] py-2 rounded-xl uppercase tracking-wider transition-all">Separar Datos en Planilla ⚡</button>
                             </div>
                             <div class="space-y-3 text-xs font-bold text-slate-800">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                                     <div>
                                         <label class="text-[8.5px] text-slate-500 uppercase block mb-1">Plataforma</label>
                                         <select id="field-plataforma" class="w-full bg-neutral-950 border border-neutral-800 text-white p-2.5 rounded-xl focus:outline-none"></select>
@@ -530,6 +543,10 @@
                                             <option value="2">2 Meses (Calendario)</option>
                                             <option value="3">3 Meses (Calendario)</option>
                                         </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[8.5px] text-amber-400 uppercase block mb-1">📅 Fecha Activación (Calendario)</label>
+                                        <input type="date" id="field-fecha-activacion-str" class="w-full bg-neutral-950 border border-amber-500/40 text-amber-400 font-mono p-2.5 rounded-xl focus:outline-none">
                                     </div>
                                 </div>
                                 <div class="bg-neutral-950 p-3 rounded-2xl border border-neutral-850 space-y-2">
@@ -851,7 +868,7 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <div>
                                 <label class="text-[9px] text-slate-400 font-black uppercase mb-1 block">Ciclo de Suscripción (Meses)</label>
                                 <select id="pt-cli-meses" class="w-full bg-neutral-950 border border-neutral-800 text-amber-400 px-4 py-2.5 rounded-xl uppercase focus:outline-none">
@@ -869,6 +886,10 @@
                                     <option value="2">2 Teléfonos Autorizados</option>
                                     <option value="3">3 Teléfonos Autorizados</option>
                                 </select>
+                            </div>
+                            <div>
+                                <label class="text-[9px] text-amber-400 font-black uppercase mb-1 block">📅 Fecha Activación (Calendario)</label>
+                                <input type="date" id="pt-cli-fecha-activacion-str" class="w-full bg-neutral-950 border border-amber-500/40 text-amber-400 font-mono px-4 py-2.5 rounded-xl focus:outline-none">
                             </div>
                         </div>
 
@@ -928,7 +949,7 @@
         </div>
     </footer>
 
-    <!-- GENERACIÓN DINÁMICA DEL MANIFEST PWA APUNTANDO DIRECTO A PUBLITASA PRO -->
+    <!-- GENERACIÓN DINÁMICA DEL MANIFEST PWA APUNTANDO DIRECTO A PUBLITASA -->
     <script>
         (function() {
             const manifestData = {
@@ -989,6 +1010,30 @@
             return uuid;
         }
 
+        /* AUXILIARES DE FECHA PARA MÓVIL (YYYY-MM-DD <-> DD/MM/YYYY) */
+        function obtenerFechaHoyISO() {
+            const hoy = new Date();
+            const yyyy = hoy.getFullYear();
+            const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+            const dd = String(hoy.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        function convertirISOaES(isoStr) {
+            if(!isoStr || !isoStr.includes('-')) return new Date().toLocaleDateString('es-ES');
+            const partes = isoStr.split('-');
+            return `${parseInt(partes[2])}/${parseInt(partes[1])}/${partes[0]}`;
+        }
+
+        function convertirESaISO(esStr) {
+            if(!esStr || !esStr.includes('/')) return obtenerFechaHoyISO();
+            const partes = esStr.split('/');
+            const dd = String(partes[0]).padStart(2, '0');
+            const mm = String(partes[1]).padStart(2, '0');
+            const yyyy = partes[2];
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
         /* ENRUTAMIENTO FORZADO A WHATSAPP PERSONAL (com.whatsapp) */
         function abrirWhatsAppPersonal(phoneTarget, mensajeTexto) {
             let cleanTlf = (phoneTarget || "").replace(/\D/g, '');
@@ -1028,8 +1073,8 @@
 
         let tarifasPubliTasaEstructura = { plan1: 5.00, plan2: 8.00, plan3: 12.00 };
 
-        let localStreamingClientesArr = [];
-        let localPubliTasaClientesArr = [];
+        let localStreamingClientesArr = JSON.parse(localStorage.getItem('tcl_str_cache')) || [];
+        let localPubliTasaClientesArr = JSON.parse(localStorage.getItem('tcl_pt_cache')) || [];
         let esAdminStreamingSession = false;
         let carpetaFiltroSeleccionadaStr = "TODOS";
         let verArchivadosStreamingBool = false;
@@ -1042,7 +1087,7 @@
         let leyendaCustomGrupos = "";
         let leyendaCustomEstados = "";
 
-        // REGISTROS HISTÓRICOS PARA FLECHAS DE TENDENCIA CON MOVIMIENTO TITILANTE
+        // REGISTROS HISTÓRICOS PARA FLECHAS DE TENDENCIA
         let historicoPrecios = JSON.parse(localStorage.getItem('tcl_historico_precios')) || {};
 
         function calcularHTMLTendencia(key, nuevoValor, esBotonMantener = false) {
@@ -1092,6 +1137,7 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
         }
 
         function calcularDiasRestantesReales(fechaOrigenStr, mesesTotales) {
+            if(!fechaOrigenStr || !fechaOrigenStr.includes('/')) return 0;
             let partes = fechaOrigenStr.split('/');
             let dia = parseInt(partes[0]);
             let mes = parseInt(partes[1]) - 1; 
@@ -1127,7 +1173,7 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
             }, 1000);
         }
 
-        /* SINCRONIZACIÓN LECTURA NUBE BINANCE CON HORA CORREGIDA */
+        /* SINCRONIZACIÓN LECTURA NUBE BINANCE CON SU PROPIO BLOQUE DE HORARIO */
         async function sincronizarBinanceDesdeFirebase() {
             try {
                 const docBinance = await getDoc(doc(db, "tcl_publitasa_pro", "binance_config"));
@@ -1622,9 +1668,13 @@ ${LINK_COMUNIDAD_WHATSAPP}
             alert("⚡ Datos separados.");
         };
 
+        /* INYECCIÓN CON FECHA DE ACTIVACIÓN SELECCIONABLE */
         window.ejecutarCargaPerfilStreamingFirebase = async function() {
             const plataforma = document.getElementById('field-plataforma').value;
             const meses = parseInt(document.getElementById('field-meses').value);
+            const rawFechaISO = document.getElementById('field-fecha-activacion-str').value;
+            const fechaActStr = rawFechaISO ? convertirISOaES(rawFechaISO) : new Date().toLocaleDateString('es-ES');
+
             const correo = document.getElementById('field-correo').value.trim();
             const clave = document.getElementById('field-clave').value.trim();
             const perfil = document.getElementById('field-perfil').value.trim().toUpperCase();
@@ -1640,12 +1690,10 @@ ${LINK_COMUNIDAD_WHATSAPP}
                 if(!confirm(`📝 ¿Desea indexar este nuevo servicio a este cliente?`)) return;
             }
 
-            const fechaHoyStr = new Date().toLocaleDateString('es-ES');
-
             const nuevoClienteStreaming = {
                 id: 'str-' + new Date().getTime(), plataforma, meses, correo, clave, perfil, pin,
-                cliente: cNombre, telefono: cTlf, direccion: cDir, fechaActivacion: fechaHoyStr, 
-                diasRestantes: calcularDiasRestantesReales(fechaHoyStr, meses), estado: 'ACTIVO'
+                cliente: cNombre, telefono: cTlf, direccion: cDir, fechaActivacion: fechaActStr, 
+                diasRestantes: calcularDiasRestantesReales(fechaActStr, meses), estado: 'ACTIVO'
             };
 
             localStreamingClientesArr.push(nuevoClienteStreaming);
@@ -1656,6 +1704,8 @@ ${LINK_COMUNIDAD_WHATSAPP}
             document.getElementById('field-perfil').value = ""; document.getElementById('field-pin').value = "";
             document.getElementById('field-cliente-nombre').value = ""; document.getElementById('field-cliente-tlf').value = "";
             document.getElementById('field-cliente-dir').value = "";
+            document.getElementById('field-fecha-activacion-str').value = obtenerFechaHoyISO();
+            
             window.construirEstructurasDinamicasInterfaces();
             window.renderizarMonitorMembresiasAdmin();
         };
@@ -1693,7 +1743,8 @@ ${LINK_COMUNIDAD_WHATSAPP}
                                     <span class="text-amber-400 text-[9px] font-black uppercase tracking-wider">LICENCIA PRO: ${c.tokenLicencia}</span>
                                     <h4 class="text-white text-sm font-black uppercase mt-[#0.5px]">${c.cliente}</h4>
                                     <p class="text-[10px] text-slate-300 font-mono mt-0.5"><i class="fa-solid fa-phone text-slate-500"></i> ${c.telefono} &bull; ${c.direccion || 'TÁCHIRA'}</p>
-                                    <p class="text-[10px] text-emerald-400 font-bold mt-1"><i class="fa-solid fa-mobile-screen"></i> Equipos: ${c.equiposRegistrados ? c.equiposRegistrados.length : 0} / ${c.maxEquipos} Máx</p>
+                                    <p class="text-[10px] text-slate-400 font-mono"><i class="fa-solid fa-calendar text-slate-500"></i> Inicio: ${c.fechaActivacion || 'N/A'}</p>
+                                    <p class="text-[10px] text-emerald-400 font-bold mt-0.5"><i class="fa-solid fa-mobile-screen"></i> Equipos: ${c.equiposRegistrados ? c.equiposRegistrados.length : 0} / ${c.maxEquipos} Máx</p>
                                 </div>
                                 <div class="text-right">
                                     <span class="block text-base font-mono font-black ${esInactivo ? 'text-red-500' : (esAlerta ? 'text-amber-400 animate-pulse' : 'text-slate-200')}">${c.diasRestantes} Días</span>
@@ -1742,6 +1793,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
                                 <h4 class="text-white text-sm font-black uppercase mt-0.5">${c.cliente}</h4>
                                 <p class="text-[10px] text-slate-300 font-mono truncate max-w-xs mt-1"><i class="fa-solid fa-phone text-slate-500"></i> ${c.telefono} | Acceso: ${c.correo || 'ID'}</p>
                                 <p class="text-[10px] text-slate-400 font-mono">Clave: ${c.clave} ${c.perfil ? `| Perfil: ${c.perfil}` : ''} ${c.pin ? `| PIN: ${c.pin}` : ''}</p>
+                                <p class="text-[10px] text-amber-400/90 font-mono mt-0.5"><i class="fa-solid fa-calendar text-amber-500"></i> Activado: ${c.fechaActivacion || 'N/A'}</p>
                             </div>
                             <div class="text-right">
                                 <span class="block text-[15px] font-mono font-black ${esInactivo ? 'text-red-500' : (esAlertaCritica ? 'text-amber-400 animate-pulse' : 'text-slate-200')}">${c.diasRestantes} Días</span>
@@ -1845,16 +1897,26 @@ ${LINK_COMUNIDAD_WHATSAPP}
             }
         };
 
+        /* EDITOR PLANILLA CON CAMBIO DE FECHA DE ACTIVACIÓN MIGRACIÓN */
         window.abrirEditorPlanillaRapida = function(id) {
             let match = localStreamingClientesArr.find(c => c.id === id); if(!match) return;
             let nt = prompt("Modificar Teléfono WhatsApp:", match.telefono || "");
             let nc = prompt("Modificar Correo / ID:", match.correo || "");
             let ncl = prompt("Modificar Clave:", match.clave);
             let np = prompt("Modificar PIN:", match.pin || "");
+            let nf = prompt("Modificar Fecha de Activación (DD/MM/AAAA):", match.fechaActivacion || new Date().toLocaleDateString('es-ES'));
+
             if(ncl !== null) {
                 if(nt) match.telefono = nt;
                 match.correo = nc; match.clave = ncl; match.pin = np;
-                window.sincronizarBaseStreamingNube().then(() => { window.renderizarMonitorMembresiasAdmin(); window.construirEstructurasDinamicasInterfaces(); });
+                if(nf && nf.includes('/')) {
+                    match.fechaActivacion = nf;
+                    match.diasRestantes = calcularDiasRestantesReales(nf, match.meses || 1);
+                }
+                window.sincronizarBaseStreamingNube().then(() => { 
+                    window.renderizarMonitorMembresiasAdmin(); 
+                    window.construirEstructurasDinamicasInterfaces(); 
+                });
             }
         };
 
@@ -2016,7 +2078,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
             }
         };
 
-        /* CONTROL Y GUARDADO MANUAL DIRECTO DE BINANCE USDT (CORREGIDO DE RAÍZ EN FIREBASE) */
+        /* CONTROL Y GUARDADO MANUAL DIRECTO DE BINANCE USDT */
         window.guardarTasaBinanceManualPubliTasa = async function(esSoloMantener = false) {
             const compra = parseFloat(document.getElementById('pt-adm-usdt-compra').value) || 8.90;
             let venta = parseFloat(document.getElementById('pt-adm-usdt-venta').value);
@@ -2061,24 +2123,27 @@ ${LINK_COMUNIDAD_WHATSAPP}
             } catch(e) { alert("Error al guardar tasas."); }
         };
 
+        /* CREACIÓN DE SUSCRIPTOR PRO CON FECHA DE ACTIVACIÓN MÓVIL */
         window.crearSuscriptorPubliTasaPro = async function() {
             const cliente = document.getElementById('pt-cli-nombre').value.trim().toUpperCase();
             const tlf = document.getElementById('pt-cli-tlf').value.trim();
             const dir = document.getElementById('pt-cli-dir').value.trim().toUpperCase();
             const meses = parseInt(document.getElementById('pt-cli-meses').value);
             const maxEquipos = parseInt(document.getElementById('pt-cli-limite-equipos').value);
+            
+            const rawFechaISO = document.getElementById('pt-cli-fecha-activacion-str').value;
+            const fechaActStr = rawFechaISO ? convertirISOaES(rawFechaISO) : new Date().toLocaleDateString('es-ES');
 
             if(!cliente || !tlf) return alert("Por favor completa el Nombre y Teléfono.");
 
             const tokenLicencia = 'PUBLITASA-' + Math.floor(1000 + Math.random() * 9000);
-            const fechaHoyStr = new Date().toLocaleDateString('es-ES');
 
             const nuevoClientePro = {
                 id: 'pt-' + new Date().getTime(),
                 cliente, telefono: tlf, direccion: dir, meses,
                 maxEquipos, equiposRegistrados: [],
-                tokenLicencia, fechaActivacion: fechaHoyStr,
-                diasRestantes: calcularDiasRestantesReales(fechaHoyStr, meses), estado: 'ACTIVO'
+                tokenLicencia, fechaActivacion: fechaActStr,
+                diasRestantes: calcularDiasRestantesReales(fechaActStr, meses), estado: 'ACTIVO'
             };
 
             localPubliTasaClientesArr.push(nuevoClientePro);
@@ -2089,6 +2154,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
             document.getElementById('pt-cli-nombre').value = "";
             document.getElementById('pt-cli-tlf').value = "";
             document.getElementById('pt-cli-dir').value = "";
+            document.getElementById('pt-cli-fecha-activacion-str').value = obtenerFechaHoyISO();
             
             window.renderizarBovedaPubliTasaPro();
             window.recalcularCarpetasYChismoseadorDinamico();
@@ -2132,7 +2198,8 @@ ${LINK_COMUNIDAD_WHATSAPP}
                                 <span class="text-amber-400 text-[9px] font-black uppercase tracking-wider">LICENCIA: ${c.tokenLicencia}</span>
                                 <h4 class="text-white text-sm font-black uppercase mt-0.5">${c.cliente}</h4>
                                 <p class="text-[10px] text-slate-400 font-mono mt-0.5"><i class="fa-solid fa-phone text-slate-500"></i> ${c.telefono} &bull; ${c.direccion || 'TÁCHIRA'}</p>
-                                <p class="text-[10px] text-emerald-400 font-bold mt-1"><i class="fa-solid fa-mobile-screen"></i> Equipos: ${c.equiposRegistrados ? c.equiposRegistrados.length : 0} / ${c.maxEquipos} Máx</p>
+                                <p class="text-[10px] text-slate-400 font-mono"><i class="fa-solid fa-calendar text-slate-500"></i> Inicio: ${c.fechaActivacion || 'N/A'}</p>
+                                <p class="text-[10px] text-emerald-400 font-bold mt-0.5"><i class="fa-solid fa-mobile-screen"></i> Equipos: ${c.equiposRegistrados ? c.equiposRegistrados.length : 0} / ${c.maxEquipos} Máx</p>
                             </div>
                             <div class="text-right">
                                 <span class="block text-base font-mono font-black ${esInactivo ? 'text-red-500' : (esAlerta ? 'text-amber-400 animate-pulse' : 'text-slate-200')}">${c.diasRestantes} Días</span>
@@ -2170,17 +2237,23 @@ ${LINK_COMUNIDAD_WHATSAPP}
             });
         };
 
+        /* EDITOR PUBLITASA PRO CON CAMBIO DE FECHA MIGRACIÓN */
         window.abrirEditorPubliTasa = function(id) {
             let match = localPubliTasaClientesArr.find(c => c.id === id);
             if(!match) return;
             let nuevoNombre = prompt("Modificar Nombre / Comercio:", match.cliente || "");
             let nuevoTlf = prompt("Modificar Teléfono (WhatsApp):", match.telefono || "");
             let nuevaDir = prompt("Modificar Ubicación / Sector:", match.direccion || "");
+            let nuevaFecha = prompt("Modificar Fecha de Activación (DD/MM/AAAA):", match.fechaActivacion || new Date().toLocaleDateString('es-ES'));
             
             if(nuevoNombre !== null && nuevoTlf !== null) {
                 if(nuevoNombre) match.cliente = nuevoNombre.toUpperCase();
                 if(nuevoTlf) match.telefono = nuevoTlf;
                 if(nuevaDir) match.direccion = nuevaDir.toUpperCase();
+                if(nuevaFecha && nuevaFecha.includes('/')) {
+                    match.fechaActivacion = nuevaFecha;
+                    match.diasRestantes = calcularDiasRestantesReales(nuevaFecha, match.meses || 1);
+                }
                 
                 window.sincronizarPubliTasaNube().then(() => { 
                     window.renderizarBovedaPubliTasaPro(); 
@@ -2305,6 +2378,13 @@ ${LINK_COMUNIDAD_WHATSAPP}
 
         window.onload = async function() {
             iniciarRelojDigitalDinamico();
+
+            // Seteo de fecha de hoy por defecto en inputs tipo fecha del teléfono
+            const hoyISO = obtenerFechaHoyISO();
+            const inputDateStr = document.getElementById('field-fecha-activacion-str');
+            const inputDatePT = document.getElementById('pt-cli-fecha-activacion-str');
+            if(inputDateStr) inputDateStr.value = hoyISO;
+            if(inputDatePT) inputDatePT.value = hoyISO;
             
             try {
                 const docTar = await getDoc(doc(db, "tcl_streaming_core", "tarifas_config"));
@@ -2312,7 +2392,10 @@ ${LINK_COMUNIDAD_WHATSAPP}
                 window.construirEstructurasDinamicasInterfaces();
                 
                 const docCliPT = await getDoc(doc(db, "tcl_publitasa_pro", "clientes_activos"));
-                if(docCliPT.exists()) { localPubliTasaClientesArr = docCliPT.data().lista || []; }
+                if(docCliPT.exists()) { 
+                    localPubliTasaClientesArr = docCliPT.data().lista || []; 
+                    localStorage.setItem('tcl_pt_cache', JSON.stringify(localPubliTasaClientesArr));
+                }
                 window.recalcularCarpetasYChismoseadorDinamico();
 
                 if(window.location.hash === '#publitasa') {
@@ -2327,4 +2410,4 @@ ${LINK_COMUNIDAD_WHATSAPP}
         };
     </script>
 </body>
-</html>
+                                </html>
