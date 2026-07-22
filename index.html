@@ -324,39 +324,48 @@
                             <div class="flex justify-between items-center">
                                 <span class="text-xs font-bold text-slate-400">Dólar BCV:</span>
                                 <span class="flex items-center gap-1.5 font-mono font-black text-amber-400 text-lg">
-                                    <span id="trend-bcv-usd"></span>
+                                    <span id="trend-bcv-usd" class="text-xs animate-pulse">▲</span>
                                     <span id="val-bcv-usd">Cargando...</span>
                                 </span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-xs font-bold text-slate-400">Euro BCV:</span>
                                 <span class="flex items-center gap-1.5 font-mono font-black text-amber-300 text-lg">
-                                    <span id="trend-bcv-eur"></span>
+                                    <span id="trend-bcv-eur" class="text-xs animate-pulse">▼</span>
                                     <span id="val-bcv-eur">Cargando...</span>
                                 </span>
                             </div>
                         </div>
                         <div class="border-t border-neutral-900/60 pt-2 space-y-0.5 text-right">
-                            <span id="time-bcv" class="text-[8.5px] text-slate-400 font-mono block">Oficial BCV — Cargando fecha emisión...</span>
+                            <span id="time-bcv" class="text-[10px] sm:text-[10.5px] text-slate-300 font-mono font-bold block">Oficial BCV — Cargando fecha emisión...</span>
                             <span class="text-[8px] text-amber-400/90 font-mono font-semibold block leading-tight">Esta tasa es válida hasta la próxima publicación del Banco Central de Venezuela.</span>
                         </div>
                     </div>
 
-                    <!-- COLOMBIA TRM REAL -->
+                    <!-- COLOMBIA TRM Y EURO REAL -->
                     <div class="bg-neutral-950 border border-neutral-800 p-4 rounded-2xl space-y-2">
                         <div class="flex justify-between items-center border-b border-neutral-900 pb-2">
-                            <span class="text-xs font-bold text-slate-300">🇨🇴 Oficial TRM Colombia</span>
+                            <span class="text-xs font-bold text-slate-300">🇨🇴 Oficial Colombia</span>
                             <span class="text-[9px] text-emerald-400 font-mono font-bold"><i class="fa-solid fa-circle-dot animate-pulse"></i> SFC Oficial</span>
                         </div>
-                        <div class="flex justify-between items-center pt-2">
-                            <span class="text-xs font-bold text-slate-400">Tasa TRM (COP):</span>
-                            <span class="flex items-center gap-1.5 font-mono font-black text-amber-400 text-xl">
-                                <span id="trend-trm-cop"></span>
-                                <span id="val-trm-cop">Cargando...</span>
-                            </span>
+                        <div class="space-y-1 pt-1">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-400">Dólar TRM (COP):</span>
+                                <span class="flex items-center gap-1.5 font-mono font-black text-amber-400 text-lg">
+                                    <span id="trend-trm-cop" class="text-xs animate-pulse">▼</span>
+                                    <span id="val-trm-cop">Cargando...</span>
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-400">Euro Colombia (COP):</span>
+                                <span class="flex items-center gap-1.5 font-mono font-black text-amber-300 text-lg">
+                                    <span id="trend-eur-cop" class="text-xs animate-pulse">▼</span>
+                                    <span id="val-eur-cop">Cargando...</span>
+                                </span>
+                            </div>
                         </div>
                         <div class="border-t border-neutral-900/60 pt-2 text-right">
-                            <span id="time-trm" class="text-[8.5px] text-slate-400 font-mono">Última actualización: En espera...</span>
+                            <span id="time-trm" class="text-[10px] sm:text-[10.5px] text-slate-300 font-mono font-bold">Última actualización: En espera...</span>
                         </div>
                     </div>
 
@@ -380,7 +389,7 @@
                             </div>
                         </div>
                         <div class="border-t border-neutral-900/60 pt-2 text-right">
-                            <span id="time-frontera" class="text-[8.5px] text-amber-400/90 font-mono font-bold">Última actualización en consola: Hoy</span>
+                            <span id="time-frontera" class="text-[10px] sm:text-[10.5px] text-amber-400/90 font-mono font-bold">Última actualización en consola: Hoy</span>
                         </div>
                     </div>
 
@@ -394,7 +403,7 @@
                             <div class="bg-neutral-900 p-3 rounded-xl border border-neutral-800 space-y-1">
                                 <span class="text-[9.5px] text-amber-400 uppercase font-black block flex items-center justify-between">
                                     <span>Binance USDT (VES)</span>
-                                    <span id="trend-usdt-binance">↔️</span>
+                                    <span id="trend-usdt-binance" class="text-xs font-mono animate-pulse text-amber-400">–</span>
                                 </span>
                                 <div class="pt-1 text-slate-300 font-mono text-xs font-bold">
                                     <span class="text-[10px] text-slate-400 block mb-0.5">Se cotiza en este momento entre:</span>
@@ -406,14 +415,14 @@
                                 <div class="flex justify-between items-center font-mono text-xs font-bold pt-2">
                                     <span class="text-slate-400">Cotización:</span>
                                     <span class="flex items-center gap-1 font-mono font-black text-emerald-400 text-sm">
-                                        <span id="trend-btc-usd"></span>
+                                        <span id="trend-btc-usd" class="text-xs animate-pulse">▲</span>
                                         <span id="val-btc-usd">Cargando...</span>
                                     </span>
                                 </div>
                             </div>
                         </div>
                         <div class="border-t border-neutral-900/60 pt-2 text-right">
-                            <span id="time-binance" class="text-[8.5px] text-emerald-400 font-mono font-bold">Última actualización: En espera...</span>
+                            <span id="time-binance" class="text-[10px] sm:text-[10.5px] text-emerald-400 font-mono font-bold">Última actualización: En espera...</span>
                         </div>
                     </div>
 
@@ -710,7 +719,7 @@
                             ⚡ Publicar Nueva Tasa
                         </button>
                         <button onclick="window.guardarTasaBinanceManualPubliTasa(true)" class="bg-neutral-900 border border-emerald-500/50 hover:bg-neutral-850 text-emerald-400 font-black py-3 rounded-xl uppercase tracking-wider text-xs transition-all">
-                            ↔️ Se Mantienen Valores (Actualizar Hora)
+                            – Se Mantienen Valores (Actualizar Hora)
                         </button>
                     </div>
                 </div>
@@ -998,29 +1007,29 @@
         let leyendaCustomGrupos = "";
         let leyendaCustomEstados = "";
 
-        // REGISTROS HISTÓRICOS PARA FLECHAS DE TENDENCIA (⬆️ ⬇️ ↔️)
+        // REGISTROS HISTÓRICOS PARA FLECHAS DE TENDENCIA CON MOVIMIENTO DINÁMICO EXACTO
         let historicoPrecios = JSON.parse(localStorage.getItem('tcl_historico_precios')) || {};
 
-        function calcularSimboloTendencia(key, nuevoValor, esBotonMantener = false) {
+        function calcularHTMLTendencia(key, nuevoValor, esBotonMantener = false) {
             nuevoValor = parseFloat(nuevoValor) || 0;
             const anterior = parseFloat(historicoPrecios[key]);
 
             if (esBotonMantener) {
                 historicoPrecios[key] = nuevoValor;
                 localStorage.setItem('tcl_historico_precios', JSON.stringify(historicoPrecios));
-                return '↔️';
+                return '<span class="text-amber-400 font-mono font-bold animate-pulse">–</span>';
             }
 
-            let simbolo = '↔️';
+            let htmlSpan = '<span class="text-amber-400 font-mono font-bold animate-pulse">–</span>';
             if (anterior && nuevoValor > anterior) {
-                simbolo = '⬆️';
+                htmlSpan = '<span class="text-emerald-400 font-bold animate-bounce inline-block">▲</span>';
             } else if (anterior && nuevoValor < anterior) {
-                simbolo = '⬇️';
+                htmlSpan = '<span class="text-red-500 font-bold animate-bounce inline-block">▼</span>';
             }
 
             historicoPrecios[key] = nuevoValor;
             localStorage.setItem('tcl_historico_precios', JSON.stringify(historicoPrecios));
-            return simbolo;
+            return htmlSpan;
         }
 
         const REGLAS_DE_ORO_TEXTO = `*⚠️ REGLAS DE ORO Y CONDICIONES:*
@@ -1092,10 +1101,10 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
                     const baseVal = parseFloat(dataB.compra) || 8.90;
                     const estVal = parseFloat(dataB.venta) || (baseVal + 0.10);
                     const timeTxt = dataB.ultimaActualizacion || "Hoy";
-                    const tendenciaSimbolo = dataB.tendencia || "↔️";
+                    const tendenciaHTML = dataB.tendenciaHTML || '<span class="text-amber-400 font-mono font-bold animate-pulse">–</span>';
 
                     document.getElementById('val-usdt-rango').innerText = `${baseVal.toFixed(2)} / ${estVal.toFixed(2)} Bs.`;
-                    document.getElementById('trend-usdt-binance').innerText = tendenciaSimbolo;
+                    document.getElementById('trend-usdt-binance').innerHTML = tendenciaHTML;
                     document.getElementById('time-binance').innerText = `⚡ Última actualización: Hoy a las ${timeTxt}`;
                     
                     document.getElementById('pt-adm-usdt-compra').value = baseVal.toFixed(2);
@@ -1117,6 +1126,7 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
                     if(dataBcv.promedio) {
                         const valUsd = dataBcv.promedio;
                         document.getElementById('val-bcv-usd').innerText = `${valUsd.toFixed(2)} Bs`;
+                        document.getElementById('trend-bcv-usd').innerHTML = calcularHTMLTendencia('bcv_usd', valUsd);
                         let fechaValorTxt = dataBcv.fechaActualizacion ? new Date(dataBcv.fechaActualizacion).toLocaleDateString('es-ES') : new Date().toLocaleDateString('es-ES');
                         document.getElementById('time-bcv').innerText = `Oficial BCV — Emisión Valor: ${fechaValorTxt}`;
                     }
@@ -1130,19 +1140,39 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
                     if(dataEur.promedio) {
                         const valEur = dataEur.promedio;
                         document.getElementById('val-bcv-eur').innerText = `${valEur.toFixed(2)} Bs`;
+                        document.getElementById('trend-bcv-eur').innerHTML = calcularHTMLTendencia('bcv_eur', valEur);
                     }
                 }
             } catch (e) {}
 
-            // 2. TRM Colombia
+            // 2. TRM y Euro Colombia (COP)
+            let valTrmColombia = 0;
             try {
                 const resTrm = await fetch('https://www.datos.gov.co/resource/ceyp-9c7c.json?$limit=1&$order=vigenciahasta%20DESC');
                 if (resTrm.ok) {
                     const dataTrm = await resTrm.json();
                     if(dataTrm && dataTrm[0]) {
-                        const valorTrm = parseFloat(dataTrm[0].valor);
-                        document.getElementById('val-trm-cop').innerText = `${valorTrm.toLocaleString('es-CO')} COP`;
+                        valTrmColombia = parseFloat(dataTrm[0].valor);
+                        document.getElementById('val-trm-cop').innerText = `${valTrmColombia.toLocaleString('es-CO')} COP`;
+                        document.getElementById('trend-trm-cop').innerHTML = calcularHTMLTendencia('trm_cop', valTrmColombia);
                         document.getElementById('time-trm').innerText = `SFC Oficial — Sincronizado: ${ahoraHora}`;
+                    }
+                }
+            } catch (e) {}
+
+            try {
+                const resEurUsd = await fetch('https://open.er-api.com/v6/latest/EUR');
+                if (resEurUsd.ok) {
+                    const dataEurUsd = await resEurUsd.json();
+                    if (dataEurUsd && dataEurUsd.rates && dataEurUsd.rates.COP) {
+                        const valEurCop = parseFloat(dataEurUsd.rates.COP);
+                        document.getElementById('val-eur-cop').innerText = `${valEurCop.toLocaleString('es-CO', {maximumFractionDigits: 0})} COP`;
+                        document.getElementById('trend-eur-cop').innerHTML = calcularHTMLTendencia('eur_cop', valEurCop);
+                    } else if (valTrmColombia > 0 && dataEurUsd && dataEurUsd.rates && dataEurUsd.rates.USD) {
+                        const eurUsdRate = parseFloat(dataEurUsd.rates.USD);
+                        const valEurCopCalculado = valTrmColombia * eurUsdRate;
+                        document.getElementById('val-eur-cop').innerText = `${valEurCopCalculado.toLocaleString('es-CO', {maximumFractionDigits: 0})} COP`;
+                        document.getElementById('trend-eur-cop').innerHTML = calcularHTMLTendencia('eur_cop', valEurCopCalculado);
                     }
                 }
             } catch (e) {}
@@ -1157,11 +1187,12 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
                     const dataBtc = await resBtc.json();
                     const btcPrecio = parseFloat(dataBtc.price);
                     document.getElementById('val-btc-usd').innerText = `$${btcPrecio.toLocaleString('en-US', {maximumFractionDigits: 0})} USD`;
+                    document.getElementById('trend-btc-usd').innerHTML = calcularHTMLTendencia('btc_usd', btcPrecio);
                 }
             } catch (e) {}
         }
 
-        /* DESPACHO DEL REPORTE DIARIO WHATSAPP CON EL FORMATO OFICIAL SOLICITADO */
+        /* DESPACHO DEL REPORTE DIARIO WHATSAPP CON FORMATO OFICIAL Y LIMPIO */
         window.despacharReporteDiarioWhatsApp = function() {
             const fechaHoyStr = new Date().toLocaleDateString('es-ES');
             const linkDirectoPro = (linkServidorGitHubGuardado || URL_VITRINA_OFICIAL).split('#')[0] + '#publitasa';
@@ -1170,9 +1201,9 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
             const eurBcv = document.getElementById('val-bcv-eur').innerText;
             const cucutaVenta = document.getElementById('val-frontera-venta').innerText;
             const trmCop = document.getElementById('val-trm-cop').innerText;
+            const eurCop = document.getElementById('val-eur-cop').innerText;
             const usdtRangoTxt = document.getElementById('val-usdt-rango').innerText;
             const btcUsd = document.getElementById('val-btc-usd').innerText;
-            const trendUsdtSimbolo = document.getElementById('trend-usdt-binance').innerText || '↔️';
 
             const msg = `📊 Así cierran los indicadores económicos el día 📈
 
@@ -1182,17 +1213,18 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
 Dólar BCV: ${usdBcv}
 Euro BCV: ${eurBcv}
 
-🇨🇴 Frontera:
+🇨🇴 Colombia Oficial:
+Dólar TRM: ${trmCop}
+Euro Colombia: ${eurCop}
+
+💱 Frontera:
 Dólar casa de cambio Cúcuta:
 ${cucutaVenta} Cop.
-🇨🇴 Colombia:
-Dólar oficial TRM:
-${trmCop}
 
 🪙 Cripto:
 USDT Binance Venezuela:
 Se cotiza en este momento entre:
-${usdtRangoTxt} ${trendUsdtSimbolo}
+${usdtRangoTxt}
 
 Bitcoin Global:
 ${btcUsd}
@@ -1929,7 +1961,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
             const p2Formatted = tarifasPubliTasaEstructura.plan2.toFixed(2);
             const p3Formatted = tarifasPubliTasaEstructura.plan3.toFixed(2);
 
-            const msg = `📊 *PROPUESTA COMERCIAL — MONITOR FINANCIERO PUBLI-TASA-MK PRO* 🚀\n\nEstimado comerciante / empresario, le presentamos la solución definitiva para visualizar y controlar todos los indicadores económicos en tiempo real desde una sola pantalla elegante y segura:\n\n📈 *¿QUÉ INCLUYE SU PANTALLA EN VIVO?*\n🇻🇪 *Venezuela Oficial:* Dólar y Euro BCV (Sincronizado)\n🇨🇴 *Colombia Oficial:* Tasa TRM de la SFC\n💱 *Frontera Cúcuta:* Referencia real Compra/Venta de Casas de Cambio\n🌐 *Mercado Cripto / Digital:* Binance P2P USDT en vivo y Bitcoin Global\n\n📱 *PLANES Y LICENCIAS MENSUALES DISPONIBLES:*\n▪️ *Plan 1 Dispositivo Autorizado:* ${p1Formatted} USDT / Mes\n▪️ *Plan 2 Dispositivos (Caja & Administración):* ${p2Formatted} USDT / Mes\n▪️ *Plan 3 Dispositivos (Corporativo Multicaja):* ${p3Formatted} USDT / Mes\n\n💳 *MÚLTIPLES MÉTODOS DE PAGO:* Bolívares (Pago Móvil), Binance USDT, Zelle, Zinli, Nequi y PayPal.\n\n🔒 *MEMBRESÍA MENSUAL:* Acceso ilimitado por token seguro individual. Su licencia queda vinculada a su dispositivo.\n\n👇 *PRUEBE LA PLATAFORMA Y SOLICITE SU ACCESO AQUÍ:*\n🔗 ${urlFinal}${RESPALDO_FIRMA_WHATSAPP}`;
+            const msg = `📊 *PROPUESTA COMERCIAL — MONITOR FINANCIERO PUBLI-TASA-MK PRO* 🚀\n\nEstimado comerciante / empresario, le presentamos la solución definitiva para visualizar y controlar todos los indicadores económicos en tiempo real desde una sola pantalla elegante y segura:\n\n📈 *¿QUÉ INCLUYE SU PANTALLA EN VIVO?*\n🇻🇪 *Venezuela Oficial:* Dólar y Euro BCV (Sincronizado)\n🇨🇴 *Colombia Oficial:* Tasa TRM de la SFC y Euro Colombia\n💱 *Frontera Cúcuta:* Referencia real Compra/Venta de Casas de Cambio\n🌐 *Mercado Cripto / Digital:* Binance P2P USDT en vivo y Bitcoin Global\n\n📱 *PLANES Y LICENCIAS MENSUALES DISPONIBLES:*\n▪️ *Plan 1 Dispositivo Autorizado:* ${p1Formatted} USDT / Mes\n▪️ *Plan 2 Dispositivos (Caja & Administración):* ${p2Formatted} USDT / Mes\n▪️ *Plan 3 Dispositivos (Corporativo Multicaja):* ${p3Formatted} USDT / Mes\n\n💳 *MÚLTIPLES MÉTODOS DE PAGO:* Bolívares (Pago Móvil), Binance USDT, Zelle, Zinli, Nequi y PayPal.\n\n🔒 *MEMBRESÍA MENSUAL:* Acceso ilimitado por token seguro individual. Su licencia queda vinculada a su dispositivo.\n\n👇 *PRUEBE LA PLATAFORMA Y SOLICITE SU ACCESO AQUÍ:*\n🔗 ${urlFinal}${RESPALDO_FIRMA_WHATSAPP}`;
 
             abrirWhatsAppPersonal('', msg);
         };
@@ -1938,10 +1970,10 @@ ${LINK_COMUNIDAD_WHATSAPP}
             const urlFinal = (linkServidorGitHubGuardado || URL_VITRINA_OFICIAL).split('#')[0] + '#publitasa';
             let msg = "";
             if(tipo === 'GRUPOS') {
-                msg = `📊 *¡TODOS TUS INDICADORES EN UN SOLO LUGAR Y EN TIEMPO REAL!* 🚀\n\nOlvídate de abrir múltiples páginas o calcular a mano. Visualiza en una sola pantalla:\n\n🇻🇪 *Venezuela:* Dólar y Euro BCV\n🇨🇴 *Colombia:* TRM y Casas de Cambio en Cúcuta\n🌐 *Cripto / Digital:* Binance P2P (USDT) y Bitcoin\n\n⚡ *100% Fuentes Oficiales y Mercado Real al Instante.*\n\n📲 *Pruébalo ahora y solicita tu acceso desde $${tarifasPubliTasaEstructura.plan1.toFixed(2)} / Mes:*\n🔗 ${urlFinal}${RESPALDO_FIRMA_WHATSAPP}`;
+                msg = `📊 *¡TODOS TUS INDICADORES EN UN SOLO LUGAR Y EN TIEMPO REAL!* 🚀\n\nOlvídate de abrir múltiples páginas o calcular a mano. Visualiza en una sola pantalla:\n\n🇻🇪 *Venezuela:* Dólar y Euro BCV\n🇨🇴 *Colombia:* TRM, Euro y Casas de Cambio en Cúcuta\n🌐 *Cripto / Digital:* Binance P2P (USDT) y Bitcoin\n\n⚡ *100% Fuentes Oficiales y Mercado Real al Instante.*\n\n📲 *Pruébalo ahora y solicita tu acceso desde $${tarifasPubliTasaEstructura.plan1.toFixed(2)} / Mes:*\n🔗 ${urlFinal}${RESPALDO_FIRMA_WHATSAPP}`;
                 abrirWhatsAppPersonal('', msg);
             } else {
-                msg = `📊 PUBLITASA-MK PRO — MEMBRESÍA DESDE 5 USDT 🚀\n\n¡Tus números claros y al instante en una sola pantalla! 👁️\n\n🇻🇪 Dólar y Euro BCV Oficial\n🇨🇴 TRM Colombia y Casas de Cambio Cúcuta\n🌐 Binance P2P (USDT) y Bitcoin Global\n\n⚡ 100% Fuentes Oficiales y Mercado Real.\n\n📲 Prueba la plataforma y solicita tu acceso Pro aquí:\n${urlFinal}`;
+                msg = `📊 PUBLITASA-MK PRO — MEMBRESÍA DESDE 5 USDT 🚀\n\n¡Tus números claros y al instante en una sola pantalla! 👁️\n\n🇻🇪 Dólar y Euro BCV Oficial\n🇨🇴 TRM Colombia, Euro y Casas de Cambio Cúcuta\n🌐 Binance P2P (USDT) y Bitcoin Global\n\n⚡ 100% Fuentes Oficiales y Mercado Real.\n\n📲 Prueba la plataforma y solicita tu acceso Pro aquí:\n${urlFinal}`;
                 navigator.clipboard.writeText(msg).then(() => {
                     alert("📋 ¡Texto publicitario de PubliTasa Pro copiado con éxito!\n\nSe abrirá WhatsApp Personal para que crees tu Estado, elijas la foto dorada de tu galería y pegues la leyenda encima.");
                     abrirWhatsAppPersonal('', '');
@@ -1960,21 +1992,21 @@ ${LINK_COMUNIDAD_WHATSAPP}
             }
 
             const timeStampConsola = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-            const tendenciaSimbolo = calcularSimboloTendencia('binance_usdt', compra, esSoloMantener);
+            const tendenciaHTML = calcularHTMLTendencia('binance_usdt', compra, esSoloMantener);
 
             try {
-                await setDoc(doc(doc(db, "tcl_publitasa_pro", "binance_config").firestore, "tcl_publitasa_pro", "binance_config"), { 
+                await setDoc(doc(db, "tcl_publitasa_pro", "binance_config"), { 
                     compra, 
                     venta, 
                     ultimaActualizacion: timeStampConsola,
-                    tendencia: tendenciaSimbolo
+                    tendenciaHTML: tendenciaHTML
                 });
                 
                 document.getElementById('val-usdt-rango').innerText = `${compra.toFixed(2)} / ${venta.toFixed(2)} Bs.`;
-                document.getElementById('trend-usdt-binance').innerText = tendenciaSimbolo;
+                document.getElementById('trend-usdt-binance').innerHTML = tendenciaHTML;
                 document.getElementById('time-binance').innerText = `⚡ Última actualización: Hoy a las ${timeStampConsola}`;
 
-                alert(esSoloMantener ? `↔️ Tasa marcada como 'Se Mantiene' (Hora: ${timeStampConsola})` : `🚀 Nueva Tasa de USDT publicada (Hora: ${timeStampConsola})`);
+                alert(esSoloMantener ? `– Tasa marcada como 'Se Mantiene' (Hora: ${timeStampConsola})` : `🚀 Nueva Tasa de USDT publicada (Hora: ${timeStampConsola})`);
             } catch(e) { 
                 alert("Guardado local registrado."); 
             }
@@ -2248,4 +2280,4 @@ ${LINK_COMUNIDAD_WHATSAPP}
         };
     </script>
 </body>
-                                </html>
+</html>
