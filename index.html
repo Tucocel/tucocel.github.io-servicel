@@ -13,15 +13,14 @@
     <meta property="og:image:width" content="600">
     <meta property="og:image:height" content="600">
 
-    <!-- CONFIGURACIÓN PWA PARA INSTALACIÓN DIRECTA PUBLITASA PRO -->
+    <!-- CONFIGURACIÓN PWA Y MANIFIESTO EMBEBIDO (ENTRADA ÚNICA A PUBLITASA PRO) -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="PubliTasa Pro">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#00112b">
 
-    <!-- MANIFIESTO DINÁMICO EMBEBIDO PWA -->
-    <link rel="manifest" id="pwa-manifest-link">
+    <link rel="manifest" href='data:application/manifest+json,{"name":"PubliTasaMK Pro","short_name":"PubliTasa Pro","start_url":"./index.html%23publitasa","display":"standalone","background_color":"%23030306","theme_color":"%2300112b","icons":[{"src":"https://raw.githubusercontent.com/publionlinemk/streaming/main/imagen%20para%20Streaming%20-clean.jpg","sizes":"192x192","type":"image/jpeg"},{"src":"https://raw.githubusercontent.com/publionlinemk/streaming/main/imagen%20para%20Streaming%20-clean.jpg","sizes":"512x512","type":"image/jpeg"}]}'>
 
     <!-- TAILWIND & FONTS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -66,6 +65,12 @@
             background: radial-gradient(circle at top, rgba(153, 27, 27, 0.35) 0%, rgba(3, 3, 6, 0) 75%), linear-gradient(180deg, #080810 0%, #030306 100%);
             border-bottom: 1px solid rgba(220, 38, 38, 0.18);
         }
+
+        .btn-interactive {
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
     </style>
 </head>
 <body class="min-h-screen overflow-x-hidden no-scrollbar flex flex-col justify-between">
@@ -82,8 +87,8 @@
                 <div class="space-y-3 text-xs">
                     <input type="text" id="master-user-field" placeholder="Usuario ID" class="w-full bg-neutral-950 border border-neutral-800 text-white px-4 py-3 rounded-xl font-bold font-mono focus:outline-none focus:border-red-600 uppercase">
                     <input type="password" id="master-pass-field" placeholder="Clave Maestra" class="w-full bg-neutral-950 border border-neutral-800 text-white px-4 py-3 rounded-xl font-bold font-mono focus:outline-none focus:border-red-600">
-                    <button onclick="window.validarCredencialesMasterStreaming()" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-3 rounded-xl uppercase tracking-wider transition-all shadow-lg">Desbloquear Servidor</button>
-                    <button onclick="document.getElementById('streaming-modal-login-raiz').classList.add('hidden')" class="w-full bg-neutral-950 border border-neutral-800 text-slate-400 font-bold py-2 rounded-xl uppercase tracking-wide">Cancelar</button>
+                    <button onclick="window.validarCredencialesMasterStreaming()" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-3 rounded-xl uppercase tracking-wider transition-all shadow-lg btn-interactive">Desbloquear Servidor</button>
+                    <button onclick="document.getElementById('streaming-modal-login-raiz').classList.add('hidden')" class="w-full bg-neutral-950 border border-neutral-800 text-slate-400 font-bold py-2 rounded-xl uppercase tracking-wide btn-interactive">Cancelar</button>
                 </div>
             </div>
         </div>
@@ -95,10 +100,10 @@
                     <span class="text-red-600 text-xs sm:text-base font-black tracking-widest uppercase glow-red"><i class="fa-solid fa-film"></i> Servicios Streaming Cordero MK</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="window.abrirVistaMonitorDirecto()" class="bg-amber-500/10 border border-amber-500/40 text-amber-400 font-black text-[9px] sm:text-[10px] px-3 py-2 rounded-xl uppercase tracking-wider flex items-center gap-1.5 transition-all hover:bg-amber-500/20">
+                    <button onclick="window.abrirVistaMonitorDirecto()" class="bg-amber-500/10 border border-amber-500/40 text-amber-400 font-black text-[9px] sm:text-[10px] px-3 py-2 rounded-xl uppercase tracking-wider flex items-center gap-1.5 transition-all hover:bg-amber-500/20 btn-interactive">
                         <i class="fa-solid fa-chart-line"></i> <span class="hidden sm:inline">Monitor</span> Pro
                     </button>
-                    <button id="btn-mando-abrir-login" onclick="window.abrirModalLoginStreamingRaiz()" class="bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-slate-300 font-black text-[9px] sm:text-[10px] px-3.5 py-2 rounded-xl uppercase tracking-wider flex items-center gap-1.5 transition-all">
+                    <button id="btn-mando-abrir-login" onclick="window.abrirModalLoginStreamingRaiz()" class="bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-slate-300 font-black text-[9px] sm:text-[10px] px-3.5 py-2 rounded-xl uppercase tracking-wider flex items-center gap-1.5 transition-all btn-interactive">
                         <i class="fa-solid fa-lock text-red-500"></i> <span>Consola Máster</span>
                     </button>
                 </div>
@@ -139,7 +144,7 @@
 
             <!-- TARJETA PUBLITASA PRO -->
             <div class="max-w-6xl mx-auto px-2.5 sm:px-4">
-                <div onclick="window.abrirVistaMonitorDirecto()" class="publitasa-pro-card rounded-2xl p-4 sm:p-5 flex items-center justify-between cursor-pointer">
+                <div onclick="window.abrirVistaMonitorDirecto()" class="publitasa-pro-card rounded-2xl p-4 sm:p-5 flex items-center justify-between cursor-pointer btn-interactive">
                     <div class="flex items-center gap-3.5 sm:gap-4">
                         <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 rounded-full flex items-center justify-center border-2 border-white shadow-lg shadow-amber-500/30 flex-shrink-0">
                             <i class="fa-solid fa-arrow-trend-up text-neutral-950 text-xl sm:text-2xl"></i>
@@ -183,7 +188,7 @@
             <div class="bg-neutral-900 border border-neutral-800 w-full max-w-md rounded-3xl p-6 space-y-4 shadow-2xl">
                 <div class="flex justify-between items-center border-b border-neutral-800 pb-2">
                     <h3 class="font-black text-xs uppercase tracking-wider text-white flex items-center gap-1.5 text-red-500"><i class="fa-solid fa-paper-plane"></i> Formulario de Pedido</h3>
-                    <button onclick="document.getElementById('modal-solicitud-cliente-streaming').classList.add('hidden')" class="text-slate-400 hover:text-white bg-neutral-950 border border-neutral-800 w-7 h-7 rounded-xl flex items-center justify-center"><i class="fa-solid fa-xmark text-xs"></i></button>
+                    <button onclick="document.getElementById('modal-solicitud-cliente-streaming').classList.add('hidden')" class="text-slate-400 hover:text-white bg-neutral-950 border border-neutral-800 w-7 h-7 rounded-xl flex items-center justify-center btn-interactive"><i class="fa-solid fa-xmark text-xs"></i></button>
                 </div>
                 <form onsubmit="event.preventDefault(); window.despacharSolicitudWhatsAppAlDueno();" class="space-y-3 text-xs font-bold text-slate-800">
                     <input type="text" id="sol-plataforma" readonly class="w-full bg-neutral-950 border border-neutral-800 text-red-500 px-4 py-2.5 rounded-xl text-center font-black uppercase font-mono cursor-not-allowed">
@@ -234,7 +239,7 @@
                         <span class="text-[8.5px] font-black text-red-500 uppercase tracking-widest block">⚠️ REGLA DE ENVÍO</span>
                         <p class="text-[10px] text-slate-400 leading-tight">Si vas a hacer uso de este botón es porque estás 100% seguro de que deseas contratar la membresía. Este mensaje será enviado directamente al proveedor.</p>
                     </div>
-                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-3 rounded-xl uppercase tracking-wider text-xs">Confirmar y Enviar al WhatsApp</button>
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-3 rounded-xl uppercase tracking-wider text-xs btn-interactive">Confirmar y Enviar al WhatsApp</button>
                 </form>
             </div>
         </div>
@@ -247,7 +252,7 @@
             <!-- ENCABEZADO CORPORATIVO -->
             <div class="bg-gradient-to-b from-[#001f4d] to-[#00112b] border-2 border-amber-500/60 rounded-3xl p-5 text-center space-y-3 shadow-2xl relative overflow-hidden">
                 <div class="flex justify-between items-center border-b border-amber-500/20 pb-3">
-                    <button onclick="window.cerrarVistaMonitorDirecto()" class="text-slate-400 hover:text-white text-xs font-bold bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded-xl">
+                    <button onclick="window.cerrarVistaMonitorDirecto()" class="text-slate-400 hover:text-white text-xs font-bold bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded-xl btn-interactive">
                         <i class="fa-solid fa-arrow-left"></i> Volver
                     </button>
                     <span class="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5">
@@ -282,7 +287,7 @@
                 </div>
 
                 <!-- BOTÓN PWA -->
-                <button onclick="window.ejecutarInstalacionPWA()" id="btn-pwa-instalar" class="bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-neutral-950 font-black px-6 py-2.5 rounded-2xl text-xs uppercase tracking-wider shadow-lg transition-all inline-flex items-center gap-2">
+                <button onclick="window.ejecutarInstalacionPWA()" id="btn-pwa-instalar" class="bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-neutral-950 font-black px-6 py-2.5 rounded-2xl text-xs uppercase tracking-wider shadow-lg transition-all inline-flex items-center gap-2 btn-interactive">
                     <i class="fa-solid fa-mobile-screen-button text-base"></i> Instalar Aplicación en Pantalla Principal
                 </button>
             </div>
@@ -302,14 +307,14 @@
                 <div class="space-y-2">
                     <h3 class="text-white font-black uppercase text-xs tracking-wider">Validar Acceso Pro</h3>
                     <input type="password" id="pt-token-input" placeholder="INGRESE LICENCIA O CLAVE MÁSTER" class="w-full bg-neutral-950 border border-neutral-800 text-amber-400 font-mono text-center text-xs px-4 py-3 rounded-xl uppercase focus:outline-none focus:border-amber-500">
-                    <button onclick="window.autenticarClienteMonitorPro()" class="w-full bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black py-2.5 rounded-xl uppercase text-xs tracking-wider shadow-md">
+                    <button onclick="window.autenticarClienteMonitorPro()" class="w-full bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black py-2.5 rounded-xl uppercase text-xs tracking-wider shadow-md btn-interactive">
                         Desbloquear Indicadores 🔓
                     </button>
                 </div>
 
                 <div class="border-t border-neutral-800 pt-3">
                     <p class="text-[10px] text-slate-400 font-medium mb-2">¿Aún no tienes tu acceso activo?</p>
-                    <button onclick="window.abrirModalSolicitudStreaming('PUBLITASA_PRO')" class="w-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-neutral-950 font-extrabold py-3 rounded-xl uppercase tracking-wider text-xs shadow-xl transition-all border border-amber-300 animate-pulse flex items-center justify-center gap-2">
+                    <button onclick="window.abrirModalSolicitudStreaming('PUBLITASA_PRO')" class="w-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-neutral-950 font-extrabold py-3 rounded-xl uppercase tracking-wider text-xs shadow-xl transition-all border border-amber-300 animate-pulse flex items-center justify-center gap-2 btn-interactive">
                         <i class="fa-solid fa-cart-shopping text-sm"></i> Adquiere tu Membresía Pro desde $5 USDT
                     </button>
                 </div>
@@ -491,10 +496,10 @@
 
                 <!-- SWITCHER DE PARTICIÓN EN CONSOLA MÁSTER -->
                 <div class="bg-neutral-950 border border-neutral-800 p-1.5 rounded-2xl flex gap-2 w-full sm:w-auto">
-                    <button onclick="window.cambiarParticionAdmin('streaming')" id="btn-particion-streaming" class="flex-1 sm:flex-none px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider bg-red-600 text-white transition-all">
+                    <button onclick="window.cambiarParticionAdmin('streaming')" id="btn-particion-streaming" class="flex-1 sm:flex-none px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider bg-red-600 text-white transition-all btn-interactive">
                         🎬 Streaming
                     </button>
-                    <button onclick="window.cambiarParticionAdmin('publitasa')" id="btn-particion-publitasa" class="flex-1 sm:flex-none px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider bg-neutral-900 text-amber-400 border border-neutral-800 hover:border-amber-500/50 transition-all">
+                    <button onclick="window.cambiarParticionAdmin('publitasa')" id="btn-particion-publitasa" class="flex-1 sm:flex-none px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider bg-neutral-900 text-amber-400 border border-neutral-800 hover:border-amber-500/50 transition-all btn-interactive">
                         📊 PubliTasa Pro
                     </button>
                 </div>
@@ -521,14 +526,14 @@
                 <div class="space-y-2">
                     <!-- ACCORDION 1: LEGO PARSER -->
                     <div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden">
-                        <button onclick="window.toggleModuloAcordeon('acc-lego-parser')" class="w-full flex justify-between items-center px-5 py-3.5 font-black text-[11px] uppercase tracking-wide text-slate-300 hover:bg-neutral-850 transition-all">
+                        <button onclick="window.toggleModuloAcordeon('acc-lego-parser')" class="w-full flex justify-between items-center px-5 py-3.5 font-black text-[11px] uppercase tracking-wide text-slate-300 hover:bg-neutral-850 transition-all btn-interactive">
                             <span><i class="fa-solid fa-paste text-red-500 mr-2"></i> Carga de Clientes e Inyector Lego Parser</span>
                             <i class="fa-solid fa-chevron-down text-xs"></i>
                         </button>
                         <div id="acc-lego-parser" class="hidden p-5 border-t border-neutral-855 space-y-4 bg-neutral-950/40">
                             <div class="space-y-2">
                                 <textarea id="succion-bruta-textarea" rows="3" placeholder="Pegue el bloque de texto bruto del proveedor completo aquí..." class="w-full bg-neutral-950 border border-neutral-800 text-white p-3 rounded-xl font-mono text-[10px] focus:outline-none focus:border-red-600 no-scrollbar resize-y"></textarea>
-                                <button onclick="window.procesarSuccionLegoInteligenteTexto()" class="w-full bg-neutral-900 border border-neutral-800 hover:border-red-600/30 text-slate-300 font-black text-[10px] py-2 rounded-xl uppercase tracking-wider transition-all">Separar Datos en Planilla ⚡</button>
+                                <button onclick="window.procesarSuccionLegoInteligenteTexto()" class="w-full bg-neutral-900 border border-neutral-800 hover:border-red-600/30 text-slate-300 font-black text-[10px] py-2 rounded-xl uppercase tracking-wider transition-all btn-interactive">Separar Datos en Planilla ⚡</button>
                             </div>
                             <div class="space-y-3 text-xs font-bold text-slate-800">
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -566,26 +571,26 @@
                                         <input type="text" id="field-cliente-dir" placeholder="Dirección / Sector" class="w-full bg-neutral-900 border border-neutral-800 text-white p-2 rounded-lg text-[11px] focus:outline-none uppercase">
                                     </div>
                                 </div>
-                                <button onclick="window.ejecutarCargaPerfilStreamingFirebase()" class="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-black py-3.5 rounded-xl uppercase tracking-wider">Crear Perfil e Inyectar 🔒</button>
+                                <button onclick="window.ejecutarCargaPerfilStreamingFirebase()" class="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-black py-3.5 rounded-xl uppercase tracking-wider btn-interactive">Crear Perfil e Inyectar 🔒</button>
                             </div>
                         </div>
                     </div>
 
                     <!-- ACCORDION 2: REGULADOR PRECIOS STREAMING -->
                     <div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden">
-                        <button onclick="window.toggleModuloAcordeon('acc-tarifador')" class="w-full flex justify-between items-center px-5 py-3.5 font-black text-[11px] uppercase tracking-wide text-slate-300 hover:bg-neutral-850 transition-all">
+                        <button onclick="window.toggleModuloAcordeon('acc-tarifador')" class="w-full flex justify-between items-center px-5 py-3.5 font-black text-[11px] uppercase tracking-wide text-slate-300 hover:bg-neutral-850 transition-all btn-interactive">
                             <span><i class="fa-solid fa-sliders text-red-500 mr-2"></i> Regulador Dinámico de Tarifas Globales Web</span>
                             <i class="fa-solid fa-chevron-down text-xs"></i>
                         </button>
                         <div id="acc-tarifador" class="hidden p-4 border-t border-neutral-850 bg-neutral-950/40 space-y-3">
                             <div id="wrapper-inputs-tarifador-dinamico" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2.5"></div>
-                            <button onclick="window.salvarTarifasPublicasDinamicas()" class="bg-red-600 hover:bg-red-700 text-white font-black text-[10px] px-5 py-2 rounded-xl uppercase tracking-wider block ml-auto">Actualizar Precios Web</button>
+                            <button onclick="window.salvarTarifasPublicasDinamicas()" class="bg-red-600 hover:bg-red-700 text-white font-black text-[10px] px-5 py-2 rounded-xl uppercase tracking-wider block ml-auto btn-interactive">Actualizar Precios Web</button>
                         </div>
                     </div>
 
                     <!-- ACCORDION 3: NUEVAS PLATAFORMAS -->
                     <div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden">
-                        <button onclick="window.toggleModuloAcordeon('acc-add-plataforma')" class="w-full flex justify-between items-center px-5 py-3.5 font-black text-[11px] uppercase tracking-wide text-slate-300 hover:bg-neutral-850 transition-all">
+                        <button onclick="window.toggleModuloAcordeon('acc-add-plataforma')" class="w-full flex justify-between items-center px-5 py-3.5 font-black text-[11px] uppercase tracking-wide text-slate-300 hover:bg-neutral-850 transition-all btn-interactive">
                             <span><i class="fa-solid fa-square-plus text-red-500 mr-2"></i> Creador Autónomo de Nuevas Plataformas</span>
                             <i class="fa-solid fa-chevron-down text-xs"></i>
                         </button>
@@ -612,13 +617,13 @@
                                 <label class="block mb-1 text-[8.5px] text-slate-500 uppercase">Descripción Corta</label>
                                 <input type="text" id="new-plat-desc" placeholder="Descripción de venta..." class="w-full bg-neutral-950 border border-neutral-800 p-2.5 rounded-xl text-white">
                             </div>
-                            <button onclick="window.ejecutarCreacionAutonomaNuevaPlataforma()" class="bg-red-600 hover:bg-red-700 text-white font-black text-[10px] px-6 py-2.5 rounded-xl uppercase tracking-wider block ml-auto">➕ Inyectar Plataforma al Catálogo</button>
+                            <button onclick="window.ejecutarCreacionAutonomaNuevaPlataforma()" class="bg-red-600 hover:bg-red-700 text-white font-black text-[10px] px-6 py-2.5 rounded-xl uppercase tracking-wider block ml-auto btn-interactive">➕ Inyectar Plataforma al Catálogo</button>
                         </div>
                     </div>
 
                     <!-- ACCORDION 4: MARKETING GITHUB Y LEYENDAS -->
                     <div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden">
-                        <button onclick="window.toggleModuloAcordeon('acc-marketing')" class="w-full flex justify-between items-center px-5 py-3.5 font-black text-[11px] uppercase tracking-wide text-slate-300 hover:bg-neutral-850 transition-all">
+                        <button onclick="window.toggleModuloAcordeon('acc-marketing')" class="w-full flex justify-between items-center px-5 py-3.5 font-black text-[11px] uppercase tracking-wide text-slate-300 hover:bg-neutral-850 transition-all btn-interactive">
                             <span><i class="fa-solid fa-link text-red-500 mr-2"></i> Enrutador de Enlaces y Leyendas de Comunicación (GitHub)</span>
                             <i class="fa-solid fa-chevron-down text-xs"></i>
                         </button>
@@ -639,13 +644,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <button onclick="window.salvarConfiguracionDeEnlacesYLeyendas()" class="bg-neutral-950 text-slate-300 border border-neutral-800 hover:border-red-600/30 text-[10px] font-black uppercase px-5 py-2 rounded-xl block ml-auto">Guardar Enrutamiento Comercial</button>
+                            <button onclick="window.salvarConfiguracionDeEnlacesYLeyendas()" class="bg-neutral-950 text-slate-300 border border-neutral-800 hover:border-red-600/30 text-[10px] font-black uppercase px-5 py-2 rounded-xl block ml-auto btn-interactive">Guardar Enrutamiento Comercial</button>
                         </div>
                     </div>
 
                     <!-- ACCORDION 5: SEGURIDAD MÁSTER -->
                     <div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden">
-                        <button onclick="window.toggleModuloAcordeon('acc-seguridad')" class="w-full flex justify-between items-center px-5 py-3.5 font-black text-[11px] uppercase tracking-wide text-slate-300 hover:bg-neutral-850 transition-all">
+                        <button onclick="window.toggleModuloAcordeon('acc-seguridad')" class="w-full flex justify-between items-center px-5 py-3.5 font-black text-[11px] uppercase tracking-wide text-slate-300 hover:bg-neutral-850 transition-all btn-interactive">
                             <span><i class="fa-solid fa-shield-halved text-red-500 mr-2"></i> Configuración de Seguridad Administrativa</span>
                             <i class="fa-solid fa-chevron-down text-xs"></i>
                         </button>
@@ -653,7 +658,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                                 <input type="text" id="cfg-master-usuario-actual" placeholder="Nuevo Usuario Máster" class="bg-neutral-950 border border-neutral-800 text-white p-2.5 rounded-xl font-mono uppercase">
                                 <input type="password" id="cfg-master-clave-actual" placeholder="Nueva Clave Maestra" class="bg-neutral-950 border border-neutral-800 text-white p-2.5 rounded-xl font-mono">
-                                <button onclick="window.actualizarCredencialesSeguridadMaster()" class="bg-neutral-950 border border-neutral-800 text-red-500 font-black uppercase text-[10px] py-2 rounded-xl">Guardar Llave de Servidor</button>
+                                <button onclick="window.actualizarCredencialesSeguridadMaster()" class="bg-neutral-950 border border-neutral-800 text-red-500 font-black uppercase text-[10px] py-2 rounded-xl btn-interactive">Guardar Llave de Servidor</button>
                             </div>
                         </div>
                     </div>
@@ -661,8 +666,8 @@
 
                 <!-- BOTONERA MARKETING RÁPIDA -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <button onclick="window.despacharMarketingMasivoWhatsApp('GRUPOS')" class="bg-neutral-950 border border-neutral-800 hover:border-neutral-700 text-white font-black p-3.5 rounded-xl uppercase tracking-wider text-[11px] flex items-center justify-center gap-2"><i class="fa-solid fa-users text-red-500"></i> Compartir Catálogo en Grupos</button>
-                    <button onclick="window.despacharMarketingMasivoWhatsApp('ESTADOS')" class="bg-neutral-950 border border-neutral-800 hover:border-neutral-700 text-white font-black p-3.5 rounded-xl uppercase tracking-wider text-[11px] flex items-center justify-center gap-2"><i class="fa-solid fa-copy text-emerald-500"></i> Copiar Texto para Estado</button>
+                    <button onclick="window.despacharMarketingMasivoWhatsApp('GRUPOS')" class="bg-neutral-950 border border-neutral-800 hover:border-neutral-700 text-white font-black p-3.5 rounded-xl uppercase tracking-wider text-[11px] flex items-center justify-center gap-2 btn-interactive"><i class="fa-solid fa-users text-red-500"></i> Compartir Catálogo en Grupos</button>
+                    <button onclick="window.despacharMarketingMasivoWhatsApp('ESTADOS')" class="bg-neutral-950 border border-neutral-800 hover:border-neutral-700 text-white font-black p-3.5 rounded-xl uppercase tracking-wider text-[11px] flex items-center justify-center gap-2 btn-interactive"><i class="fa-solid fa-copy text-emerald-500"></i> Copiar Texto para Estado</button>
                 </div>
 
                 <!-- ARCHIVADOR INTELIGENTE POR CARPETAS -->
@@ -670,7 +675,7 @@
                     <div class="bg-neutral-900 border border-neutral-800 p-4 rounded-3xl space-y-3">
                         <div class="flex justify-between items-center">
                             <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase block"><i class="fa-solid fa-folder-tree text-red-500 mr-1"></i> Bóveda Central Filtrada de Suscriptores</span>
-                            <button onclick="window.alternarVistaArchivadosStreaming()" id="btn-toggle-anulados-str" class="bg-neutral-950 text-slate-400 border border-neutral-800 hover:border-red-900 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                            <button onclick="window.alternarVistaArchivadosStreaming()" id="btn-toggle-anulados-str" class="bg-neutral-950 text-slate-400 border border-neutral-800 hover:border-red-900 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider btn-interactive">
                                 📂 Ver Bóveda Anulados
                             </button>
                         </div>
@@ -697,19 +702,19 @@
                         <p class="text-[10px] text-slate-400">Enviar reporte diario a comunidades, compartir publicidad o mandar propuesta comercial.</p>
                     </div>
                     <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-                        <button onclick="window.despacharReporteDiarioWhatsApp()" class="bg-gradient-to-r from-emerald-500 to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white font-black text-xs px-3.5 py-2 rounded-xl uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5">
+                        <button onclick="window.despacharReporteDiarioWhatsApp()" class="bg-gradient-to-r from-emerald-500 to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white font-black text-xs px-3.5 py-2 rounded-xl uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5 btn-interactive">
                             <i class="fa-solid fa-chart-pie"></i> Reporte Cierre / Diario
                         </button>
-                        <button onclick="window.despacharPublicidadPubliTasa('GRUPOS')" class="bg-neutral-900 border border-neutral-800 text-amber-400 font-black text-xs px-3 py-2 rounded-xl uppercase tracking-wider hover:border-amber-500/40 transition-all flex items-center gap-1.5">
+                        <button onclick="window.despacharPublicidadPubliTasa('GRUPOS')" class="bg-neutral-900 border border-neutral-800 text-amber-400 font-black text-xs px-3 py-2 rounded-xl uppercase tracking-wider hover:border-amber-500/40 transition-all flex items-center gap-1.5 btn-interactive">
                             <i class="fa-solid fa-users"></i> Pub. Grupos
                         </button>
-                        <button onclick="window.despacharPublicidadPubliTasa('ESTADOS')" class="bg-neutral-900 border border-neutral-800 text-amber-400 font-black text-xs px-3 py-2 rounded-xl uppercase tracking-wider hover:border-amber-500/40 transition-all flex items-center gap-1.5">
+                        <button onclick="window.despacharPublicidadPubliTasa('ESTADOS')" class="bg-neutral-900 border border-neutral-800 text-amber-400 font-black text-xs px-3 py-2 rounded-xl uppercase tracking-wider hover:border-amber-500/40 transition-all flex items-center gap-1.5 btn-interactive">
                             <i class="fa-solid fa-copy"></i> Pub. Estado
                         </button>
-                        <button onclick="window.despacharCotizacionProWhatsApp()" class="bg-gradient-to-r from-amber-400 to-amber-600 text-neutral-950 font-black text-xs px-3.5 py-2 rounded-xl uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5">
+                        <button onclick="window.despacharCotizacionProWhatsApp()" class="bg-gradient-to-r from-amber-400 to-amber-600 text-neutral-950 font-black text-xs px-3.5 py-2 rounded-xl uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5 btn-interactive">
                             <i class="fa-solid fa-paper-plane"></i> Cotización Pro
                         </button>
-                        <button onclick="window.abrirVistaMonitorDirecto()" class="bg-neutral-900 border border-neutral-800 text-slate-300 font-black text-xs px-3 py-2 rounded-xl uppercase tracking-wider hover:border-slate-700 transition-all">
+                        <button onclick="window.abrirVistaMonitorDirecto()" class="bg-neutral-900 border border-neutral-800 text-slate-300 font-black text-xs px-3 py-2 rounded-xl uppercase tracking-wider hover:border-slate-700 transition-all btn-interactive">
                             Monitor
                         </button>
                     </div>
@@ -737,10 +742,10 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <button onclick="window.guardarTasaBinanceManualPubliTasa(false)" class="bg-gradient-to-r from-emerald-500 to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white font-black py-3 rounded-xl uppercase tracking-wider text-xs shadow-lg transition-all">
+                        <button onclick="window.guardarTasaBinanceManualPubliTasa(false)" class="bg-gradient-to-r from-emerald-500 to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white font-black py-3 rounded-xl uppercase tracking-wider text-xs shadow-lg transition-all btn-interactive">
                             ⚡ Publicar Nueva Tasa
                         </button>
-                        <button onclick="window.guardarTasaBinanceManualPubliTasa(true)" class="bg-neutral-900 border border-emerald-500/50 hover:bg-neutral-850 text-emerald-400 font-black py-3 rounded-xl uppercase tracking-wider text-xs transition-all">
+                        <button onclick="window.guardarTasaBinanceManualPubliTasa(true)" class="bg-neutral-900 border border-emerald-500/50 hover:bg-neutral-850 text-emerald-400 font-black py-3 rounded-xl uppercase tracking-wider text-xs transition-all btn-interactive">
                             – Se Mantienen Valores (Actualizar Hora)
                         </button>
                     </div>
@@ -767,14 +772,14 @@
                             <input type="number" id="pt-adm-venta" value="3370" class="w-full bg-neutral-900 border border-neutral-800 text-amber-400 font-mono text-sm px-4 py-2.5 rounded-xl focus:outline-none focus:border-amber-500">
                         </div>
                     </div>
-                    <button onclick="window.guardarTasaFronteraPubliTasa()" class="w-full bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-neutral-950 font-black py-3 rounded-xl uppercase tracking-wider text-xs shadow-lg transition-all">
+                    <button onclick="window.guardarTasaFronteraPubliTasa()" class="w-full bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-neutral-950 font-black py-3 rounded-xl uppercase tracking-wider text-xs shadow-lg transition-all btn-interactive">
                         🚀 Publicar Tasas en App en Vivo
                     </button>
                 </div>
 
                 <!-- 3. REGULADOR DINÁMICO DE TARIFAS PUBLITASA PRO -->
                 <div class="bg-neutral-950 border-2 border-amber-500/60 rounded-3xl overflow-hidden shadow-xl">
-                    <button onclick="window.toggleModuloAcordeon('acc-publitasa-tarifador')" class="w-full flex justify-between items-center px-5 py-4 font-black text-xs sm:text-sm uppercase tracking-wide text-white bg-neutral-900/80 hover:bg-neutral-900 transition-all border-b border-amber-500/20">
+                    <button onclick="window.toggleModuloAcordeon('acc-publitasa-tarifador')" class="w-full flex justify-between items-center px-5 py-4 font-black text-xs sm:text-sm uppercase tracking-wide text-white bg-neutral-900/80 hover:bg-neutral-900 transition-all border-b border-amber-500/20 btn-interactive">
                         <div class="flex items-center gap-2.5">
                             <div class="w-8 h-8 bg-amber-500/20 border border-amber-500/40 rounded-xl flex items-center justify-center text-amber-400 text-sm">
                                 <i class="fa-solid fa-sliders"></i>
@@ -790,7 +795,7 @@
                     <div id="acc-publitasa-tarifador" class="hidden p-5 space-y-4 bg-neutral-950/90 border-t border-neutral-900">
                         <div class="flex justify-between items-center border-b border-neutral-900 pb-2">
                             <p class="text-[10px] text-slate-400 font-medium">Edita los precios globales en USDT para actualizar la vitrina y los mensajes automáticos.</p>
-                            <button onclick="window.despacharCotizacionProWhatsApp()" class="bg-neutral-900 border border-amber-500/40 hover:border-amber-400 text-amber-400 text-[9.5px] font-black px-3 py-1.5 rounded-xl uppercase tracking-wider hidden sm:flex items-center gap-1.5">
+                            <button onclick="window.despacharCotizacionProWhatsApp()" class="bg-neutral-900 border border-amber-500/40 hover:border-amber-400 text-amber-400 text-[9.5px] font-black px-3 py-1.5 rounded-xl uppercase tracking-wider hidden sm:flex items-center gap-1.5 btn-interactive">
                                 <i class="fa-solid fa-paper-plane"></i> Probar Cotización
                             </button>
                         </div>
@@ -834,10 +839,10 @@
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-2 pt-1">
-                            <button onclick="window.salvarTarifasPubliTasaPro()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black py-3 rounded-xl uppercase tracking-wider text-xs shadow-lg transition-all">
+                            <button onclick="window.salvarTarifasPubliTasaPro()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black py-3 rounded-xl uppercase tracking-wider text-xs shadow-lg transition-all btn-interactive">
                                 🚀 Guardar y Actualizar Precios Pro en Web
                             </button>
-                            <button onclick="window.despacharCotizacionProWhatsApp()" class="sm:hidden bg-neutral-900 border border-amber-500/40 text-amber-400 font-black py-3 rounded-xl uppercase tracking-wider text-xs">
+                            <button onclick="window.despacharCotizacionProWhatsApp()" class="sm:hidden bg-neutral-900 border border-amber-500/40 text-amber-400 font-black py-3 rounded-xl uppercase tracking-wider text-xs btn-interactive">
                                 📲 Enviar Cotización al WhatsApp
                             </button>
                         </div>
@@ -893,7 +898,7 @@
                             </div>
                         </div>
 
-                        <button onclick="window.crearSuscriptorPubliTasaPro()" class="w-full bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg transition-all mt-2">
+                        <button onclick="window.crearSuscriptorPubliTasaPro()" class="w-full bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-lg transition-all mt-2 btn-interactive">
                             ➕ Generar Licencia e Inyectar a Firebase 🔒
                         </button>
                     </div>
@@ -907,7 +912,7 @@
                                 <i class="fa-solid fa-address-book"></i> Bóveda Licencias PubliTasa Pro
                             </span>
                             <div class="flex items-center gap-2">
-                                <button onclick="window.alternarVistaArchivadosPubliTasa()" id="btn-toggle-anulados-pt" class="bg-neutral-950 text-slate-400 border border-neutral-800 hover:border-amber-500/40 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                                <button onclick="window.alternarVistaArchivadosPubliTasa()" id="btn-toggle-anulados-pt" class="bg-neutral-950 text-slate-400 border border-neutral-800 hover:border-amber-500/40 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider btn-interactive">
                                     📂 Ver Bóveda Anulados
                                 </button>
                                 <span id="lbl-total-publitasa" class="bg-neutral-950 text-amber-400 border border-amber-500/30 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold">
@@ -948,36 +953,6 @@
             </p>
         </div>
     </footer>
-
-    <!-- GENERACIÓN DINÁMICA DEL MANIFEST PWA APUNTANDO DIRECTO A PUBLITASA -->
-    <script>
-        (function() {
-            const manifestData = {
-                "name": "PubliTasaMK Pro",
-                "short_name": "PubliTasa Pro",
-                "start_url": "./index.html#publitasa",
-                "display": "standalone",
-                "background_color": "#030306",
-                "theme_color": "#00112b",
-                "icons": [
-                    {
-                        "src": "https://raw.githubusercontent.com/publionlinemk/streaming/main/imagen%20para%20Streaming%20-clean.jpg",
-                        "sizes": "192x192",
-                        "type": "image/jpeg"
-                    },
-                    {
-                        "src": "https://raw.githubusercontent.com/publionlinemk/streaming/main/imagen%20para%20Streaming%20-clean.jpg",
-                        "sizes": "512x512",
-                        "type": "image/jpeg"
-                    }
-                ]
-            };
-            const stringManifest = JSON.stringify(manifestData);
-            const blob = new Blob([stringManifest], {type: 'application/json'});
-            const manifestURL = URL.createObjectURL(blob);
-            document.getElementById('pwa-manifest-link').setAttribute('href', manifestURL);
-        })();
-    </script>
 
     <!-- LÓGICA CORE FIREBASE & APIS EN VIVO BLINDADAS -->
     <script type="module">
@@ -1192,7 +1167,7 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
                     document.getElementById('pt-adm-usdt-venta').value = estVal.toFixed(2);
                 }
             } catch(e) {
-                console.log("Lectura en espera...");
+                console.log("Lectura de Binance en espera o sin conexión.");
             }
         }
 
@@ -1330,9 +1305,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
         });
 
         window.ejecutarInstalacionPWA = function() {
-            if (!document.getElementById('vista-publitasa-monitor').classList.contains('hidden') || window.location.hash === '#publitasa') {
-                window.location.hash = 'publitasa';
-            }
+            window.location.hash = 'publitasa';
 
             if (deferredPromptPWA) {
                 deferredPromptPWA.prompt();
@@ -1340,7 +1313,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
                     deferredPromptPWA = null;
                 });
             } else {
-                alert("📌 Para instalar en tu pantalla principal:\n\n• Android (Chrome): Presiona los 3 puntos superiores y selecciona 'Agregar a la pantalla principal'.\n• iPhone (Safari): Presiona el botón 'Compartir' y selecciona 'Agregar a inicio'.");
+                alert("📌 Para instalar la aplicación de PubliTasa Pro en tu pantalla principal:\n\n• Android (Chrome): Presiona los 3 puntos superiores y elige 'Agregar a la pantalla principal'.\n• iPhone (Safari): Presiona el botón 'Compartir' y elige 'Agregar al inicio'.");
             }
         };
 
@@ -1405,14 +1378,14 @@ ${LINK_COMUNIDAD_WHATSAPP}
             if(particion === 'publitasa') {
                 blockStreaming.classList.add('hidden');
                 blockPubliTasa.classList.remove('hidden');
-                btnPubliTasa.className = "flex-1 sm:flex-none px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider bg-amber-500 text-neutral-950 transition-all";
-                btnStreaming.className = "flex-1 sm:flex-none px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider bg-neutral-900 text-slate-400 border border-neutral-800 hover:border-slate-700 transition-all";
+                btnPubliTasa.className = "flex-1 sm:flex-none px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider bg-amber-500 text-neutral-950 transition-all btn-interactive";
+                btnStreaming.className = "flex-1 sm:flex-none px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider bg-neutral-900 text-slate-400 border border-neutral-800 hover:border-slate-700 transition-all btn-interactive";
                 window.descargarBasePubliTasaFirebaseCompleta();
             } else {
                 blockPubliTasa.classList.add('hidden');
                 blockStreaming.classList.remove('hidden');
-                btnStreaming.className = "flex-1 sm:flex-none px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider bg-red-600 text-white transition-all";
-                btnPubliTasa.className = "flex-1 sm:flex-none px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider bg-neutral-900 text-amber-400 border border-neutral-800 hover:border-amber-500/50 transition-all";
+                btnStreaming.className = "flex-1 sm:flex-none px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider bg-red-600 text-white transition-all btn-interactive";
+                btnPubliTasa.className = "flex-1 sm:flex-none px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider bg-neutral-900 text-amber-400 border border-neutral-800 hover:border-amber-500/50 transition-all btn-interactive";
             }
         };
 
@@ -1446,7 +1419,9 @@ ${LINK_COMUNIDAD_WHATSAPP}
             try {
                 await setDoc(doc(db, "tcl_streaming_core", "seguridad_config"), { usuario: masterUsuarioIdDinamico, clave: masterClaveDinamica });
                 alert("💾 Seguridad del servidor actualizada con éxito.");
-            } catch(e) {}
+            } catch(e) {
+                alert("❌ Error de red al guardar la seguridad.");
+            }
         };
 
         window.salvarConfiguracionDeEnlacesYLeyendas = async function() {
@@ -1456,7 +1431,9 @@ ${LINK_COMUNIDAD_WHATSAPP}
             try {
                 await setDoc(doc(db, "tcl_streaming_core", "marketing_config"), { github: linkServidorGitHubGuardado, leyendaGrupos: leyendaCustomGrupos, leyendaEstados: leyendaCustomEstados });
                 alert("💾 Enlaces guardados.");
-            } catch(e) {}
+            } catch(e) {
+                alert("❌ Error de comunicación con la base de datos.");
+            }
         };
 
         window.ejecutarCreacionAutonomaNuevaPlataforma = async function() {
@@ -1472,7 +1449,9 @@ ${LINK_COMUNIDAD_WHATSAPP}
                 await setDoc(doc(db, "tcl_streaming_core", "tarifas_config"), catálogoPlataformasEstructura);
                 alert(`✨ Plataforma [${nombre}] agregada al catálogo.`);
                 window.construirEstructurasDinamicasInterfaces();
-            } catch(e) {}
+            } catch(e) {
+                alert("❌ Fallo al inyectar la nueva plataforma.");
+            }
         };
 
         window.conmutarVistaAdminCliente = function() {
@@ -1520,7 +1499,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
                                     <span class="text-base font-mono font-black text-red-500 block">${item.precio.toFixed(2)} <small class="text-[9px] text-slate-500">USDT</small></span>
                                     <span class="text-[8.5px] font-bold text-slate-400 block leading-tight">Aceptamos Bolívares (Pago Móvil), Binance USDT, Zelle, Zinli, Nequi y PayPal.</span>
                                 </div>
-                                <button onclick="window.abrirModalSolicitudStreaming('${item.nombre}')" class="w-full bg-red-600 hover:bg-red-700 text-white font-black text-[9px] py-2 rounded-xl uppercase tracking-wider transition-all text-center">Adquirir</button>
+                                <button onclick="window.abrirModalSolicitudStreaming('${item.nombre}')" class="w-full bg-red-600 hover:bg-red-700 text-white font-black text-[9px] py-2 rounded-xl uppercase tracking-wider transition-all text-center btn-interactive">Adquirir</button>
                             </div>
                         </div>`;
                 }
@@ -1544,7 +1523,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
             if(!burbujasBox || !carpetasBox) return;
 
             burbujasBox.innerHTML = "";
-            let htmlCarpetas = `<button onclick="window.filtrarCarpetaStreamingAdmin('TODOS')" class="px-3 py-1.5 rounded-xl font-black text-[10px] uppercase transition-all ${carpetaFiltroSeleccionadaStr === 'TODOS' ? 'bg-red-600 text-white' : 'bg-neutral-950 text-slate-400 border border-neutral-800'}">📁 Ver Todos</button>`;
+            let htmlCarpetas = `<button onclick="window.filtrarCarpetaStreamingAdmin('TODOS')" class="px-3 py-1.5 rounded-xl font-black text-[10px] uppercase transition-all btn-interactive ${carpetaFiltroSeleccionadaStr === 'TODOS' ? 'bg-red-600 text-white' : 'bg-neutral-950 text-slate-400 border border-neutral-800'}">📁 Ver Todos</button>`;
 
             const activosPubliTasa = localPubliTasaClientesArr.filter(c => (c.estado || 'ACTIVO') === 'ACTIVO');
             const vencidosPubliTasa = activosPubliTasa.filter(c => c.diasRestantes <= 5).length;
@@ -1552,13 +1531,13 @@ ${LINK_COMUNIDAD_WHATSAPP}
             let colorBurbujaPT = vencidosPubliTasa > 0 ? 'border-amber-500 bg-amber-950/30 text-amber-400 animate-pulse font-black' : 'border-amber-500/40 bg-neutral-950/60 text-amber-400';
             
             burbujasBox.innerHTML += `
-                <div onclick="window.cambiarParticionAdmin('publitasa')" class="border rounded-xl p-2 text-center cursor-pointer hover:border-amber-400 transition-all ${colorBurbujaPT}">
+                <div onclick="window.cambiarParticionAdmin('publitasa')" class="border rounded-xl p-2 text-center cursor-pointer hover:border-amber-400 transition-all btn-interactive ${colorBurbujaPT}">
                     <span class="block text-[8.5px] font-black uppercase truncate">PubliTasa Pro</span>
                     <span class="text-[10px] font-mono block mt-0.5">${vencidosPubliTasa > 0 ? `⚠️ ${vencidosPubliTasa} Alerta` : '✅ Al Día'}</span>
                 </div>`;
 
             let estiloBotonPT = carpetaFiltroSeleccionadaStr === 'PUBLITASA_PRO' ? 'bg-amber-500 text-neutral-950 font-black' : 'bg-neutral-950 text-amber-400 border border-amber-500/40 hover:border-amber-400';
-            htmlCarpetas += `<button onclick="window.filtrarCarpetaStreamingAdmin('PUBLITASA_PRO')" class="px-3 py-1.5 rounded-xl font-bold text-[10px] uppercase transition-all ${estiloBotonPT}">📊 PubliTasa Pro (${activosPubliTasa.length})</button>`;
+            htmlCarpetas += `<button onclick="window.filtrarCarpetaStreamingAdmin('PUBLITASA_PRO')" class="px-3 py-1.5 rounded-xl font-bold text-[10px] uppercase transition-all btn-interactive ${estiloBotonPT}">📊 PubliTasa Pro (${activosPubliTasa.length})</button>`;
 
             Object.keys(catálogoPlataformasEstructura).forEach(k => {
                 const nombrePlat = catálogoPlataformasEstructura[k].nombre;
@@ -1567,13 +1546,13 @@ ${LINK_COMUNIDAD_WHATSAPP}
 
                 let colorBurbuja = vencidosLote > 0 ? 'border-amber-500 bg-amber-950/20 text-amber-400 animate-pulse font-black' : 'border-neutral-800 bg-neutral-950/40 text-slate-500';
                 burbujasBox.innerHTML += `
-                    <div onclick="window.filtrarCarpetaStreamingAdmin('${k}')" class="border rounded-xl p-2 text-center cursor-pointer hover:border-neutral-600 transition-all ${colorBurbuja}">
+                    <div onclick="window.filtrarCarpetaStreamingAdmin('${k}')" class="border rounded-xl p-2 text-center cursor-pointer hover:border-neutral-600 transition-all btn-interactive ${colorBurbuja}">
                         <span class="block text-[8.5px] font-black uppercase truncate">${nombrePlat}</span>
                         <span class="text-[10px] font-mono block mt-0.5">${vencidosLote > 0 ? `⚠️ ${vencidosLote} Alerta` : '✅ Al Día'}</span>
                     </div>`;
 
                 let estiloCarpetaBoton = carpetaFiltroSeleccionadaStr === k ? 'bg-red-600 text-white font-black' : 'bg-neutral-950 text-slate-400 border border-neutral-800';
-                htmlCarpetas += `<button onclick="window.filtrarCarpetaStreamingAdmin('${k}')" class="px-3 py-1.5 rounded-xl font-bold text-[10px] uppercase transition-all ${estiloCarpetaBoton}">${nombrePlat} (${clientesDeEstaPlat.length})</button>`;
+                htmlCarpetas += `<button onclick="window.filtrarCarpetaStreamingAdmin('${k}')" class="px-3 py-1.5 rounded-xl font-bold text-[10px] uppercase transition-all btn-interactive ${estiloCarpetaBoton}">${nombrePlat} (${clientesDeEstaPlat.length})</button>`;
             });
 
             carpetasBox.innerHTML = htmlCarpetas;
@@ -1589,10 +1568,10 @@ ${LINK_COMUNIDAD_WHATSAPP}
             verArchivadosStreamingBool = !verArchivadosStreamingBool;
             const btn = document.getElementById('btn-toggle-anulados-str');
             if(verArchivadosStreamingBool) {
-                btn.className = "bg-red-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider";
+                btn.className = "bg-red-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider btn-interactive";
                 btn.innerHTML = "🟢 Ver Clientes Activos";
             } else {
-                btn.className = "bg-neutral-950 text-slate-400 border border-neutral-800 hover:border-red-900 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider";
+                btn.className = "bg-neutral-950 text-slate-400 border border-neutral-800 hover:border-red-900 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider btn-interactive";
                 btn.innerHTML = "📂 Ver Bóveda Anulados";
             }
             window.renderizarMonitorMembresiasAdmin();
@@ -1602,10 +1581,10 @@ ${LINK_COMUNIDAD_WHATSAPP}
             verArchivadosPubliTasaBool = !verArchivadosPubliTasaBool;
             const btn = document.getElementById('btn-toggle-anulados-pt');
             if(verArchivadosPubliTasaBool) {
-                btn.className = "bg-amber-500 text-neutral-950 font-black text-[9px] px-3 py-1 rounded-full uppercase tracking-wider";
+                btn.className = "bg-amber-500 text-neutral-950 font-black text-[9px] px-3 py-1 rounded-full uppercase tracking-wider btn-interactive";
                 btn.innerHTML = "🟢 Ver Licencias Activas";
             } else {
-                btn.className = "bg-neutral-950 text-slate-400 border border-neutral-800 hover:border-amber-500/40 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider";
+                btn.className = "bg-neutral-950 text-slate-400 border border-neutral-800 hover:border-amber-500/40 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider btn-interactive";
                 btn.innerHTML = "📂 Ver Bóveda Anulados";
             }
             window.renderizarBovedaPubliTasaPro();
@@ -1668,7 +1647,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
             alert("⚡ Datos separados.");
         };
 
-        /* INYECCIÓN CON FECHA DE ACTIVACIÓN SELECCIONABLE */
+        /* INYECCIÓN CON FECHA DE ACTIVACIÓN SELECCIONABLE Y ID ANTI-COLISIÓN */
         window.ejecutarCargaPerfilStreamingFirebase = async function() {
             const plataforma = document.getElementById('field-plataforma').value;
             const meses = parseInt(document.getElementById('field-meses').value);
@@ -1691,7 +1670,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
             }
 
             const nuevoClienteStreaming = {
-                id: 'str-' + new Date().getTime(), plataforma, meses, correo, clave, perfil, pin,
+                id: 'str-' + Date.now() + '-' + Math.floor(Math.random() * 1000), plataforma, meses, correo, clave, perfil, pin,
                 cliente: cNombre, telefono: cTlf, direccion: cDir, fechaActivacion: fechaActStr, 
                 diasRestantes: calcularDiasRestantesReales(fechaActStr, meses), estado: 'ACTIVO'
             };
@@ -1753,14 +1732,14 @@ ${LINK_COMUNIDAD_WHATSAPP}
                             </div>
                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mt-3 border-t border-neutral-900 pt-3">
                                 ${!esInactivo ? `
-                                    <button onclick="window.renovarExpresPubliTasa('${c.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[9px] py-2 rounded-lg uppercase">⚡ +1 Mes</button>
-                                    <button onclick="window.enviarBienvenidaPubliTasa('${c.id}')" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black text-[9px] py-2 rounded-lg uppercase">📲 Acceso</button>
-                                    <button onclick="window.notificarPagoPubliTasa('${c.id}')" class="bg-neutral-900 border border-neutral-800 text-amber-400 font-bold text-[9px] py-2 rounded-lg uppercase">🔔 Notificar</button>
-                                    <button onclick="window.resetearEquiposPubliTasa('${c.id}')" class="bg-neutral-900 border border-neutral-800 text-slate-300 font-bold text-[9px] py-2 rounded-lg uppercase">🔄 Reset</button>
-                                    <button onclick="window.abrirEditorPubliTasa('${c.id}')" class="bg-neutral-900 border border-neutral-800 text-slate-400 font-bold text-[9px] py-2 rounded-lg uppercase">✏️ Editar</button>
-                                    <button onclick="window.anularSuscriptorPubliTasa('${c.id}')" class="bg-neutral-950 text-red-500 border border-red-950 text-[9px] font-black py-2 rounded-lg uppercase col-span-2 sm:col-span-3">🚫 Anular Licencia</button>
+                                    <button onclick="window.renovarExpresPubliTasa('${c.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[9px] py-2 rounded-lg uppercase btn-interactive">⚡ +1 Mes</button>
+                                    <button onclick="window.enviarBienvenidaPubliTasa('${c.id}')" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black text-[9px] py-2 rounded-lg uppercase btn-interactive">📲 Acceso</button>
+                                    <button onclick="window.notificarPagoPubliTasa('${c.id}')" class="bg-neutral-900 border border-neutral-800 text-amber-400 font-bold text-[9px] py-2 rounded-lg uppercase btn-interactive">🔔 Notificar</button>
+                                    <button onclick="window.resetearEquiposPubliTasa('${c.id}')" class="bg-neutral-900 border border-neutral-800 text-slate-300 font-bold text-[9px] py-2 rounded-lg uppercase btn-interactive">🔄 Reset</button>
+                                    <button onclick="window.abrirEditorPubliTasa('${c.id}')" class="bg-neutral-900 border border-neutral-800 text-slate-400 font-bold text-[9px] py-2 rounded-lg uppercase btn-interactive">✏️ Editar</button>
+                                    <button onclick="window.anularSuscriptorPubliTasa('${c.id}')" class="bg-neutral-950 text-red-500 border border-red-950 text-[9px] font-black py-2 rounded-lg uppercase col-span-2 sm:col-span-3 btn-interactive">🚫 Anular Licencia</button>
                                 ` : `
-                                    <button onclick="window.reactivarSuscriptorPubliTasa('${c.id}')" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black text-[9px] py-2 rounded-lg uppercase col-span-2 sm:col-span-4">♻️ Reactivar Licencia Pro</button>
+                                    <button onclick="window.reactivarSuscriptorPubliTasa('${c.id}')" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black text-[9px] py-2 rounded-lg uppercase col-span-2 sm:col-span-4 btn-interactive">♻️ Reactivar Licencia Pro</button>
                                 `}
                             </div>
                         </div>`;
@@ -1802,14 +1781,14 @@ ${LINK_COMUNIDAD_WHATSAPP}
                         </div>
                         <div class="grid grid-cols-2 sm:grid-cols-6 gap-1.5 mt-3 border-t border-neutral-900 pt-3">
                             ${!esInactivo ? `
-                                <button onclick="window.renovarExpresStreaming('${c.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[9px] py-1.5 rounded-lg uppercase">⚡ +1 Mes</button>
-                                <button onclick="window.despacharMensajeWhatsAppStreaming('${c.id}', 'ACTIVACION')" class="bg-red-600 hover:bg-red-700 text-white font-black text-[9px] py-1.5 rounded-lg uppercase">Activación</button>
-                                <button onclick="window.despacharMensajeWhatsAppStreaming('${c.id}', 'NOTIFICAR')" class="bg-neutral-900 border border-neutral-800 text-amber-400 font-bold text-[9px] py-1.5 rounded-lg uppercase">Notificar</button>
-                                <button onclick="window.despacharMensajeWhatsAppStreaming('${c.id}', 'RENOVACION')" class="bg-neutral-900 border border-neutral-800 text-slate-300 font-bold text-[9px] py-1.5 rounded-lg uppercase">Comprobante</button>
-                                <button onclick="window.abrirEditorPlanillaRapida('${c.id}')" class="bg-neutral-900 border border-neutral-800 text-slate-400 font-bold text-[9px] py-1.5 rounded-lg uppercase">Editar</button>
-                                <button onclick="window.anularPerfilStreaming('${c.id}')" class="bg-neutral-950 text-red-500 border border-red-950 text-[9px] font-black py-1.5 rounded-lg uppercase">Anular</button>
+                                <button onclick="window.renovarExpresStreaming('${c.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[9px] py-1.5 rounded-lg uppercase btn-interactive">⚡ +1 Mes</button>
+                                <button onclick="window.despacharMensajeWhatsAppStreaming('${c.id}', 'ACTIVACION')" class="bg-red-600 hover:bg-red-700 text-white font-black text-[9px] py-1.5 rounded-lg uppercase btn-interactive">Activación</button>
+                                <button onclick="window.despacharMensajeWhatsAppStreaming('${c.id}', 'NOTIFICAR')" class="bg-neutral-900 border border-neutral-800 text-amber-400 font-bold text-[9px] py-1.5 rounded-lg uppercase btn-interactive">Notificar</button>
+                                <button onclick="window.despacharMensajeWhatsAppStreaming('${c.id}', 'RENOVACION')" class="bg-neutral-900 border border-neutral-800 text-slate-300 font-bold text-[9px] py-1.5 rounded-lg uppercase btn-interactive">Comprobante</button>
+                                <button onclick="window.abrirEditorPlanillaRapida('${c.id}')" class="bg-neutral-900 border border-neutral-800 text-slate-400 font-bold text-[9px] py-1.5 rounded-lg uppercase btn-interactive">Editar</button>
+                                <button onclick="window.anularPerfilStreaming('${c.id}')" class="bg-neutral-950 text-red-500 border border-red-950 text-[9px] font-black py-1.5 rounded-lg uppercase btn-interactive">Anular</button>
                             ` : `
-                                <button onclick="window.reactivarPerfilStreaming('${c.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[9px] py-1.5 rounded-lg uppercase col-span-6">♻️ Reactivar Cliente en Sistema</button>
+                                <button onclick="window.reactivarPerfilStreaming('${c.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[9px] py-1.5 rounded-lg uppercase col-span-6 btn-interactive">♻️ Reactivar Cliente en Sistema</button>
                             `}
                         </div>
                     </div>`;
@@ -1967,22 +1946,27 @@ ${LINK_COMUNIDAD_WHATSAPP}
                 await setDoc(doc(db, "tcl_streaming_core", "tarifas_config"), catálogoPlataformasEstructura);
                 window.construirEstructurasDinamicasInterfaces();
                 alert("✨ Tarifas actualizadas en vitrina.");
-            } catch(e) {}
+            } catch(e) {
+                alert("❌ Fallo al guardar tarifas.");
+            }
         };
 
         window.descargarBaseStreamingFirebaseCompleta = async function() {
             try {
-                const docSeg = await getDoc(doc(db, "tcl_streaming_core", "seguridad_config"));
+                const [docSeg, docMkt, docTar, docCli] = await Promise.all([
+                    getDoc(doc(db, "tcl_streaming_core", "seguridad_config")),
+                    getDoc(doc(db, "tcl_streaming_core", "marketing_config")),
+                    getDoc(doc(db, "tcl_streaming_core", "tarifas_config")),
+                    getDoc(doc(db, "tcl_streaming_core", "clientes_activos"))
+                ]);
+
                 if(docSeg.exists()) { masterUsuarioIdDinamico = docSeg.data().usuario; masterClaveDinamica = docSeg.data().clave; }
-                const docMkt = await getDoc(doc(db, "tcl_streaming_core", "marketing_config"));
                 if(docMkt.exists()) {
                     linkServidorGitHubGuardado = docMkt.data().github || ""; leyendaCustomGrupos = docMkt.data().leyendaGrupos || ""; leyendaCustomEstados = docMkt.data().leyendaEstados || "";
                     document.getElementById('cfg-link-github-servidor').value = linkServidorGitHubGuardado;
                     document.getElementById('cfg-leyenda-grupos-custom').value = leyendaCustomGrupos; document.getElementById('cfg-leyenda-estados-custom').value = leyendaCustomEstados;
                 }
-                const docTar = await getDoc(doc(db, "tcl_streaming_core", "tarifas_config"));
                 if(docTar.exists()) { catálogoPlataformasEstructura = docTar.data(); }
-                const docCli = await getDoc(doc(db, "tcl_streaming_core", "clientes_activos"));
                 if(docCli.exists()) { 
                     localStreamingClientesArr = docCli.data().lista || []; 
                     localStorage.setItem('tcl_str_cache', JSON.stringify(localStreamingClientesArr));
@@ -2123,7 +2107,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
             } catch(e) { alert("Error al guardar tasas."); }
         };
 
-        /* CREACIÓN DE SUSCRIPTOR PRO CON FECHA DE ACTIVACIÓN MÓVIL */
+        /* CREACIÓN DE SUSCRIPTOR PRO CON FECHA DE ACTIVACIÓN MÓVIL Y ID ANTI-COLISIÓN */
         window.crearSuscriptorPubliTasaPro = async function() {
             const cliente = document.getElementById('pt-cli-nombre').value.trim().toUpperCase();
             const tlf = document.getElementById('pt-cli-tlf').value.trim();
@@ -2139,7 +2123,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
             const tokenLicencia = 'PUBLITASA-' + Math.floor(1000 + Math.random() * 9000);
 
             const nuevoClientePro = {
-                id: 'pt-' + new Date().getTime(),
+                id: 'pt-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
                 cliente, telefono: tlf, direccion: dir, meses,
                 maxEquipos, equiposRegistrados: [],
                 tokenLicencia, fechaActivacion: fechaActStr,
@@ -2209,26 +2193,26 @@ ${LINK_COMUNIDAD_WHATSAPP}
 
                         <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 mt-3 border-t border-neutral-900 pt-3">
                             ${!esInactivo ? `
-                                <button onclick="window.renovarExpresPubliTasa('${c.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[9px] py-2 rounded-lg uppercase">
+                                <button onclick="window.renovarExpresPubliTasa('${c.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[9px] py-2 rounded-lg uppercase btn-interactive">
                                     ⚡ +1 Mes
                                 </button>
-                                <button onclick="window.enviarBienvenidaPubliTasa('${c.id}')" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black text-[9px] py-2 rounded-lg uppercase">
+                                <button onclick="window.enviarBienvenidaPubliTasa('${c.id}')" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black text-[9px] py-2 rounded-lg uppercase btn-interactive">
                                     📲 Acceso
                                 </button>
-                                <button onclick="window.notificarPagoPubliTasa('${c.id}')" class="bg-neutral-900 border border-neutral-800 text-amber-400 font-bold text-[9px] py-2 rounded-lg uppercase">
+                                <button onclick="window.notificarPagoPubliTasa('${c.id}')" class="bg-neutral-900 border border-neutral-800 text-amber-400 font-bold text-[9px] py-2 rounded-lg uppercase btn-interactive">
                                     🔔 Notificar
                                 </button>
-                                <button onclick="window.resetearEquiposPubliTasa('${c.id}')" class="bg-neutral-900 border border-neutral-800 text-slate-300 font-bold text-[9px] py-2 rounded-lg uppercase">
+                                <button onclick="window.resetearEquiposPubliTasa('${c.id}')" class="bg-neutral-900 border border-neutral-800 text-slate-300 font-bold text-[9px] py-2 rounded-lg uppercase btn-interactive">
                                     🔄 Reset
                                 </button>
-                                <button onclick="window.abrirEditorPubliTasa('${c.id}')" class="bg-neutral-900 border border-neutral-800 text-slate-400 font-bold text-[9px] py-2 rounded-lg uppercase">
+                                <button onclick="window.abrirEditorPubliTasa('${c.id}')" class="bg-neutral-900 border border-neutral-800 text-slate-400 font-bold text-[9px] py-2 rounded-lg uppercase btn-interactive">
                                     ✏️ Editar
                                 </button>
-                                <button onclick="window.anularSuscriptorPubliTasa('${c.id}')" class="bg-neutral-950 text-red-500 border border-red-950 text-[9px] font-black py-2 rounded-lg uppercase col-span-2 sm:col-span-5">
+                                <button onclick="window.anularSuscriptorPubliTasa('${c.id}')" class="bg-neutral-950 text-red-500 border border-red-950 text-[9px] font-black py-2 rounded-lg uppercase col-span-2 sm:col-span-5 btn-interactive">
                                     🚫 Anular Licencia
                                 </button>
                             ` : `
-                                <button onclick="window.reactivarSuscriptorPubliTasa('${c.id}')" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black text-[9px] py-2 rounded-lg uppercase col-span-2 sm:col-span-5">
+                                <button onclick="window.reactivarSuscriptorPubliTasa('${c.id}')" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black text-[9px] py-2 rounded-lg uppercase col-span-2 sm:col-span-5 btn-interactive">
                                     ♻️ Reactivar Licencia Pro
                                 </button>
                             `}
@@ -2334,13 +2318,17 @@ ${LINK_COMUNIDAD_WHATSAPP}
 
         window.descargarBasePubliTasaFirebaseCompleta = async function() {
             try {
-                const docTarPT = await getDoc(doc(db, "tcl_publitasa_pro", "tarifas_config"));
+                const [docTarPT, docFrontera, docCli] = await Promise.all([
+                    getDoc(doc(db, "tcl_publitasa_pro", "tarifas_config")),
+                    getDoc(doc(db, "tcl_publitasa_pro", "frontera_config")),
+                    getDoc(doc(db, "tcl_publitasa_pro", "clientes_activos"))
+                ]);
+
                 if(docTarPT.exists()) {
                     tarifasPubliTasaEstructura = docTarPT.data();
                 }
                 window.actualizarLecturaTarifasPubliTasaGUI();
 
-                const docFrontera = await getDoc(doc(db, "tcl_publitasa_pro", "frontera_config"));
                 if(docFrontera.exists()) {
                     const c = docFrontera.data().compra || 3320;
                     const v = docFrontera.data().venta || 3370;
@@ -2352,7 +2340,6 @@ ${LINK_COMUNIDAD_WHATSAPP}
                     document.getElementById('time-frontera').innerText = `Última actualización en consola: ${u.includes(':') ? 'Hoy a las ' + u : u}`;
                 }
 
-                const docCli = await getDoc(doc(db, "tcl_publitasa_pro", "clientes_activos"));
                 if(docCli.exists()) { 
                     localPubliTasaClientesArr = docCli.data().lista || []; 
                     localStorage.setItem('tcl_pt_cache', JSON.stringify(localPubliTasaClientesArr));
@@ -2367,7 +2354,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
             }
         };
 
-        // EVALUACIÓN DE ARRANQUE E NAVEGACIÓN DE HASH (PWA ENTRADA DIRECTA A PUBLITASA)
+        // EVALUACIÓN DE ARRANQUE Y NAVEGACIÓN DE HASH (PWA ENTRADA DIRECTA A PUBLITASA)
         window.addEventListener('hashchange', function() {
             if(window.location.hash === '#publitasa') {
                 window.abrirVistaMonitorDirecto();
@@ -2386,6 +2373,10 @@ ${LINK_COMUNIDAD_WHATSAPP}
             if(inputDateStr) inputDateStr.value = hoyISO;
             if(inputDatePT) inputDatePT.value = hoyISO;
             
+            // DETECCION MODO APLICACIÓN INSTALADA (STANDALONE) O HASH DIRECTO
+            const esAppStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+            const esRutaMonitor = esAppStandalone || window.location.hash === '#publitasa';
+
             try {
                 const docTar = await getDoc(doc(db, "tcl_streaming_core", "tarifas_config"));
                 if(docTar.exists()) { catálogoPlataformasEstructura = docTar.data(); }
@@ -2398,16 +2389,16 @@ ${LINK_COMUNIDAD_WHATSAPP}
                 }
                 window.recalcularCarpetasYChismoseadorDinamico();
 
-                if(window.location.hash === '#publitasa') {
+                if (esRutaMonitor) {
                     window.abrirVistaMonitorDirecto();
                 }
             } catch(e) {
                 window.construirEstructurasDinamicasInterfaces();
-                if(window.location.hash === '#publitasa') {
+                if (esRutaMonitor) {
                     window.abrirVistaMonitorDirecto();
                 }
             }
         };
     </script>
 </body>
-                                </html>
+                            </html>
