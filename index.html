@@ -39,7 +39,6 @@
             transform: translateY(-3px);
         }
         
-        /* ESTILO EXCLUSIVO TARJETA PUBLITASA PRO */
         .publitasa-pro-card {
             background: linear-gradient(145deg, #00112b, #001f4d);
             border: 2px solid #d4af37;
@@ -172,25 +171,6 @@
                     <!-- Inyección automatizada por JS -->
                 </section>
             </main>
-        </div>
-
-        <!-- MODAL EN MANTENIMIENTO PUBLITASA PRO -->
-        <div id="modal-publitasa-construccion" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[11000] p-4 hidden flex items-center justify-center">
-            <div class="bg-neutral-950 border-2 border-amber-500/80 w-full max-w-sm rounded-3xl p-6 text-center space-y-4 shadow-2xl shadow-amber-500/20">
-                <div class="w-16 h-16 bg-neutral-900 border border-amber-500/40 rounded-2xl flex items-center justify-center mx-auto text-amber-400 text-3xl">
-                    <i class="fa-solid fa-screwdriver-wrench animate-bounce"></i>
-                </div>
-                <div class="space-y-2">
-                    <h3 class="font-black text-lg text-white uppercase tracking-tight">SERVICIO EN MANTENIMIENTO</h3>
-                    <p class="text-xs text-slate-300 font-medium leading-relaxed">
-                        Estamos realizando ajustes de infraestructura y sincronización de indicadores en <strong>PubliTasaMK Pro</strong>.<br><br>
-                        En breve el servicio estará disponible nuevamente con el respaldo de <strong>Tucocel C.A.</strong>
-                    </p>
-                </div>
-                <button onclick="document.getElementById('modal-publitasa-construccion').classList.add('hidden')" class="w-full bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-neutral-950 font-black py-3 rounded-xl uppercase tracking-wider text-xs transition-all shadow-lg">
-                    Entendido
-                </button>
-            </div>
         </div>
 
         <!-- FORMULARIO DE CAPTACIÓN PÚBLICO -->
@@ -330,7 +310,7 @@
                 </div>
             </div>
 
-            <!-- BLOQUE DE INDICADORES (CON SÍMBOLOS DINÁMICOS DE TENDENCIA 🔼🔽) -->
+            <!-- BLOQUE DE INDICADORES -->
             <div id="wrapper-indicadores-pantalla" class="space-y-4 hidden">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     
@@ -404,26 +384,26 @@
                         </div>
                     </div>
 
-                    <!-- CRIPTO MERCADO: BINANCE USDT + BITCOIN BTC -->
+                    <!-- CRIPTO MERCADO: BINANCE USDT (COTIZACIÓN EN RANGO LIMPIO) + BITCOIN BTC -->
                     <div class="bg-neutral-950 border border-neutral-800 p-4 rounded-2xl space-y-2 sm:col-span-2">
                         <div class="flex justify-between items-center border-b border-neutral-900 pb-2">
                             <span class="text-xs font-bold text-slate-300">🪙 Mercado Cripto (Binance P2P & Global)</span>
-                            <span class="text-[9px] text-emerald-400 font-mono font-bold"><i class="fa-solid fa-circle-dot animate-pulse"></i> Binance En Vivo</span>
+                            <span class="text-[9px] text-emerald-400 font-mono font-bold"><i class="fa-solid fa-circle-dot animate-pulse"></i> Sincronizado</span>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                             <div class="bg-neutral-900 p-3 rounded-xl border border-neutral-800 space-y-1">
                                 <span class="text-[9.5px] text-amber-400 uppercase font-black block flex items-center justify-between">
-                                    <span>Binance USDT (VES P2P)</span>
-                                    <span id="trend-usdt-binance"></span>
+                                    <span>Binance USDT (VES)</span>
+                                    <span id="trend-usdt-binance">↔️</span>
                                 </span>
-                                <div class="flex justify-between items-center font-mono text-xs font-bold pt-1">
-                                    <span class="text-slate-400">Compra: <strong id="val-usdt-compra" class="text-emerald-400 text-sm">Cargando...</strong></span>
-                                    <span class="text-slate-400">Venta: <strong id="val-usdt-venta" class="text-amber-400 text-sm">Cargando...</strong></span>
+                                <div class="pt-1 text-slate-300 font-mono text-xs font-bold">
+                                    <span class="text-[10px] text-slate-400 block mb-0.5">Se cotiza en este momento entre:</span>
+                                    <strong id="val-usdt-rango" class="text-emerald-400 text-sm sm:text-base">8.90 / 9.00 Bs.</strong>
                                 </div>
                             </div>
                             <div class="bg-neutral-900 p-3 rounded-xl border border-neutral-800 space-y-1">
                                 <span class="text-[9.5px] text-amber-400 uppercase font-black block">Bitcoin (BTC / USD Global)</span>
-                                <div class="flex justify-between items-center font-mono text-xs font-bold pt-1">
+                                <div class="flex justify-between items-center font-mono text-xs font-bold pt-2">
                                     <span class="text-slate-400">Cotización:</span>
                                     <span class="flex items-center gap-1 font-mono font-black text-emerald-400 text-sm">
                                         <span id="trend-btc-usd"></span>
@@ -433,7 +413,7 @@
                             </div>
                         </div>
                         <div class="border-t border-neutral-900/60 pt-2 text-right">
-                            <span id="time-binance" class="text-[8.5px] text-emerald-400 font-mono font-bold">Sincronizado P2P: Sincronizando...</span>
+                            <span id="time-binance" class="text-[8.5px] text-emerald-400 font-mono font-bold">Última actualización: En espera...</span>
                         </div>
                     </div>
 
@@ -679,24 +659,6 @@
             <!-- BLOQUE DE PUBLITASA PRO (PARTICIÓN 2 - PANEL MÁSTER COMPLETO) -->
             <div id="bloque-admin-particion-publitasa" class="hidden space-y-6">
 
-                <!-- BOTÓN INTERRACTIVO MÁSTER -->
-                <div class="bg-neutral-950 border-2 border-amber-500/60 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-3 shadow-xl">
-                    <div class="space-y-0.5 text-center sm:text-left">
-                        <span class="text-white font-black text-xs uppercase block flex items-center gap-1.5 justify-center sm:justify-start">
-                            <i class="fa-solid fa-power-off text-amber-400"></i> Estado del Servicio PubliTasa Pro en Web
-                        </span>
-                        <p id="lbl-estado-publitasa-mando" class="text-[10px] text-amber-400 font-bold">Estado Actual: SERVICIO EN VIVO</p>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="window.alternarEstadoServicioPubliTasa(true)" id="btn-sw-publitasa-on" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[10px] px-4 py-2 rounded-xl uppercase tracking-wider transition-all">
-                            Activar Pro (En Vivo)
-                        </button>
-                        <button onclick="window.alternarEstadoServicioPubliTasa(false)" id="btn-sw-publitasa-off" class="bg-neutral-900 border border-red-500/50 text-red-500 font-black text-[10px] px-4 py-2 rounded-xl uppercase tracking-wider transition-all">
-                            Desactivar (Mantenimiento)
-                        </button>
-                    </div>
-                </div>
-
                 <!-- ACCESO RÁPIDO Y BOTONERA PUBLICITARIA DE PUBLITASA PRO CON EL BOTÓN DEL REPORTE DIARIO -->
                 <div class="bg-neutral-950 border border-neutral-800 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-3">
                     <div class="space-y-0.5 text-center sm:text-left">
@@ -722,7 +684,7 @@
                     </div>
                 </div>
 
-                <!-- 1. CONTROL MANUAL / REFERENCIAL BINANCE USDT P2P -->
+                <!-- 1. CONTROL MANUAL RANGO BINANCE USDT P2P (+ DUAL BOTÓN MANTENER/PUBLICAR) -->
                 <div class="bg-neutral-950 border-2 border-emerald-500/40 p-5 rounded-3xl space-y-4 shadow-xl">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center text-neutral-950 text-xl font-black">
@@ -730,22 +692,27 @@
                         </div>
                         <div>
                             <h3 class="text-white font-extrabold uppercase text-sm">Ajuste Manual Tasa Binance USDT (P2P)</h3>
-                            <p class="text-[10px] text-slate-400 uppercase">Respaldo Inmediato &bull; PubliTasaMK Pro</p>
+                            <p class="text-[10px] text-slate-400 uppercase">Se cotiza entre la Base y el Estimado superior (+10 pts)</p>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-bold">
                         <div>
-                            <label class="text-[9px] text-slate-400 font-black uppercase mb-1 block">Tasa Compra Base (Bs)</label>
-                            <input type="number" id="pt-adm-usdt-compra" value="820" step="0.1" class="w-full bg-neutral-900 border border-neutral-800 text-emerald-400 font-mono text-sm px-4 py-2.5 rounded-xl focus:outline-none focus:border-emerald-500">
+                            <label class="text-[9px] text-slate-400 font-black uppercase mb-1 block">Tasa Base USDT (Bs)</label>
+                            <input type="number" id="pt-adm-usdt-compra" value="8.90" step="0.01" class="w-full bg-neutral-900 border border-neutral-800 text-emerald-400 font-mono text-sm px-4 py-2.5 rounded-xl focus:outline-none focus:border-emerald-500" placeholder="Ej: 8.90">
                         </div>
                         <div>
-                            <label class="text-[9px] text-slate-400 font-black uppercase mb-1 block">Tasa Venta Mercantil (Bs)</label>
-                            <input type="number" id="pt-adm-usdt-venta" value="830" step="0.1" class="w-full bg-neutral-900 border border-neutral-800 text-amber-400 font-mono text-sm px-4 py-2.5 rounded-xl focus:outline-none focus:border-amber-500">
+                            <label class="text-[9px] text-slate-400 font-black uppercase mb-1 block">Tasa Estimada Superior (+10 Pts)</label>
+                            <input type="number" id="pt-adm-usdt-venta" value="9.00" step="0.01" class="w-full bg-neutral-900 border border-neutral-800 text-amber-400 font-mono text-sm px-4 py-2.5 rounded-xl focus:outline-none focus:border-amber-500" placeholder="Ej: 9.00">
                         </div>
                     </div>
-                    <button onclick="window.guardarTasaBinanceManualPubliTasa()" class="w-full bg-gradient-to-r from-emerald-500 to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white font-black py-3 rounded-xl uppercase tracking-wider text-xs shadow-lg transition-all">
-                        ⚡ Publicar Tasa Binance en App
-                    </button>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <button onclick="window.guardarTasaBinanceManualPubliTasa(false)" class="bg-gradient-to-r from-emerald-500 to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white font-black py-3 rounded-xl uppercase tracking-wider text-xs shadow-lg transition-all">
+                            ⚡ Publicar Nueva Tasa
+                        </button>
+                        <button onclick="window.guardarTasaBinanceManualPubliTasa(true)" class="bg-neutral-900 border border-emerald-500/50 hover:bg-neutral-850 text-emerald-400 font-black py-3 rounded-xl uppercase tracking-wider text-xs transition-all">
+                            ↔️ Se Mantienen Valores (Actualizar Hora)
+                        </button>
+                    </div>
                 </div>
 
                 <!-- 2. CONTROL DE CASAS DE CAMBIO (FRONTERA) -->
@@ -1015,11 +982,7 @@
             HBO_MAX: { nombre: "HBO Max", precio: 4.50, logo: "https://upload.wikimedia.org/wikipedia/commons/c/ce/Max_logo.svg", desc: "Series mundiales galardedonas, estrenos de cine de Warner Bros y documentales." }
         };
 
-        let tarifasPubliTasaEstructura = {
-            plan1: 5.00,
-            plan2: 8.00,
-            plan3: 12.00
-        };
+        let tarifasPubliTasaEstructura = { plan1: 5.00, plan2: 8.00, plan3: 12.00 };
 
         let localStreamingClientesArr = [];
         let localPubliTasaClientesArr = [];
@@ -1028,7 +991,6 @@
         let verArchivadosStreamingBool = false;
         let verArchivadosPubliTasaBool = false;
         let deferredPromptPWA = null;
-        let publiTasaProEstadoActivoBool = true;
         
         let masterUsuarioIdDinamico = "TUCOCEL";
         let masterClaveDinamica = "Razu2020.";
@@ -1039,33 +1001,26 @@
         // REGISTROS HISTÓRICOS PARA FLECHAS DE TENDENCIA (⬆️ ⬇️ ↔️)
         let historicoPrecios = JSON.parse(localStorage.getItem('tcl_historico_precios')) || {};
 
-        function obtenerSimboloTendenciaTexto(key, nuevoValor) {
+        function calcularSimboloTendencia(key, nuevoValor, esBotonMantener = false) {
             nuevoValor = parseFloat(nuevoValor) || 0;
             const anterior = parseFloat(historicoPrecios[key]);
+
+            if (esBotonMantener) {
+                historicoPrecios[key] = nuevoValor;
+                localStorage.setItem('tcl_historico_precios', JSON.stringify(historicoPrecios));
+                return '↔️';
+            }
+
+            let simbolo = '↔️';
+            if (anterior && nuevoValor > anterior) {
+                simbolo = '⬆️';
+            } else if (anterior && nuevoValor < anterior) {
+                simbolo = '⬇️';
+            }
 
             historicoPrecios[key] = nuevoValor;
             localStorage.setItem('tcl_historico_precios', JSON.stringify(historicoPrecios));
-
-            if (!anterior || anterior === nuevoValor) {
-                return `↔️`;
-            } else if (nuevoValor > anterior) {
-                return `⬆️`;
-            } else {
-                return `⬇️`;
-            }
-        }
-
-        function obtenerIconoTendenciaHTML(key, nuevoValor) {
-            nuevoValor = parseFloat(nuevoValor) || 0;
-            const anterior = parseFloat(historicoPrecios[key]);
-
-            if (!anterior || anterior === nuevoValor) {
-                return `<i class="fa-solid fa-minus text-slate-500 text-[10px]"></i>`;
-            } else if (nuevoValor > anterior) {
-                return `<i class="fa-solid fa-caret-up text-emerald-400 text-xs animate-bounce"></i>`;
-            } else {
-                return `<i class="fa-solid fa-caret-down text-red-500 text-xs animate-bounce"></i>`;
-            }
+            return simbolo;
         }
 
         const REGLAS_DE_ORO_TEXTO = `*⚠️ REGLAS DE ORO Y CONDICIONES:*
@@ -1118,7 +1073,6 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
                 const ahora = new Date();
                 const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                 const fechaTexto = ahora.toLocaleDateString('es-ES', opcionesFecha);
-                
                 const horaTexto = ahora.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
 
                 const elFecha = document.getElementById('pt-reloj-fecha');
@@ -1129,85 +1083,26 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
             }, 1000);
         }
 
-        /* MOTOR DE AUTOTOUCH INTELIGENTE DE BINANCE P2P */
-        async function consultarEInyectarBinanceP2PEnVivo(esForzadoManual = false) {
-            try {
-                const resP2P = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTBIDR');
-                let baseUsdtBs = 820.00;
-                
-                try {
-                    const resDirecta = await fetch('https://ve.dolarapi.com/v1/dolares/cripto');
-                    if(resDirecta.ok) {
-                        const dataD = await resDirecta.json();
-                        if(dataD.promedio) baseUsdtBs = dataD.promedio;
-                    }
-                } catch(e1) {}
-
-                const compraVal = baseUsdtBs;
-                const ventaVal = baseUsdtBs + 10.00; 
-                const timeStampToque = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-
-                document.getElementById('val-usdt-compra').innerText = `${compraVal.toFixed(2)} Bs`;
-                document.getElementById('val-usdt-venta').innerText = `${ventaVal.toFixed(2)} Bs`;
-                document.getElementById('trend-usdt-binance').innerHTML = obtenerIconoTendenciaHTML('binance_usdt', compraVal);
-                document.getElementById('time-binance').innerText = `⚡ Sincronizado P2P: ${timeStampToque}`;
-
-                document.getElementById('pt-adm-usdt-compra').value = compraVal.toFixed(2);
-                document.getElementById('pt-adm-usdt-venta').value = ventaVal.toFixed(2);
-
-                await setDoc(doc(db, "tcl_publitasa_pro", "binance_config"), { 
-                    compra: compraVal, 
-                    venta: ventaVal, 
-                    ultimaActualizacion: timeStampToque,
-                    origen: esForzadoManual ? "MANUAL_CONSOLA" : "AUTOMATICO_P2P"
-                });
-            } catch(e) {
-                console.log("Servidor en respaldo de lectura.");
-            }
-        }
-
-        /* LECTURA ULTRA RÁPIDA DESDE FIREBASE Y EVALUACIÓN DE HORARIO DE TOQUES */
+        /* SINCRONIZACIÓN LECTURA NUBE BINANCE */
         async function sincronizarBinanceDesdeFirebase() {
             try {
-                const ahora = new Date();
-                const horas = ahora.getHours();
-                const minutos = ahora.getMinutes();
-
-                // EVALUACIÓN DE HORARIOS DE TOQUE: 7:45 AM, 9:15 AM (HOY), 11:00 AM, 4:00 PM, 7:00 PM, 10:00 PM
-                const esHorarioToque = (
-                    (horas === 7 && minutos >= 45) ||
-                    (horas === 9 && minutos >= 15) ||
-                    (horas === 11 && minutos < 15) ||
-                    (horas === 16 && minutos < 15) ||
-                    (horas === 19 && minutos < 15) ||
-                    (horas === 22 && minutos < 15)
-                );
-
                 const docBinance = await getDoc(doc(db, "tcl_publitasa_pro", "binance_config"));
                 if(docBinance.exists()) {
                     const dataB = docBinance.data();
-                    
-                    if(esHorarioToque && dataB.origen === "MANUAL_CONSOLA") {
-                        await consultarEInyectarBinanceP2PEnVivo(false);
-                        return;
-                    }
-
-                    const compraVal = dataB.compra || 820;
-                    const ventaVal = dataB.venta || (compraVal + 10);
+                    const baseVal = parseFloat(dataB.compra) || 8.90;
+                    const estVal = parseFloat(dataB.venta) || (baseVal + 0.10);
                     const timeTxt = dataB.ultimaActualizacion || "Hoy";
+                    const tendenciaSimbolo = dataB.tendencia || "↔️";
 
-                    document.getElementById('val-usdt-compra').innerText = `${parseFloat(compraVal).toFixed(2)} Bs`;
-                    document.getElementById('val-usdt-venta').innerText = `${parseFloat(ventaVal).toFixed(2)} Bs`;
-                    document.getElementById('trend-usdt-binance').innerHTML = obtenerIconoTendenciaHTML('binance_usdt', compraVal);
-                    document.getElementById('time-binance').innerText = `⚡ Sincronizado P2P: ${timeTxt}`;
+                    document.getElementById('val-usdt-rango').innerText = `${baseVal.toFixed(2)} / ${estVal.toFixed(2)} Bs.`;
+                    document.getElementById('trend-usdt-binance').innerText = tendenciaSimbolo;
+                    document.getElementById('time-binance').innerText = `⚡ Última actualización: Hoy a las ${timeTxt}`;
                     
-                    document.getElementById('pt-adm-usdt-compra').value = compraVal;
-                    document.getElementById('pt-adm-usdt-venta').value = ventaVal;
-                } else {
-                    await consultarEInyectarBinanceP2PEnVivo(false);
+                    document.getElementById('pt-adm-usdt-compra').value = baseVal.toFixed(2);
+                    document.getElementById('pt-adm-usdt-venta').value = estVal.toFixed(2);
                 }
             } catch(e) {
-                document.getElementById('time-binance').innerText = `⚡ Sincronizado P2P: En vivo`;
+                console.log("Lectura en espera...");
             }
         }
 
@@ -1222,8 +1117,6 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
                     if(dataBcv.promedio) {
                         const valUsd = dataBcv.promedio;
                         document.getElementById('val-bcv-usd').innerText = `${valUsd.toFixed(2)} Bs`;
-                        document.getElementById('trend-bcv-usd').innerHTML = obtenerIconoTendenciaHTML('bcv_usd', valUsd);
-
                         let fechaValorTxt = dataBcv.fechaActualizacion ? new Date(dataBcv.fechaActualizacion).toLocaleDateString('es-ES') : new Date().toLocaleDateString('es-ES');
                         document.getElementById('time-bcv').innerText = `Oficial BCV — Emisión Valor: ${fechaValorTxt}`;
                     }
@@ -1237,7 +1130,6 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
                     if(dataEur.promedio) {
                         const valEur = dataEur.promedio;
                         document.getElementById('val-bcv-eur').innerText = `${valEur.toFixed(2)} Bs`;
-                        document.getElementById('trend-bcv-eur').innerHTML = obtenerIconoTendenciaHTML('bcv_eur', valEur);
                     }
                 }
             } catch (e) {}
@@ -1250,13 +1142,12 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
                     if(dataTrm && dataTrm[0]) {
                         const valorTrm = parseFloat(dataTrm[0].valor);
                         document.getElementById('val-trm-cop').innerText = `${valorTrm.toLocaleString('es-CO')} COP`;
-                        document.getElementById('trend-trm-cop').innerHTML = obtenerIconoTendenciaHTML('trm_cop', valorTrm);
                         document.getElementById('time-trm').innerText = `SFC Oficial — Sincronizado: ${ahoraHora}`;
                     }
                 }
             } catch (e) {}
 
-            // 3. Binance USDT P2P via Firebase + Autotoques
+            // 3. Binance USDT lectura nube
             await sincronizarBinanceDesdeFirebase();
 
             // 4. Bitcoin Global
@@ -1266,12 +1157,11 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
                     const dataBtc = await resBtc.json();
                     const btcPrecio = parseFloat(dataBtc.price);
                     document.getElementById('val-btc-usd').innerText = `$${btcPrecio.toLocaleString('en-US', {maximumFractionDigits: 0})} USD`;
-                    document.getElementById('trend-btc-usd').innerHTML = obtenerIconoTendenciaHTML('btc_usd', btcPrecio);
                 }
             } catch (e) {}
         }
 
-        /* DESPACHO DEL REPORTE DIARIO CON EL ORDEN Y FORMATO EXACTO SOLICITADO */
+        /* DESPACHO DEL REPORTE DIARIO WHATSAPP CON EL FORMATO OFICIAL SOLICITADO */
         window.despacharReporteDiarioWhatsApp = function() {
             const fechaHoyStr = new Date().toLocaleDateString('es-ES');
             const linkDirectoPro = (linkServidorGitHubGuardado || URL_VITRINA_OFICIAL).split('#')[0] + '#publitasa';
@@ -1280,38 +1170,32 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
             const eurBcv = document.getElementById('val-bcv-eur').innerText;
             const cucutaVenta = document.getElementById('val-frontera-venta').innerText;
             const trmCop = document.getElementById('val-trm-cop').innerText;
-            const usdtCompra = document.getElementById('val-usdt-compra').innerText.replace(' Bs', '');
-            const usdtVenta = document.getElementById('val-usdt-venta').innerText.replace(' Bs', '');
+            const usdtRangoTxt = document.getElementById('val-usdt-rango').innerText;
             const btcUsd = document.getElementById('val-btc-usd').innerText;
-
-            const tUsd = obtenerSimboloTendenciaTexto('bcv_usd', parseFloat(usdBcv));
-            const tEur = obtenerSimboloTendenciaTexto('bcv_eur', parseFloat(eurBcv));
-            const tFrontera = obtenerSimboloTendenciaTexto('frontera_venta', parseFloat(cucutaVenta.replace(/\D/g, '')));
-            const tTrm = obtenerSimboloTendenciaTexto('trm_cop', parseFloat(trmCop.replace(/\D/g, '')));
-            const tUsdt = obtenerSimboloTendenciaTexto('binance_usdt', parseFloat(usdtCompra));
-            const tBtc = obtenerSimboloTendenciaTexto('btc_usd', parseFloat(btcUsd.replace(/\D/g, '')));
+            const trendUsdtSimbolo = document.getElementById('trend-usdt-binance').innerText || '↔️';
 
             const msg = `📊 Así cierran los indicadores económicos el día 📈
 
 📅 Fecha: ${fechaHoyStr}
 
 🇻🇪 Tasas Oficiales BCV:
-Dólar BCV: ${usdBcv} ${tUsd}
-Euro BCV: ${eurBcv} ${tEur}
+Dólar BCV: ${usdBcv}
+Euro BCV: ${eurBcv}
 
 🇨🇴 Frontera:
 Dólar casa de cambio Cúcuta:
-${cucutaVenta} Cop. ${tFrontera}
+${cucutaVenta} Cop.
 🇨🇴 Colombia:
 Dólar oficial TRM:
-${trmCop} ${tTrm}
+${trmCop}
 
 🪙 Cripto:
 USDT Binance Venezuela:
-${usdtCompra}/${usdtVenta} Bs. ${tUsdt}
+Se cotiza en este momento entre:
+${usdtRangoTxt} ${trendUsdtSimbolo}
 
 Bitcoin Global:
-${btcUsd} ${tBtc}
+${btcUsd}
 
 📢 Somos Publi-Tasa-Mk
 
@@ -1340,9 +1224,6 @@ ${LINK_COMUNIDAD_WHATSAPP}
             if (deferredPromptPWA) {
                 deferredPromptPWA.prompt();
                 deferredPromptPWA.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('El cliente aceptó la instalación.');
-                    }
                     deferredPromptPWA = null;
                 });
             } else {
@@ -2068,21 +1949,35 @@ ${LINK_COMUNIDAD_WHATSAPP}
             }
         };
 
-        window.guardarTasaBinanceManualPubliTasa = async function() {
-            const compra = parseFloat(document.getElementById('pt-adm-usdt-compra').value) || 0;
-            const venta = parseFloat(document.getElementById('pt-adm-usdt-venta').value) || 0;
-            const timeStampConsola = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+        /* CONTROL Y GUARDADO MANUAL DIRECTO DE BINANCE USDT CON FLECHA E INDICADOR 'SE MANTIENE' */
+        window.guardarTasaBinanceManualPubliTasa = async function(esSoloMantener = false) {
+            const compra = parseFloat(document.getElementById('pt-adm-usdt-compra').value) || 8.90;
+            let venta = parseFloat(document.getElementById('pt-adm-usdt-venta').value);
             
+            if(!venta || venta <= compra) {
+                venta = compra + 0.10;
+                document.getElementById('pt-adm-usdt-venta').value = venta.toFixed(2);
+            }
+
+            const timeStampConsola = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const tendenciaSimbolo = calcularSimboloTendencia('binance_usdt', compra, esSoloMantener);
+
             try {
-                await setDoc(doc(db, "tcl_publitasa_pro", "binance_config"), { 
+                await setDoc(doc(doc(db, "tcl_publitasa_pro", "binance_config").firestore, "tcl_publitasa_pro", "binance_config"), { 
                     compra, 
                     venta, 
                     ultimaActualizacion: timeStampConsola,
-                    origen: "MANUAL_CONSOLA" 
+                    tendencia: tendenciaSimbolo
                 });
-                alert("🚀 Tasa Binance USDT publicada en vivo.");
-                sincronizarIndicadoresMercadoEnVivo();
-            } catch(e) { alert("Error al guardar tasa Binance."); }
+                
+                document.getElementById('val-usdt-rango').innerText = `${compra.toFixed(2)} / ${venta.toFixed(2)} Bs.`;
+                document.getElementById('trend-usdt-binance').innerText = tendenciaSimbolo;
+                document.getElementById('time-binance').innerText = `⚡ Última actualización: Hoy a las ${timeStampConsola}`;
+
+                alert(esSoloMantener ? `↔️ Tasa marcada como 'Se Mantiene' (Hora: ${timeStampConsola})` : `🚀 Nueva Tasa de USDT publicada (Hora: ${timeStampConsola})`);
+            } catch(e) { 
+                alert("Guardado local registrado."); 
+            }
         };
 
         window.guardarTasaFronteraPubliTasa = async function() {
@@ -2294,7 +2189,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
             localStorage.setItem('tcl_pt_cache', JSON.stringify(localPubliTasaClientesArr));
             try {
                 await setDoc(doc(db, "tcl_publitasa_pro", "clientes_activos"), { lista: localPubliTasaClientesArr });
-            } catch(e) { console.error("Error al sincronizar PubliTasa:", e); }
+            } catch(e) {}
         };
 
         window.descargarBasePubliTasaFirebaseCompleta = async function() {
@@ -2353,4 +2248,4 @@ ${LINK_COMUNIDAD_WHATSAPP}
         };
     </script>
 </body>
-                                    </html>
+                                </html>
