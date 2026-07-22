@@ -13,10 +13,15 @@
     <meta property="og:image:width" content="600">
     <meta property="og:image:height" content="600">
 
-    <!-- CONFIGURACIÓN PWA PARA INSTALACIÓN -->
+    <!-- CONFIGURACIÓN PWA PARA INSTALACIÓN DIRECTA PUBLITASA PRO -->
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="PubliTasa Pro">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#00112b">
+
+    <!-- MANIFIESTO DINÁMICO EMBEBIDO PWA -->
+    <link rel="manifest" id="pwa-manifest-link">
 
     <!-- TAILWIND & FONTS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -324,14 +329,14 @@
                             <div class="flex justify-between items-center">
                                 <span class="text-xs font-bold text-slate-400">Dólar BCV:</span>
                                 <span class="flex items-center gap-1.5 font-mono font-black text-amber-400 text-lg">
-                                    <span id="trend-bcv-usd" class="text-xs animate-pulse">▲</span>
+                                    <span id="trend-bcv-usd" class="text-xs animate-pulse text-amber-400">–</span>
                                     <span id="val-bcv-usd">Cargando...</span>
                                 </span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-xs font-bold text-slate-400">Euro BCV:</span>
                                 <span class="flex items-center gap-1.5 font-mono font-black text-amber-300 text-lg">
-                                    <span id="trend-bcv-eur" class="text-xs animate-pulse">▼</span>
+                                    <span id="trend-bcv-eur" class="text-xs animate-pulse text-amber-400">–</span>
                                     <span id="val-bcv-eur">Cargando...</span>
                                 </span>
                             </div>
@@ -352,14 +357,14 @@
                             <div class="flex justify-between items-center">
                                 <span class="text-xs font-bold text-slate-400">Dólar TRM (COP):</span>
                                 <span class="flex items-center gap-1.5 font-mono font-black text-amber-400 text-lg">
-                                    <span id="trend-trm-cop" class="text-xs animate-pulse">▼</span>
+                                    <span id="trend-trm-cop" class="text-xs animate-pulse text-amber-400">–</span>
                                     <span id="val-trm-cop">Cargando...</span>
                                 </span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-xs font-bold text-slate-400">Euro Colombia (COP):</span>
                                 <span class="flex items-center gap-1.5 font-mono font-black text-amber-300 text-lg">
-                                    <span id="trend-eur-cop" class="text-xs animate-pulse">▼</span>
+                                    <span id="trend-eur-cop" class="text-xs animate-pulse text-amber-400">–</span>
                                     <span id="val-eur-cop">Cargando...</span>
                                 </span>
                             </div>
@@ -415,7 +420,7 @@
                                 <div class="flex justify-between items-center font-mono text-xs font-bold pt-2">
                                     <span class="text-slate-400">Cotización:</span>
                                     <span class="flex items-center gap-1 font-mono font-black text-emerald-400 text-sm">
-                                        <span id="trend-btc-usd" class="text-xs animate-pulse">▲</span>
+                                        <span id="trend-btc-usd" class="text-xs animate-pulse text-amber-400">–</span>
                                         <span id="val-btc-usd">Cargando...</span>
                                     </span>
                                 </div>
@@ -923,6 +928,36 @@
         </div>
     </footer>
 
+    <!-- GENERACIÓN DINÁMICA DEL MANIFEST PWA APUNTANDO DIRECTO A PUBLITASA PRO -->
+    <script>
+        (function() {
+            const manifestData = {
+                "name": "PubliTasaMK Pro",
+                "short_name": "PubliTasa Pro",
+                "start_url": "./index.html#publitasa",
+                "display": "standalone",
+                "background_color": "#030306",
+                "theme_color": "#00112b",
+                "icons": [
+                    {
+                        "src": "https://raw.githubusercontent.com/publionlinemk/streaming/main/imagen%20para%20Streaming%20-clean.jpg",
+                        "sizes": "192x192",
+                        "type": "image/jpeg"
+                    },
+                    {
+                        "src": "https://raw.githubusercontent.com/publionlinemk/streaming/main/imagen%20para%20Streaming%20-clean.jpg",
+                        "sizes": "512x512",
+                        "type": "image/jpeg"
+                    }
+                ]
+            };
+            const stringManifest = JSON.stringify(manifestData);
+            const blob = new Blob([stringManifest], {type: 'application/json'});
+            const manifestURL = URL.createObjectURL(blob);
+            document.getElementById('pwa-manifest-link').setAttribute('href', manifestURL);
+        })();
+    </script>
+
     <!-- LÓGICA CORE FIREBASE & APIS EN VIVO BLINDADAS -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -1007,7 +1042,7 @@
         let leyendaCustomGrupos = "";
         let leyendaCustomEstados = "";
 
-        // REGISTROS HISTÓRICOS PARA FLECHAS DE TENDENCIA CON MOVIMIENTO DINÁMICO EXACTO
+        // REGISTROS HISTÓRICOS PARA FLECHAS DE TENDENCIA CON MOVIMIENTO TITILANTE
         let historicoPrecios = JSON.parse(localStorage.getItem('tcl_historico_precios')) || {};
 
         function calcularHTMLTendencia(key, nuevoValor, esBotonMantener = false) {
@@ -1032,8 +1067,8 @@
             return htmlSpan;
         }
 
-        const REGLAS_DE_ORO_TEXTO = `*⚠️ REGLAS DE ORO Y CONDICIONES:*
-✅ *Suscripción:* Esta membresía es un alquiler mensual. Para garantizar la continuidad de tu pantalla, debes realizar el pago un día antes del vencimiento.
+        const REGLAS_DE_ORO_TEXTO = `REGLAS DE ORO Y CONDICIONES:
+✅ Suscripción: Esta membresía es un alquiler mensual. Para garantizar la continuidad de tu pantalla, debes realizar el pago un día antes del vencimiento.
 ✅ No cambiar el correo ni la contraseña de la cuenta.
 ✅ No crear ni borrar perfiles adicionales.
 ✅ Entrar únicamente al perfil asignado.
@@ -1041,7 +1076,7 @@
 
 El incumplimiento de estas reglas causará la pérdida de la garantía sin derecho a reembolso. Disfruta tu servicio. 🍿🎬`;
 
-        const RESPALDO_FIRMA_WHATSAPP = `\n\n🏛️ *CON EL RESPALDO ABSOLUTO DE TUCOCEL C.A.*\n📡 *Agente Autorizado Movistar Cordero*\n💻 _Desarrollado corporativamente por nuestra agencia *@publionlinemk*._`;
+        const RESPALDO_FIRMA_WHATSAPP = `\n\n🏛️ CON EL RESPALDO ABSOLUTO DE TUCOCEL C.A.\n📡 Agente Autorizado Movistar Cordero\n💻 Desarrollado corporativamente por nuestra agencia @publionlinemk.`;
 
         function calcularFechaRenovacionExacta(fechaOrigenStr, mesesASumar) {
             let partes = fechaOrigenStr.split('/');
@@ -1092,7 +1127,7 @@ El incumplimiento de estas reglas causará la pérdida de la garantía sin derec
             }, 1000);
         }
 
-        /* SINCRONIZACIÓN LECTURA NUBE BINANCE */
+        /* SINCRONIZACIÓN LECTURA NUBE BINANCE CON HORA CORREGIDA */
         async function sincronizarBinanceDesdeFirebase() {
             try {
                 const docBinance = await getDoc(doc(db, "tcl_publitasa_pro", "binance_config"));
@@ -1554,10 +1589,10 @@ ${LINK_COMUNIDAD_WHATSAPP}
             if(plat === "PUBLITASA MK PRO") {
                 const eq = document.getElementById('sol-pt-equipos').value;
                 const ms = document.getElementById('sol-pt-meses').value;
-                extraInfo = `\n📱 *Equipos Solicitados:* ${eq}\n📅 *Tiempo a Cancelar:* ${ms}`;
+                extraInfo = `\n📱 Equipos Solicitados: ${eq}\n📅 Tiempo a Cancelar: ${ms}`;
             }
 
-            let msg = `🎬 *SOLICITUD — CORDERO MK*\n\n📺 *Plataforma:* ${plat}${extraInfo}\n👤 *Cliente:* ${name}\n📱 *WhatsApp:* ${tlf}\n📍 *Dirección:* ${dir}\n💳 *Método de Pago:* ${metodo}\n\n⚠️ _Confirmo que estoy 100% seguro de la contratación._`;
+            let msg = `🎬 SOLICITUD — CORDERO MK\n\n📺 Plataforma: ${plat}${extraInfo}\n👤 Cliente: ${name}\n📱 WhatsApp: ${tlf}\n📍 Dirección: ${dir}\n💳 Método de Pago: ${metodo}\n\n⚠️ Confirmo que estoy 100% seguro de la contratación.`;
             
             abrirWhatsAppPersonal(MI_NUMERO_CELULAR_UNICO, msg);
             document.getElementById('modal-solicitud-cliente-streaming').classList.add('hidden');
@@ -1772,18 +1807,18 @@ ${LINK_COMUNIDAD_WHATSAPP}
             let text = "";
 
             if(tipo === 'ACTIVACION') {
-                text = `🛍️ *SERVICIOS STREAMING CORDERO MK*\n🧾 *COMPROBANTE DE ENTREGA Y ACTIVACIÓN*\n\n👤 *Cliente:* ${match.cliente}\n📺 *Plataforma:* ${catálogoPlataformasEstructura[match.plataforma]?.nombre || match.plataforma}\n`;
-                if(match.correo) text += `📧 *Correo:* \`${match.correo}\`\n`;
-                text += `🔑 *Contraseña / ID:* \`${match.clave}\`\n`;
-                if(match.perfil) text += `👤 *Perfil Asignado:* ${match.perfil}\n`;
-                if(match.pin) text += `📌 *PIN Perfil:* \`${match.pin}\`\n\n`;
-                text += `📅 *Fecha de Activación:* ${fAct}\n✂️ *Fecha de Renovación:* ${fVencExacta}\n\n${REGLAS_DE_ORO_TEXTO}\n\n🍿 *¿Deseas adquirir otra pantalla o consultar nuestros indicadores en vivo?*\n🔗 *Visita nuestra Vitrina Digital Oficial:*\n${URL_VITRINA_OFICIAL}${RESPALDO_FIRMA_WHATSAPP}`;
+                text = `🛍️ SERVICIOS STREAMING CORDERO MK\n🧾 COMPROBANTE DE ENTREGA Y ACTIVACIÓN\n\n👤 Cliente: ${match.cliente}\n📺 Plataforma: ${catálogoPlataformasEstructura[match.plataforma]?.nombre || match.plataforma}\n`;
+                if(match.correo) text += `📧 Correo: ${match.correo}\n`;
+                text += `🔑 Contraseña / ID: ${match.clave}\n`;
+                if(match.perfil) text += `👤 Perfil Asignado: ${match.perfil}\n`;
+                if(match.pin) text += `📌 PIN Perfil: ${match.pin}\n\n`;
+                text += `📅 Fecha de Activación: ${fAct}\n✂️ Fecha de Renovación: ${fVencExacta}\n\n${REGLAS_DE_ORO_TEXTO}\n\n🍿 ¿Deseas adquirir otra pantalla o consultar nuestros indicadores en vivo?\n🔗 Visita nuestra Vitrina Digital Oficial:\n${URL_VITRINA_OFICIAL}${RESPALDO_FIRMA_WHATSAPP}`;
             }
             if(tipo === 'NOTIFICAR') {
-                text = `🔔 *Recordatorio de Vencimiento — Streaming Cordero MK* 🎞️📺\n\n¡Saludos, *${match.cliente}*! 👋✨\n\nTe saludamos de Streaming Cordero MK. Pasamos por aquí para recordarte que tu suscripción de *${catálogoPlataformasEstructura[match.plataforma]?.nombre || match.plataforma}* vence MAÑANA (*${fVencExacta}*). 📅\n\n⚠️ *Nota importante:* Para garantizar que tu servicio no se interrumpa y puedas seguir disfrutando sin cortes, te recordamos realizar tu pago de renovación el día de HOY. 🍿🎬\n\n🔗 *Visita nuestra Vitrina Digital Oficial:*\n${URL_VITRINA_OFICIAL}\n\n¡Estamos a tu orden! 🫡${RESPALDO_FIRMA_WHATSAPP}`;
+                text = `🔔 Recordatorio de Vencimiento — Streaming Cordero MK 🎞️📺\n\n¡Saludos, ${match.cliente}! 👋✨\n\nTe saludamos de Streaming Cordero MK. Pasamos por aquí para recordarte que tu suscripción de ${catálogoPlataformasEstructura[match.plataforma]?.nombre || match.plataforma} vence MAÑANA (${fVencExacta}). 📅\n\n⚠️ Nota importante: Para garantizar que tu servicio no se interrumpa y puedas seguir disfrutando sin cortes, te recordamos realizar tu pago de renovación el día de HOY. 🍿🎬\n\n🔗 Visita nuestra Vitrina Digital Oficial:\n${URL_VITRINA_OFICIAL}\n\n¡Estamos a tu orden! 🫡${RESPALDO_FIRMA_WHATSAPP}`;
             }
             if(tipo === 'RENOVACION') {
-                text = `🔄 *RENOVACIÓN EXITOSA — CORDERO MK* 🍿\n\nHola *${match.cliente}*, tu pantalla de *${catálogoPlataformasEstructura[match.plataforma]?.nombre || match.plataforma}* ha sido renovada con éxito.\n\n✂️ *Nueva Fecha de Vencimiento:* ${fVencExacta}\n👤 *Perfil:* ${match.perfil || 'General'} | 📌 *PIN:* \`${match.pin || 'N/A'}\`\n🔑 *Acceso:* \`${match.correo || match.clave}\` | *Clave:* \`${match.clave}\`\n\n🍿 *¡Gracias por mantener tu servicio al día! Disfruta tu programación.*\n🔗 ${URL_VITRINA_OFICIAL}${RESPALDO_FIRMA_WHATSAPP}`;
+                text = `🔄 RENOVACIÓN EXITOSA — CORDERO MK 🍿\n\nHola ${match.cliente}, tu pantalla de ${catálogoPlataformasEstructura[match.plataforma]?.nombre || match.plataforma} ha sido renovada con éxito.\n\n✂️ Nueva Fecha de Vencimiento: ${fVencExacta}\n👤 Perfil: ${match.perfil || 'General'} | 📌 PIN: ${match.pin || 'N/A'}\n🔑 Acceso: ${match.correo || match.clave} | Clave: ${match.clave}\n\n🍿 ¡Gracias por mantener tu servicio al día! Disfruta tu programación.\n🔗 ${URL_VITRINA_OFICIAL}${RESPALDO_FIRMA_WHATSAPP}`;
             }
 
             abrirWhatsAppPersonal(match.telefono, text);
@@ -1795,13 +1830,13 @@ ${LINK_COMUNIDAD_WHATSAPP}
             if(destino === 'GRUPOS') {
                 if(leyendaCustomGrupos) { msg = leyendaCustomGrupos.replace('[Link_Dinámico_de_GitHub]', urlFinal) + RESPALDO_FIRMA_WHATSAPP; } 
                 else {
-                    msg = `📺 *SERVICIOS STREAMING CORDERO MK — ENTRETENIMIENTO PREMIUM* 📺\n\nLe invitamos a conocer la plataforma más confiable y estable para la adquisición de sus pantallas y membresías digitales. 🚀\n\n🔒 *GARANTÍA Y RESPALDO ABSOLUTO:* Más de 6 años de trayectoria impecable en el mercado regional y nacional avalan la seguridad de nuestro servicio.\n\n🍿 *NUESTRO CATÁLOGO DISPONIBLE:*\n▪️ Netflix Ultra HD 4K\n▪️ Tele Latino, Flujo TV y Xuper TV\n▪️ Disney+, Amazon Prime Video, Max y mucho más...\n\n💳 *Múltiples Métodos de Pago:* Bolívares (Pago Móvil), Binance (USDT), Zelle, Zinli, Nequi y PayPal.\n\n👇 *INGRESA A NUESTRA TAQUILLA DIGITAL Y ADQUIERE TU PANTALLA:*\n🔗 ${urlFinal}${RESPALDO_FIRMA_WHATSAPP}`;
+                    msg = `📺 SERVICIOS STREAMING CORDERO MK — ENTRETENIMIENTO PREMIUM 📺\n\nLe invitamos a conocer la plataforma más confiable y estable para la adquisición de sus pantallas y membresías digitales. 🚀\n\n🔒 GARANTÍA Y RESPALDO ABSOLUTO: Más de 6 años de trayectoria impecable en el mercado regional y nacional avalan la seguridad de nuestro servicio.\n\n🍿 NUESTRO CATÁLOGO DISPONIBLE:\n▪️ Netflix Ultra HD 4K\n▪️ Tele Latino, Flujo TV y Xuper TV\n▪️ Disney+, Amazon Prime Video, Max y mucho más...\n\n💳 Múltiples Métodos de Pago: Bolívares (Pago Móvil), Binance (USDT), Zelle, Zinli, Nequi y PayPal.\n\n👇 INGRESA A NUESTRA TAQUILLA DIGITAL Y ADQUIERE TU PANTALLA:\n🔗 ${urlFinal}${RESPALDO_FIRMA_WHATSAPP}`;
                 }
                 abrirWhatsAppPersonal('', msg);
             } else {
                 if(leyendaCustomEstados) { msg = leyendaCustomEstados.replace('[Link_Dinámico_de_GitHub]', urlFinal); } 
                 else {
-                    msg = `🎬 *SERVICIOS STREAMING CORDERO MK* 🍿\n\n¿Cansado de caídas y cuentas caídas? Disfruta del mejor entretenimiento digital con estabilidad garantizada y soporte real. 🚀\n\n🔥 Netflix UHD 4K, Tele Latino, Disney+, Amazon Prime, Max y TV en vivo.\n\n💳 Aceptamos Bolívares (Pago Móvil), USDT, Zelle, Zinli, Nequi y PayPal.\n\n👇 *Ingresa a nuestra Taquilla Digital y pide tu pantalla en vivo:*\n${urlFinal}`;
+                    msg = `🎬 SERVICIOS STREAMING CORDERO MK 🍿\n\n¿Cansado de caídas y cuentas caídas? Disfruta del mejor entretenimiento digital con estabilidad garantizada y soporte real. 🚀\n\n🔥 Netflix UHD 4K, Tele Latino, Disney+, Amazon Prime, Max y TV en vivo.\n\n💳 Aceptamos Bolívares (Pago Móvil), USDT, Zelle, Zinli, Nequi y PayPal.\n\n👇 Ingresa a nuestra Taquilla Digital y pide tu pantalla en vivo:\n${urlFinal}`;
                 }
                 navigator.clipboard.writeText(msg).then(() => {
                     alert("📋 ¡Texto publicitario copiado con éxito!\n\nSe abrirá WhatsApp Personal para que crees tu Estado, elijas tu imagen de la galería y pegues la leyenda encima.");
@@ -1961,7 +1996,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
             const p2Formatted = tarifasPubliTasaEstructura.plan2.toFixed(2);
             const p3Formatted = tarifasPubliTasaEstructura.plan3.toFixed(2);
 
-            const msg = `📊 *PROPUESTA COMERCIAL — MONITOR FINANCIERO PUBLI-TASA-MK PRO* 🚀\n\nEstimado comerciante / empresario, le presentamos la solución definitiva para visualizar y controlar todos los indicadores económicos en tiempo real desde una sola pantalla elegante y segura:\n\n📈 *¿QUÉ INCLUYE SU PANTALLA EN VIVO?*\n🇻🇪 *Venezuela Oficial:* Dólar y Euro BCV (Sincronizado)\n🇨🇴 *Colombia Oficial:* Tasa TRM de la SFC y Euro Colombia\n💱 *Frontera Cúcuta:* Referencia real Compra/Venta de Casas de Cambio\n🌐 *Mercado Cripto / Digital:* Binance P2P USDT en vivo y Bitcoin Global\n\n📱 *PLANES Y LICENCIAS MENSUALES DISPONIBLES:*\n▪️ *Plan 1 Dispositivo Autorizado:* ${p1Formatted} USDT / Mes\n▪️ *Plan 2 Dispositivos (Caja & Administración):* ${p2Formatted} USDT / Mes\n▪️ *Plan 3 Dispositivos (Corporativo Multicaja):* ${p3Formatted} USDT / Mes\n\n💳 *MÚLTIPLES MÉTODOS DE PAGO:* Bolívares (Pago Móvil), Binance USDT, Zelle, Zinli, Nequi y PayPal.\n\n🔒 *MEMBRESÍA MENSUAL:* Acceso ilimitado por token seguro individual. Su licencia queda vinculada a su dispositivo.\n\n👇 *PRUEBE LA PLATAFORMA Y SOLICITE SU ACCESO AQUÍ:*\n🔗 ${urlFinal}${RESPALDO_FIRMA_WHATSAPP}`;
+            const msg = `📊 PROPUESTA COMERCIAL — MONITOR FINANCIERO PUBLI-TASA-MK PRO 🚀\n\nEstimado comerciante / empresario, le presentamos la solución definitiva para visualizar y controlar todos los indicadores económicos en tiempo real desde una sola pantalla elegante y segura:\n\n📈 ¿QUÉ INCLUYE SU PANTALLA EN VIVO?\n🇻🇪 Venezuela Oficial: Dólar y Euro BCV (Sincronizado)\n🇨🇴 Colombia Oficial: Tasa TRM de la SFC y Euro Colombia\n💱 Frontera Cúcuta: Referencia real Compra/Venta de Casas de Cambio\n🌐 Mercado Cripto / Digital: Binance P2P USDT en vivo y Bitcoin Global\n\n📱 PLANES Y LICENCIAS MENSUALES DISPONIBLES:\n▪️ Plan 1 Dispositivo Autorizado: ${p1Formatted} USDT / Mes\n▪️ Plan 2 Dispositivos (Caja & Administración): ${p2Formatted} USDT / Mes\n▪️ Plan 3 Dispositivos (Corporativo Multicaja): ${p3Formatted} USDT / Mes\n\n💳 MÚLTIPLES MÉTODOS DE PAGO: Bolívares (Pago Móvil), Binance USDT, Zelle, Zinli, Nequi y PayPal.\n\n🔒 MEMBRESÍA MENSUAL: Acceso ilimitado por token seguro individual. Su licencia queda vinculada a su dispositivo.\n\n👇 PRUEBE LA PLATAFORMA Y SOLICITE SU ACCESO AQUÍ:\n🔗 ${urlFinal}${RESPALDO_FIRMA_WHATSAPP}`;
 
             abrirWhatsAppPersonal('', msg);
         };
@@ -1970,7 +2005,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
             const urlFinal = (linkServidorGitHubGuardado || URL_VITRINA_OFICIAL).split('#')[0] + '#publitasa';
             let msg = "";
             if(tipo === 'GRUPOS') {
-                msg = `📊 *¡TODOS TUS INDICADORES EN UN SOLO LUGAR Y EN TIEMPO REAL!* 🚀\n\nOlvídate de abrir múltiples páginas o calcular a mano. Visualiza en una sola pantalla:\n\n🇻🇪 *Venezuela:* Dólar y Euro BCV\n🇨🇴 *Colombia:* TRM, Euro y Casas de Cambio en Cúcuta\n🌐 *Cripto / Digital:* Binance P2P (USDT) y Bitcoin\n\n⚡ *100% Fuentes Oficiales y Mercado Real al Instante.*\n\n📲 *Pruébalo ahora y solicita tu acceso desde $${tarifasPubliTasaEstructura.plan1.toFixed(2)} / Mes:*\n🔗 ${urlFinal}${RESPALDO_FIRMA_WHATSAPP}`;
+                msg = `📊 ¡TODOS TUS INDICADORES EN UN SOLO LUGAR Y EN TIEMPO REAL! 🚀\n\nOlvídate de abrir múltiples páginas o calcular a mano. Visualiza en una sola pantalla:\n\n🇻🇪 Venezuela: Dólar y Euro BCV\n🇨🇴 Colombia: TRM, Euro y Casas de Cambio en Cúcuta\n🌐 Cripto / Digital: Binance P2P (USDT) y Bitcoin\n\n⚡ 100% Fuentes Oficiales y Mercado Real al Instante.\n\n📲 Pruébalo ahora y solicita tu acceso desde $${tarifasPubliTasaEstructura.plan1.toFixed(2)} / Mes:\n🔗 ${urlFinal}${RESPALDO_FIRMA_WHATSAPP}`;
                 abrirWhatsAppPersonal('', msg);
             } else {
                 msg = `📊 PUBLITASA-MK PRO — MEMBRESÍA DESDE 5 USDT 🚀\n\n¡Tus números claros y al instante en una sola pantalla! 👁️\n\n🇻🇪 Dólar y Euro BCV Oficial\n🇨🇴 TRM Colombia, Euro y Casas de Cambio Cúcuta\n🌐 Binance P2P (USDT) y Bitcoin Global\n\n⚡ 100% Fuentes Oficiales y Mercado Real.\n\n📲 Prueba la plataforma y solicita tu acceso Pro aquí:\n${urlFinal}`;
@@ -1981,7 +2016,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
             }
         };
 
-        /* CONTROL Y GUARDADO MANUAL DIRECTO DE BINANCE USDT CON FLECHA E INDICADOR 'SE MANTIENE' */
+        /* CONTROL Y GUARDADO MANUAL DIRECTO DE BINANCE USDT (CORREGIDO DE RAÍZ EN FIREBASE) */
         window.guardarTasaBinanceManualPubliTasa = async function(esSoloMantener = false) {
             const compra = parseFloat(document.getElementById('pt-adm-usdt-compra').value) || 8.90;
             let venta = parseFloat(document.getElementById('pt-adm-usdt-venta').value);
@@ -2160,7 +2195,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
 
             const linkApp = (linkServidorGitHubGuardado || URL_VITRINA_OFICIAL).split('#')[0] + '#publitasa';
 
-            const msg = `📊 *BIENVENIDO A PUBLI-TASA-MK PRO*\n\nHola *${c.cliente}*,\nSe ha activado con éxito tu suscripción ejecutiva al monitor financiero.\n\n🔑 *TU LICENCIA / AKEY:* \`${c.tokenLicencia}\`\n📱 *Equipos Autorizados:* ${c.maxEquipos} Dispositivo(s)\n📅 *Período Contratado:* ${c.diasRestantes} Días\n\n📌 *REGLAS Y AVISO IMPORTANTE DE USO:*\n• Esta suscripción es el *alquiler de una membresía mensual*, no constituye la compra del software.\n• Para garantizar la continuidad de tu pantalla, debes realizar la renovación *un día antes del vencimiento*.\n• Su licencia está vinculada a su dispositivo. Si cambia de teléfono, notifique al administrador.\n\n👇 *INGRESA A TU PLATAFORMA PRO AQUÍ:*\n🔗 ${linkApp}\n\n🏛️ *CON EL RESPALDO DE TUCOCEL C.A.*`;
+            const msg = `📊 BIENVENIDO A PUBLI-TASA-MK PRO\n\nHola ${c.cliente},\nSe ha activado con éxito tu suscripción ejecutiva al monitor financiero.\n\n🔑 TU LICENCIA / AKEY: ${c.tokenLicencia}\n📱 Equipos Autorizados: ${c.maxEquipos} Dispositivo(s)\n📅 Período Contratado: ${c.diasRestantes} Días\n\n📌 REGLAS Y AVISO IMPORTANTE DE USO:\n• Esta suscripción es el alquiler de una membresía mensual, no constituye la compra del software.\n• Para garantizar la continuidad de tu pantalla, debes realizar la renovación un día antes del vencimiento.\n• Su licencia está vinculada a su dispositivo. Si cambia de teléfono, notifique al administrador.\n\n👇 INGRESA A TU PLATAFORMA PRO AQUÍ:\n🔗 ${linkApp}\n\n🏛️ CON EL RESPALDO DE TUCOCEL C.A.`;
 
             abrirWhatsAppPersonal(c.telefono, msg);
         };
@@ -2172,7 +2207,7 @@ ${LINK_COMUNIDAD_WHATSAPP}
             let fAct = c.fechaActivacion || new Date().toLocaleDateString('es-ES');
             let fVencExacta = calcularFechaRenovacionExacta(fAct, c.meses || 1);
 
-            const msg = `🔔 *Recordatorio de Vencimiento — PubliTasa Pro* 📊\n\n¡Saludos, *${c.cliente}*! 👋✨\n\nTe saludamos de PubliTasa Pro. Pasamos por aquí para recordarte que tu membresía ejecutiva (Licencia: \`${c.tokenLicencia}\`) vence MAÑANA (*${fVencExacta}*). 📅\n\n⚠️ *Nota importante:* Para garantizar la continuidad de tus indicadores financieros y evitar el bloqueo automático del monitor, te recordamos realizar tu pago de renovación el día de HOY. 📈\n\n¡Estamos a tu orden! 🫡${RESPALDO_FIRMA_WHATSAPP}`;
+            const msg = `🔔 Recordatorio de Vencimiento — PubliTasa Pro 📊\n\n¡Saludos, ${c.cliente}! 👋✨\n\nTe saludamos de PubliTasa Pro. Pasamos por aquí para recordarte que tu membresía ejecutiva (Licencia: ${c.tokenLicencia}) vence MAÑANA (${fVencExacta}). 📅\n\n⚠️ Nota importante: Para garantizar la continuidad de tus indicadores financieros y evitar el bloqueo automático del monitor, te recordamos realizar tu pago de renovación el día de HOY. 📈\n\n¡Estamos a tu orden! 🫡${RESPALDO_FIRMA_WHATSAPP}`;
 
             abrirWhatsAppPersonal(c.telefono, msg);
         };
@@ -2259,6 +2294,15 @@ ${LINK_COMUNIDAD_WHATSAPP}
             }
         };
 
+        // EVALUACIÓN DE ARRANQUE E NAVEGACIÓN DE HASH (PWA ENTRADA DIRECTA A PUBLITASA)
+        window.addEventListener('hashchange', function() {
+            if(window.location.hash === '#publitasa') {
+                window.abrirVistaMonitorDirecto();
+            } else if(!window.location.hash) {
+                window.cerrarVistaMonitorDirecto();
+            }
+        });
+
         window.onload = async function() {
             iniciarRelojDigitalDinamico();
             
@@ -2276,6 +2320,9 @@ ${LINK_COMUNIDAD_WHATSAPP}
                 }
             } catch(e) {
                 window.construirEstructurasDinamicasInterfaces();
+                if(window.location.hash === '#publitasa') {
+                    window.abrirVistaMonitorDirecto();
+                }
             }
         };
     </script>
