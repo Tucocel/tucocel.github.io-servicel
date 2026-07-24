@@ -404,7 +404,7 @@
             <!-- PARTICIÓN 2: FACTURACIÓN DE COMANDAS SERVICELL CON SEPARADOR DE MILES -->
             <div id="tab-comandas" class="lg:col-span-12 hidden w-full space-y-6 text-slate-300">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <!-- CAJA DE CARGA RÁPIDA -->
+                    <!-- CAJA DE CARGA RÁPIDA DE COMANDA -->
                     <div class="lg:col-span-6 bg-slate-900/60 border border-slate-800 p-5 rounded-3xl shadow-xl space-y-4">
                         <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                             <h4 class="text-sm font-black text-purple-400 uppercase tracking-widest flex items-center gap-2"><i class="fa-solid fa-cart-plus"></i> Carga Rápida de Comanda</h4>
@@ -417,16 +417,16 @@
                         <div class="space-y-3 text-xs font-bold">
                             <div>
                                 <label class="text-[10px] text-slate-400 uppercase block mb-1">Descripción de Tarea / Accesorio (Ganancia Neta Limpia)</label>
-                                <input type="text" id="svc-input-concepto" placeholder="Ej: REPARACIÓN PIN REDMI NOTE 13" class="w-full bg-slate-950 border border-slate-800 p-3.5 rounded-xl text-white font-bold uppercase focus:outline-none focus:border-purple-500 text-sm">
+                                <input type="text" id="svc-input-concepto" placeholder="Ej: REPARACIÓN PIN REDMI NOTE 13" onkeydown="if(event.key === 'Enter') window.svc_agregarLineaComandaDiaria();" class="w-full bg-slate-950 border border-slate-800 p-3.5 rounded-xl text-white font-bold uppercase focus:outline-none focus:border-purple-500 text-sm">
                             </div>
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="text-[10px] text-slate-400 uppercase block mb-1">Cantidad</label>
-                                    <input type="number" id="svc-input-cantidad" value="1" min="1" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white text-center font-black focus:outline-none">
+                                    <input type="number" id="svc-input-cantidad" value="1" min="1" onkeydown="if(event.key === 'Enter') window.svc_agregarLineaComandaDiaria();" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white text-center font-black focus:outline-none">
                                 </div>
                                 <div>
                                     <label class="text-[10px] text-slate-400 uppercase block mb-1">Monto Ganancia Neta (COP)</label>
-                                    <input type="text" id="svc-input-precio-cop" placeholder="Ej: 50.000" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white text-center font-mono font-black focus:outline-none">
+                                    <input type="text" id="svc-input-precio-cop" placeholder="Ej: 50.000" onkeyup="window.svc_maskInputFormatted(this)" onkeydown="if(event.key === 'Enter') window.svc_agregarLineaComandaDiaria();" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white text-center font-mono font-black focus:outline-none">
                                 </div>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
@@ -443,10 +443,13 @@
                         </div>
                     </div>
 
-                    <!-- DESGLOSE DE COMANDA ACTIVA EN VIVO CON 3 BOTONES -->
+                    <!-- DESGLOSE DE COMANDA ACTIVA CON CONTADOR Y 3 BOTONES -->
                     <div class="lg:col-span-6 bg-slate-900/60 border border-slate-800 p-5 rounded-3xl shadow-xl flex flex-col justify-between space-y-4">
                         <div class="space-y-3">
-                            <h5 class="text-xs font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2"><i class="fa-solid fa-receipt text-emerald-400"></i> Comanda Activa del Día</h5>
+                            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                                <h5 class="text-xs font-black text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-receipt text-emerald-400"></i> Comanda Activa del Día</h5>
+                                <span id="lbl-cnt-items-cargados" class="text-[10px] font-black text-purple-400 bg-purple-950/50 border border-purple-500/30 px-2.5 py-0.5 rounded-full font-mono">📦 0 Ítems</span>
+                            </div>
                             <div id="svc-lista-items-comanda-box" class="space-y-1.5 max-h-56 overflow-y-auto no-scrollbar text-xs"></div>
                         </div>
 
@@ -549,7 +552,7 @@
                         
                         <div class="md:col-span-7 bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
                             <h3 class="text-xs font-black text-white uppercase border-b border-slate-800 pb-2 flex items-center gap-2"><i class="fa-solid fa-folder-open text-amber-500"></i> Expedientes Registrados en Servidor</h3>
-                            <div id="wrapper-fichas-tecnicos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-64 overflow-y-auto no-scrollbar pr-1"></div>
+                            <div id="wrapper-fichas-tecnicos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
                         </div>
                     </div>
                 </div>
@@ -569,8 +572,9 @@
                     </div>
 
                     <div class="md:col-span-5 bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
-                        <div class="border-b border-slate-800 pb-2">
+                        <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
                             <h3 class="text-purple-400 font-black text-xs uppercase tracking-widest"><i class="fa-solid fa-chart-pie mr-1"></i> Balance de Rentabilidad Mensual</h3>
+                            <button onclick="window.svc_purgarCierresPrueba()" class="text-[9px] bg-red-600/20 border border-red-500/30 text-red-400 font-bold px-2 py-0.5 rounded-lg uppercase">🧹 Limpiar $0</button>
                         </div>
                         
                         <div class="grid grid-cols-2 gap-2 font-mono text-[10px]">
@@ -727,9 +731,7 @@
         };
 
         window.svc_consultarTasaMasterWhatsapp = function() {
-            let msg = `🛠️ *SERVICELL — CONSULTA DE TASA DEL DÍA*
-
-Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita confirmar o actualizar la Tasa de Cambio oficial del día ($/COP y Bs/COP) para procesar recepciones.`;
+            let msg = `🛠️ *SERVICELL — CONSULTA DE TASA DEL DÍA*\n\nHola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita confirmar o actualizar la Tasa de Cambio oficial del día ($/COP y Bs/COP) para procesar recepciones.`;
             window.open(`https://api.whatsapp.com/send?phone=584147357549&text=${encodeURIComponent(msg)}`, '_blank');
         };
 
@@ -966,7 +968,7 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
             
             await setDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`), { nombre, cedula, whatsapp, direccion, fechaAlta: new Date().toLocaleDateString() });
             
-            // ACTUALIZACIÓN DE ESTADO A ACTIVO EN BASE DE DATOS
+            // ACTUALIZACIÓN DE ESTADO A ACTIVO
             const idx = svc_tecnicosPerfiles.findIndex(t => t.user === usuarioSesionActivo);
             if(idx !== -1) {
                 svc_tecnicosPerfiles[idx].estatus = "ACTIVO";
@@ -1098,35 +1100,22 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
             } catch(e) {}
         };
 
-        // GATILLO DE NOTIFICACIÓN TÉCNICO -> MÁSTER CON ENLACE DIRECTO DE ORDEN
+        // GATILLO TÉCNICO -> MÁSTER CON LINK DIRECTO
         window.svc_dispararNotificacionGatilloMaster = function(c) {
             const linkDirectoOrden = `${window.location.origin}${window.location.pathname}?orden=${c.id}`;
-            let msg = `🛠️ *SERVICELL — INGRESO EN ESPERA*
-
-`;
-            msg += `Hola Máster Robert, le notifico el registro de un nuevo equipo en mostrador.
-
-`;
-            msg += `📋 *Ficha de Entrada:*
-`;
-            msg += `• *Orden:* #${c.nroOrden}
-`;
-            msg += `• *Cliente:* ${c.cliente} (${c.cedula})
-`;
-            msg += `• *Equipo:* ${c.modelo} — *Falla:* ${c.falla}
-`;
-            msg += `• *Monto Total:* ${fmtMonto(c.montoOrig)} ${c.monedaOrig} | *Abonó:* ${fmtMonto(c.abonoOrig)} ${c.monedaOrig}
-
-`;
-            msg += `🔗 *Link de Verificación & Impulso Máster:*
-${linkDirectoOrden}
-
-`;
-            msg += `_Haga clic en el link para ingresar a la orden, dar el impulso contable y notificar al cliente._`;
+            let msg = `🛠️ *SERVICELL — INGRESO EN ESPERA*\n\n` +
+                      `Hola Máster Robert, le notifico el registro de un nuevo equipo en mostrador.\n\n` +
+                      `📋 *Ficha de Entrada:*\n` +
+                      `• *Orden:* #${c.nroOrden}\n` +
+                      `• *Cliente:* ${c.cliente} (${c.cedula})\n` +
+                      `• *Equipo:* ${c.modelo} — *Falla:* ${c.falla}\n` +
+                      `• *Monto Total:* ${fmtMonto(c.montoOrig)} ${c.monedaOrig} | *Abonó:* ${fmtMonto(c.abonoOrig)} ${c.monedaOrig}\n\n` +
+                      `🔗 *Link de Verificación & Impulso Máster:*\n${linkDirectoOrden}\n\n` +
+                      `_Haga clic en el link para ingresar a la orden, dar el impulso contable y notificar al cliente._`;
             window.open(`https://api.whatsapp.com/send?phone=584147357549&text=${encodeURIComponent(msg)}`, '_blank');
         };
 
-        // IMPULSO MÁSTER: CAMBIA DE "EN ESPERA" A "EN PROCESO" Y DISPARA MENSAJE AL CLIENTE
+        // IMPULSO MÁSTER
         window.svc_darImpulsoMasterSupremo = async function(id) {
             if(rolDeSesionActiva !== "MASTER") {
                 return alert("🛑 Solo el Máster está autorizado en hacer uso de esta función.");
@@ -1144,31 +1133,20 @@ ${linkDirectoOrden}
             let saldoRestante = match.montoOrig - match.abonoOrig;
             let displayPendienteStr = match.monedaOrig === "USD" ? `$${window.svc_formatDecimalUSD(saldoRestante)} USD` : `${fmtMonto(saldoRestante)} COP`;
 
-            let msgCliente = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*
-
-`;
-            msgCliente += `Estimado(a) *${match.cliente}*, confirmamos el ingreso oficial de su equipo en taller.
-
-`;
-            msgCliente += `📋 *Ficha de Control:* 
-`;
-            msgCliente += `• *Orden:* #${match.nroOrden}
-`;
-            msgCliente += `• *Equipo:* ${match.modelo} — *Falla:* ${match.falla}
-`;
-            msgCliente += `• *Abono Recibido:* ${fmtMonto(match.abonoOrig)} ${match.monedaOrig}
-`;
-            msgCliente += `• *Saldo Restante:* *${displayPendienteStr}*
-
-`;
-            msgCliente += `🛡️ *Garantía de Servicio:* ${match.diasGarantia || 2} Días continuos tras la entrega.
-`;
-            msgCliente += `🔒 _Su equipo queda en proceso de reparación bajo estricto resguardo técnico. Le avisaremos apenas esté listo._`;
+            let msgCliente = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n\n` +
+                            `Estimado(a) *${match.cliente}*, confirmamos el ingreso oficial de su equipo en taller.\n\n` +
+                            `📋 *Ficha de Control:*\n` +
+                            `• *Orden:* #${match.nroOrden}\n` +
+                            `• *Equipo:* ${match.modelo} — *Falla:* ${match.falla}\n` +
+                            `• *Abono Recibido:* ${fmtMonto(match.abonoOrig)} ${match.monedaOrig}\n` +
+                            `• *Saldo Restante:* *${displayPendienteStr}*\n\n` +
+                            `🛡️ *Garantía de Servicio:* ${match.diasGarantia || 2} Días continuos tras la entrega.\n` +
+                            `🔒 _Su equipo queda en proceso de reparación bajo estricto resguardo técnico. Le avisaremos apenas esté listo._`;
 
             window.open(`https://api.whatsapp.com/send?phone=${match.tlf}&text=${encodeURIComponent(msgCliente)}`, '_blank');
         };
 
-        // RENDERIZADO DE BANDEJA DE ÓRDENES EN ACORDEÓN POR ESTADO (EN ESPERA / EN PROCESO / FINALIZADO)
+        // RENDERIZADO DE BANDEJA DE ÓRDENES EN ACORDEÓN POR ESTADO
         window.svc_renderizerHistoricoRecepciones = function() {
             const boxEspera = document.getElementById('wrapper-orders-espera-box');
             const boxProceso = document.getElementById('wrapper-orders-proceso-box');
@@ -1268,26 +1246,15 @@ ${linkDirectoOrden}
             let saldoRestante = c.montoOrig - c.abonoOrig;
             let displayRestanteStr = c.monedaOrig === "USD" ? `$${window.svc_formatDecimalUSD(saldoRestante)} USD` : `${fmtMonto(saldoRestante)} COP`;
 
-            let msg = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*
-
-`;
-            msg += `Estimado(a) *${c.cliente}*, confirmamos el ingreso oficial de su equipo en taller.
-
-`;
-            msg += `📋 *Ficha de Control:* 
-`;
-            msg += `• *Orden:* #${c.nroOrden}
-`;
-            msg += `• *Equipo:* ${c.modelo} — *Falla:* ${c.falla}
-`;
-            msg += `• *Abono Recibido:* ${fmtMonto(c.abonoOrig)} ${c.monedaOrig}
-`;
-            msg += `• *Saldo Restante:* *${displayRestanteStr}*
-
-`;
-            msg += `🛡️ *Garantía de Servicio:* ${c.diasGarantia || 2} Días continuos tras la entrega.
-`;
-            msg += `🔒 _Su equipo queda bajo estricto resguardo técnico._`;
+            let msg = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n\n` +
+                      `Estimado(a) *${c.cliente}*, confirmamos el ingreso oficial de su equipo en taller.\n\n` +
+                      `📋 *Ficha de Control:*\n` +
+                      `• *Orden:* #${c.nroOrden}\n` +
+                      `• *Equipo:* ${c.modelo} — *Falla:* ${c.falla}\n` +
+                      `• *Abono Recibido:* ${fmtMonto(c.abonoOrig)} ${c.monedaOrig}\n` +
+                      `• *Saldo Restante:* *${displayRestanteStr}*\n\n` +
+                      `🛡️ *Garantía de Servicio:* ${c.diasGarantia || 2} Días continuos tras la entrega.\n` +
+                      `🔒 _Su equipo queda bajo estricto resguardo técnico._`;
 
             window.open(`https://api.whatsapp.com/send?phone=${c.tlf}&text=${encodeURIComponent(msg)}`, '_blank');
         };
@@ -1301,16 +1268,10 @@ ${linkDirectoOrden}
             let saldoRestante = c.montoOrig - c.abonoOrig;
             let displayRestanteStr = c.monedaOrig === "USD" ? `$${window.svc_formatDecimalUSD(saldoRestante)} USD` : `${fmtMonto(saldoRestante)} COP`;
 
-            let msg = `✅ *SU EQUIPO ESTÁ LISTO PARA RETIRAR — SERVICELL*
-
-`;
-            msg += `Estimado(a) *${c.cliente}*, le informamos que su dispositivo *${c.modelo}* ya ha sido reparado con éxito.
-
-`;
-            msg += `📋 *Saldo Pendiente a Cancelar:* *${displayRestanteStr}*
-
-`;
-            msg += `Puede pasar por nuestro laboratorio Servicell / Tucocel c.a. para retirarlo. ¡Gracias por preferirnos!`;
+            let msg = `✅ *SU EQUIPO ESTÁ LISTO PARA RETIRAR — SERVICELL*\n\n` +
+                      `Estimado(a) *${c.cliente}*, le informamos que su dispositivo *${c.modelo}* ya ha sido reparado con éxito.\n\n` +
+                      `📋 *Saldo Pendiente a Cancelar:* *${displayRestanteStr}*\n\n` +
+                      `Puede pasar por nuestro laboratorio Servicell / Tucocel c.a. para retirarlo. ¡Gracias por preferirnos!`;
 
             window.open(`https://api.whatsapp.com/send?phone=${c.tlf}&text=${encodeURIComponent(msg)}`, '_blank');
         };
@@ -1363,13 +1324,16 @@ Garantía     : ${c.diasGarantia || 2} Días
 
             if(!concepto || precioCOP <= 0) return alert("⚠️ Ingrese descripción y monto de ganancia neta válido.");
             svc_comandaActivaTurno.push({ idItem: 'manual-' + Date.now(), operador: tecSeleccionado, concepto, cantidad, precioCOP, tipo, metodo, valeDia: 0 });
+            
             document.getElementById('svc-input-concepto').value = "";
             document.getElementById('svc-input-precio-cop').value = "";
+            document.getElementById('svc-input-concepto').focus();
+
             window.svc_sincronizarConFirebase();
             window.svc_renderizerEcosistema();
         };
 
-        // PROCESAMIENTO DE COMANDA EN 3 MODOS (GUARDAR BD / WHATSAPP / TICKET)
+        // PROCESAMIENTO DE COMANDA CON APERTURA Y VACIADO AUTOMÁTICO
         window.svc_procesarComandaModo = async function(modo) {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const itemsFiltrados = svc_comandaActivaTurno.filter(x => x.operador === tecSeleccionado);
@@ -1401,14 +1365,20 @@ Garantía     : ${c.diasGarantia || 2} Días
 
             svc_historicoCierresDiarios.unshift(registroComandaObj);
 
-            // Limpiar ítems procesados del turno
+            // Limpiar ítems procesados del turno actual
             svc_comandaActivaTurno = svc_comandaActivaTurno.filter(x => x.operador !== tecSeleccionado);
 
             await window.svc_sincronizarConFirebase();
+            
+            // Vaciar campos y desplegar acordeón automáticamente
+            document.getElementById('svc-input-concepto').value = "";
+            document.getElementById('svc-input-precio-cop').value = "";
+            document.getElementById('wrapper-comandas-historico-acordeon').classList.remove('hidden');
+
             window.svc_renderizerEcosistema();
 
             if(modo === 'GUARDAR') {
-                alert(`✅ Comanda registrada y guardada con éxito en la base de datos (Folio: ${registroComandaObj.idFolio}).`);
+                alert(`✅ Comanda #${registroComandaObj.idFolio.slice(-6)} guardada exitosamente en el Historial.`);
             } else if(modo === 'WHATSAPP') {
                 window.svc_reenviarWhatsAppCierrePasado(registroComandaObj.idFolio);
             } else if(modo === 'TICKET') {
@@ -1424,7 +1394,7 @@ Garantía     : ${c.diasGarantia || 2} Días
             window.svc_procesarComandaModo('TICKET');
         };
 
-        // BANDEJA DE AUDITORÍA Y REGISTRO INDIVIDUAL DE COMANDAS
+        // RENDERIZADO DEL HISTORIAL DE COMANDAS EN ACORDEÓN
         window.svc_renderizerHistoricoComandasDirecto = function() {
             const container = document.getElementById('wrapper-lista-comandas-guardadas'); 
             const badgeTotal = document.getElementById('badge-total-comandas-historial');
@@ -1479,17 +1449,7 @@ Garantía     : ${c.diasGarantia || 2} Días
         window.svc_verDetalleComandaModal = function(idx) {
             const match = svc_historicoCierresDiarios[idx]; if(!match) return;
             let itemsStr = match.items.map(i => `• ${i.concepto} (x${i.cantidad}) = ${fmtMonto(i.precioCOP * i.cantidad)} COP`).join('\n');
-            alert(`🧾 DETALLE AUDITABLE DE COMANDA
-----------------------------------------
-Folio ID : #${match.idFolio}
-Fecha    : ${match.fecha} - ${match.hora || ''}
-Técnico  : ${match.tecKey.toUpperCase()}
-----------------------------------------
-DESGLOSE DE ÍTEMS:
-${itemsStr}
-----------------------------------------
-Total Recaudado : ${fmtMonto(match.totalServicios + match.totalVentas)} COP
-Comisión Técnico: ${fmtMonto(match.gananciaTecnico)} COP`);
+            alert(`🧾 DETALLE AUDITABLE DE COMANDA\n----------------------------------------\nFolio ID : #${match.idFolio}\nFecha    : ${match.fecha} - ${match.hora || ''}\nTécnico  : ${match.tecKey.toUpperCase()}\n----------------------------------------\nDESGLOSE DE ÍTEMS:\n${itemsStr}\n----------------------------------------\nTotal Recaudado : ${fmtMonto(match.totalServicios + match.totalVentas)} COP\nComisión Técnico: ${fmtMonto(match.gananciaTecnico)} COP`);
         };
 
         window.svc_reenviarWhatsAppCierrePasado = function(key) {
@@ -1551,6 +1511,15 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                 window.svc_descargarServidorCentral();
                 alert("✅ Comanda anulada correctamente.");
             }
+        };
+
+        // PURGA LIMPIEZA DE REGISTROS DE PRUEBA
+        window.svc_purgarCierresPrueba = async function() {
+            if(!confirm("⚠️ ¿Confirmar la limpieza de montos de prueba/simulación antiguos? Sus comandas actuales se mantendrán intactas.")) return;
+            svc_historicoCierresDiarios = svc_historicoCierresDiarios.filter(x => x.totalServicios !== 656 && x.totalVentas !== 656);
+            await window.svc_sincronizarConFirebase();
+            window.svc_descargarServidorCentral();
+            alert("🧹 Limpieza ejecutada. El balance está en $0 limpio.");
         };
 
         window.svc_calcularBalanceRentabilidadMensual = function() {
@@ -1623,25 +1592,15 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                 `;
                 document.getElementById('modal-hoja-blanca').classList.remove('hidden');
             } else {
-                let msg = `👑 *INFORME CONSOLIDADO FIN DE MES*
-💼 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*
-──────────────────────────────
-
-`;
-                msg += `📊 *RECAUDACIÓN TOTAL BRUTA:* ${fmtMonto(totalGeneradoMes)} COP
-`;
-                msg += `📉 *ALQUILER LOCAL ($${alquilerUSD} USD):* ${fmtMonto(alquilerCOP)} COP
-
-`;
+                let msg = `👑 *INFORME CONSOLIDADO FIN DE MES*\n💼 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n──────────────────────────────\n\n` +
+                          `📊 *RECAUDACIÓN TOTAL BRUTA:* ${fmtMonto(totalGeneradoMes)} COP\n` +
+                          `📉 *ALQUILER LOCAL ($${alquilerUSD} USD):* ${fmtMonto(alquilerCOP)} COP\n\n`;
                 if(diferenciaCOP >= 0) {
-                    msg += `🟢 *BALANCE GANANCIA LIMPIA:* ${fmtMonto(diferenciaCOP)} COP
-`;
+                    msg += `🟢 *BALANCE GANANCIA LIMPIA:* ${fmtMonto(diferenciaCOP)} COP\n`;
                 } else {
-                    msg += `🔴 *SUBVENCIÓN TUCOCEL C.A.:* -${fmtMonto(Math.abs(diferenciaCOP))} COP
-`;
+                    msg += `🔴 *SUBVENCIÓN TUCOCEL C.A.:* -${fmtMonto(Math.abs(diferenciaCOP))} COP\n`;
                 }
-                msg += `
-🔒 *DOCUMENTO CONTABLE OFICIAL — TUCOCEL C.A.*`;
+                msg += `\n🔒 *DOCUMENTO CONTABLE OFICIAL — TUCOCEL C.A.*`;
                 window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
             }
         };
@@ -1649,12 +1608,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
         window.svc_enviarWhatsAppNominaSemanalDividido = function() {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const baseUSD = parseFloat(document.getElementById('svc-cfg-sueldo-base').value) || 120;
-            let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN SEMANAL*
-💼 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*
-
-Técnico: ${tecSeleccionado.toUpperCase()}
-Base Fija: $${fmtMonto(baseUSD)} USD
-🔒 *SISTEMA DE CONTROL — TUCOCEL C.A.*`;
+            let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN SEMANAL*\n💼 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n\nTécnico: ${tecSeleccionado.toUpperCase()}\nBase Fija: $${fmtMonto(baseUSD)} USD\n🔒 *SISTEMA DE CONTROL — TUCOCEL C.A.*`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
@@ -1700,12 +1654,16 @@ Base Fija: $${fmtMonto(baseUSD)} USD
                 const tecSeleccionado = sFilte ? sFilte.value : "MASTER";
 
                 const boxItems = document.getElementById('svc-lista-items-comanda-box');
+                const lblCntItems = document.getElementById('lbl-cnt-items-cargados');
+
                 if(boxItems) {
                     let htmlItems = "";
                     let totalBrutoCaja = 0;
                     let totalServiciosComisionables = 0;
                     const itemsFiltrados = svc_comandaActivaTurno.filter(x => x.operador === tecSeleccionado);
                     
+                    if(lblCntItems) lblCntItems.innerText = `📦 ${itemsFiltrados.length} Ítems`;
+
                     itemsFiltrados.forEach((item) => {
                         let sub = item.precioCOP * item.cantidad;
                         totalBrutoCaja += sub;
@@ -1768,17 +1726,10 @@ Base Fija: $${fmtMonto(baseUSD)} USD
             let cleanPhone = whatsapp.replace(/\D/g, '');
             if(!cleanPhone.startsWith('58')) cleanPhone = '58' + cleanPhone;
 
-            let msgInv = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*
-
-`;
-            msgInv += `Estimado técnico *${nombre.toUpperCase()}*, aquí te envío tu acceso directo para la activación de tu perfil laboral.
-
-`;
-            msgInv += `🔗 *Ingresa al siguiente enlace para completar tu ficha:* 
-${linkUnicoGenerated}
-
-`;
-            msgInv += `⚠️ *Por favor, no compartas este enlace con nadie.*`;
+            let msgInv = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n\n` +
+                      `Estimado técnico *${nombre.toUpperCase()}*, aquí te envío tu acceso directo para la activación de tu perfil laboral.\n\n` +
+                      `🔗 *Ingresa al siguiente enlace para completar tu ficha:* \n${linkUnicoGenerated}\n\n` +
+                      `⚠️ *Por favor, no compartas este enlace con nadie.*`;
 
             window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(msgInv)}`, '_blank');
 
@@ -1789,7 +1740,7 @@ ${linkUnicoGenerated}
             window.svc_descargarServidorCentral();
         };
 
-        // RENDERIZADO DE FICHAS TÉCNICAS CON BOTÓN CAMBIAR CLAVE Y ESTATUS ACTUALIZADO
+        // RENDERIZADO DE FICHAS CON RESUMEN FINANCIERO EN VIVO DE CADA TÉCNICO
         window.svc_renderGridTecnicosMaster = function() {
             const container = document.getElementById('wrapper-fichas-tecnicos-grid'); if(!container) return;
             let html = "";
@@ -1797,6 +1748,23 @@ ${linkUnicoGenerated}
                 let badgeStatus = (t.estatus === "ACTIVO") 
                     ? `<span class="text-[8px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-black">ACTIVO 🟢</span>` 
                     : `<span class="text-[8px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full font-black">PENDIENTE 🟡</span>`;
+
+                // CÓMPUTO EN VIVO PARA FICHA DEL TÉCNICO
+                let genServicioTec = 0;
+                let valesAcum = 0;
+
+                svc_historicoCierresDiarios.forEach(c => {
+                    if(c.tecKey === t.user && c.status !== "ANULADA") {
+                        genServicioTec += (c.gananciaTecnico || 0);
+                    }
+                });
+
+                svc_valesGlobal.forEach(v => {
+                    if(v.operador === t.user) valesAcum += (v.monto || 0);
+                });
+
+                const sueldoBaseCOP = (parseFloat(document.getElementById('svc-cfg-sueldo-base').value) || 120) * (window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600);
+                const netoPagarMomento = (genServicioTec + sueldoBaseCOP) - valesAcum;
 
                 html += `
                     <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl space-y-2 flex flex-col justify-between">
@@ -1807,8 +1775,16 @@ ${linkUnicoGenerated}
                             </div>
                             <span class="text-[9px] text-slate-400 font-mono block">ID: ${t.user} | Clave: ${t.pass}</span>
                             <span class="text-[9px] text-slate-500 block">WhatsApp: ${t.whatsapp}</span>
+                            
+                            <!-- BANDERIN FINANCIERO EN VIVO EN SU TARJETA -->
+                            <div class="mt-2 p-2 bg-slate-950 border border-slate-850 rounded-xl space-y-1 font-mono text-[9px]">
+                                <div class="flex justify-between text-slate-400"><span>• Servicio Taller (50%):</span> <b class="text-purple-400">${fmtMonto(genServicioTec)} COP</b></div>
+                                <div class="flex justify-between text-slate-400"><span>• Sueldo Base Fijo:</span> <b class="text-blue-400">${fmtMonto(sueldoBaseCOP)} COP</b></div>
+                                <div class="flex justify-between text-slate-400"><span>• Vales Pedidos:</span> <b class="text-red-400">-${fmtMonto(valesAcum)} COP</b></div>
+                                <div class="flex justify-between text-white font-bold border-t border-slate-900 pt-1"><span>💰 NETO A CANCELAR:</span> <b class="text-emerald-400">${fmtMonto(netoPagarMomento)} COP</b></div>
+                            </div>
                         </div>
-                        <div class="grid grid-cols-3 gap-1 pt-2 border-t border-slate-950">
+                        <div class="grid grid-cols-3 gap-1 pt-2 border-t border-slate-950 font-sans">
                             <button onclick="window.svc_reenviarWhatsAppAccesoTecnico(${index})" class="bg-purple-600/10 border border-purple-500/20 text-purple-400 text-[8px] font-black py-1.5 rounded-lg uppercase">📲 Reenviar</button>
                             <button onclick="window.svc_cambiarClaveTecnicoMaster(${index})" class="bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[8px] font-black py-1.5 rounded-lg uppercase">🔑 Clave</button>
                             <button onclick="window.svc_borrarDefinitivamenteTecnico(${index})" class="bg-red-600/10 border border-red-500/20 text-red-400 text-[8px] font-black py-1.5 rounded-lg uppercase">🗑️ Borrar</button>
@@ -1818,7 +1794,6 @@ ${linkUnicoGenerated}
             container.innerHTML = html || `<p class="text-center text-slate-500 italic py-4 col-span-2 text-xs">Cero operadores registrados.</p>`;
         };
 
-        // CAMBIAR CLAVE DE TÉCNICO DIRECTO DESDE EL PANEL MÁSTER
         window.svc_cambiarClaveTecnicoMaster = async function(idx) {
             const t = svc_tecnicosPerfiles[idx]; if(!t) return;
             const nuevaClave = prompt(`Ingrese la nueva contraseña para el técnico ${t.nombre.toUpperCase()} (${t.user}):`, t.pass);
@@ -1837,17 +1812,10 @@ ${linkUnicoGenerated}
             let cleanPhone = t.whatsapp.replace(/\D/g, '');
             if(!cleanPhone.startsWith('58')) cleanPhone = '58' + cleanPhone;
 
-            let msgInv = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*
-
-`;
-            msgInv += `Estimado técnico *${t.nombre.toUpperCase()}*, aquí te envío tu acceso directo para la activación de tu perfil laboral.
-
-`;
-            msgInv += `🔗 *Ingresa al siguiente enlace:* 
-${t.linkUnicoGenerated}
-
-`;
-            msgInv += `⚠️ *Por favor, no compartas este enlace con nadie.*`;
+            let msgInv = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n\n` +
+                      `Estimado técnico *${t.nombre.toUpperCase()}*, aquí te envío tu acceso directo para la activación de tu perfil laboral.\n\n` +
+                      `🔗 *Ingresa al siguiente enlace:* \n${t.linkUnicoGenerated}\n\n` +
+                      `⚠️ *Por favor, no compartas este enlace con nadie.*`;
 
             window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(msgInv)}`, '_blank');
         };
