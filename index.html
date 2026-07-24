@@ -26,7 +26,7 @@
             #contenedor-impresion-termica-fijo { 
                 position: absolute; left: 0; top: 0; width: 100% !important; height: auto !important;
                 background: white !important; color: black !important; margin: 0 !important; padding: 0.5cm !important; 
-                font-family: 'Courier New', Courier, monospace; font-size: 12px; line-height: 1.5; text-align: left;
+                font-family: 'Courier New', Courier, monospace; font-size: 12px; line-height: 1.4; text-align: left;
             }
         }
     </style>
@@ -371,7 +371,7 @@
                             </div>
                         </div>
 
-                        <!-- ACORDEÓN 2: EN PROCESO / PENDIENTE -->
+                        <!-- ACORDEÓN 2: EN PROCESO / REPARACIÓN -->
                         <div class="bg-slate-950 border border-blue-500/30 rounded-2xl overflow-hidden shadow-md">
                             <button onclick="document.getElementById('acc-sec-proceso').classList.toggle('hidden')" class="w-full p-3.5 bg-blue-950/30 hover:bg-blue-900/40 text-blue-400 font-black text-xs flex justify-between items-center transition border-b border-blue-500/20">
                                 <span class="flex items-center gap-2">
@@ -384,7 +384,7 @@
                             </div>
                         </div>
 
-                        <!-- ACORDEÓN 3: FINALIZADO / ENTREGADO -->
+                        <!-- ACORDEÓN 3: FINALIZADO / RETIRADO -->
                         <div class="bg-slate-950 border border-emerald-500/30 rounded-2xl overflow-hidden shadow-md">
                             <button onclick="document.getElementById('acc-sec-finalizado').classList.toggle('hidden')" class="w-full p-3.5 bg-emerald-950/30 hover:bg-emerald-900/40 text-emerald-400 font-black text-xs flex justify-between items-center transition border-b border-emerald-500/20">
                                 <span class="flex items-center gap-2">
@@ -443,7 +443,7 @@
                         </div>
                     </div>
 
-                    <!-- DESGLOSE DE COMANDA ACTIVA EN VIVO -->
+                    <!-- DESGLOSE DE COMANDA ACTIVA EN VIVO CON 3 BOTONES -->
                     <div class="lg:col-span-6 bg-slate-900/60 border border-slate-800 p-5 rounded-3xl shadow-xl flex flex-col justify-between space-y-4">
                         <div class="space-y-3">
                             <h5 class="text-xs font-black text-white uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2"><i class="fa-solid fa-receipt text-emerald-400"></i> Comanda Activa del Día</h5>
@@ -455,11 +455,27 @@
                                 <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="block text-[8px] text-slate-500 uppercase">Caja Bruta Recaudada</span><b id="lbl-caja-bruta-dia" class="text-white text-sm font-black">0 COP</b></div>
                                 <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="block text-[8px] text-emerald-400 uppercase">Comisión Técnico (50%)</span><b id="lbl-ganancia-tec-dia" class="text-emerald-400 text-sm font-black">0 COP</b></div>
                             </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <button onclick="window.svc_enviarWhatsAppCierreDiarioDividido()" class="bg-emerald-600 text-white text-[10px] font-black py-3 rounded-xl uppercase shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.02]"><i class="fa-brands fa-whatsapp text-sm"></i> Enviar Cierre Día</button>
-                                <button onclick="window.svc_procesarImpresionTicketDiarioTermico()" class="bg-slate-950 border border-slate-800 text-white text-[10px] font-black py-3 rounded-xl uppercase shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.02]"><i class="fa-solid fa-print text-sm"></i> Ticket Diario</button>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                <button onclick="window.svc_procesarComandaModo('GUARDAR')" class="bg-purple-600 hover:bg-purple-700 text-white text-[10px] font-black py-3 rounded-xl uppercase shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.02]"><i class="fa-solid fa-floppy-disk text-sm"></i> Guardar BD</button>
+                                <button onclick="window.svc_procesarComandaModo('WHATSAPP')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black py-3 rounded-xl uppercase shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.02]"><i class="fa-brands fa-whatsapp text-sm"></i> Cierre Día</button>
+                                <button onclick="window.svc_procesarComandaModo('TICKET')" class="bg-slate-950 border border-slate-800 text-white text-[10px] font-black py-3 rounded-xl uppercase shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.02]"><i class="fa-solid fa-print text-sm"></i> Ticket Diario</button>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- HISTORIAL / BANDEJA DE AUDITORÍA DE COMANDAS EN ACORDEÓN -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
+                    <button onclick="document.getElementById('wrapper-comandas-historico-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-folder-open text-purple-400 text-lg"></i>
+                            <span class="text-xs font-black text-white uppercase tracking-wider">🗂️ Historial & Auditoría de Comandas Emitidas</span>
+                        </div>
+                        <span id="badge-total-comandas-historial" class="text-[10px] font-black bg-purple-600/20 text-purple-400 px-3 py-1 rounded-xl uppercase">0 Comandas</span>
+                    </button>
+
+                    <div id="wrapper-comandas-historico-acordeon" class="hidden p-5 border-t border-slate-800/60 space-y-3">
+                        <div id="wrapper-lista-comandas-guardadas" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
                     </div>
                 </div>
 
@@ -669,7 +685,7 @@
         let rolDeSesionActiva = "BLOQUEADO";
         let usuarioSesionActivo = "";
 
-        // AUXILIARES DE FORMATO DE MILES CON PUNTOS (130.000 / 15,00)
+        // AUXILIARES DE FORMATO DE MILES CON PUNTOS
         window.svc_cleanNumber = function(val) {
             if(!val) return 0;
             let str = String(val).replace(/\./g, '').replace(',', '.');
@@ -901,7 +917,6 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
                     }
                 }
 
-                // SPLASH DE BIENVENIDA
                 document.getElementById('contenedor-login').classList.add('hidden');
                 const splash = document.getElementById('splash-welcome');
                 const titleBox = document.getElementById('splash-title');
@@ -951,7 +966,7 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
             
             await setDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`), { nombre, cedula, whatsapp, direccion, fechaAlta: new Date().toLocaleDateString() });
             
-            // ACTUALIZACIÓN DIRECTA A ESTADO ACTIVO EN FIREBASE
+            // ACTUALIZACIÓN DE ESTADO A ACTIVO EN BASE DE DATOS
             const idx = svc_tecnicosPerfiles.findIndex(t => t.user === usuarioSesionActivo);
             if(idx !== -1) {
                 svc_tecnicosPerfiles[idx].estatus = "ACTIVO";
@@ -1083,7 +1098,7 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
             } catch(e) {}
         };
 
-        // GATILLO DE NOTIFICACIÓN DE TÉCNICO AL MÁSTER CON LINK DIRECTO DE LA ORDEN
+        // GATILLO DE NOTIFICACIÓN TÉCNICO -> MÁSTER CON ENLACE DIRECTO DE ORDEN
         window.svc_dispararNotificacionGatilloMaster = function(c) {
             const linkDirectoOrden = `${window.location.origin}${window.location.pathname}?orden=${c.id}`;
             let msg = `🛠️ *SERVICELL — INGRESO EN ESPERA*
@@ -1111,7 +1126,7 @@ ${linkDirectoOrden}
             window.open(`https://api.whatsapp.com/send?phone=584147357549&text=${encodeURIComponent(msg)}`, '_blank');
         };
 
-        // IMPULSO MÁSTER: CAMBIA DE "EN ESPERA" A "EN PROCESO" Y NOTIFICA AL CLIENTE
+        // IMPULSO MÁSTER: CAMBIA DE "EN ESPERA" A "EN PROCESO" Y DISPARA MENSAJE AL CLIENTE
         window.svc_darImpulsoMasterSupremo = async function(id) {
             if(rolDeSesionActiva !== "MASTER") {
                 return alert("🛑 Solo el Máster está autorizado en hacer uso de esta función.");
@@ -1153,7 +1168,7 @@ ${linkDirectoOrden}
             window.open(`https://api.whatsapp.com/send?phone=${match.tlf}&text=${encodeURIComponent(msgCliente)}`, '_blank');
         };
 
-        // RENDERIZADO DE BANDEJA DE ÓRDENES EN ACORDEÓN POR ESTADO
+        // RENDERIZADO DE BANDEJA DE ÓRDENES EN ACORDEÓN POR ESTADO (EN ESPERA / EN PROCESO / FINALIZADO)
         window.svc_renderizerHistoricoRecepciones = function() {
             const boxEspera = document.getElementById('wrapper-orders-espera-box');
             const boxProceso = document.getElementById('wrapper-orders-proceso-box');
@@ -1354,96 +1369,188 @@ Garantía     : ${c.diasGarantia || 2} Días
             window.svc_renderizerEcosistema();
         };
 
-        window.svc_enviarWhatsAppCierreDiarioDividido = function() {
+        // PROCESAMIENTO DE COMANDA EN 3 MODOS (GUARDAR BD / WHATSAPP / TICKET)
+        window.svc_procesarComandaModo = async function(modo) {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const itemsFiltrados = svc_comandaActivaTurno.filter(x => x.operador === tecSeleccionado);
-            if(itemsFiltrados.length === 0) return alert("No hay movimientos para este técnico hoy.");
+            if(itemsFiltrados.length === 0) return alert("No hay movimientos cargados para este técnico hoy.");
 
             let totalServicios = 0; let totalVentas = 0;
-            let msg = `🛍️ *DOCUMENTO CONTABLE CORPORATIVO — SERVICELL*
-🧾 *SERVICIO TÉCNICO DE TUCOCEL C.A.*
-──────────────────────────────
-👤 *TÉCNICO / OPERADOR:* ${tecSeleccionado.toUpperCase()}
-📅 *FECHA:* ${new Date().toLocaleDateString()}
-──────────────────────────────
-
-`;
-            
-            msg += `🛠️ *DESGLOSE DE SERVICIO TÉCNICO (COMISIONABLE 50%):*
-`;
             itemsFiltrados.forEach(item => {
                 let sub = item.precioCOP * item.cantidad;
-                if(item.tipo === "SERVICIO") { 
-                    totalServicios += sub; 
-                    msg += `• ${item.concepto} (x${item.cantidad}) -> ${fmtMonto(sub)} COP
-`; 
-                }
+                if(item.tipo === "SERVICIO") totalServicios += sub;
+                else totalVentas += sub;
             });
 
             const comisionPorc = parseFloat(document.getElementById('svc-cfg-comision').value) || 50;
             let gananciaTecnico = totalServicios * (comisionPorc / 100);
-
-            msg += `💰 *Subtotal Taller:* ${fmtMonto(totalServicios)} COP
-`;
-            msg += `📈 *Su Comisión Taller (${comisionPorc}%):* *${fmtMonto(gananciaTecnico)} COP*
-
-`;
-
-            msg += `🛍️ *DESGLOSE VENTA MOSTRADOR / ACCESORIOS (FIJO 0%):*
-`;
-            itemsFiltrados.forEach(item => {
-                let sub = item.precioCOP * item.cantidad;
-                if(item.tipo === "VENTA") { 
-                    totalVentas += sub; 
-                    msg += `• ${item.concepto} (x${item.cantidad}) -> ${fmtMonto(sub)} COP
-`; 
-                }
-            });
-            msg += `💰 *Subtotal Ventas Mostrador:* ${fmtMonto(totalVentas)} COP
-
-`;
-
-            msg += `──────────────────────────────
-🧮 *AUDITORÍA GLOBAL DEL TURNO:*
-`;
-            msg += `• 💵 *Caja Bruta Recaudada:* ${fmtMonto(totalServicios + totalVentas)} COP
-`;
-            msg += `• 💸 *Vales del Día:* 0 COP
-`;
-            msg += `• 🟢 *NETO A FAVOR DEL TÉCNICO HOY:* *${fmtMonto(gananciaTecnico)} COP*
-
-`;
-            msg += `🔒 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.* 🔒`;
-
-            const tecProfile = svc_tecnicosPerfiles.find(t => t.user === tecSeleccionado);
-            const tlfTarget = tecProfile ? tecProfile.whatsapp.replace(/\D/g, '') : "584147357549";
-
             const fechaStr = new Date().toLocaleDateString().split('/').join('-');
-            svc_historicoCierresDiarios = svc_historicoCierresDiarios.filter(x => x.fecha !== `${fechaStr}-${tecSeleccionado}`);
-            svc_historicoCierresDiarios.push({ fecha: `${fechaStr}-${tecSeleccionado}`, tecKey: tecSeleccionado, items: [...itemsFiltrados], totalServicios, totalVentas, gananciaTecnico, valesDelDiaAcum: 0, status: "ACTIVO" });
-            
-            window.svc_sincronizarConFirebase();
+            const folioKey = `${fechaStr}-${tecSeleccionado}-${Date.now().toString().slice(-4)}`;
+
+            const registroComandaObj = {
+                idFolio: folioKey,
+                fecha: new Date().toLocaleDateString(),
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                tecKey: tecSeleccionado,
+                items: [...itemsFiltrados],
+                totalServicios,
+                totalVentas,
+                gananciaTecnico,
+                status: "ACTIVO"
+            };
+
+            svc_historicoCierresDiarios.unshift(registroComandaObj);
+
+            // Limpiar ítems procesados del turno
+            svc_comandaActivaTurno = svc_comandaActivaTurno.filter(x => x.operador !== tecSeleccionado);
+
+            await window.svc_sincronizarConFirebase();
             window.svc_renderizerEcosistema();
-            window.open(`https://api.whatsapp.com/send?phone=${tlfTarget}&text=${encodeURIComponent(msg)}`, '_blank');
+
+            if(modo === 'GUARDAR') {
+                alert(`✅ Comanda registrada y guardada con éxito en la base de datos (Folio: ${registroComandaObj.idFolio}).`);
+            } else if(modo === 'WHATSAPP') {
+                window.svc_reenviarWhatsAppCierrePasado(registroComandaObj.idFolio);
+            } else if(modo === 'TICKET') {
+                window.svc_reimprimirTicketPasado(registroComandaObj.idFolio);
+            }
+        };
+
+        window.svc_enviarWhatsAppCierreDiarioDividido = function() {
+            window.svc_procesarComandaModo('WHATSAPP');
         };
 
         window.svc_procesarImpresionTicketDiarioTermico = function() {
-            const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
-            const itemsFiltrados = svc_comandaActivaTurno.filter(x => x.operador === tecSeleccionado);
-            let total = 0;
-            itemsFiltrados.forEach(i => total += (i.precioCOP * i.cantidad));
+            window.svc_procesarComandaModo('TICKET');
+        };
+
+        // BANDEJA DE AUDITORÍA Y REGISTRO INDIVIDUAL DE COMANDAS
+        window.svc_renderizerHistoricoComandasDirecto = function() {
+            const container = document.getElementById('wrapper-lista-comandas-guardadas'); 
+            const badgeTotal = document.getElementById('badge-total-comandas-historial');
+            if(!container) return;
+
+            let html = "";
+            let cntActivas = 0;
+
+            svc_historicoCierresDiarios.forEach((match, indexIndex) => {
+                if(match.status === "ANULADA") return;
+                cntActivas++;
+
+                let itemsHtml = "";
+                match.items.forEach(i => {
+                    itemsHtml += `<li class="text-[10px] text-slate-300">• ${i.concepto} (x${i.cantidad}) — <b class="text-amber-400">${fmtMonto(i.precioCOP * i.cantidad)} COP</b></li>`;
+                });
+
+                html += `
+                    <div class="p-3 bg-slate-950 border border-slate-800 rounded-2xl font-mono text-[11px] space-y-2">
+                        <div onclick="document.getElementById('acc-cmd-${indexIndex}').classList.toggle('hidden')" class="flex justify-between items-center cursor-pointer">
+                            <div>
+                                <b class="text-purple-400 text-xs">Folio #${match.idFolio.slice(-6)}</b> — <span class="text-white">${match.fecha} (${match.tecKey.toUpperCase()})</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-emerald-400 font-bold">${fmtMonto(match.totalServicios + match.totalVentas)} COP</span>
+                                <i class="fa-solid fa-chevron-down text-slate-500"></i>
+                            </div>
+                        </div>
+                        <div id="acc-cmd-${indexIndex}" class="hidden mt-2 pt-2 border-t border-slate-800 space-y-2">
+                            <ul class="space-y-1 bg-slate-900 p-2 rounded-xl border border-slate-850">
+                                ${itemsHtml}
+                            </ul>
+                            <div class="flex justify-between text-[10px] text-slate-400 bg-slate-900 p-2 rounded-xl">
+                                <span>Taller: <b>${fmtMonto(match.totalServicios)} COP</b></span>
+                                <span>Ventas: <b>${fmtMonto(match.totalVentas)} COP</b></span>
+                                <span class="text-emerald-400">Ganancia Tec: <b>${fmtMonto(match.gananciaTecnico)} COP</b></span>
+                            </div>
+                            <div class="grid grid-cols-4 gap-1 pt-1 font-sans">
+                                <button onclick="window.svc_verDetalleComandaModal(${indexIndex})" class="bg-blue-600/10 text-blue-400 border border-blue-500/20 p-2 rounded-xl text-[9px] font-bold">👁️ Ver</button>
+                                <button onclick="window.svc_reenviarWhatsAppCierrePasado('${match.idFolio}')" class="bg-emerald-600/10 text-emerald-400 border border-emerald-500/20 p-2 rounded-xl text-[9px] font-bold">📲 Chat</button>
+                                <button onclick="window.svc_reimprimirTicketPasado('${match.idFolio}')" class="bg-slate-900 border border-slate-800 text-white p-2 rounded-xl text-[9px] font-bold">🖨️ Ticket</button>
+                                <button onclick="window.svc_eliminarReporteContableEnSeco('${match.idFolio}')" class="bg-red-600/10 text-red-400 border border-red-500/20 p-2 rounded-xl text-[9px] font-black">🚫 Anular</button>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            container.innerHTML = html || `<p class="text-center text-slate-500 italic py-4 text-[10px]">Cero comandas registradas en el servidor.</p>`;
+            if(badgeTotal) badgeTotal.innerText = `${cntActivas} Comandas`;
+        };
+
+        window.svc_verDetalleComandaModal = function(idx) {
+            const match = svc_historicoCierresDiarios[idx]; if(!match) return;
+            let itemsStr = match.items.map(i => `• ${i.concepto} (x${i.cantidad}) = ${fmtMonto(i.precioCOP * i.cantidad)} COP`).join('\n');
+            alert(`🧾 DETALLE AUDITABLE DE COMANDA
+----------------------------------------
+Folio ID : #${match.idFolio}
+Fecha    : ${match.fecha} - ${match.hora || ''}
+Técnico  : ${match.tecKey.toUpperCase()}
+----------------------------------------
+DESGLOSE DE ÍTEMS:
+${itemsStr}
+----------------------------------------
+Total Recaudado : ${fmtMonto(match.totalServicios + match.totalVentas)} COP
+Comisión Técnico: ${fmtMonto(match.gananciaTecnico)} COP`);
+        };
+
+        window.svc_reenviarWhatsAppCierrePasado = function(key) {
+            const match = svc_historicoCierresDiarios.find(x => x.idFolio === key || x.fecha === key); if(!match) return;
+            let itemsTxt = "";
+            match.items.forEach(i => {
+                itemsTxt += `• ${i.concepto} (x${i.cantidad}) -> ${fmtMonto(i.precioCOP * i.cantidad)} COP%0A`;
+            });
+
+            let msg = `🛍️ *DOCUMENTO CONTABLE CORPORATIVO — SERVICELL*%0A` +
+                      `🧾 *SERVICIO TÉCNICO DE TUCOCEL C.A.*%0A` +
+                      `──────────────────────────────%0A` +
+                      `👤 *TÉCNICO / OPERADOR:* ${match.tecKey.toUpperCase()}%0A` +
+                      `📅 *FECHA:* ${match.fecha}%0A` +
+                      `──────────────────────────────%0A%0A` +
+                      `🛠️ *DESGLOSE DE ACTIVIDAD:*%0A${itemsTxt}%0A` +
+                      `──────────────────────────────%0A` +
+                      `💵 *Caja Bruta Recaudada:* ${fmtMonto(match.totalServicios + match.totalVentas)} COP%0A` +
+                      `🟢 *NETO A FAVOR DEL TÉCNICO:* *${fmtMonto(match.gananciaTecnico)} COP*%0A%0A` +
+                      `🔒 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.* 🔒`;
+
+            window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+        };
+
+        window.svc_reimprimirTicketPasado = function(key) {
+            const match = svc_historicoCierresDiarios.find(x => x.idFolio === key || x.fecha === key); if(!match) return;
+            let itemsTxt = "";
+            match.items.forEach(i => {
+                itemsTxt += `${i.concepto.padEnd(25, ' ')} ${fmtMonto(i.precioCOP * i.cantidad)} COP\n`;
+            });
 
             document.getElementById('contenedor-impresion-termica-fijo').innerHTML = `
 ══════════════════════════════════════════
      SERVICELL — SERVICIO TÉCNICO       
            DE TUCOCEL C.A.              
 ══════════════════════════════════════════
-TICKET CONTABLE: ${tecSeleccionado.toUpperCase()}
-Fecha Cierre   : ${new Date().toLocaleDateString()}
-Total Bruto    : ${fmtMonto(total)} COP
+TICKET CONTABLE: ${match.tecKey.toUpperCase()}
+Folio ID       : #${match.idFolio.slice(-6)}
+Fecha Cierre   : ${match.fecha}
+------------------------------------------
+DESCRIPCIÓN                   SUBTOTAL
+------------------------------------------
+${itemsTxt}------------------------------------------
+Total Bruto    : ${fmtMonto(match.totalServicios + match.totalVentas)} COP
+Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
 ══════════════════════════════════════════
-     🔒 EXPEDIENTE CONTABLE BLINDADO`;
+     🔒 EXPEDIENTE CONTABLE BLINDADO
+══════════════════════════════════════════`;
             window.print();
+        };
+
+        window.svc_eliminarReporteContableEnSeco = async function(key) {
+            const idx = svc_historicoCierresDiarios.findIndex(x => x.idFolio === key || x.fecha === key); if(idx === -1) return;
+            const match = svc_historicoCierresDiarios[idx];
+
+            if(confirm(`⚠️ ¿Desea anular definitivamente la comanda #${match.idFolio.slice(-6)}?`)) {
+                svc_historicoCierresDiarios.splice(idx, 1);
+                await window.svc_sincronizarConFirebase();
+                window.svc_descargarServidorCentral();
+                alert("✅ Comanda anulada correctamente.");
+            }
         };
 
         window.svc_calcularBalanceRentabilidadMensual = function() {
@@ -1464,7 +1571,7 @@ Total Bruto    : ${fmtMonto(total)} COP
 
             if(diferenciaCOP >= 0) {
                 box.className = "text-emerald-400 font-bold text-[11px] leading-relaxed";
-                box.innerHTML = `🟢 <b>SITIO AUTOSOSTENIBLE:</b> Servicel cubrió los $${alquilerUSD} USD de alquiler (${fmtMonto(alquilerCOP)} COP) y dejó una ganancia limpia de <b>${fmtMonto(diferenciaCOP)} COP</b> para Tucocel c.a.`;
+                box.innerHTML = `🟢 <b>SITIO AUTOSOSTENIBLE:</b> Servicell cubrió los $${alquilerUSD} USD de alquiler (${fmtMonto(alquilerCOP)} COP) y dejó una ganancia limpia de <b>${fmtMonto(diferenciaCOP)} COP</b> para Tucocel c.a.`;
             } else {
                 let faltanteCOP = Math.abs(diferenciaCOP);
                 let faltanteUSD = Math.round(faltanteCOP / tasaCOP);
@@ -1537,75 +1644,6 @@ Total Bruto    : ${fmtMonto(total)} COP
 🔒 *DOCUMENTO CONTABLE OFICIAL — TUCOCEL C.A.*`;
                 window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
             }
-        };
-
-        window.svc_renderizerHistoricoComandasDirecto = function() {
-            const container = document.getElementById('wrapper-historico-comandas-directo-box'); if(!container) return;
-            const filtroFecha = document.getElementById('filtro-comandas-fecha-directo').value;
-            
-            let targetFechaStr = "";
-            if(filtroFecha) {
-                const parts = filtroFecha.split('-'); targetFechaStr = `${parts[2]}/${parts[1]}/${parts[0]}`;
-            }
-
-            let html = "";
-            svc_historicoCierresDiarios.forEach((match, indexIndex) => {
-                if(match.status === "ANULADA") return;
-                let cleanFecha = match.fecha.split('-')[0].replace(/\//g, '/');
-                if(targetFechaStr && cleanFecha !== targetFechaStr) return;
-
-                html += `
-                    <div class="p-3 bg-slate-900/60 border border-slate-800 rounded-2xl font-mono text-[11px]">
-                        <div onclick="document.getElementById('acc-cont-${indexIndex}').classList.toggle('hidden')" class="flex justify-between items-center cursor-pointer">
-                            <strong>📅 Folio Caja: ${cleanFecha} (${match.tecKey.toUpperCase()})</strong>
-                            <i class="fa-solid fa-chevron-down text-slate-500"></i>
-                        </div>
-                        <div id="acc-cont-${indexIndex}" class="hidden mt-3 pt-3 border-t border-slate-800 space-y-2 text-slate-300">
-                            <p>• Recaudación Taller  : <strong class="text-white">${fmtMonto(match.totalServicios)} COP</strong></p>
-                            <p>• Recaudación Almacén : <strong class="text-white">${fmtMonto(match.totalVentas)} COP</strong></p>
-                            <p class="text-emerald-400 font-bold border-t border-slate-950 pt-1.5">📈 Neto Técnico: ${fmtMonto(match.gananciaTecnico)} COP</p>
-                            <div class="grid grid-cols-3 gap-1 pt-2">
-                                <button onclick="window.svc_reimprimirTicketPasado('${match.fecha}')" class="bg-slate-950 border border-slate-800 text-white p-2 rounded-xl text-[9px] font-bold">Ticket</button>
-                                <button onclick="window.svc_reenviarWhatsAppCierrePasado('${match.fecha}')" class="bg-emerald-600/10 text-emerald-400 p-2 rounded-xl text-[9px] font-bold">Chat</button>
-                                <button onclick="window.svc_eliminarReporteContableEnSeco('${match.fecha}')" class="bg-red-600/10 text-red-400 p-2 rounded-xl text-[9px] font-black">Anular</button>
-                            </div>
-                        </div>
-                    </div>`;
-            });
-            container.innerHTML = html || `<p class="text-center text-slate-500 italic py-4 text-[10px]">Cero folios registrados en el historial contable.</p>`;
-        };
-
-        window.svc_reenviarWhatsAppCierrePasado = function(key) {
-            const match = svc_historicoCierresDiarios.find(x => x.fecha === key);
-            let msg = `🛍️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*
-Folio: ${match.fecha.split('-')[0]} [${match.tecKey.toUpperCase()}]
-Taller: ${fmtMonto(match.totalServicios)} COP
-Neto: ${fmtMonto(match.gananciaTecnico)} COP`;
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
-        };
-
-        window.svc_reimprimirTicketPasado = function(key) {
-            const match = svc_historicoCierresDiarios.find(x => x.fecha === key);
-            document.getElementById('contenedor-impresion-termica-fijo').innerHTML = `*** RE-IMPRESIÓN SERVICELL ***
-Fecha: ${match.fecha.split('-')[0]}
-Técnico: ${match.tecKey.toUpperCase()}
-Total: ${fmtMonto(match.totalServicios)} COP`;
-            window.print();
-        };
-
-        window.svc_eliminarReporteContableEnSeco = async function(key) {
-            const idx = svc_historicoCierresDiarios.findIndex(x => x.fecha === key); if(idx === -1) return;
-            const match = svc_historicoCierresDiarios[idx];
-
-            if(match.status === "ANULADA") {
-                if(!confirm("⚠️ ¿Desea eliminar definitivamente este folio de Firebase?")) return;
-                svc_historicoCierresDiarios.splice(idx, 1);
-            } else {
-                if(!confirm("⚠️ ¿Desea asentar una Nota de Crédito para anular este cierre?")) return;
-                match.status = "ANULADA";
-            }
-            await window.svc_sincronizarConFirebase();
-            window.svc_descargarServidorCentral();
         };
 
         window.svc_enviarWhatsAppNominaSemanalDividido = function() {
@@ -1751,7 +1789,7 @@ ${linkUnicoGenerated}
             window.svc_descargarServidorCentral();
         };
 
-        // RENDERIZADO DE FICHAS DE TÉCNICOS CON BOTÓN CAMBIAR CLAVE Y ESTATUS ACTUALIZADO
+        // RENDERIZADO DE FICHAS TÉCNICAS CON BOTÓN CAMBIAR CLAVE Y ESTATUS ACTUALIZADO
         window.svc_renderGridTecnicosMaster = function() {
             const container = document.getElementById('wrapper-fichas-tecnicos-grid'); if(!container) return;
             let html = "";
@@ -1780,7 +1818,7 @@ ${linkUnicoGenerated}
             container.innerHTML = html || `<p class="text-center text-slate-500 italic py-4 col-span-2 text-xs">Cero operadores registrados.</p>`;
         };
 
-        // FUNCIÓN PARA CAMBIAR CLAVE DE TÉCNICO DIRECTO DESDE EL PANEL MÁSTER
+        // CAMBIAR CLAVE DE TÉCNICO DIRECTO DESDE EL PANEL MÁSTER
         window.svc_cambiarClaveTecnicoMaster = async function(idx) {
             const t = svc_tecnicosPerfiles[idx]; if(!t) return;
             const nuevaClave = prompt(`Ingrese la nueva contraseña para el técnico ${t.nombre.toUpperCase()} (${t.user}):`, t.pass);
