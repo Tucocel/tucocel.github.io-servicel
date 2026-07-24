@@ -140,12 +140,6 @@
         <div id="workspace-tabs" class="grid grid-cols-2 sm:flex sm:flex-row gap-2 pb-3 no-imprimir"></div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full">
-            
-            <!-- BANNER CONTROL MÁSTER: SALA DE ESPERA DE RECEPCIÓN -->
-            <div id="wrapper-master-waiting-bar" class="hidden lg:col-span-12 bg-purple-950/40 border border-purple-500/30 p-4 rounded-3xl">
-                <h4 class="text-xs font-black text-purple-400 uppercase tracking-wider mb-2 flex items-center gap-1.5"><i class="fa-solid fa-clock animate-pulse"></i> ⏳ Bandeja de Órdenes en Espera (Por Dar Impulso Máster)</h4>
-                <div id="master-waiting-orders-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
-            </div>
 
             <!-- PARTICIÓN 1: RECEPCIÓN MOSTRADOR -->
             <div id="tab-recepcion" class="lg:col-span-12 hidden w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -352,14 +346,57 @@
                     </div>
                 </div>
 
-                <!-- SALA DE REPORTES DE RECEPCIÓN -->
+                <!-- BANDEJA DE ÓRDENES EN ACORDEÓN POR ESTADOS -->
                 <div class="lg:col-span-6 space-y-4">
                     <div class="bg-slate-900/60 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
-                        <h3 class="text-sm font-black text-white uppercase tracking-widest border-b border-slate-800 pb-2 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-purple-400"></i> Sala de Reportes de Recepción</h3>
+                        <h3 class="text-sm font-black text-white uppercase tracking-widest border-b border-slate-800 pb-2 flex items-center justify-between">
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-folder-tree text-purple-400"></i> Bandeja de Órdenes & Recepciones</span>
+                            <span class="text-[10px] text-slate-500 font-mono">EN ACORDEÓN</span>
+                        </h3>
+                        
                         <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
                             <input type="text" id="form-search-recepcion" onkeyup="window.svc_renderizerHistoricoRecepciones()" placeholder="Buscar por Cédula, Orden o Cliente..." class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-xs text-white focus:outline-none">
                         </div>
-                        <div id="wrapper-historico-recepciones-box" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
+
+                        <!-- ACORDEÓN 1: EN ESPERA / IMPULSO MÁSTER -->
+                        <div class="bg-slate-950 border border-amber-500/30 rounded-2xl overflow-hidden shadow-md">
+                            <button onclick="document.getElementById('acc-sec-espera').classList.toggle('hidden')" class="w-full p-3.5 bg-amber-950/30 hover:bg-amber-900/40 text-amber-400 font-black text-xs flex justify-between items-center transition border-b border-amber-500/20">
+                                <span class="flex items-center gap-2">
+                                    <i class="fa-solid fa-clock animate-pulse"></i> ⏳ En Espera / Diagnóstico (Impulso Máster)
+                                </span>
+                                <span id="badge-cnt-espera" class="bg-amber-500/20 text-amber-300 text-[10px] px-2.5 py-0.5 rounded-full border border-amber-500/30 font-bold">0</span>
+                            </button>
+                            <div id="acc-sec-espera" class="p-3 space-y-3">
+                                <div id="wrapper-orders-espera-box" class="space-y-3 max-h-80 overflow-y-auto no-scrollbar pr-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- ACORDEÓN 2: EN PROCESO / PENDIENTE -->
+                        <div class="bg-slate-950 border border-blue-500/30 rounded-2xl overflow-hidden shadow-md">
+                            <button onclick="document.getElementById('acc-sec-proceso').classList.toggle('hidden')" class="w-full p-3.5 bg-blue-950/30 hover:bg-blue-900/40 text-blue-400 font-black text-xs flex justify-between items-center transition border-b border-blue-500/20">
+                                <span class="flex items-center gap-2">
+                                    <i class="fa-solid fa-gear"></i> ⚙️ En Proceso / Reparación Activa
+                                </span>
+                                <span id="badge-cnt-proceso" class="bg-blue-500/20 text-blue-300 text-[10px] px-2.5 py-0.5 rounded-full border border-blue-500/30 font-bold">0</span>
+                            </button>
+                            <div id="acc-sec-proceso" class="p-3 space-y-3 hidden">
+                                <div id="wrapper-orders-proceso-box" class="space-y-3 max-h-80 overflow-y-auto no-scrollbar pr-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- ACORDEÓN 3: FINALIZADO / ENTREGADO -->
+                        <div class="bg-slate-950 border border-emerald-500/30 rounded-2xl overflow-hidden shadow-md">
+                            <button onclick="document.getElementById('acc-sec-finalizado').classList.toggle('hidden')" class="w-full p-3.5 bg-emerald-950/30 hover:bg-emerald-900/40 text-emerald-400 font-black text-xs flex justify-between items-center transition border-b border-emerald-500/20">
+                                <span class="flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-check"></i> ✅ Finalizados / Listos para Retiro
+                                </span>
+                                <span id="badge-cnt-finalizado" class="bg-emerald-500/20 text-emerald-300 text-[10px] px-2.5 py-0.5 rounded-full border border-emerald-500/30 font-bold">0</span>
+                            </button>
+                            <div id="acc-sec-finalizado" class="p-3 space-y-3 hidden">
+                                <div id="wrapper-orders-finalizado-box" class="space-y-3 max-h-80 overflow-y-auto no-scrollbar pr-1"></div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -836,8 +873,6 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
                         <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-users"></i> Expedientes SaaS</button>
                         <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-vault"></i> Finanzas & Balance</button>
                         <button id="tab-btn-garantias" onclick="window.svc_cambiarTab('garantias')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-history"></i> Garantías Central</button>`;
-                    
-                    document.getElementById('wrapper-master-waiting-bar').classList.remove('hidden');
                 } else {
                     tecMatch = svc_tecnicosPerfiles.find(t => t.user.toLowerCase() === user && t.pass === pass);
                     if(tecMatch) {
@@ -854,11 +889,9 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
                                 <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-users"></i> Expedientes SaaS</button>
                                 <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-vault"></i> Finanzas & Balance</button>
                                 <button id="tab-btn-garantias" onclick="window.svc_cambiarTab('garantias')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-history"></i> Garantías Central</button>`;
-                            document.getElementById('wrapper-master-waiting-bar').classList.remove('hidden');
                         } else {
                             document.getElementById('label-indicador-rol').innerText = `SESIÓN: TÉCNICO DE MOSTRADOR (${tecMatch.nombre.toUpperCase()})`;
                             document.getElementById('control-tasas-box').classList.add('hidden');
-                            document.getElementById('wrapper-master-waiting-bar').classList.add('hidden');
                             
                             tabsContainer.innerHTML = `
                                 <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow"><i class="fa-solid fa-cash-register"></i> Recepción Mostrador</button>`;
@@ -918,6 +951,7 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
             
             await setDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`), { nombre, cedula, whatsapp, direccion, fechaAlta: new Date().toLocaleDateString() });
             
+            // ACTUALIZACIÓN DIRECTA A ESTADO ACTIVO EN FIREBASE
             const idx = svc_tecnicosPerfiles.findIndex(t => t.user === usuarioSesionActivo);
             if(idx !== -1) {
                 svc_tecnicosPerfiles[idx].estatus = "ACTIVO";
@@ -1049,14 +1083,16 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
             } catch(e) {}
         };
 
+        // GATILLO DE NOTIFICACIÓN DE TÉCNICO AL MÁSTER CON LINK DIRECTO DE LA ORDEN
         window.svc_dispararNotificacionGatilloMaster = function(c) {
+            const linkDirectoOrden = `${window.location.origin}${window.location.pathname}?orden=${c.id}`;
             let msg = `🛠️ *SERVICELL — INGRESO EN ESPERA*
 
 `;
-            msg += `Hola Máster Robert, te notifico que acabo de procesar la entrada de un nuevo dispositivo en mostrador.
+            msg += `Hola Máster Robert, le notifico el registro de un nuevo equipo en mostrador.
 
 `;
-            msg += `📋 *Ficha en Espera:* 
+            msg += `📋 *Ficha de Entrada:*
 `;
             msg += `• *Orden:* #${c.nroOrden}
 `;
@@ -1067,15 +1103,24 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
             msg += `• *Monto Total:* ${fmtMonto(c.montoOrig)} ${c.monedaOrig} | *Abonó:* ${fmtMonto(c.abonoOrig)} ${c.monedaOrig}
 
 `;
-            msg += `_Por favor, verifique su panel supremo y bríndele el 'Impulso' contable para activar el registro._`;
+            msg += `🔗 *Link de Verificación & Impulso Máster:*
+${linkDirectoOrden}
+
+`;
+            msg += `_Haga clic en el link para ingresar a la orden, dar el impulso contable y notificar al cliente._`;
             window.open(`https://api.whatsapp.com/send?phone=584147357549&text=${encodeURIComponent(msg)}`, '_blank');
         };
 
+        // IMPULSO MÁSTER: CAMBIA DE "EN ESPERA" A "EN PROCESO" Y NOTIFICA AL CLIENTE
         window.svc_darImpulsoMasterSupremo = async function(id) {
+            if(rolDeSesionActiva !== "MASTER") {
+                return alert("🛑 Solo el Máster está autorizado en hacer uso de esta función.");
+            }
+
             const match = svc_comandasGlobal.find(x => x.id === id); if(!match) return;
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
 
-            match.estatus = "PENDIENTE"; 
+            match.estatus = "EN PROCESO"; 
             svc_comandaActivaTurno.push({ idItem: match.id, operador: match.operador, concepto: `SERVICIO: ${match.falla} (${match.modelo})`, cantidad: 1, precioCOP: match.monedaOrig === "COP" ? match.montoOrig : match.montoOrig * tCOP, tipo: "SERVICIO", metodo: match.monedaOrig === "USD" ? "DOLAR" : "PESOS", valeDia: 0 });
 
             await window.svc_sincronizarConFirebase();
@@ -1094,7 +1139,7 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
 `;
             msgCliente += `• *Orden:* #${match.nroOrden}
 `;
-            msgCliente += `• *Equipo:* ${match.modelo}
+            msgCliente += `• *Equipo:* ${match.modelo} — *Falla:* ${match.falla}
 `;
             msgCliente += `• *Abono Recibido:* ${fmtMonto(match.abonoOrig)} ${match.monedaOrig}
 `;
@@ -1103,18 +1148,28 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
 `;
             msgCliente += `🛡️ *Garantía de Servicio:* ${match.diasGarantia || 2} Días continuos tras la entrega.
 `;
-            msgCliente += `🔒 _Su equipo queda bajo estricto resguardo técnico._`;
+            msgCliente += `🔒 _Su equipo queda en proceso de reparación bajo estricto resguardo técnico. Le avisaremos apenas esté listo._`;
 
             window.open(`https://api.whatsapp.com/send?phone=${match.tlf}&text=${encodeURIComponent(msgCliente)}`, '_blank');
         };
 
+        // RENDERIZADO DE BANDEJA DE ÓRDENES EN ACORDEÓN POR ESTADO
         window.svc_renderizerHistoricoRecepciones = function() {
-            const container = document.getElementById('wrapper-historico-recepciones-box'); if(!container) return;
+            const boxEspera = document.getElementById('wrapper-orders-espera-box');
+            const boxProceso = document.getElementById('wrapper-orders-proceso-box');
+            const boxFinalizado = document.getElementById('wrapper-orders-finalizado-box');
+
+            if(!boxEspera || !boxProceso || !boxFinalizado) return;
+
             const filtroBusqueda = document.getElementById('form-search-recepcion').value.trim().toUpperCase();
 
             let cntTel = 0; let cntComp = 0; let cntImp = 0;
+            let cntEspera = 0; let cntProceso = 0; let cntFinalizado = 0;
 
-            let html = "";
+            let htmlEspera = "";
+            let htmlProceso = "";
+            let htmlFinalizado = "";
+
             svc_comandasGlobal.forEach((c) => {
                 if(c.estatus !== "ANULADA") {
                     if(c.soporte === "TELEFONIA") cntTel++;
@@ -1122,18 +1177,21 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
                     else if(c.soporte === "IMPRESORAS") cntImp++;
                 }
 
-                if(c.estatus === "EN ESPERA") return;
                 if(filtroBusqueda && !c.cliente.includes(filtroBusqueda) && !c.cedula.includes(filtroBusqueda) && !c.nroOrden.includes(filtroBusqueda)) return;
 
                 let saldoRestante = c.montoOrig - c.abonoOrig;
                 let displayRestanteStr = c.monedaOrig === "USD" ? `$${window.svc_formatDecimalUSD(saldoRestante)} USD` : `${fmtMonto(saldoRestante)} COP`;
 
                 let colorEstado = "bg-amber-500/10 text-amber-400 border-amber-500/20";
-                if(c.estatus === "LISTO PARA RETIRAR") colorEstado = "bg-blue-500/10 text-blue-400 border-blue-500/20";
-                if(c.estatus === "FINALIZADO") colorEstado = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+                if(c.estatus === "PENDIENTE" || c.estatus === "EN PROCESO") colorEstado = "bg-blue-500/10 text-blue-400 border-blue-500/20";
+                if(c.estatus === "LISTO PARA RETIRAR" || c.estatus === "FINALIZADO") colorEstado = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
 
-                html += `
-                    <div class="p-3 bg-slate-900/60 border border-slate-800 rounded-2xl font-mono text-xs">
+                let botonImpulso = (rolDeSesionActiva === "MASTER" && c.estatus === "EN ESPERA") 
+                    ? `<button onclick="window.svc_darImpulsoMasterSupremo('${c.id}')" class="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-xl text-[9px] font-black uppercase tracking-wider shadow">⚡ Impulso Máster</button>` 
+                    : ``;
+
+                let cardHtml = `
+                    <div id="card-ord-${c.id}" class="p-3 bg-slate-900/60 border border-slate-800 rounded-2xl font-mono text-xs">
                         <div onclick="document.getElementById('acc-rec-${c.id}').classList.toggle('hidden')" class="flex justify-between items-center cursor-pointer">
                             <div>
                                 <b class="text-white text-sm">#${c.nroOrden} — ${c.cliente}</b>
@@ -1149,6 +1207,7 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
                             <p>• <b>Falla:</b> ${c.falla} (${c.modelo})</p>
                             <p>• <b>Patrón/Clave:</b> <span class="text-amber-400 font-bold">${c.claveManual}</span></p>
                             <p>• <b>Garantía Aplicable:</b> <span class="text-purple-400 font-bold">${c.diasGarantia || 2} Días</span></p>
+                            ${c.fotoPatron ? `<div class="p-2 bg-slate-950 rounded-xl border border-slate-800 flex justify-center"><img src="${c.fotoPatron}" class="max-h-32 rounded border border-slate-800" alt="Foto Patrón"></div>` : ''}
                             <div class="grid grid-cols-2 gap-2 bg-slate-950 p-2 rounded-xl text-center">
                                 <div><span class="block text-[8px] text-slate-500">Abonó</span><strong class="text-emerald-400">${fmtMonto(c.abonoOrig)} ${c.monedaOrig}</strong></div>
                                 <div><span class="block text-[8px] text-red-400">Resta</span><strong class="text-red-500">${displayRestanteStr}</strong></div>
@@ -1159,10 +1218,29 @@ Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita
                                 <button onclick="window.svc_finalizarYEntregar('${c.id}')" class="bg-purple-600/10 text-purple-400 border border-purple-500/20 p-2 rounded-xl text-[9px] font-bold">3. Entregar</button>
                                 <button onclick="window.svc_imprimirTicketRecepcionIndividual('${c.id}')" class="bg-slate-950 border border-slate-800 text-white p-2 rounded-xl text-[9px] font-bold">Ticket</button>
                             </div>
+                            ${botonImpulso ? `<div class="pt-2 flex justify-end">${botonImpulso}</div>` : ''}
                         </div>
                     </div>`;
+
+                if(c.estatus === "EN ESPERA") {
+                    htmlEspera += cardHtml;
+                    cntEspera++;
+                } else if(c.estatus === "PENDIENTE" || c.estatus === "EN PROCESO" || c.estatus === "LISTO PARA RETIRAR") {
+                    htmlProceso += cardHtml;
+                    cntProceso++;
+                } else if(c.estatus === "FINALIZADO") {
+                    htmlFinalizado += cardHtml;
+                    cntFinalizado++;
+                }
             });
-            container.innerHTML = html || `<p class="text-center text-slate-500 italic py-6">Cero ingresos.</p>`;
+
+            boxEspera.innerHTML = htmlEspera || `<p class="text-center text-slate-500 italic py-4 text-[10px]">Cero órdenes en espera de aprobación.</p>`;
+            boxProceso.innerHTML = htmlProceso || `<p class="text-center text-slate-500 italic py-4 text-[10px]">Cero órdenes en proceso de taller.</p>`;
+            boxFinalizado.innerHTML = htmlFinalizado || `<p class="text-center text-slate-500 italic py-4 text-[10px]">Cero órdenes finalizadas en historial.</p>`;
+
+            document.getElementById('badge-cnt-espera').innerText = cntEspera;
+            document.getElementById('badge-cnt-proceso').innerText = cntProceso;
+            document.getElementById('badge-cnt-finalizado').innerText = cntFinalizado;
 
             document.getElementById('lbl-cnt-telefonia').innerText = `${cntTel} Equipos`;
             document.getElementById('lbl-cnt-computacion').innerText = `${cntComp} Equipos`;
@@ -1558,24 +1636,6 @@ Base Fija: $${fmtMonto(baseUSD)} USD
             window.svc_sincronizarConFirebase(); window.svc_renderizerEcosistema();
         };
 
-        window.svc_aborbeWaitingOrdersRender = function() {
-            const box = document.getElementById('master-waiting-orders-list'); if(!box) return;
-            let html = "";
-            svc_comandasGlobal.forEach(c => {
-                if(c.estatus !== "EN ESPERA") return;
-                html += `
-                    <div class="p-3 bg-purple-950/40 border border-purple-500/30 rounded-xl font-mono text-xs flex flex-col justify-between gap-2">
-                        <div>
-                            <span class="block text-white font-black">Orden #${c.nroOrden} — Técnico: ${c.operador.toUpperCase()}</span>
-                            <span class="text-[10px] text-purple-400">Cliente: ${c.cliente} | Falla: ${c.falla}</span>
-                            <span class="block text-amber-400 font-bold mt-1">Monto: ${fmtMonto(c.montoOrig)} ${c.monedaOrig}</span>
-                        </div>
-                        <button onclick="window.svc_darImpulsoMasterSupremo('${c.id}')" class="w-full bg-purple-600 hover:bg-purple-700 text-white text-[10px] py-1.5 rounded-lg uppercase font-black tracking-wider shadow">⚡ Dar Impulso Máster</button>
-                    </div>`;
-            });
-            box.innerHTML = html || `<p class="text-purple-400 italic text-[10px] col-span-3">Cero planillas en espera de aprobación técnica.</p>`;
-        };
-
         window.svc_renderizerEcosistema = async function() {
             try {
                 let totCOP = 0; let totUSD = 0; let activeFichas = 0;
@@ -1636,9 +1696,8 @@ Base Fija: $${fmtMonto(baseUSD)} USD
                 }
                 
                 window.svc_renderGridTecnicosMaster();
-                window.svc_renderizarHistoricoComandasDirecto(); 
+                window.svc_renderizerHistoricoComandasDirecto(); 
                 window.svc_renderizerHistoricoRecepciones();
-                window.svc_aborbeWaitingOrdersRender();
                 window.svc_calcularBalanceRentabilidadMensual();
             } catch(e) {}
         };
@@ -1692,6 +1751,7 @@ ${linkUnicoGenerated}
             window.svc_descargarServidorCentral();
         };
 
+        // RENDERIZADO DE FICHAS DE TÉCNICOS CON BOTÓN CAMBIAR CLAVE Y ESTATUS ACTUALIZADO
         window.svc_renderGridTecnicosMaster = function() {
             const container = document.getElementById('wrapper-fichas-tecnicos-grid'); if(!container) return;
             let html = "";
@@ -1710,13 +1770,28 @@ ${linkUnicoGenerated}
                             <span class="text-[9px] text-slate-400 font-mono block">ID: ${t.user} | Clave: ${t.pass}</span>
                             <span class="text-[9px] text-slate-500 block">WhatsApp: ${t.whatsapp}</span>
                         </div>
-                        <div class="grid grid-cols-2 gap-1.5 pt-2 border-t border-slate-950">
-                            <button onclick="window.svc_reenviarWhatsAppAccesoTecnico(${index})" class="bg-purple-600/10 border border-purple-500/20 text-purple-400 text-[9px] font-black py-1.5 rounded-lg uppercase">📲 Reenviar</button>
-                            <button onclick="window.svc_borrarDefinitivamenteTecnico(${index})" class="bg-red-600/10 border border-red-500/20 text-red-400 text-[9px] font-black py-1.5 rounded-lg uppercase">🗑️ Borrar</button>
+                        <div class="grid grid-cols-3 gap-1 pt-2 border-t border-slate-950">
+                            <button onclick="window.svc_reenviarWhatsAppAccesoTecnico(${index})" class="bg-purple-600/10 border border-purple-500/20 text-purple-400 text-[8px] font-black py-1.5 rounded-lg uppercase">📲 Reenviar</button>
+                            <button onclick="window.svc_cambiarClaveTecnicoMaster(${index})" class="bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[8px] font-black py-1.5 rounded-lg uppercase">🔑 Clave</button>
+                            <button onclick="window.svc_borrarDefinitivamenteTecnico(${index})" class="bg-red-600/10 border border-red-500/20 text-red-400 text-[8px] font-black py-1.5 rounded-lg uppercase">🗑️ Borrar</button>
                         </div>
                     </div>`;
             });
             container.innerHTML = html || `<p class="text-center text-slate-500 italic py-4 col-span-2 text-xs">Cero operadores registrados.</p>`;
+        };
+
+        // FUNCIÓN PARA CAMBIAR CLAVE DE TÉCNICO DIRECTO DESDE EL PANEL MÁSTER
+        window.svc_cambiarClaveTecnicoMaster = async function(idx) {
+            const t = svc_tecnicosPerfiles[idx]; if(!t) return;
+            const nuevaClave = prompt(`Ingrese la nueva contraseña para el técnico ${t.nombre.toUpperCase()} (${t.user}):`, t.pass);
+            
+            if(!nuevaClave || nuevaClave.trim() === "") return;
+
+            svc_tecnicosPerfiles[idx].pass = nuevaClave.trim();
+            await setDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"), { perfiles: svc_tecnicosPerfiles });
+            
+            window.svc_descargarServidorCentral();
+            alert(`✅ Contraseña actualizada correctamente para ${t.nombre.toUpperCase()}.`);
         };
 
         window.svc_reenviarWhatsAppAccesoTecnico = function(idx) {
@@ -1758,10 +1833,25 @@ ${t.linkUnicoGenerated}
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const userParam = urlParams.get('user');
+            const ordenParam = urlParams.get('orden');
+
             document.getElementById('contenedor-login').classList.remove('hidden');
             document.getElementById('main-header').classList.add('hidden');
             document.getElementById('contenedor-workspace').classList.add('hidden');
+
             if(userParam) document.getElementById('auth-user').value = userParam.toLowerCase();
+
+            // RASTREO Y DESPLIEGUE DIRECTO SI VIENE DESDE LINK DE ORDEN
+            if(ordenParam) {
+                setTimeout(() => {
+                    const cardTarget = document.getElementById(`card-ord-${ordenParam}`);
+                    if(cardTarget) {
+                        cardTarget.scrollIntoView({ behavior: 'smooth' });
+                        const accTarget = document.getElementById(`acc-rec-${ordenParam}`);
+                        if(accTarget) accTarget.classList.remove('hidden');
+                    }
+                }, 1500);
+            }
         };
     </script>
 </body>
