@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; color: #f8fafc; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -69,11 +69,11 @@
             <div id="control-tasas-box" class="flex items-center gap-4 bg-slate-950 border border-slate-800 p-3 rounded-2xl text-xs font-bold font-mono">
                 <div class="px-2 border-r border-slate-800">
                     <span class="block text-[9px] text-white uppercase font-sans mb-1">Tasa COP ($)</span>
-                    <input type="number" id="cfg-tasa-cop" value="3600" onkeyup="window.svc_calcularConversionesAlVuelo()" class="w-16 bg-transparent text-amber-400 font-black focus:outline-none text-base">
+                    <input type="text" id="cfg-tasa-cop" value="3.600" onkeyup="window.svc_maskInputFormatted(this); window.svc_calcularConversionesAlVuelo();" class="w-20 bg-transparent text-amber-400 font-black focus:outline-none text-base">
                 </div>
                 <div class="px-2">
                     <span class="block text-[9px] text-white uppercase font-sans mb-1">Tasa Bs vs COP</span>
-                    <input type="number" id="cfg-tasa-bs" value="4" onkeyup="window.svc_calcularConversionesAlVuelo()" class="w-14 bg-transparent text-emerald-400 font-black focus:outline-none text-base">
+                    <input type="text" id="cfg-tasa-bs" value="4" onkeyup="window.svc_maskInputFormatted(this); window.svc_calcularConversionesAlVuelo();" class="w-14 bg-transparent text-emerald-400 font-black focus:outline-none text-base">
                 </div>
             </div>
         </div>
@@ -182,7 +182,7 @@
                         </div>
                     </div>
 
-                    <!-- PLANILLA DE ENTRADA CON DETECCIÓN AUTOMÁTICA DE OPERADOR -->
+                    <!-- PLANILLA DE ENTRADA -->
                     <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
                         <button onclick="window.svc_intentarAbrirPlanilla()" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
                             <div class="flex items-center gap-2">
@@ -197,7 +197,7 @@
                             <div class="space-y-4 text-xs font-bold text-slate-300">
                                 
                                 <div class="space-y-1">
-                                    <label class="text-[11px] text-slate-300 uppercase block font-bold">Operador Registrado (Fijado Automático)</label>
+                                    <label class="text-[11px] text-slate-300 uppercase block font-bold">Operador Registrado</label>
                                     <input type="text" id="form-operador-display" readonly class="w-full bg-slate-950 border border-slate-800 p-3.5 rounded-xl text-purple-400 font-black text-sm uppercase focus:outline-none">
                                     <input type="hidden" id="form-operador">
                                 </div>
@@ -305,30 +305,30 @@
                                     </div>
                                 </div>
 
-                                <!-- CONTROL DE COBRO Y CONVERSOR MULTITASA EN VIVO CON SEPARADOR DE MILES -->
+                                <!-- CONTROL DE COBRO Y CONVERSOR MULTITASA COMPACTO HORIZONTAL EN UNA SOLA FILA -->
                                 <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4">
-                                    <span class="text-[11px] text-amber-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-coins mr-1"></i> Control de Cobro, Abono & Multitasa Simultánea</span>
+                                    <span class="text-[11px] text-amber-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-coins mr-1"></i> Control de Cobro, Abono & Multitasa</span>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         <div class="space-y-1">
-                                            <label class="text-[10px] text-slate-300 uppercase block">Moneda de Pago Seleccionada</label>
+                                            <label class="text-[10px] text-slate-300 uppercase block">Moneda de Pago</label>
                                             <select id="form-moneda-base" onchange="window.svc_conmutarMonedaMostrador()" class="w-full bg-slate-900 border border-slate-800 p-3.5 rounded-xl text-white text-sm focus:outline-none font-bold">
                                                 <option value="COP" selected>Pesos (COP)</option>
                                                 <option value="USD">Dólares ($)</option>
                                             </select>
                                         </div>
                                         <div class="space-y-1">
-                                            <label class="text-[10px] text-slate-300 uppercase block">Monto Presupuesto Total</label>
-                                            <input type="number" id="form-monto" placeholder="0" onkeyup="window.svc_calcularConversionesAlVuelo()" class="w-full bg-slate-900 border border-purple-500/40 p-3.5 rounded-xl text-white text-center font-mono text-base font-black focus:outline-none">
+                                            <label class="text-[10px] text-slate-300 uppercase block">Monto a Cancelar</label>
+                                            <input type="text" id="form-monto" placeholder="0" onkeyup="window.svc_maskInputFormatted(this); window.svc_calcularConversionesAlVuelo();" class="w-full bg-slate-900 border border-purple-500/40 p-3.5 rounded-xl text-white text-center font-mono text-base font-black focus:outline-none">
                                         </div>
                                     </div>
                                     
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-900/60 items-center">
                                         <div class="space-y-1">
-                                            <label class="text-[10px] text-slate-300 block">Monto Abonado Hoy</label>
-                                            <input type="number" id="form-abono" value="0" onkeyup="window.svc_calcularConversionesAlVuelo(true)" class="w-full bg-slate-900 border border-emerald-500/30 p-3.5 rounded-xl text-white text-center font-mono text-base font-black focus:outline-none">
+                                            <label class="text-[10px] text-slate-300 block font-bold">Cuánto Debe Abonar el Cliente</label>
+                                            <input type="text" id="form-abono" value="0" onkeyup="window.svc_maskInputFormatted(this); window.svc_calcularConversionesAlVuelo(true);" class="w-full bg-slate-900 border border-emerald-500/30 p-3.5 rounded-xl text-white text-center font-mono text-base font-black focus:outline-none">
                                         </div>
                                         <div class="flex flex-col justify-center items-center bg-slate-900 p-3 rounded-xl border border-slate-800">
-                                            <span class="text-[9px] text-red-400 font-extrabold uppercase tracking-wide">Pendiente Restante en Gaveta</span>
+                                            <span class="text-[9px] text-red-400 font-extrabold uppercase tracking-wide">Pendiente Restante</span>
                                             <span id="lbl-display-pendiente" class="text-red-500 text-base font-black font-mono">0 COP</span>
                                         </div>
                                     </div>
@@ -338,11 +338,11 @@
                                         <button onclick="window.svc_aplicarMetodoPagoRapido('LEY70')" type="button" id="btn-forzar-70-ley" class="w-full bg-purple-600/20 text-purple-400 font-black text-[10px] py-2.5 rounded-xl border border-purple-500/20 uppercase hidden">Aplicar 70% Sugerido</button>
                                     </div>
 
-                                    <!-- CAJAS DE CONVERSIÓN EN VIVO TRILINGÜE CON SEPARADOR DE MILES -->
-                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-[11px] text-center pt-2 border-t border-slate-900">
-                                        <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800"><span class="block text-[8px] text-slate-400 uppercase font-sans mb-1">Equiv. Pesos</span><b id="lbl-display-pesos" class="text-amber-400 block font-black text-sm">0 COP</b></div>
-                                        <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800"><span class="block text-[8px] text-slate-400 uppercase font-sans mb-1">Equiv. Dólares</span><b id="lbl-display-dolares" class="text-blue-400 block font-black text-sm">$0.00</b></div>
-                                        <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800"><span class="block text-[8px] text-slate-400 uppercase font-sans mb-1">Equiv. Bolívares</span><b id="lbl-display-bolivares" class="text-emerald-400 block font-black text-sm">0 Bs</b></div>
+                                    <!-- CAJAS DE CONVERSIÓN EN UNA SOLA FILA HORIZONTAL (grid-cols-3) -->
+                                    <div class="grid grid-cols-3 gap-2 font-mono text-[10px] sm:text-[11px] text-center pt-2 border-t border-slate-900">
+                                        <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800"><span class="block text-[8px] text-slate-400 uppercase font-sans mb-1">Pesos</span><b id="lbl-display-pesos" class="text-amber-400 block font-black text-xs sm:text-sm">0 COP</b></div>
+                                        <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800"><span class="block text-[8px] text-slate-400 uppercase font-sans mb-1">Dólares</span><b id="lbl-display-dolares" class="text-blue-400 block font-black text-xs sm:text-sm">$0,00</b></div>
+                                        <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800"><span class="block text-[8px] text-slate-400 uppercase font-sans mb-1">Bolívares</span><b id="lbl-display-bolivares" class="text-emerald-400 block font-black text-xs sm:text-sm">0 Bs</b></div>
                                     </div>
                                 </div>
 
@@ -364,7 +364,7 @@
                 </div>
             </div>
 
-            <!-- PARTICIÓN 2: FACTURACIÓN DE COMANDAS SERVICELL -->
+            <!-- PARTICIÓN 2: FACTURACIÓN DE COMANDAS SERVICELL CON SEPARADOR DE MILES -->
             <div id="tab-comandas" class="lg:col-span-12 hidden w-full space-y-6 text-slate-300">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     <!-- CAJA DE CARGA RÁPIDA -->
@@ -389,7 +389,7 @@
                                 </div>
                                 <div>
                                     <label class="text-[10px] text-slate-400 uppercase block mb-1">Monto Ganancia Neta (COP)</label>
-                                    <input type="number" id="svc-input-precio-cop" placeholder="Ej: 50000" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white text-center font-mono font-black focus:outline-none">
+                                    <input type="text" id="svc-input-precio-cop" placeholder="Ej: 50.000" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white text-center font-mono font-black focus:outline-none">
                                 </div>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
@@ -449,7 +449,7 @@
                             <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-1">
                                 <span class="block text-[8.5px] text-purple-400 uppercase">💸 Registro de Vales Semanales</span>
                                 <div class="flex gap-1">
-                                    <input type="number" id="svc-vale-monto-input" placeholder="Monto COP" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white font-mono focus:outline-none">
+                                    <input type="text" id="svc-vale-monto-input" placeholder="Monto COP" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white font-mono focus:outline-none">
                                     <button onclick="window.svc_registrarValeAdelantoColaborador()" class="bg-purple-600 text-white px-3 rounded-xl font-black uppercase text-[9px]">Abonar</button>
                                 </div>
                             </div>
@@ -510,7 +510,7 @@
                     <div class="md:col-span-7 bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
                         <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
                             <h3 class="text-sm font-black text-white uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-vault text-purple-500"></i> Historial y Auditoría de Cierres Emitidos</h3>
-                            <input type="date" id="filtro-comandas-fecha-directo" onchange="window.svc_renderizarHistoricoComandasDirecto()" class="bg-slate-950 border border-slate-800 p-1.5 rounded-xl text-xs font-mono text-white focus:outline-none">
+                            <input type="date" id="filtro-comandas-fecha-directo" onchange="window.svc_renderizerHistoricoComandasDirecto()" class="bg-slate-950 border border-slate-800 p-1.5 rounded-xl text-xs font-mono text-white focus:outline-none">
                         </div>
                         <div id="wrapper-historico-comandas-directo-box" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
                     </div>
@@ -527,7 +527,7 @@
                             </div>
                             <div class="bg-slate-950 p-2 rounded-xl border border-slate-800">
                                 <span class="block text-slate-500 text-[8px] uppercase">Tasa Arriendo (COP)</span>
-                                <input type="number" id="svc-manual-tasa-arriendo-cop" value="3600" class="w-full bg-transparent font-black text-amber-400 focus:outline-none" onkeyup="window.svc_calcularBalanceRentabilidadMensual()">
+                                <input type="text" id="svc-manual-tasa-arriendo-cop" value="3.600" class="w-full bg-transparent font-black text-amber-400 focus:outline-none" onkeyup="window.svc_maskInputFormatted(this); window.svc_calcularBalanceRentabilidadMensual();">
                             </div>
                         </div>
 
@@ -632,8 +632,36 @@
         let rolDeSesionActiva = "BLOQUEADO";
         let usuarioSesionActivo = "";
 
+        // AUXILIARES DE FORMATO DE MILES CON PUNTOS (130.000 / 15,00)
+        window.svc_cleanNumber = function(val) {
+            if(!val) return 0;
+            let str = String(val).replace(/\./g, '').replace(',', '.');
+            return parseFloat(str) || 0;
+        };
+
+        window.svc_formatPoints = function(v) {
+            let num = Math.round(v || 0);
+            return num.toLocaleString('es-CO');
+        };
+
+        window.svc_formatDecimalUSD = function(v) {
+            let num = parseFloat(v || 0);
+            return num.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        };
+
+        window.svc_maskInputFormatted = function(input) {
+            let cursor = input.selectionStart;
+            let rawVal = input.value.replace(/\D/g, '');
+            if (!rawVal) {
+                input.value = "";
+                return;
+            }
+            let formatted = parseInt(rawVal, 10).toLocaleString('es-CO');
+            input.value = formatted;
+        };
+
         function fmtMonto(v) {
-            return Math.round(v || 0).toLocaleString('es-CO');
+            return window.svc_formatPoints(v);
         }
 
         window.svc_intentarAbrirPlanilla = function() {
@@ -646,7 +674,9 @@
         };
 
         window.svc_consultarTasaMasterWhatsapp = function() {
-            let msg = `🛠️ *SERVICELL — CONSULTA DE TASA DEL DÍA*\n\nHola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita confirmar o actualizar la Tasa de Cambio oficial del día ($/COP y Bs/COP) para procesar recepciones.`;
+            let msg = `🛠️ *SERVICELL — CONSULTA DE TASA DEL DÍA*
+
+Hola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita confirmar o actualizar la Tasa de Cambio oficial del día ($/COP y Bs/COP) para procesar recepciones.`;
             window.open(`https://api.whatsapp.com/send?phone=584147357549&text=${encodeURIComponent(msg)}`, '_blank');
         };
 
@@ -701,10 +731,11 @@
         };
 
         window.svc_aplicarMetodoPagoRapido = function(tipo) {
-            const monto = parseFloat(document.getElementById('form-monto').value) || 0;
+            const monto = window.svc_cleanNumber(document.getElementById('form-monto').value);
             if(monto <= 0) return alert("Ingrese el monto total primero.");
-            if(tipo === "COMPLETO") document.getElementById('form-abono').value = monto;
-            else if(tipo === "LEY70") document.getElementById('form-abono').value = Math.round(monto * 0.70);
+            
+            let valAbono = (tipo === "COMPLETO") ? monto : Math.round(monto * 0.70);
+            document.getElementById('form-abono').value = window.svc_formatPoints(valAbono);
             window.svc_calcularConversionesAlVuelo(true);
         };
 
@@ -724,17 +755,18 @@
             document.getElementById('form-monto').value = "";
             document.getElementById('form-abono').value = "0";
             document.getElementById('lbl-display-pesos').innerText = "0 COP";
-            document.getElementById('lbl-display-dolares').innerText = "$0.00";
+            document.getElementById('lbl-display-dolares').innerText = "$0,00";
             document.getElementById('lbl-display-bolivares').innerText = "0 Bs";
             document.getElementById('lbl-display-pendiente').innerText = "0 COP";
         };
 
         window.svc_calcularConversionesAlVuelo = function(esManual = false) {
             const moneda = document.getElementById('form-moneda-base').value;
-            const monto = parseFloat(document.getElementById('form-monto').value) || 0;
-            let abono = parseFloat(document.getElementById('form-abono').value) || 0;
-            const tCOP = parseFloat(document.getElementById('cfg-tasa-cop').value) || 3600;
-            const tBs = parseFloat(document.getElementById('cfg-tasa-bs').value) || 4;
+            const monto = window.svc_cleanNumber(document.getElementById('form-monto').value);
+            let abono = window.svc_cleanNumber(document.getElementById('form-abono').value);
+            
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
+            const tBs = window.svc_cleanNumber(document.getElementById('cfg-tasa-bs').value) || 4;
 
             const soporte = document.getElementById('form-tipo-soporte').value;
             const subFalla = document.getElementById('form-sub-tipo-telefonio') ? document.getElementById('form-sub-tipo-telefonio').value : "OTROS";
@@ -746,33 +778,32 @@
 
             if(soporte === "TELEFONIA" && subFalla === "PANTALLAS" && monto > 0 && !esManual) {
                 abono = Math.round(monto * 0.70);
-                document.getElementById('form-abono').value = abono;
+                document.getElementById('form-abono').value = window.svc_formatPoints(abono);
             }
 
             const seguroRestante = Math.max(0, monto - abono);
             if(monto <= 0) { 
-                lblCOP.innerText = "0 COP"; lblUSD.innerText = "$0.00"; lblBs.innerText = "0 Bs"; lblPendiente.innerText = "0 COP";
+                lblCOP.innerText = "0 COP"; lblUSD.innerText = "$0,00"; lblBs.innerText = "0 Bs"; lblPendiente.innerText = "0 COP";
                 return; 
             }
 
             if(moneda === "USD") {
                 let totalPesos = monto * tCOP;
                 let totalBs = totalPesos / tBs;
-                let abonoPesos = abono * tCOP;
                 let seguroRestantePesos = seguroRestante * tCOP;
 
-                lblCOP.innerText = `${fmtMonto(totalPesos)} COP`;
-                lblUSD.innerText = `$${monto.toFixed(2)}`;
-                lblBs.innerText = `${fmtMonto(totalBs)} Bs`;
-                lblPendiente.innerText = `$${fmtMonto(seguroRestante)} USD (${fmtMonto(seguroRestantePesos)} COP)`;
+                lblCOP.innerText = `${window.svc_formatPoints(totalPesos)} COP`;
+                lblUSD.innerText = `$${window.svc_formatDecimalUSD(monto)}`;
+                lblBs.innerText = `${window.svc_formatPoints(totalBs)} Bs`;
+                lblPendiente.innerText = `$${window.svc_formatDecimalUSD(seguroRestante)} USD (${window.svc_formatPoints(seguroRestantePesos)} COP)`;
             } else {
                 let totalUSD = monto / tCOP;
                 let totalBs = monto / tBs;
 
-                lblCOP.innerText = `${fmtMonto(monto)} COP`;
-                lblUSD.innerText = `$${totalUSD.toFixed(2)}`;
-                lblBs.innerText = `${fmtMonto(totalBs)} Bs`;
-                lblPendiente.innerText = `${fmtMonto(seguroRestante)} COP`;
+                lblCOP.innerText = `${window.svc_formatPoints(monto)} COP`;
+                lblUSD.innerText = `$${window.svc_formatDecimalUSD(totalUSD)}`;
+                lblBs.innerText = `${window.svc_formatPoints(totalBs)} Bs`;
+                lblPendiente.innerText = `${window.svc_formatPoints(seguroRestante)} COP`;
             }
         };
 
@@ -837,7 +868,7 @@
                     }
                 }
 
-                // MOSTRAR ANIMACIÓN SPLASH DE BIENVENIDA
+                // SPLASH DE BIENVENIDA
                 document.getElementById('contenedor-login').classList.add('hidden');
                 const splash = document.getElementById('splash-welcome');
                 const titleBox = document.getElementById('splash-title');
@@ -887,7 +918,6 @@
             
             await setDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`), { nombre, cedula, whatsapp, direccion, fechaAlta: new Date().toLocaleDateString() });
             
-            // Actualizar estado del perfil a ACTIVO en Firebase
             const idx = svc_tecnicosPerfiles.findIndex(t => t.user === usuarioSesionActivo);
             if(idx !== -1) {
                 svc_tecnicosPerfiles[idx].estatus = "ACTIVO";
@@ -961,8 +991,9 @@
                 const chkForro = document.getElementById('chk-forro').value;
                 const detallesManual = document.getElementById('form-detalles-manual').value.trim().toUpperCase() || "SIN DETALLES";
                 const moneda = document.getElementById('form-moneda-base').value;
-                const montoBase = parseFloat(document.getElementById('form-monto').value) || 0;
-                const abonoBase = parseFloat(document.getElementById('form-abono').value) || 0;
+                
+                const montoBase = window.svc_cleanNumber(document.getElementById('form-monto').value);
+                const abonoBase = window.svc_cleanNumber(document.getElementById('form-abono').value);
 
                 const seguroTipo = document.getElementById('form-seguro-retiro-tipo').value;
                 const seguroNombre = seguroTipo === "MISMO" ? cliente : (document.getElementById('form-seguro-nombre').value.trim().toUpperCase() || "EL MISMO CLIENTE");
@@ -970,7 +1001,7 @@
 
                 if(!cliente || !cedula || !modelo || montoBase <= 0) return alert("⚠️ Error: Complete los campos obligatorios.");
 
-                const tCOP = parseFloat(document.getElementById('cfg-tasa-cop').value) || 3600;
+                const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
                 let usdEquiv = moneda === "USD" ? montoBase : montoBase / tCOP;
                 let abonoUSDEquiv = moneda === "USD" ? abonoBase : abonoBase / tCOP;
 
@@ -1019,20 +1050,30 @@
         };
 
         window.svc_dispararNotificacionGatilloMaster = function(c) {
-            let msg = `🛠️ *SERVICELL — INGRESO EN ESPERA*\n\n`;
-            msg += `Hola Máster Robert, te notifico que acabo de procesar la entrada de un nuevo dispositivo en mostrador.\n\n`;
-            msg += `📋 *Ficha en Espera:* \n`;
-            msg += `• *Orden:* #${c.nroOrden}\n`;
-            msg += `• *Cliente:* ${c.cliente} (${c.cedula})\n`;
-            msg += `• *Equipo:* ${c.modelo} — *Falla:* ${c.falla}\n`;
-            msg += `• *Monto Total:* ${fmtMonto(c.montoOrig)} ${c.monedaOrig} | *Abonó:* ${fmtMonto(c.abonoOrig)} ${c.monedaOrig}\n\n`;
+            let msg = `🛠️ *SERVICELL — INGRESO EN ESPERA*
+
+`;
+            msg += `Hola Máster Robert, te notifico que acabo de procesar la entrada de un nuevo dispositivo en mostrador.
+
+`;
+            msg += `📋 *Ficha en Espera:* 
+`;
+            msg += `• *Orden:* #${c.nroOrden}
+`;
+            msg += `• *Cliente:* ${c.cliente} (${c.cedula})
+`;
+            msg += `• *Equipo:* ${c.modelo} — *Falla:* ${c.falla}
+`;
+            msg += `• *Monto Total:* ${fmtMonto(c.montoOrig)} ${c.monedaOrig} | *Abonó:* ${fmtMonto(c.abonoOrig)} ${c.monedaOrig}
+
+`;
             msg += `_Por favor, verifique su panel supremo y bríndele el 'Impulso' contable para activar el registro._`;
             window.open(`https://api.whatsapp.com/send?phone=584147357549&text=${encodeURIComponent(msg)}`, '_blank');
         };
 
         window.svc_darImpulsoMasterSupremo = async function(id) {
             const match = svc_comandasGlobal.find(x => x.id === id); if(!match) return;
-            const tCOP = parseFloat(document.getElementById('cfg-tasa-cop').value) || 3600;
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
 
             match.estatus = "PENDIENTE"; 
             svc_comandaActivaTurno.push({ idItem: match.id, operador: match.operador, concepto: `SERVICIO: ${match.falla} (${match.modelo})`, cantidad: 1, precioCOP: match.monedaOrig === "COP" ? match.montoOrig : match.montoOrig * tCOP, tipo: "SERVICIO", metodo: match.monedaOrig === "USD" ? "DOLAR" : "PESOS", valeDia: 0 });
@@ -1041,16 +1082,27 @@
             window.svc_renderizerEcosistema();
 
             let saldoRestante = match.montoOrig - match.abonoOrig;
-            let displayPendienteStr = match.monedaOrig === "USD" ? `$${fmtMonto(saldoRestante)} USD` : `${fmtMonto(saldoRestante)} COP`;
+            let displayPendienteStr = match.monedaOrig === "USD" ? `$${window.svc_formatDecimalUSD(saldoRestante)} USD` : `${fmtMonto(saldoRestante)} COP`;
 
-            let msgCliente = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n\n`;
-            msgCliente += `Estimado(a) *${match.cliente}*, confirmamos el ingreso oficial de su equipo en taller.\n\n`;
-            msgCliente += `📋 *Ficha de Control:* \n`;
-            msgCliente += `• *Orden:* #${match.nroOrden}\n`;
-            msgCliente += `• *Equipo:* ${match.modelo}\n`;
-            msgCliente += `• *Abono Recibido:* ${fmtMonto(match.abonoOrig)} ${match.monedaOrig}\n`;
-            msgCliente += `• *Saldo Restante:* *${displayPendienteStr}*\n\n`;
-            msgCliente += `🛡️ *Garantía de Servicio:* ${match.diasGarantia || 2} Días continuos tras la entrega.\n`;
+            let msgCliente = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*
+
+`;
+            msgCliente += `Estimado(a) *${match.cliente}*, confirmamos el ingreso oficial de su equipo en taller.
+
+`;
+            msgCliente += `📋 *Ficha de Control:* 
+`;
+            msgCliente += `• *Orden:* #${match.nroOrden}
+`;
+            msgCliente += `• *Equipo:* ${match.modelo}
+`;
+            msgCliente += `• *Abono Recibido:* ${fmtMonto(match.abonoOrig)} ${match.monedaOrig}
+`;
+            msgCliente += `• *Saldo Restante:* *${displayPendienteStr}*
+
+`;
+            msgCliente += `🛡️ *Garantía de Servicio:* ${match.diasGarantia || 2} Días continuos tras la entrega.
+`;
             msgCliente += `🔒 _Su equipo queda bajo estricto resguardo técnico._`;
 
             window.open(`https://api.whatsapp.com/send?phone=${match.tlf}&text=${encodeURIComponent(msgCliente)}`, '_blank');
@@ -1074,7 +1126,7 @@
                 if(filtroBusqueda && !c.cliente.includes(filtroBusqueda) && !c.cedula.includes(filtroBusqueda) && !c.nroOrden.includes(filtroBusqueda)) return;
 
                 let saldoRestante = c.montoOrig - c.abonoOrig;
-                let displayRestanteStr = c.monedaOrig === "USD" ? `$${fmtMonto(saldoRestante)} USD` : `${fmtMonto(saldoRestante)} COP`;
+                let displayRestanteStr = c.monedaOrig === "USD" ? `$${window.svc_formatDecimalUSD(saldoRestante)} USD` : `${fmtMonto(saldoRestante)} COP`;
 
                 let colorEstado = "bg-amber-500/10 text-amber-400 border-amber-500/20";
                 if(c.estatus === "LISTO PARA RETIRAR") colorEstado = "bg-blue-500/10 text-blue-400 border-blue-500/20";
@@ -1121,16 +1173,27 @@
         window.svc_enviarWhatsAppRecepcionIndividual = function(id) {
             const c = svc_comandasGlobal.find(x => x.id === id); if(!c) return;
             let saldoRestante = c.montoOrig - c.abonoOrig;
-            let displayRestanteStr = c.monedaOrig === "USD" ? `$${fmtMonto(saldoRestante)} USD` : `${fmtMonto(saldoRestante)} COP`;
+            let displayRestanteStr = c.monedaOrig === "USD" ? `$${window.svc_formatDecimalUSD(saldoRestante)} USD` : `${fmtMonto(saldoRestante)} COP`;
 
-            let msg = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n\n`;
-            msg += `Estimado(a) *${c.cliente}*, confirmamos el ingreso oficial de su equipo en taller.\n\n`;
-            msg += `📋 *Ficha de Control:* \n`;
-            msg += `• *Orden:* #${c.nroOrden}\n`;
-            msg += `• *Equipo:* ${c.modelo} — *Falla:* ${c.falla}\n`;
-            msg += `• *Abono Recibido:* ${fmtMonto(c.abonoOrig)} ${c.monedaOrig}\n`;
-            msg += `• *Saldo Restante:* *${displayRestanteStr}*\n\n`;
-            msg += `🛡️ *Garantía de Servicio:* ${c.diasGarantia || 2} Días continuos tras la entrega.\n`;
+            let msg = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*
+
+`;
+            msg += `Estimado(a) *${c.cliente}*, confirmamos el ingreso oficial de su equipo en taller.
+
+`;
+            msg += `📋 *Ficha de Control:* 
+`;
+            msg += `• *Orden:* #${c.nroOrden}
+`;
+            msg += `• *Equipo:* ${c.modelo} — *Falla:* ${c.falla}
+`;
+            msg += `• *Abono Recibido:* ${fmtMonto(c.abonoOrig)} ${c.monedaOrig}
+`;
+            msg += `• *Saldo Restante:* *${displayRestanteStr}*
+
+`;
+            msg += `🛡️ *Garantía de Servicio:* ${c.diasGarantia || 2} Días continuos tras la entrega.
+`;
             msg += `🔒 _Su equipo queda bajo estricto resguardo técnico._`;
 
             window.open(`https://api.whatsapp.com/send?phone=${c.tlf}&text=${encodeURIComponent(msg)}`, '_blank');
@@ -1143,11 +1206,17 @@
             window.svc_renderizerEcosistema();
 
             let saldoRestante = c.montoOrig - c.abonoOrig;
-            let displayRestanteStr = c.monedaOrig === "USD" ? `$${fmtMonto(saldoRestante)} USD` : `${fmtMonto(saldoRestante)} COP`;
+            let displayRestanteStr = c.monedaOrig === "USD" ? `$${window.svc_formatDecimalUSD(saldoRestante)} USD` : `${fmtMonto(saldoRestante)} COP`;
 
-            let msg = `✅ *SU EQUIPO ESTÁ LISTO PARA RETIRAR — SERVICELL*\n\n`;
-            msg += `Estimado(a) *${c.cliente}*, le informamos que su dispositivo *${c.modelo}* ya ha sido reparado con éxito.\n\n`;
-            msg += `📋 *Saldo Pendiente a Cancelar:* *${displayRestanteStr}*\n\n`;
+            let msg = `✅ *SU EQUIPO ESTÁ LISTO PARA RETIRAR — SERVICELL*
+
+`;
+            msg += `Estimado(a) *${c.cliente}*, le informamos que su dispositivo *${c.modelo}* ya ha sido reparado con éxito.
+
+`;
+            msg += `📋 *Saldo Pendiente a Cancelar:* *${displayRestanteStr}*
+
+`;
             msg += `Puede pasar por nuestro laboratorio Servicell / Tucocel c.a. para retirarlo. ¡Gracias por preferirnos!`;
 
             window.open(`https://api.whatsapp.com/send?phone=${c.tlf}&text=${encodeURIComponent(msg)}`, '_blank');
@@ -1195,7 +1264,7 @@ Garantía     : ${c.diasGarantia || 2} Días
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const concepto = document.getElementById('svc-input-concepto').value.trim().toUpperCase();
             const cantidad = parseInt(document.getElementById('svc-input-cantidad').value) || 1;
-            const precioCOP = parseFloat(document.getElementById('svc-input-precio-cop').value) || 0;
+            const precioCOP = window.svc_cleanNumber(document.getElementById('svc-input-precio-cop').value);
             const tipo = document.getElementById('svc-input-tipo').value;
             const metodo = document.getElementById('svc-input-metodo').value;
 
@@ -1213,37 +1282,59 @@ Garantía     : ${c.diasGarantia || 2} Días
             if(itemsFiltrados.length === 0) return alert("No hay movimientos para este técnico hoy.");
 
             let totalServicios = 0; let totalVentas = 0;
-            let msg = `🛍️ *DOCUMENTO CONTABLE CORPORATIVO — SERVICELL*\n🧾 *SERVICIO TÉCNICO DE TUCOCEL C.A.*\n──────────────────────────────\n👤 *TÉCNICO / OPERADOR:* ${tecSeleccionado.toUpperCase()}\n📅 *FECHA:* ${new Date().toLocaleDateString()}\n──────────────────────────────\n\n`;
+            let msg = `🛍️ *DOCUMENTO CONTABLE CORPORATIVO — SERVICELL*
+🧾 *SERVICIO TÉCNICO DE TUCOCEL C.A.*
+──────────────────────────────
+👤 *TÉCNICO / OPERADOR:* ${tecSeleccionado.toUpperCase()}
+📅 *FECHA:* ${new Date().toLocaleDateString()}
+──────────────────────────────
+
+`;
             
-            msg += `🛠️ *DESGLOSE DE SERVICIO TÉCNICO (COMISIONABLE 50%):*\n`;
+            msg += `🛠️ *DESGLOSE DE SERVICIO TÉCNICO (COMISIONABLE 50%):*
+`;
             itemsFiltrados.forEach(item => {
                 let sub = item.precioCOP * item.cantidad;
                 if(item.tipo === "SERVICIO") { 
                     totalServicios += sub; 
-                    msg += `• ${item.concepto} (x${item.cantidad}) -> ${fmtMonto(sub)} COP\n`; 
+                    msg += `• ${item.concepto} (x${item.cantidad}) -> ${fmtMonto(sub)} COP
+`; 
                 }
             });
 
             const comisionPorc = parseFloat(document.getElementById('svc-cfg-comision').value) || 50;
             let gananciaTecnico = totalServicios * (comisionPorc / 100);
 
-            msg += `💰 *Subtotal Taller:* ${fmtMonto(totalServicios)} COP\n`;
-            msg += `📈 *Su Comisión Taller (${comisionPorc}%):* *${fmtMonto(gananciaTecnico)} COP*\n\n`;
+            msg += `💰 *Subtotal Taller:* ${fmtMonto(totalServicios)} COP
+`;
+            msg += `📈 *Su Comisión Taller (${comisionPorc}%):* *${fmtMonto(gananciaTecnico)} COP*
 
-            msg += `🛍️ *DESGLOSE VENTA MOSTRADOR / ACCESORIOS (FIJO 0%):*\n`;
+`;
+
+            msg += `🛍️ *DESGLOSE VENTA MOSTRADOR / ACCESORIOS (FIJO 0%):*
+`;
             itemsFiltrados.forEach(item => {
                 let sub = item.precioCOP * item.cantidad;
                 if(item.tipo === "VENTA") { 
                     totalVentas += sub; 
-                    msg += `• ${item.concepto} (x${item.cantidad}) -> ${fmtMonto(sub)} COP\n`; 
+                    msg += `• ${item.concepto} (x${item.cantidad}) -> ${fmtMonto(sub)} COP
+`; 
                 }
             });
-            msg += `💰 *Subtotal Ventas Mostrador:* ${fmtMonto(totalVentas)} COP\n\n`;
+            msg += `💰 *Subtotal Ventas Mostrador:* ${fmtMonto(totalVentas)} COP
 
-            msg += `──────────────────────────────\n🧮 *AUDITORÍA GLOBAL DEL TURNO:*\n`;
-            msg += `• 💵 *Caja Bruta Recaudada:* ${fmtMonto(totalServicios + totalVentas)} COP\n`;
-            msg += `• 💸 *Vales del Día:* 0 COP\n`;
-            msg += `• 🟢 *NETO A FAVOR DEL TÉCNICO HOY:* *${fmtMonto(gananciaTecnico)} COP*\n\n`;
+`;
+
+            msg += `──────────────────────────────
+🧮 *AUDITORÍA GLOBAL DEL TURNO:*
+`;
+            msg += `• 💵 *Caja Bruta Recaudada:* ${fmtMonto(totalServicios + totalVentas)} COP
+`;
+            msg += `• 💸 *Vales del Día:* 0 COP
+`;
+            msg += `• 🟢 *NETO A FAVOR DEL TÉCNICO HOY:* *${fmtMonto(gananciaTecnico)} COP*
+
+`;
             msg += `🔒 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.* 🔒`;
 
             const tecProfile = svc_tecnicosPerfiles.find(t => t.user === tecSeleccionado);
@@ -1287,7 +1378,7 @@ Total Bruto    : ${fmtMonto(total)} COP
             });
 
             const alquilerUSD = parseFloat(document.getElementById('svc-manual-alquiler-cost').value) || 130;
-            const tasaCOP = parseFloat(document.getElementById('svc-manual-tasa-arriendo-cop').value) || 3600;
+            const tasaCOP = window.svc_cleanNumber(document.getElementById('svc-manual-tasa-arriendo-cop').value) || 3600;
             const alquilerCOP = alquilerUSD * tasaCOP;
 
             const diferenciaCOP = totalGeneradoMes - alquilerCOP;
@@ -1318,7 +1409,7 @@ Total Bruto    : ${fmtMonto(total)} COP
             });
 
             const alquilerUSD = parseFloat(document.getElementById('svc-manual-alquiler-cost').value) || 130;
-            const tasaCOP = parseFloat(document.getElementById('svc-manual-tasa-arriendo-cop').value) || 3600;
+            const tasaCOP = window.svc_cleanNumber(document.getElementById('svc-manual-tasa-arriendo-cop').value) || 3600;
             const alquilerCOP = alquilerUSD * tasaCOP;
             const diferenciaCOP = totalGeneradoMes - alquilerCOP;
 
@@ -1347,20 +1438,30 @@ Total Bruto    : ${fmtMonto(total)} COP
                 `;
                 document.getElementById('modal-hoja-blanca').classList.remove('hidden');
             } else {
-                let msg = `👑 *INFORME CONSOLIDADO FIN DE MES*\n💼 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n──────────────────────────────\n\n`;
-                msg += `📊 *RECAUDACIÓN TOTAL BRUTA:* ${fmtMonto(totalGeneradoMes)} COP\n`;
-                msg += `📉 *ALQUILER LOCAL ($${alquilerUSD} USD):* ${fmtMonto(alquilerCOP)} COP\n\n`;
+                let msg = `👑 *INFORME CONSOLIDADO FIN DE MES*
+💼 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*
+──────────────────────────────
+
+`;
+                msg += `📊 *RECAUDACIÓN TOTAL BRUTA:* ${fmtMonto(totalGeneradoMes)} COP
+`;
+                msg += `📉 *ALQUILER LOCAL ($${alquilerUSD} USD):* ${fmtMonto(alquilerCOP)} COP
+
+`;
                 if(diferenciaCOP >= 0) {
-                    msg += `🟢 *BALANCE GANANCIA LIMPIA:* ${fmtMonto(diferenciaCOP)} COP\n`;
+                    msg += `🟢 *BALANCE GANANCIA LIMPIA:* ${fmtMonto(diferenciaCOP)} COP
+`;
                 } else {
-                    msg += `🔴 *SUBVENCIÓN TUCOCEL C.A.:* -${fmtMonto(Math.abs(diferenciaCOP))} COP\n`;
+                    msg += `🔴 *SUBVENCIÓN TUCOCEL C.A.:* -${fmtMonto(Math.abs(diferenciaCOP))} COP
+`;
                 }
-                msg += `\n🔒 *DOCUMENTO CONTABLE OFICIAL — TUCOCEL C.A.*`;
+                msg += `
+🔒 *DOCUMENTO CONTABLE OFICIAL — TUCOCEL C.A.*`;
                 window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
             }
         };
 
-        window.svc_renderizarHistoricoComandasDirecto = function() {
+        window.svc_renderizerHistoricoComandasDirecto = function() {
             const container = document.getElementById('wrapper-historico-comandas-directo-box'); if(!container) return;
             const filtroFecha = document.getElementById('filtro-comandas-fecha-directo').value;
             
@@ -1398,13 +1499,19 @@ Total Bruto    : ${fmtMonto(total)} COP
 
         window.svc_reenviarWhatsAppCierrePasado = function(key) {
             const match = svc_historicoCierresDiarios.find(x => x.fecha === key);
-            let msg = `🛍️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\nFolio: ${match.fecha.split('-')[0]} [${match.tecKey.toUpperCase()}]\nTaller: ${fmtMonto(match.totalServicios)} COP\nNeto: ${fmtMonto(match.gananciaTecnico)} COP`;
+            let msg = `🛍️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*
+Folio: ${match.fecha.split('-')[0]} [${match.tecKey.toUpperCase()}]
+Taller: ${fmtMonto(match.totalServicios)} COP
+Neto: ${fmtMonto(match.gananciaTecnico)} COP`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
         window.svc_reimprimirTicketPasado = function(key) {
             const match = svc_historicoCierresDiarios.find(x => x.fecha === key);
-            document.getElementById('contenedor-impresion-termica-fijo').innerHTML = `*** RE-IMPRESIÓN SERVICELL ***\nFecha: ${match.fecha.split('-')[0]}\nTécnico: ${match.tecKey.toUpperCase()}\nTotal: ${fmtMonto(match.totalServicios)} COP`;
+            document.getElementById('contenedor-impresion-termica-fijo').innerHTML = `*** RE-IMPRESIÓN SERVICELL ***
+Fecha: ${match.fecha.split('-')[0]}
+Técnico: ${match.tecKey.toUpperCase()}
+Total: ${fmtMonto(match.totalServicios)} COP`;
             window.print();
         };
 
@@ -1426,7 +1533,12 @@ Total Bruto    : ${fmtMonto(total)} COP
         window.svc_enviarWhatsAppNominaSemanalDividido = function() {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const baseUSD = parseFloat(document.getElementById('svc-cfg-sueldo-base').value) || 120;
-            let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN SEMANAL*\n💼 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n\nTécnico: ${tecSeleccionado.toUpperCase()}\nBase Fija: $${fmtMonto(baseUSD)} USD\n🔒 *SISTEMA DE CONTROL — TUCOCEL C.A.*`;
+            let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN SEMANAL*
+💼 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*
+
+Técnico: ${tecSeleccionado.toUpperCase()}
+Base Fija: $${fmtMonto(baseUSD)} USD
+🔒 *SISTEMA DE CONTROL — TUCOCEL C.A.*`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
@@ -1438,7 +1550,7 @@ Total Bruto    : ${fmtMonto(total)} COP
 
         window.svc_registrarValeAdelantoColaborador = function() {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
-            const m = parseFloat(document.getElementById('svc-vale-monto-input').value) || 0;
+            const m = window.svc_cleanNumber(document.getElementById('svc-vale-monto-input').value);
             if(m <= 0) return;
             svc_valesGlobal.push({ fecha: new Date().toLocaleDateString(), monto: m, operador: tecSeleccionado });
             svc_comandaActivaTurno.push({ idItem: 'vale-' + Date.now(), operador: tecSeleccionado, concepto: `DEDUCCIÓN: ADELANTO DE VALE`, cantidad: 1, precioCOP: 0, tipo: "VENTA", metodo: "PESOS", valeDia: m });
@@ -1473,7 +1585,7 @@ Total Bruto    : ${fmtMonto(total)} COP
                 if(boxFin) {
                     boxFin.innerHTML = `
                         <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl text-center shadow-md"><span class="text-[9px] font-black text-purple-400 block uppercase tracking-wider">🇨🇴 Caja Fiel COP</span><span class="text-base font-mono font-black text-white">${fmtMonto(totCOP)} COP</span></div>
-                        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl text-center shadow-md"><span class="text-[9px] font-black text-amber-400 block uppercase tracking-wider">💵 Caja Fiel USD</span><span class="text-base font-mono font-black text-white">$${fmtMonto(totUSD)}</span></div>
+                        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl text-center shadow-md"><span class="text-[9px] font-black text-amber-400 block uppercase tracking-wider">💵 Caja Fiel USD</span><span class="text-base font-mono font-black text-white">$${window.svc_formatDecimalUSD(totUSD)}</span></div>
                         <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl text-center shadow-md"><span class="text-[9px] font-black text-emerald-400 block uppercase tracking-wider">🇻🇪 Total Órdenes Activas</span><span class="text-base font-mono font-black text-white">${activeFichas} Fichas</span></div>`;
                 }
 
@@ -1537,7 +1649,6 @@ Total Bruto    : ${fmtMonto(total)} COP
             window.svc_sincronizarConFirebase(); window.svc_renderizerEcosistema();
         };
 
-        // CREACIÓN RÁPIDA EN 15 SEGUNDOS DE TÉCNICOS Y DISPARO WHATSAPP
         window.svc_crearNuevoPerfilTecnicoMaster = async function() {
             const nombre = document.getElementById('adm-tec-nombre').value.trim();
             const user = nombre.toLowerCase().replace(/\s+/g, '');
@@ -1557,13 +1668,19 @@ Total Bruto    : ${fmtMonto(total)} COP
 
             await setDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"), { perfiles: svc_tecnicosPerfiles });
             
-            // Disparar mensaje directo de invitación por WhatsApp
             let cleanPhone = whatsapp.replace(/\D/g, '');
             if(!cleanPhone.startsWith('58')) cleanPhone = '58' + cleanPhone;
 
-            let msgInv = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n\n`;
-            msgInv += `Estimado técnico *${nombre.toUpperCase()}*, aquí te envío tu acceso directo para la activación de tu perfil laboral.\n\n`;
-            msgInv += `🔗 *Ingresa al siguiente enlace para completar tu ficha:* \n${linkUnicoGenerated}\n\n`;
+            let msgInv = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*
+
+`;
+            msgInv += `Estimado técnico *${nombre.toUpperCase()}*, aquí te envío tu acceso directo para la activación de tu perfil laboral.
+
+`;
+            msgInv += `🔗 *Ingresa al siguiente enlace para completar tu ficha:* 
+${linkUnicoGenerated}
+
+`;
             msgInv += `⚠️ *Por favor, no compartas este enlace con nadie.*`;
 
             window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(msgInv)}`, '_blank');
@@ -1607,15 +1724,21 @@ Total Bruto    : ${fmtMonto(total)} COP
             let cleanPhone = t.whatsapp.replace(/\D/g, '');
             if(!cleanPhone.startsWith('58')) cleanPhone = '58' + cleanPhone;
 
-            let msgInv = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n\n`;
-            msgInv += `Estimado técnico *${t.nombre.toUpperCase()}*, aquí te envío tu acceso directo para la activación de tu perfil laboral.\n\n`;
-            msgInv += `🔗 *Ingresa al siguiente enlace:* \n${t.linkUnicoGenerated}\n\n`;
+            let msgInv = `🛠️ *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*
+
+`;
+            msgInv += `Estimado técnico *${t.nombre.toUpperCase()}*, aquí te envío tu acceso directo para la activación de tu perfil laboral.
+
+`;
+            msgInv += `🔗 *Ingresa al siguiente enlace:* 
+${t.linkUnicoGenerated}
+
+`;
             msgInv += `⚠️ *Por favor, no compartas este enlace con nadie.*`;
 
             window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(msgInv)}`, '_blank');
         };
 
-        // BOTÓN BORRAR DEFINITIVAMENTE DE FIREBASE
         window.svc_borrarDefinitivamenteTecnico = async function(idx) {
             const t = svc_tecnicosPerfiles[idx]; if(!t) return;
             if(!confirm(`⚠️ ¿Desea eliminar DEFINITIVAMENTE la cuenta de ${t.nombre.toUpperCase()} (${t.user}) de Firebase?`)) return;
@@ -1623,7 +1746,6 @@ Total Bruto    : ${fmtMonto(total)} COP
             svc_tecnicosPerfiles.splice(idx, 1);
             await setDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"), { perfiles: svc_tecnicosPerfiles });
             
-            // Forzar actualización inmediata del menú desplegable de comandas
             document.getElementById('filtro-comanda-tecnico-asignado').innerHTML = "";
             await window.svc_descargarServidorCentral();
             alert("✅ Cuenta eliminada por completo.");
