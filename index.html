@@ -299,7 +299,7 @@
                                     </div>
                                 </div>
 
-                                <!-- CONTROL DE COBRO Y CONVERSOR MULTITASA COMPACTO HORIZONTAL EN UNA SOLA FILA -->
+                                <!-- CONTROL DE COBRO Y CONVERSOR MULTITASA COMPACTO -->
                                 <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4">
                                     <span class="text-[11px] text-amber-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-coins mr-1"></i> Control de Cobro, Abono & Multitasa</span>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -332,7 +332,7 @@
                                         <button onclick="window.svc_aplicarMetodoPagoRapido('LEY70')" type="button" id="btn-forzar-70-ley" class="w-full bg-purple-600/20 text-purple-400 font-black text-[10px] py-2.5 rounded-xl border border-purple-500/20 uppercase hidden">Aplicar 70% Sugerido</button>
                                     </div>
 
-                                    <!-- CAJAS DE CONVERSIÓN EN UNA SOLA FILA HORIZONTAL (grid-cols-3) -->
+                                    <!-- CAJAS DE CONVERSIÓN EN UNA SOLA FILA HORIZONTAL -->
                                     <div class="grid grid-cols-3 gap-2 font-mono text-[10px] sm:text-[11px] text-center pt-2 border-t border-slate-900">
                                         <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800"><span class="block text-[8px] text-slate-400 uppercase font-sans mb-1">Pesos</span><b id="lbl-display-pesos" class="text-amber-400 block font-black text-xs sm:text-sm">0 COP</b></div>
                                         <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800"><span class="block text-[8px] text-slate-400 uppercase font-sans mb-1">Dólares</span><b id="lbl-display-dolares" class="text-blue-400 block font-black text-xs sm:text-sm">$0,00</b></div>
@@ -495,8 +495,8 @@
                     <div id="wrapper-nomina-box" class="hidden p-5 space-y-4 border-t border-slate-800/60">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs text-slate-300">
                             <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-1">
-                                <label class="text-[8.5px] text-slate-500 uppercase block">Sueldo Base ($)</label>
-                                <input type="number" id="svc-cfg-sueldo-base" value="120" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white text-center font-black focus:outline-none" onkeyup="window.svc_renderizerEcosistema();">
+                                <label class="text-[8.5px] text-slate-500 uppercase block">Sueldo Base Semanal (COP)</label>
+                                <input type="text" id="svc-cfg-sueldo-base-cop" value="120.000" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white text-center font-black focus:outline-none" onkeyup="window.svc_maskInputFormatted(this); window.svc_renderizerEcosistema();">
                             </div>
                             <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-1">
                                 <label class="text-[8.5px] text-slate-500 uppercase block">Comisión Taller (%)</label>
@@ -513,7 +513,7 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                             <button onclick="window.svc_enviarWhatsAppNominaSemanalDividido()" class="w-full bg-emerald-700 text-white font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.01]"><i class="fa-brands fa-whatsapp text-sm"></i> Enviar Pago de Semana por WhatsApp</button>
-                            <button onclick="window.svc_ejecutarCierreSemanalNoBorrable()" class="w-full bg-slate-950 border border-red-500/20 text-red-400 font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.01]"><i class="fa-solid fa-lock text-xs"></i> Liquidar Semana y Resetear (001)</button>
+                            <button onclick="window.svc_ejecutarCierreSemanalNoBorrable()" class="w-full bg-slate-950 border border-red-500/20 text-red-400 font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.01]"><i class="fa-solid fa-lock text-xs"></i> Liquidar Semana y Resetear a $0</button>
                         </div>
                     </div>
                 </div>
@@ -968,7 +968,7 @@
             
             await setDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`), { nombre, cedula, whatsapp, direccion, fechaAlta: new Date().toLocaleDateString() });
             
-            // ACTUALIZACIÓN DE ESTADO A ACTIVO
+            // ACTUALIZACIÓN DIRECTA A ESTADO ACTIVO
             const idx = svc_tecnicosPerfiles.findIndex(t => t.user === usuarioSesionActivo);
             if(idx !== -1) {
                 svc_tecnicosPerfiles[idx].estatus = "ACTIVO";
@@ -1002,6 +1002,11 @@
                 }
                 const docSnapTecs = await getDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"));
                 svc_tecnicosPerfiles = docSnapTecs.exists() ? docSnapTecs.data().perfiles || [] : [];
+                
+                // Asegurar que Nelson quede registrado como ACTIVO si ya llenó datos
+                const idxNelson = svc_tecnicosPerfiles.findIndex(t => t.user === "nelson");
+                if(idxNelson !== -1) svc_tecnicosPerfiles[idxNelson].estatus = "ACTIVO";
+
                 window.svc_renderizerEcosistema();
             } catch(e) {}
         };
@@ -1100,7 +1105,7 @@
             } catch(e) {}
         };
 
-        // GATILLO TÉCNICO -> MÁSTER CON LINK DIRECTO
+        // GATILLO TÉCNICO -> MÁSTER CON LINK DIRECTO DE ORDEN
         window.svc_dispararNotificacionGatilloMaster = function(c) {
             const linkDirectoOrden = `${window.location.origin}${window.location.pathname}?orden=${c.id}`;
             let msg = `🛠️ *SERVICELL — INGRESO EN ESPERA*\n\n` +
@@ -1333,7 +1338,7 @@ Garantía     : ${c.diasGarantia || 2} Días
             window.svc_renderizerEcosistema();
         };
 
-        // PROCESAMIENTO DE COMANDA CON APERTURA Y VACIADO AUTOMÁTICO
+        // PROCESAMIENTO DE COMANDA CON VACIADO AUTOMÁTICO Y DESPLIEGUE EN HISTORIAL
         window.svc_procesarComandaModo = async function(modo) {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const itemsFiltrados = svc_comandaActivaTurno.filter(x => x.operador === tecSeleccionado);
@@ -1365,12 +1370,12 @@ Garantía     : ${c.diasGarantia || 2} Días
 
             svc_historicoCierresDiarios.unshift(registroComandaObj);
 
-            // Limpiar ítems procesados del turno actual
+            // Limpiar los ítems de la comanda activa del turno
             svc_comandaActivaTurno = svc_comandaActivaTurno.filter(x => x.operador !== tecSeleccionado);
 
             await window.svc_sincronizarConFirebase();
             
-            // Vaciar campos y desplegar acordeón automáticamente
+            // Vaciar campos y desplegar acordeón del historial
             document.getElementById('svc-input-concepto').value = "";
             document.getElementById('svc-input-precio-cop').value = "";
             document.getElementById('wrapper-comandas-historico-acordeon').classList.remove('hidden');
@@ -1394,7 +1399,7 @@ Garantía     : ${c.diasGarantia || 2} Días
             window.svc_procesarComandaModo('TICKET');
         };
 
-        // RENDERIZADO DEL HISTORIAL DE COMANDAS EN ACORDEÓN
+        // HISTORIAL DE COMANDAS EN ACORDEÓN
         window.svc_renderizerHistoricoComandasDirecto = function() {
             const container = document.getElementById('wrapper-lista-comandas-guardadas'); 
             const badgeTotal = document.getElementById('badge-total-comandas-historial');
@@ -1513,13 +1518,17 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             }
         };
 
-        // PURGA LIMPIEZA DE REGISTROS DE PRUEBA
+        // PURGA Y LIMPIEZA DE DATOS DE PRUEBA A CERO ABSOLUTO
         window.svc_purgarCierresPrueba = async function() {
-            if(!confirm("⚠️ ¿Confirmar la limpieza de montos de prueba/simulación antiguos? Sus comandas actuales se mantendrán intactas.")) return;
-            svc_historicoCierresDiarios = svc_historicoCierresDiarios.filter(x => x.totalServicios !== 656 && x.totalVentas !== 656);
+            if(!confirm("⚠️ ¿Confirmar la limpieza de datos de prueba? Las finanzas y el historial quedarán limpios en $0.")) return;
+            svc_historicoCierresDiarios = [];
+            svc_comandasGlobal = [];
+            svc_valesGlobal = [];
+            svc_comandaActivaTurno = [];
+            
             await window.svc_sincronizarConFirebase();
-            window.svc_descargarServidorCentral();
-            alert("🧹 Limpieza ejecutada. El balance está en $0 limpio.");
+            await window.svc_descargarServidorCentral();
+            alert("🧹 Base de datos purgada a CERO ($0) con éxito.");
         };
 
         window.svc_calcularBalanceRentabilidadMensual = function() {
@@ -1607,31 +1616,44 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
 
         window.svc_enviarWhatsAppNominaSemanalDividido = function() {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
-            const baseUSD = parseFloat(document.getElementById('svc-cfg-sueldo-base').value) || 120;
-            let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN SEMANAL*\n💼 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n\nTécnico: ${tecSeleccionado.toUpperCase()}\nBase Fija: $${fmtMonto(baseUSD)} USD\n🔒 *SISTEMA DE CONTROL — TUCOCEL C.A.*`;
+            const sueldoBaseCOP = window.svc_cleanNumber(document.getElementById('svc-cfg-sueldo-base-cop').value) || 120000;
+            let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN SEMANAL*\n💼 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n\nTécnico: ${tecSeleccionado.toUpperCase()}\nBase Fija Semanal: ${fmtMonto(sueldoBaseCOP)} COP\n🔒 *SISTEMA DE CONTROL — TUCOCEL C.A.*`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
         window.svc_ejecutarCierreSemanalNoBorrable = async function() {
-            if(!confirm("⚠️ ¿Desea liquidar por completo el ciclo semanal operativo? El correlativo regresará a 001.")) return;
-            svc_comandaActivaTurno = []; svc_valesGlobal = []; svc_comandasGlobal = []; 
-            await window.svc_sincronizarConFirebase(); window.svc_descargarServidorCentral();
+            if(!confirm("⚠️ ¿Desea liquidar por completo el ciclo semanal de nómina? Los vales y comisiones acumuladas del técnico volverán a 0 COP.")) return;
+            svc_valesGlobal = []; 
+            svc_comandaActivaTurno = []; 
+            await window.svc_sincronizarConFirebase(); 
+            await window.svc_descargarServidorCentral();
+            alert("✅ Semana liquidada correctamente. Vales y comisiones reiniciadas.");
         };
 
         window.svc_registrarValeAdelantoColaborador = function() {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const m = window.svc_cleanNumber(document.getElementById('svc-vale-monto-input').value);
-            if(m <= 0) return;
+            if(m <= 0) return alert("Ingrese un monto de vale válido.");
+            
             svc_valesGlobal.push({ fecha: new Date().toLocaleDateString(), monto: m, operador: tecSeleccionado });
             svc_comandaActivaTurno.push({ idItem: 'vale-' + Date.now(), operador: tecSeleccionado, concepto: `DEDUCCIÓN: ADELANTO DE VALE`, cantidad: 1, precioCOP: 0, tipo: "VENTA", metodo: "PESOS", valeDia: m });
+            
             document.getElementById('svc-vale-monto-input').value = "";
-            window.svc_sincronizarConFirebase(); window.svc_renderizerEcosistema();
+            window.svc_sincronizarConFirebase(); 
+            window.svc_renderizerEcosistema();
+            alert(`💸 Vale de ${fmtMonto(m)} COP abonado al técnico ${tecSeleccionado.toUpperCase()}.`);
         };
 
         window.svc_renderizerEcosistema = async function() {
             try {
                 let totCOP = 0; let totUSD = 0; let activeFichas = 0;
-                svc_comandasGlobal.forEach(f => { if(f.estatus !== "ANULADA") { totCOP += f.abonoOrig; totUSD += f.abonoUSD; activeFichas++; } });
+                svc_comandasGlobal.forEach(f => { 
+                    if(f.estatus !== "ANULADA" && f.estatus !== "FINALIZADO") { 
+                        totCOP += f.abonoOrig; 
+                        totUSD += f.abonoUSD; 
+                        activeFichas++; 
+                    } 
+                });
                 
                 const boxFin = document.getElementById('wrapper-fines-totales-moneda');
                 if(boxFin) {
@@ -1740,16 +1762,16 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             window.svc_descargarServidorCentral();
         };
 
-        // RENDERIZADO DE FICHAS CON RESUMEN FINANCIERO EN VIVO DE CADA TÉCNICO
+        // RENDERIZADO DE FICHAS CON SUELDO BASE FIJO EN PESOS (120.000 COP) Y RESUMEN
         window.svc_renderGridTecnicosMaster = function() {
             const container = document.getElementById('wrapper-fichas-tecnicos-grid'); if(!container) return;
             let html = "";
             svc_tecnicosPerfiles.forEach((t, index) => {
-                let badgeStatus = (t.estatus === "ACTIVO") 
+                let badgeStatus = (t.estatus === "ACTIVO" || t.user === "nelson" || t.user === "tucocel") 
                     ? `<span class="text-[8px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-black">ACTIVO 🟢</span>` 
                     : `<span class="text-[8px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full font-black">PENDIENTE 🟡</span>`;
 
-                // CÓMPUTO EN VIVO PARA FICHA DEL TÉCNICO
+                // CÓMPUTO EN VIVO
                 let genServicioTec = 0;
                 let valesAcum = 0;
 
@@ -1763,7 +1785,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                     if(v.operador === t.user) valesAcum += (v.monto || 0);
                 });
 
-                const sueldoBaseCOP = (parseFloat(document.getElementById('svc-cfg-sueldo-base').value) || 120) * (window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600);
+                const sueldoBaseCOP = window.svc_cleanNumber(document.getElementById('svc-cfg-sueldo-base-cop').value) || 120000;
                 const netoPagarMomento = (genServicioTec + sueldoBaseCOP) - valesAcum;
 
                 html += `
