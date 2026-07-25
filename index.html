@@ -142,7 +142,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full">
 
-            <!-- PORTADA / BIENVENIDA EJECUTIVA (MUESTRA CUANDO NO HAY SOLAPAS ABIERTAS) -->
+            <!-- PORTADA / BIENVENIDA EJECUTIVA (MUESTRA CUANDO NO HAY SOLAPAS ABIERTAS O AL DAR CERRAR TODO) -->
             <div id="tab-bienvenida" class="lg:col-span-12 w-full space-y-6">
                 <div class="bg-gradient-to-br from-slate-900 via-slate-950 to-purple-950/40 border border-slate-800 p-8 sm:p-12 rounded-3xl shadow-2xl text-center space-y-6 relative overflow-hidden">
                     <div class="w-24 h-20 bg-purple-600/10 border border-purple-500/30 rounded-3xl flex items-center justify-center mx-auto text-purple-400 text-4xl shadow-inner">
@@ -1210,6 +1210,7 @@
                             document.getElementById('control-tasas-box').classList.add('hidden');
                             
                             tabsContainer.innerHTML = `
+                                <button id="tab-btn-cerrar" onclick="window.svc_cambiarTab('NINGUNO')" class="bg-red-600/20 text-red-400 border border-red-500/30 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0 hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-xmark"></i> ✖️ CERRAR TODO</button>
                                 <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow shrink-0"><i class="fa-solid fa-cash-register"></i> Recepción Mostrador</button>`;
                         }
                     } else {
@@ -1286,7 +1287,7 @@
             await window.svc_descargarServidorCentral();
             
             if(rolDeSesionActiva === "MASTER") {
-                window.svc_cambiarTab('NINGUNO'); // Inicia plegado con Portada Ejecutiva
+                window.svc_cambiarTab('NINGUNO'); // Inicia plegado con Portada Ejecutiva y botón Cerrar Todo activo
             } else {
                 window.svc_cambiarTab('recepcion');
             }
