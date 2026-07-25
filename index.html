@@ -74,7 +74,7 @@
                 </div>
                 <div class="px-2">
                     <span class="block text-[9px] text-white uppercase font-sans mb-1">Tasa Bs vs COP</span>
-                    <input type="text" id="cfg-tasa-bs" value="4" onkeyup="window.svc_maskInputFormatted(this); window.svc_calcularConversionesAlVuelo(); window.tcl_renderizerParticionTucocel();" class="w-14 bg-transparent text-emerald-400 font-black focus:outline-none text-base">
+                    <input type="text" id="cfg-tasa-bs" value="4" onkeyup="window.svc_maskDecimalRate(this); window.svc_calcularConversionesAlVuelo(); window.tcl_renderizerParticionTucocel();" class="w-16 bg-transparent text-emerald-400 font-black focus:outline-none text-base">
                 </div>
             </div>
         </div>
@@ -965,10 +965,16 @@
         let rolDeSesionActiva = "BLOQUEADO";
         let usuarioSesionActivo = "";
 
-        // AUXILIARES DE FORMATO DE MILES CON PUNTOS
+        // AUXILIARES DE FORMATO
         window.svc_cleanNumber = function(val) {
             if(!val) return 0;
             let str = String(val).replace(/\./g, '').replace(',', '.');
+            return parseFloat(str) || 0;
+        };
+
+        window.svc_cleanRate = function(val) {
+            if(!val) return 0;
+            let str = String(val).replace(',', '.');
             return parseFloat(str) || 0;
         };
 
@@ -991,6 +997,17 @@
             }
             let formatted = parseInt(rawVal, 10).toLocaleString('es-CO');
             input.value = formatted;
+        };
+
+        // MÁSCARA ESPECIAL PARA TASAS CON DECIMALES LIBRES (3.3, 3.7, 4.0, ETC.)
+        window.svc_maskDecimalRate = function(input) {
+            let val = input.value.replace(',', '.');
+            let parts = val.split('.');
+            if (parts.length > 2) {
+                val = parts[0] + '.' + parts.slice(1).join('');
+            }
+            val = val.replace(/[^0-9.]/g, '');
+            input.value = val;
         };
 
         function fmtMonto(v) {
@@ -1097,7 +1114,7 @@
             let abono = window.svc_cleanNumber(document.getElementById('form-abono').value);
             
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
-            const tBs = window.svc_cleanNumber(document.getElementById('cfg-tasa-bs').value) || 4;
+            const tBs = window.svc_cleanRate(document.getElementById('cfg-tasa-bs').value) || 4;
 
             const soporte = document.getElementById('form-tipo-soporte').value;
             const subFalla = document.getElementById('form-sub-tipo-telefonio') ? document.getElementById('form-sub-tipo-telefonio').value : "OTROS";
@@ -2421,7 +2438,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             }
 
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
-            const tBs = window.svc_cleanNumber(document.getElementById('cfg-tasa-bs').value) || 4;
+            const tBs = window.svc_cleanRate(document.getElementById('cfg-tasa-bs').value) || 4;
 
             let totalUSD = totalVentasCOP / tCOP;
             let totalBs = totalVentasCOP / tBs;
