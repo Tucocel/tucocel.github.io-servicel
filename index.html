@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SERVICELL — Panel de Control Técnico Profesional</title>
+    <title>TUCOCEL C.A. / SERVICELL — Sistema Máster Unificado</title>
     
     <!-- CONFIGURACIÓN PWA -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNlcnZpY2VsIE1hc3RlciIsCiAgInNob3J0X25hbWUiOiAiU2VydmljZWwiLAogICtzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAyMDYxNyIsCiAgInRoZW1lX2NvbG9yIjogIiNhODU1ZjciLAogICpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yOTA3LzI5MDc2MjgucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNlcnZpY2VsIE1hc3RlciIsCiAgInNob3J0X25hbWUiOiAiU2VydmljZWwiLAogICtzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAyMDYxNyIsCiAgInRoZW1lX2NvbG9yIjogIiNhODU1ZjciLAogICpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yOTA3LzI5MDc2MjgucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmcifQogIF0KfQ==">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,6 +23,7 @@
             body { background: white !important; color: black !important; margin: 0 !important; padding: 0 !important; }
             body * { display: none !important; visibility: hidden !important; }
             #contenedor-impresion-termica-fijo, #contenedor-impresion-termica-fijo * { display: block !important; visibility: visible !important; }
+            #modal-hoja-blanca-tucocel, #modal-hoja-blanca-tucocel * { display: block !important; visibility: visible !important; }
             #contenedor-impresion-termica-fijo { 
                 position: absolute; left: 0; top: 0; width: 100% !important; height: auto !important;
                 background: white !important; color: black !important; margin: 0 !important; padding: 0.5cm !important; 
@@ -44,7 +45,7 @@
         </div>
         
         <div class="text-center space-y-2 mt-6">
-            <h1 class="text-xs font-black tracking-widest text-purple-400 uppercase">SERVICELL — TUCOCEL C.A.</h1>
+            <h1 class="text-xs font-black tracking-widest text-purple-400 uppercase">TUCOCEL C.A. — SERVICELL</h1>
             <h2 id="splash-title" class="text-xl sm:text-2xl font-black text-white uppercase tracking-tight"></h2>
             <p id="splash-sub" class="text-xs text-slate-400 flex items-center justify-center gap-2 pt-2">
                 <i class="fa-solid fa-spinner animate-spin text-purple-400"></i> Cargando espacio de trabajo...
@@ -57,11 +58,11 @@
         <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 bg-purple-600/10 border border-purple-500/30 rounded-xl flex items-center justify-center text-purple-400 text-2xl shadow-inner">
-                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <i class="fa-solid fa-store"></i>
                 </div>
                 <div>
-                    <h1 class="text-[10px] font-black tracking-widest text-purple-400 uppercase leading-none">SERVICELL — SERVICIO TÉCNICO</h1>
-                    <h2 class="text-base font-black tracking-tight text-white uppercase mt-1">TUCOCEL C.A. — CORDERO</h2>
+                    <h1 class="text-[10px] font-black tracking-widest text-purple-400 uppercase leading-none">TUCOCEL C.A. / SERVICELL</h1>
+                    <h2 class="text-base font-black tracking-tight text-white uppercase mt-1">PANEL DE CONTROL GENERAL</h2>
                     <span id="label-indicador-rol" class="text-[10px] bg-purple-950/40 px-2.5 py-0.5 border border-purple-500/20 text-purple-400 font-black tracking-widest uppercase block mt-1.5 w-max">ROL: DETECTANDO...</span>
                 </div>
             </div>
@@ -69,11 +70,11 @@
             <div id="control-tasas-box" class="flex items-center gap-4 bg-slate-950 border border-slate-800 p-3 rounded-2xl text-xs font-bold font-mono">
                 <div class="px-2 border-r border-slate-800">
                     <span class="block text-[9px] text-white uppercase font-sans mb-1">Tasa COP ($)</span>
-                    <input type="text" id="cfg-tasa-cop" value="3.600" onkeyup="window.svc_maskInputFormatted(this); window.svc_calcularConversionesAlVuelo();" class="w-20 bg-transparent text-amber-400 font-black focus:outline-none text-base">
+                    <input type="text" id="cfg-tasa-cop" value="3.600" onkeyup="window.svc_maskInputFormatted(this); window.svc_calcularConversionesAlVuelo(); window.tcl_renderizerParticionTucocel();" class="w-20 bg-transparent text-amber-400 font-black focus:outline-none text-base">
                 </div>
                 <div class="px-2">
                     <span class="block text-[9px] text-white uppercase font-sans mb-1">Tasa Bs vs COP</span>
-                    <input type="text" id="cfg-tasa-bs" value="4" onkeyup="window.svc_maskInputFormatted(this); window.svc_calcularConversionesAlVuelo();" class="w-14 bg-transparent text-emerald-400 font-black focus:outline-none text-base">
+                    <input type="text" id="cfg-tasa-bs" value="4" onkeyup="window.svc_maskInputFormatted(this); window.svc_calcularConversionesAlVuelo(); window.tcl_renderizerParticionTucocel();" class="w-14 bg-transparent text-emerald-400 font-black focus:outline-none text-base">
                 </div>
             </div>
         </div>
@@ -85,11 +86,11 @@
             <div class="glass-panel rounded-[22px] p-6 space-y-5">
                 <div class="text-center space-y-2">
                     <div class="w-16 h-16 bg-purple-600/10 border border-purple-500/30 rounded-2xl flex items-center justify-center mx-auto text-purple-400 text-3xl shadow-inner"><i class="fa-solid fa-lock"></i></div>
-                    <h2 class="font-black text-xl text-white tracking-tight uppercase">SERVICELL LOGIN</h2>
-                    <p class="text-slate-400 text-xs">Servicio Técnico de Tucocel c.a.</p>
+                    <h2 class="font-black text-xl text-white tracking-tight uppercase">ACCESO AL SISTEMA</h2>
+                    <p class="text-slate-400 text-xs">Tucocel c.a. & Servicell</p>
                 </div>
                 <div class="bg-red-950/20 border border-red-500/30 p-4 rounded-2xl text-xs text-white font-bold leading-relaxed text-justify">
-                    ⚠️ <b class="text-red-400 uppercase">DECLARACIÓN DE RESPONSABILIDAD:</b> El uso de esta plataforma es único y exclusivo. Usted es responsable de cada monto, repuesto y equipo registrado.
+                    ⚠️ <b class="text-red-400 uppercase">DECLARACIÓN DE RESPONSABILIDAD:</b> El uso de esta plataforma es único y exclusivo. Usted es responsable de cada monto, repuesto y venta registrada.
                 </div>
                 <div class="space-y-3 text-sm font-bold">
                     <input type="text" id="auth-user" placeholder="USUARIO ID" class="w-full bg-slate-950 border border-slate-800 px-4 py-3.5 rounded-xl text-white font-mono focus:outline-none focus:border-purple-500 uppercase text-base">
@@ -137,7 +138,7 @@
     <!-- WORKSPACE CENTRAL -->
     <div id="contenedor-workspace" class="hidden max-w-6xl w-full mx-auto px-4 py-4 flex-grow flex flex-col gap-4">
         
-        <div id="workspace-tabs" class="grid grid-cols-2 sm:flex sm:flex-row gap-2 pb-3 no-imprimir"></div>
+        <div id="workspace-tabs" class="grid grid-cols-2 sm:flex sm:flex-row gap-2 pb-3 no-imprimir overflow-x-auto"></div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full">
 
@@ -332,7 +333,6 @@
                                         <button onclick="window.svc_aplicarMetodoPagoRapido('LEY70')" type="button" id="btn-forzar-70-ley" class="w-full bg-purple-600/20 text-purple-400 font-black text-[10px] py-2.5 rounded-xl border border-purple-500/20 uppercase hidden">Aplicar 70% Sugerido</button>
                                     </div>
 
-                                    <!-- CAJAS DE CONVERSIÓN EN UNA SOLA FILA HORIZONTAL -->
                                     <div class="grid grid-cols-3 gap-2 font-mono text-[10px] sm:text-[11px] text-center pt-2 border-t border-slate-900">
                                         <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800"><span class="block text-[8px] text-slate-400 uppercase font-sans mb-1">Pesos</span><b id="lbl-display-pesos" class="text-amber-400 block font-black text-xs sm:text-sm">0 COP</b></div>
                                         <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800"><span class="block text-[8px] text-slate-400 uppercase font-sans mb-1">Dólares</span><b id="lbl-display-dolares" class="text-blue-400 block font-black text-xs sm:text-sm">$0,00</b></div>
@@ -358,7 +358,7 @@
                             <input type="text" id="form-search-recepcion" onkeyup="window.svc_renderizerHistoricoRecepciones()" placeholder="Buscar por Cédula, Orden o Cliente..." class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-xs text-white focus:outline-none">
                         </div>
 
-                        <!-- ACORDEÓN 1: EN ESPERA / IMPULSO MÁSTER -->
+                        <!-- ACORDEÓN 1: EN ESPERA -->
                         <div class="bg-slate-950 border border-amber-500/30 rounded-2xl overflow-hidden shadow-md">
                             <button onclick="document.getElementById('acc-sec-espera').classList.toggle('hidden')" class="w-full p-3.5 bg-amber-950/30 hover:bg-amber-900/40 text-amber-400 font-black text-xs flex justify-between items-center transition border-b border-amber-500/20">
                                 <span class="flex items-center gap-2">
@@ -371,7 +371,7 @@
                             </div>
                         </div>
 
-                        <!-- ACORDEÓN 2: EN PROCESO / REPARACIÓN -->
+                        <!-- ACORDEÓN 2: EN PROCESO -->
                         <div class="bg-slate-950 border border-blue-500/30 rounded-2xl overflow-hidden shadow-md">
                             <button onclick="document.getElementById('acc-sec-proceso').classList.toggle('hidden')" class="w-full p-3.5 bg-blue-950/30 hover:bg-blue-900/40 text-blue-400 font-black text-xs flex justify-between items-center transition border-b border-blue-500/20">
                                 <span class="flex items-center gap-2">
@@ -384,7 +384,7 @@
                             </div>
                         </div>
 
-                        <!-- ACORDEÓN 3: FINALIZADO / RETIRADO -->
+                        <!-- ACORDEÓN 3: FINALIZADO -->
                         <div class="bg-slate-950 border border-emerald-500/30 rounded-2xl overflow-hidden shadow-md">
                             <button onclick="document.getElementById('acc-sec-finalizado').classList.toggle('hidden')" class="w-full p-3.5 bg-emerald-950/30 hover:bg-emerald-900/40 text-emerald-400 font-black text-xs flex justify-between items-center transition border-b border-emerald-500/20">
                                 <span class="flex items-center gap-2">
@@ -401,10 +401,9 @@
                 </div>
             </div>
 
-            <!-- PARTICIÓN 2: FACTURACIÓN DE COMANDAS SERVICELL CON SEPARADOR DE MILES -->
+            <!-- PARTICIÓN 2: FACTURACIÓN DE COMANDAS SERVICELL -->
             <div id="tab-comandas" class="lg:col-span-12 hidden w-full space-y-6 text-slate-300">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <!-- CAJA DE CARGA RÁPIDA DE COMANDA -->
                     <div class="lg:col-span-6 bg-slate-900/60 border border-slate-800 p-5 rounded-3xl shadow-xl space-y-4">
                         <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                             <h4 class="text-sm font-black text-purple-400 uppercase tracking-widest flex items-center gap-2"><i class="fa-solid fa-cart-plus"></i> Carga Rápida de Comanda</h4>
@@ -416,7 +415,7 @@
 
                         <div class="space-y-3 text-xs font-bold">
                             <div>
-                                <label class="text-[10px] text-slate-400 uppercase block mb-1">Descripción de Tarea / Accesorio (Ganancia Neta Limpia)</label>
+                                <label class="text-[10px] text-slate-400 uppercase block mb-1">Descripción de Tarea / Repuesto (Ganancia Neta Limpia)</label>
                                 <input type="text" id="svc-input-concepto" placeholder="Ej: REPARACIÓN PIN REDMI NOTE 13" onkeydown="if(event.key === 'Enter') window.svc_agregarLineaComandaDiaria();" class="w-full bg-slate-950 border border-slate-800 p-3.5 rounded-xl text-white font-bold uppercase focus:outline-none focus:border-purple-500 text-sm">
                             </div>
                             <div class="grid grid-cols-2 gap-2">
@@ -443,11 +442,10 @@
                         </div>
                     </div>
 
-                    <!-- DESGLOSE DE COMANDA ACTIVA CON CONTADOR Y 3 BOTONES -->
                     <div class="lg:col-span-6 bg-slate-900/60 border border-slate-800 p-5 rounded-3xl shadow-xl flex flex-col justify-between space-y-4">
                         <div class="space-y-3">
                             <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                                <h5 class="text-xs font-black text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-receipt text-emerald-400"></i> Comanda Activa del Día</h5>
+                                <h5 class="text-xs font-black text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-receipt text-emerald-400"></i> Comanda Activa Servicell</h5>
                                 <span id="lbl-cnt-items-cargados" class="text-[10px] font-black text-purple-400 bg-purple-950/50 border border-purple-500/30 px-2.5 py-0.5 rounded-full font-mono">📦 0 Ítems</span>
                             </div>
                             <div id="svc-lista-items-comanda-box" class="space-y-1.5 max-h-56 overflow-y-auto no-scrollbar text-xs"></div>
@@ -467,12 +465,12 @@
                     </div>
                 </div>
 
-                <!-- HISTORIAL / BANDEJA DE AUDITORÍA DE COMANDAS EN ACORDEÓN -->
+                <!-- HISTORIAL SERVICELL -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
                     <button onclick="document.getElementById('wrapper-comandas-historico-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-folder-open text-purple-400 text-lg"></i>
-                            <span class="text-xs font-black text-white uppercase tracking-wider">🗂️ Historial & Auditoría de Comandas Emitidas</span>
+                            <span class="text-xs font-black text-white uppercase tracking-wider">🗂️ Historial Servicell</span>
                         </div>
                         <span id="badge-total-comandas-historial" class="text-[10px] font-black bg-purple-600/20 text-purple-400 px-3 py-1 rounded-xl uppercase">0 Comandas</span>
                     </button>
@@ -482,7 +480,7 @@
                     </div>
                 </div>
 
-                <!-- NÓMINA SEMANAL EN ACORDEÓN -->
+                <!-- NÓMINA SEMANAL -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
                     <button onclick="document.getElementById('wrapper-nomina-box').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
                         <div class="flex items-center gap-2">
@@ -519,7 +517,234 @@
                 </div>
             </div>
 
-            <!-- PARTICIÓN 3: EXPEDIENTES Y TÉCNICOS SAAS CON CREACIÓN EN 15 SEGUNDOS -->
+            <!-- PARTICIÓN 3: PARTICIÓN EXCLUSIVA COMANDAS Y VENTAS TUCOCEL C.A. -->
+            <div id="tab-tucocel" class="lg:col-span-12 hidden w-full space-y-6 text-slate-300">
+                
+                <!-- BANDERÍN INFORMATIVO & BOTÓN REPORTE HOJA BLANCA -->
+                <div class="bg-gradient-to-r from-blue-900/40 via-slate-900 to-indigo-900/40 border border-blue-500/30 p-4 rounded-3xl flex flex-col sm:flex-row justify-between items-center gap-3 shadow-lg">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-500/20 border border-blue-400/40 text-blue-400 rounded-2xl flex items-center justify-center text-xl font-black">
+                            <i class="fa-solid fa-shop"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-black text-white uppercase tracking-wider">CAJA EXCLUSIVA TUCOCEL C.A.</h3>
+                            <p class="text-[10px] text-slate-400">Partición personal independiente. Ningún valor se mezcla con Servicell ni con Finanzas del Taller.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <button onclick="window.tcl_abrirVisorHojaBlancaTucocel()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black px-4 py-2.5 rounded-xl uppercase shadow tracking-wider flex items-center justify-center gap-1.5 transition"><i class="fa-solid fa-file-lines text-xs"></i> 📄 Informe Hoja Blanca Tucocel</button>
+                    </div>
+                </div>
+
+                <!-- BLOQUE UNIFICADO: VENTA ACTIVA + ARQUEO FÍSICO Y MULTIMONEDA INTEGRADO -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    
+                    <!-- COLUMNA IZQUIERDA: CARGA RÁPIDA DE VENTAS -->
+                    <div class="lg:col-span-6 bg-slate-900/60 border border-slate-800 p-5 rounded-3xl shadow-xl space-y-4">
+                        <h4 class="text-sm font-black text-blue-400 uppercase tracking-widest border-b border-slate-800 pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-cart-shopping"></i> Carga Rápida de Ventas Tucocel
+                        </h4>
+
+                        <div class="space-y-3 text-xs font-bold">
+                            <div>
+                                <label class="text-[10px] text-slate-400 uppercase block mb-1">Descripción de Producto / Servicio</label>
+                                <input type="text" id="tcl-input-concepto" placeholder="Ej: FORRO + IMPRESIÓN A4" onkeydown="if(event.key === 'Enter') window.tcl_agregarLineaVentaTucocel();" class="w-full bg-slate-950 border border-slate-800 p-3.5 rounded-xl text-white font-bold uppercase focus:outline-none focus:border-blue-500 text-sm">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-[10px] text-slate-400 uppercase block mb-1">Cantidad</label>
+                                    <input type="number" id="tcl-input-cantidad" value="1" min="1" onkeydown="if(event.key === 'Enter') window.tcl_agregarLineaVentaTucocel();" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white text-center font-black focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] text-slate-400 uppercase block mb-1">Monto Venta (COP)</label>
+                                    <input type="text" id="tcl-input-precio-cop" placeholder="Ej: 25.000" onkeyup="window.svc_maskInputFormatted(this)" onkeydown="if(event.key === 'Enter') window.tcl_agregarLineaVentaTucocel();" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white text-center font-mono font-black focus:outline-none">
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] text-slate-400 uppercase block mb-1">Método de Pago</label>
+                                <select id="tcl-input-metodo" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white focus:outline-none font-bold">
+                                    <option value="PESOS" selected>💵 Pesos Efectivo</option>
+                                    <option value="DOLAR">💵 Dólares Efectivo</option>
+                                    <option value="PAGOMOVIL">📲 Bolívares / Pago Móvil</option>
+                                </select>
+                            </div>
+                            <button onclick="window.tcl_agregarLineaVentaTucocel()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3.5 rounded-xl uppercase tracking-wider shadow transition-all duration-300">➕ Añadir a la Venta de Tucocel</button>
+                        </div>
+                    </div>
+
+                    <!-- COLUMNA DERECHA: DESGLOSE VENTA VIVA + MULTIMONEDA + ARQUEO EN UN SOLO LUGAR -->
+                    <div class="lg:col-span-6 bg-slate-900/60 border border-slate-800 p-5 rounded-3xl shadow-xl flex flex-col justify-between space-y-4">
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                                <h5 class="text-xs font-black text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-receipt text-blue-400"></i> Ventas Cargadas del Día</h5>
+                                <span id="tcl-lbl-cnt-items" class="text-[10px] font-black text-blue-400 bg-blue-950/50 border border-blue-500/30 px-2.5 py-0.5 rounded-full font-mono">📦 0 Ítems</span>
+                            </div>
+                            <div id="tcl-lista-items-viva-box" class="space-y-1.5 max-h-48 overflow-y-auto no-scrollbar text-xs"></div>
+                        </div>
+
+                        <!-- RESUMEN MULTIMONEDA EN VIVO EN UNA SOLA FILA -->
+                        <div class="grid grid-cols-3 gap-2 font-mono text-[10px] text-center bg-slate-950 p-2.5 rounded-2xl border border-slate-800">
+                            <div><span class="block text-[8px] text-slate-400 uppercase font-sans">Pesos</span><b id="tcl-live-cop" class="text-amber-400 block font-black text-xs">0 COP</b></div>
+                            <div><span class="block text-[8px] text-slate-400 uppercase font-sans">Dólares</span><b id="tcl-live-usd" class="text-blue-400 block font-black text-xs">$0,00</b></div>
+                            <div><span class="block text-[8px] text-slate-400 uppercase font-sans">Bolívares</span><b id="tcl-live-bs" class="text-emerald-400 block font-black text-xs">0 Bs</b></div>
+                        </div>
+
+                        <!-- ARQUEO Y CUADRE FÍSICO INTEGRADO EN LA MISMA CAJA -->
+                        <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-3 font-mono">
+                            <span class="text-[10px] text-emerald-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-vault mr-1"></i> Arqueo & Cuadre Físico de Gaveta</span>
+                            
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <div>
+                                    <label class="text-[8px] text-slate-400 uppercase block font-sans mb-1">Dólares ($) en Gaveta</label>
+                                    <input type="number" id="tcl-arq-usd" value="0" min="0" onkeyup="window.tcl_renderizerParticionTucocel()" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-blue-400 font-black text-center focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="text-[8px] text-slate-400 uppercase block font-sans mb-1">Pesos (COP) en Gaveta</label>
+                                    <input type="text" id="tcl-arq-cop" placeholder="0" onkeyup="window.svc_maskInputFormatted(this); window.tcl_renderizerParticionTucocel();" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-amber-400 font-black text-center focus:outline-none">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-900 text-center">
+                                <div class="bg-slate-900 p-2 rounded-xl border border-slate-800">
+                                    <span class="block text-[8px] text-slate-500 uppercase font-sans">Venta Esperada</span>
+                                    <b id="tcl-lbl-esperado-cop" class="text-white text-xs">0 COP</b>
+                                </div>
+                                <div id="tcl-box-diferencia-status" class="bg-slate-900 p-2 rounded-xl border border-slate-800">
+                                    <span class="block text-[8px] text-slate-500 uppercase font-sans">Diagnóstico Cuadre</span>
+                                    <b id="tcl-lbl-diferencia-cop" class="text-emerald-400 text-xs">0 COP</b>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-800 pt-2 grid grid-cols-2 gap-2">
+                            <button onclick="window.tcl_procesarCierreTucocelModo('GUARDAR')" class="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black py-3 rounded-xl uppercase shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.02]"><i class="fa-solid fa-floppy-disk text-sm"></i> Guardar Venta / Cierre</button>
+                            <button onclick="window.tcl_procesarCierreTucocelModo('TICKET')" class="bg-slate-950 border border-slate-800 text-white text-[10px] font-black py-3 rounded-xl uppercase shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.02]"><i class="fa-solid fa-print text-sm"></i> Ticket Diario Tucocel</button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ACORDEÓN DESPLEGABLE DE REGISTRO DE COMPRAS Y SOLO FACTURA CON CARGA MULTÍTEM -->
+                <div class="bg-slate-900/60 border border-amber-500/30 rounded-3xl overflow-hidden shadow-xl">
+                    <button onclick="document.getElementById('wrapper-compras-mercan-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-amber-950/20 hover:bg-amber-900/30 flex justify-between items-center transition border-b border-amber-500/20">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-truck-ramp-box text-amber-400 text-lg"></i>
+                            <span class="text-xs font-black text-amber-300 uppercase tracking-wider">🚚 ➕ Registro de Compras, Inversiones & Solo Facturas</span>
+                        </div>
+                        <span id="badge-cnt-compras-mercan" class="text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-xl uppercase">0 Registros</span>
+                    </button>
+
+                    <div id="wrapper-compras-mercan-acordeon" class="hidden p-5 space-y-4 border-t border-slate-800">
+                        
+                        <!-- BLOQUE DUAL DE CARGA DE COMPRA MULTÍTEM -->
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                            
+                            <!-- CARGA INDIVIDUAL DE CADA ÍTEM DE LA FACTURA -->
+                            <div class="lg:col-span-7 bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3 text-xs font-bold">
+                                <span class="text-[11px] text-amber-400 uppercase font-black block border-b border-slate-800 pb-2"><i class="fa-solid fa-cart-flatbed mr-1"></i> Carga de Ítems a la Factura / Compra Activa</span>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="text-[9px] text-slate-400 uppercase block mb-1">Categoría</label>
+                                        <select id="tcl-compra-tipo-cat" onchange="window.tcl_conmutarCamposCompraCat()" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white font-bold text-xs focus:outline-none">
+                                            <option value="TELEFONIA" selected>📱 Telefonía (Requiere IMEI)</option>
+                                            <option value="ACCESORIOS">🎧 Accesorios / Especiales</option>
+                                            <option value="FACTURA">📄 Solo Factura / Proveedor Empresa</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[9px] text-slate-400 uppercase block mb-1">Proveedor / Empresa</label>
+                                        <input type="text" id="tcl-compra-proveedor" placeholder="Ej: PROVEEDOR / DISTRIBUIDOR" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white uppercase text-xs focus:outline-none">
+                                    </div>
+                                </div>
+
+                                <div id="wrapper-bloque-campos-producto" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <div>
+                                        <label id="lbl-tcl-compra-prod" class="text-[9px] text-slate-400 uppercase block mb-1">Marca / Modelo</label>
+                                        <input type="text" id="tcl-compra-producto" placeholder="Ej: MODELO DISPOSITIVO" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white uppercase text-xs focus:outline-none">
+                                    </div>
+                                    <div id="wrapper-campo-imei">
+                                        <label class="text-[9px] text-slate-400 uppercase block mb-1">Código IMEI</label>
+                                        <input type="text" id="tcl-compra-imei" placeholder="Ej: 864521098877123" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white font-mono text-xs focus:outline-none">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-3 gap-2 font-mono">
+                                    <div>
+                                        <label class="text-[8px] text-slate-400 uppercase block font-sans mb-1">Moneda Pago</label>
+                                        <select id="tcl-compra-moneda" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white text-xs focus:outline-none font-bold">
+                                            <option value="USD" selected>Dólares ($)</option>
+                                            <option value="COP">Pesos (COP)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[8px] text-slate-400 uppercase block font-sans mb-1">Monto Costo</label>
+                                        <input type="text" id="tcl-compra-costo" placeholder="0" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-amber-400 text-center font-black text-xs focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="text-[8px] text-slate-400 uppercase block font-sans mb-1">Método Salida</label>
+                                        <select id="tcl-compra-metodo-pago" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white text-xs focus:outline-none font-bold">
+                                            <option value="EFECTIVO_PESOS">Efectivo Pesos</option>
+                                            <option value="EFECTIVO_USD">Efectivo USD</option>
+                                            <option value="NEQUI">Nequi / Transf</option>
+                                            <option value="PAGOMOVIL">Pago Móvil Bs</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <button onclick="window.tcl_agregarItemACompraActiva()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow">➕ Añadir Ítem a la Compra Activa</button>
+                            </div>
+
+                            <!-- VISTA PREVIA Y GUARDADO EN BLOQUE DE LA FACTURA -->
+                            <div class="lg:col-span-5 bg-slate-950 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between space-y-3">
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                                        <span class="text-[10px] font-black text-amber-400 uppercase"><i class="fa-solid fa-list-check mr-1"></i> Factura en Bloque</span>
+                                        <span id="tcl-lbl-cnt-compras-viva" class="text-[9px] font-black text-amber-300 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded-full font-mono">0 Ítems</span>
+                                    </div>
+                                    <div id="tcl-lista-compras-viva-box" class="space-y-1.5 max-h-44 overflow-y-auto no-scrollbar text-xs"></div>
+                                </div>
+
+                                <div class="border-t border-slate-800 pt-2 space-y-2">
+                                    <div class="flex justify-between font-mono text-xs text-slate-300 bg-slate-900 p-2 rounded-xl">
+                                        <span>Total Inversión Bloque:</span>
+                                        <b id="tcl-lbl-total-compras-viva" class="text-amber-400 font-black">0 COP</b>
+                                    </div>
+                                    <button onclick="window.tcl_guardarFacturaCompraEnBloque()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow">💾 Registrar Compra de Mercancía / Factura</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- BARRA DE BÚSQUEDA Y LISTA DE COMPRAS REGISTRADAS -->
+                        <div class="space-y-3 pt-2">
+                            <input type="text" id="tcl-search-compras" onkeyup="window.tcl_renderizerListaComprasHistorico()" placeholder="🔍 Buscar por IMEI, Proveedor, Factura o Modelo..." class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-xs text-white focus:outline-none">
+                            <div id="wrapper-lista-compras-historico-box" class="space-y-2 max-h-64 overflow-y-auto no-scrollbar pr-1"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- HISTORIAL Y AUDITORÍA PROPIA DE TUCOCEL C.A. -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
+                    <button onclick="document.getElementById('wrapper-tucocel-historico-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-folder-open text-blue-400 text-lg"></i>
+                            <span class="text-xs font-black text-white uppercase tracking-wider">🗂️ Histórico de Cierres & Ventas Tucocel C.A.</span>
+                        </div>
+                        <span id="badge-total-cierres-tucocel" class="text-[10px] font-black bg-blue-600/20 text-blue-400 px-3 py-1 rounded-xl uppercase">0 Cierres</span>
+                    </button>
+
+                    <div id="wrapper-tucocel-historico-acordeon" class="hidden p-5 border-t border-slate-800/60 space-y-3">
+                        <div id="wrapper-lista-cierres-tucocel-guardados" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- PARTICIÓN 4: EXPEDIENTES Y TÉCNICOS SAAS -->
             <div id="tab-tecnicos" class="lg:col-span-12 hidden w-full space-y-4">
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
                     <button onclick="document.getElementById('wrapper-expedientes-box-tab').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
@@ -558,14 +783,14 @@
                 </div>
             </div>
 
-            <!-- PARTICIÓN 4: AUDITORÍA Y BALANCE MENSUAL -->
+            <!-- PARTICIÓN 5: AUDITORÍA Y BALANCE MENSUAL (SERVICELL / TALLER) -->
             <div id="tab-finanzas" class="lg:col-span-12 hidden w-full space-y-6">
                 <div id="wrapper-fines-totales-moneda" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
                     <div class="md:col-span-7 bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
                         <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
-                            <h3 class="text-sm font-black text-white uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-vault text-purple-500"></i> Historial y Auditoría de Cierres Emitidos</h3>
+                            <h3 class="text-sm font-black text-white uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-vault text-purple-500"></i> Historial y Auditoría Servicell</h3>
                             <input type="date" id="filtro-comandas-fecha-directo" onchange="window.svc_renderizerHistoricoComandasDirecto()" class="bg-slate-950 border border-slate-800 p-1.5 rounded-xl text-xs font-mono text-white focus:outline-none">
                         </div>
                         <div id="wrapper-historico-comandas-directo-box" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
@@ -573,7 +798,7 @@
 
                     <div class="md:col-span-5 bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
                         <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
-                            <h3 class="text-purple-400 font-black text-xs uppercase tracking-widest"><i class="fa-solid fa-chart-pie mr-1"></i> Balance de Rentabilidad Mensual</h3>
+                            <h3 class="text-purple-400 font-black text-xs uppercase tracking-widest"><i class="fa-solid fa-chart-pie mr-1"></i> Balance Rentabilidad Servicell</h3>
                             <button onclick="window.svc_purgarCierresPrueba()" class="text-[9px] bg-red-600/20 border border-red-500/30 text-red-400 font-bold px-2 py-0.5 rounded-lg uppercase">🧹 Limpiar $0</button>
                         </div>
                         
@@ -603,7 +828,7 @@
                 </div>
             </div>
 
-            <!-- PARTICIÓN 5: GARANTÍAS CENTRAL -->
+            <!-- PARTICIÓN 6: GARANTÍAS CENTRAL -->
             <div id="tab-garantias" class="lg:col-span-12 hidden w-full space-y-4">
                 <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
                     <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-2">
@@ -640,7 +865,7 @@
         </div>
     </div>
 
-    <!-- VENTANA MODAL HOJA BLANCA -->
+    <!-- VENTANA MODAL HOJA BLANCA SERVICELL -->
     <div id="modal-hoja-blanca" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center hidden p-4 z-50">
         <div class="bg-white text-slate-950 rounded-3xl w-full max-w-xl p-6 sm:p-8 space-y-6 shadow-2xl font-mono text-xs">
             <div class="border-b-2 border-slate-900 pb-4 flex justify-between items-start">
@@ -660,8 +885,29 @@
         </div>
     </div>
 
+    <!-- VENTANA MODAL HOJA BLANCA EXCLUSIVA TUCOCEL C.A. (PARTICIÓN 3) -->
+    <div id="modal-hoja-blanca-tucocel" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center hidden p-4 z-50">
+        <div class="bg-white text-slate-950 rounded-3xl w-full max-w-xl p-6 sm:p-8 space-y-6 shadow-2xl font-mono text-xs">
+            <div class="border-b-2 border-slate-900 pb-4 flex justify-between items-start">
+                <div>
+                    <h3 class="text-base font-black uppercase text-slate-950">TUCOCEL C.A. — CORDERO</h3>
+                    <p class="text-[10px] text-slate-600 font-bold uppercase">Informe Ejecutivo de Rendimiento Comercial & Facturas</p>
+                </div>
+                <button onclick="document.getElementById('modal-hoja-blanca-tucocel').classList.add('hidden')" class="text-slate-500 hover:text-slate-950 font-black text-sm">✕ Cerrar</button>
+            </div>
+            
+            <div id="contenido-hoja-blanca-tucocel-render" class="space-y-4"></div>
+
+            <div class="border-t-2 border-slate-900 pt-4 flex justify-end gap-2 no-imprimir">
+                <button onclick="window.print()" class="bg-slate-950 text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px]"><i class="fa-solid fa-print mr-1"></i> Imprimir Hoja Carta</button>
+                <button onclick="window.tcl_enviarWhatsAppHojaBlancaTucocel()" class="bg-emerald-600 text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px]"><i class="fa-brands fa-whatsapp mr-1"></i> Enviar a WhatsApp</button>
+                <button onclick="document.getElementById('modal-hoja-blanca-tucocel').classList.add('hidden')" class="bg-slate-200 text-slate-950 font-bold px-4 py-2.5 rounded-xl uppercase text-[10px]">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="bg-slate-900/20 border-t border-slate-900/60 py-4 text-center text-slate-500 font-mono text-[8px] tracking-widest uppercase font-bold">
-        🔒 SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.
+        🔒 TUCOCEL C.A. & SERVICELL — SISTEMA DE CONTROL
     </footer>
 
     <!-- ENGINE CORE FIREBASE -->
@@ -679,6 +925,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // VARIABLES SERVICELL / RECEPCIÓN
         let svc_comandasGlobal = [];
         let svc_valesGlobal = [];
         let svc_cierresGlobal = [];
@@ -686,6 +933,13 @@
         let svc_comandaActivaTurno = []; 
         let svc_historicoCierresDiarios = []; 
         let svc_fotoPatronBase64 = "";
+
+        // VARIABLES EXCLUSIVAS TUCOCEL C.A. (PARTICIÓN 3)
+        let tcl_ventasActivasTurno = [];
+        let tcl_comprasActivasTurno = [];
+        let tcl_comprasHistorico = [];
+        let tcl_historicoCierres = [];
+
         let rolDeSesionActiva = "BLOQUEADO";
         let usuarioSesionActivo = "";
 
@@ -886,11 +1140,12 @@
                     document.getElementById('label-indicador-rol').className = "text-[10px] bg-blue-950/40 px-2.5 py-0.5 border border-blue-500/20 text-blue-400 font-black tracking-widest uppercase block mt-1";
                     
                     tabsContainer.innerHTML = `
-                        <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow"><i class="fa-solid fa-cash-register"></i> Recepción</button>
-                        <button id="tab-btn-comandas" onclick="window.svc_cambiarTab('comandas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-file-invoice"></i> Comandas Servicell</button>
-                        <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-users"></i> Expedientes SaaS</button>
-                        <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-vault"></i> Finanzas & Balance</button>
-                        <button id="tab-btn-garantias" onclick="window.svc_cambiarTab('garantias')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-history"></i> Garantías Central</button>`;
+                        <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow shrink-0"><i class="fa-solid fa-cash-register"></i> Recepción</button>
+                        <button id="tab-btn-comandas" onclick="window.svc_cambiarTab('comandas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-file-invoice"></i> Comandas Servicell</button>
+                        <button id="tab-btn-tucocel" onclick="window.svc_cambiarTab('tucocel')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-shop text-blue-400"></i> Comandas Tucocel</button>
+                        <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-users"></i> Expedientes SaaS</button>
+                        <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-vault"></i> Finanzas & Balance</button>
+                        <button id="tab-btn-garantias" onclick="window.svc_cambiarTab('garantias')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-history"></i> Garantías Central</button>`;
                 } else {
                     tecMatch = svc_tecnicosPerfiles.find(t => t.user.toLowerCase() === user && t.pass === pass);
                     if(tecMatch) {
@@ -902,17 +1157,18 @@
                             document.getElementById('label-indicador-rol').innerText = `SESIÓN: MÁSTER AUTORIZADO (${tecMatch.nombre.toUpperCase()})`;
                             document.getElementById('label-indicador-rol').className = "text-[10px] bg-blue-950/40 px-2.5 py-0.5 border border-blue-500/20 text-blue-400 font-black tracking-widest uppercase block mt-1";
                             tabsContainer.innerHTML = `
-                                <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow"><i class="fa-solid fa-cash-register"></i> Recepción</button>
-                                <button id="tab-btn-comandas" onclick="window.svc_cambiarTab('comandas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-file-invoice"></i> Comandas Servicell</button>
-                                <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-users"></i> Expedientes SaaS</button>
-                                <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-vault"></i> Finanzas & Balance</button>
-                                <button id="tab-btn-garantias" onclick="window.svc_cambiarTab('garantias')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-history"></i> Garantías Central</button>`;
+                                <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow shrink-0"><i class="fa-solid fa-cash-register"></i> Recepción</button>
+                                <button id="tab-btn-comandas" onclick="window.svc_cambiarTab('comandas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-file-invoice"></i> Comandas Servicell</button>
+                                <button id="tab-btn-tucocel" onclick="window.svc_cambiarTab('tucocel')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-shop text-blue-400"></i> Comandas Tucocel</button>
+                                <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-users"></i> Expedientes SaaS</button>
+                                <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-vault"></i> Finanzas & Balance</button>
+                                <button id="tab-btn-garantias" onclick="window.svc_cambiarTab('garantias')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-history"></i> Garantías Central</button>`;
                         } else {
                             document.getElementById('label-indicador-rol').innerText = `SESIÓN: TÉCNICO DE MOSTRADOR (${tecMatch.nombre.toUpperCase()})`;
                             document.getElementById('control-tasas-box').classList.add('hidden');
                             
                             tabsContainer.innerHTML = `
-                                <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow"><i class="fa-solid fa-cash-register"></i> Recepción Mostrador</button>`;
+                                <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow shrink-0"><i class="fa-solid fa-cash-register"></i> Recepción Mostrador</button>`;
                         }
                     } else {
                         return alert("❌ Acceso Denegado: Credenciales incorrectas.");
@@ -927,7 +1183,7 @@
 
                 if(esMaster || rolDeSesionActiva === "MASTER") {
                     titleBox.innerText = `¡Bienvenido, ${nombreDisplaySplash}!`;
-                    subBox.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-blue-400"></i> Desbloqueando Bóveda Financiera y Control Central...`;
+                    subBox.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-blue-400"></i> Desbloqueando Bóvedas Financieras...`;
                     iconBox.className = "fa-solid fa-crown text-amber-400";
                 } else {
                     titleBox.innerText = `¡Bienvenido, ${nombreDisplaySplash}!`;
@@ -968,7 +1224,6 @@
             
             await setDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`), { nombre, cedula, whatsapp, direccion, fechaAlta: new Date().toLocaleDateString() });
             
-            // ACTUALIZACIÓN DIRECTA A ESTADO ACTIVO
             const idx = svc_tecnicosPerfiles.findIndex(t => t.user === usuarioSesionActivo);
             if(idx !== -1) {
                 svc_tecnicosPerfiles[idx].estatus = "ACTIVO";
@@ -992,6 +1247,7 @@
 
         window.svc_descargarServidorCentral = async function() {
             try {
+                // DESCARGA SERVICELL
                 const docSnap = await getDoc(doc(db, "tcl_servicell_independent", "comandas_data"));
                 if(docSnap.exists()) {
                     svc_comandasGlobal = docSnap.data().comandas || [];
@@ -1003,11 +1259,20 @@
                 const docSnapTecs = await getDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"));
                 svc_tecnicosPerfiles = docSnapTecs.exists() ? docSnapTecs.data().perfiles || [] : [];
                 
-                // Asegurar que Nelson quede registrado como ACTIVO si ya llenó datos
                 const idxNelson = svc_tecnicosPerfiles.findIndex(t => t.user === "nelson");
                 if(idxNelson !== -1) svc_tecnicosPerfiles[idxNelson].estatus = "ACTIVO";
 
+                // DESCARGA EXCLUSIVA TUCOCEL C.A. (PARTICIÓN 3)
+                const docSnapTcl = await getDoc(doc(db, "tcl_servicell_independent", "comandas_tucocel_data"));
+                if(docSnapTcl.exists()) {
+                    tcl_ventasActivasTurno = docSnapTcl.data().ventasActivasTurno || [];
+                    tcl_comprasActivasTurno = docSnapTcl.data().comprasActivasTurno || [];
+                    tcl_comprasHistorico = docSnapTcl.data().comprasHistorico || [];
+                    tcl_historicoCierres = docSnapTcl.data().historicoCierres || [];
+                }
+
                 window.svc_renderizerEcosistema();
+                window.tcl_renderizerParticionTucocel();
             } catch(e) {}
         };
 
@@ -1016,17 +1281,18 @@
             
             document.getElementById('tab-recepcion').classList.add('hidden');
             document.getElementById('tab-comandas').classList.add('hidden');
+            document.getElementById('tab-tucocel').classList.add('hidden');
             document.getElementById('tab-tecnicos').classList.add('hidden');
             document.getElementById('tab-finanzas').classList.add('hidden');
             document.getElementById('tab-garantias').classList.add('hidden');
 
             document.getElementById(`tab-${pestaña}`).classList.remove('hidden');
 
-            const tabs = ['recepcion', 'comandas', 'tecnicos', 'finanzas', 'garantias'];
+            const tabs = ['recepcion', 'comandas', 'tucocel', 'tecnicos', 'finanzas', 'garantias'];
             tabs.forEach(t => {
                 const el = document.getElementById(`tab-btn-${t}`);
                 if(el) {
-                    el.className = (t === pestaña) ? "bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow" : "bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2";
+                    el.className = (t === pestaña) ? "bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow shrink-0" : "bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0";
                 }
             });
         };
@@ -1105,7 +1371,6 @@
             } catch(e) {}
         };
 
-        // GATILLO TÉCNICO -> MÁSTER CON LINK DIRECTO DE ORDEN
         window.svc_dispararNotificacionGatilloMaster = function(c) {
             const linkDirectoOrden = `${window.location.origin}${window.location.pathname}?orden=${c.id}`;
             let msg = `🛠️ *SERVICELL — INGRESO EN ESPERA*\n\n` +
@@ -1120,7 +1385,6 @@
             window.open(`https://api.whatsapp.com/send?phone=584147357549&text=${encodeURIComponent(msg)}`, '_blank');
         };
 
-        // IMPULSO MÁSTER
         window.svc_darImpulsoMasterSupremo = async function(id) {
             if(rolDeSesionActiva !== "MASTER") {
                 return alert("🛑 Solo el Máster está autorizado en hacer uso de esta función.");
@@ -1151,7 +1415,6 @@
             window.open(`https://api.whatsapp.com/send?phone=${match.tlf}&text=${encodeURIComponent(msgCliente)}`, '_blank');
         };
 
-        // RENDERIZADO DE BANDEJA DE ÓRDENES EN ACORDEÓN POR ESTADO
         window.svc_renderizerHistoricoRecepciones = function() {
             const boxEspera = document.getElementById('wrapper-orders-espera-box');
             const boxProceso = document.getElementById('wrapper-orders-proceso-box');
@@ -1338,7 +1601,6 @@ Garantía     : ${c.diasGarantia || 2} Días
             window.svc_renderizerEcosistema();
         };
 
-        // PROCESAMIENTO DE COMANDA CON VACIADO AUTOMÁTICO Y DESPLIEGUE EN HISTORIAL
         window.svc_procesarComandaModo = async function(modo) {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const itemsFiltrados = svc_comandaActivaTurno.filter(x => x.operador === tecSeleccionado);
@@ -1370,12 +1632,10 @@ Garantía     : ${c.diasGarantia || 2} Días
 
             svc_historicoCierresDiarios.unshift(registroComandaObj);
 
-            // Limpiar los ítems de la comanda activa del turno
             svc_comandaActivaTurno = svc_comandaActivaTurno.filter(x => x.operador !== tecSeleccionado);
 
             await window.svc_sincronizarConFirebase();
             
-            // Vaciar campos y desplegar acordeón del historial
             document.getElementById('svc-input-concepto').value = "";
             document.getElementById('svc-input-precio-cop').value = "";
             document.getElementById('wrapper-comandas-historico-acordeon').classList.remove('hidden');
@@ -1399,7 +1659,6 @@ Garantía     : ${c.diasGarantia || 2} Días
             window.svc_procesarComandaModo('TICKET');
         };
 
-        // HISTORIAL DE COMANDAS EN ACORDEÓN
         window.svc_renderizerHistoricoComandasDirecto = function() {
             const container = document.getElementById('wrapper-lista-comandas-guardadas'); 
             const badgeTotal = document.getElementById('badge-total-comandas-historial');
@@ -1518,9 +1777,8 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             }
         };
 
-        // PURGA Y LIMPIEZA DE DATOS DE PRUEBA A CERO ABSOLUTO
         window.svc_purgarCierresPrueba = async function() {
-            if(!confirm("⚠️ ¿Confirmar la limpieza de datos de prueba? Las finanzas y el historial quedarán limpios en $0.")) return;
+            if(!confirm("⚠️ ¿Confirmar la limpieza de datos de prueba de Servicell? La caja del taller quedará en $0.")) return;
             svc_historicoCierresDiarios = [];
             svc_comandasGlobal = [];
             svc_valesGlobal = [];
@@ -1528,7 +1786,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             
             await window.svc_sincronizarConFirebase();
             await window.svc_descargarServidorCentral();
-            alert("🧹 Base de datos purgada a CERO ($0) con éxito.");
+            alert("🧹 Base de datos de Servicell purgada a CERO ($0) con éxito.");
         };
 
         window.svc_calcularBalanceRentabilidadMensual = function() {
@@ -1762,7 +2020,6 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             window.svc_descargarServidorCentral();
         };
 
-        // RENDERIZADO DE FICHAS CON SUELDO BASE FIJO EN PESOS (120.000 COP) Y RESUMEN
         window.svc_renderGridTecnicosMaster = function() {
             const container = document.getElementById('wrapper-fichas-tecnicos-grid'); if(!container) return;
             let html = "";
@@ -1771,7 +2028,6 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                     ? `<span class="text-[8px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-black">ACTIVO 🟢</span>` 
                     : `<span class="text-[8px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full font-black">PENDIENTE 🟡</span>`;
 
-                // CÓMPUTO EN VIVO
                 let genServicioTec = 0;
                 let valesAcum = 0;
 
@@ -1798,7 +2054,6 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                             <span class="text-[9px] text-slate-400 font-mono block">ID: ${t.user} | Clave: ${t.pass}</span>
                             <span class="text-[9px] text-slate-500 block">WhatsApp: ${t.whatsapp}</span>
                             
-                            <!-- BANDERIN FINANCIERO EN VIVO EN SU TARJETA -->
                             <div class="mt-2 p-2 bg-slate-950 border border-slate-850 rounded-xl space-y-1 font-mono text-[9px]">
                                 <div class="flex justify-between text-slate-400"><span>• Servicio Taller (50%):</span> <b class="text-purple-400">${fmtMonto(genServicioTec)} COP</b></div>
                                 <div class="flex justify-between text-slate-400"><span>• Sueldo Base Fijo:</span> <b class="text-blue-400">${fmtMonto(sueldoBaseCOP)} COP</b></div>
@@ -1855,7 +2110,493 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
         };
 
         window.svc_sincronizarConFirebase = async function() {
-            try { await setDoc(doc(db, "tcl_servicell_independent", "comandas_data"), { comandas: svc_comandasGlobal, vales: svc_valesGlobal, historico: svc_cierresGlobal, comandaActivaTurno: svc_comandaActivaTurno, historicoCierresDiarios: svc_historicoCierresDiarios }); } catch(e) {}
+            try { 
+                await setDoc(doc(db, "tcl_servicell_independent", "comandas_data"), { comandas: svc_comandasGlobal, vales: svc_valesGlobal, historico: svc_cierresGlobal, comandaActivaTurno: svc_comandaActivaTurno, historicoCierresDiarios: svc_historicoCierresDiarios }); 
+            } catch(e) {}
+        };
+
+        // =========================================================
+        // MOTOR DE FUNCIONES EXCLUSIVAS DE TUCOCEL C.A. (PARTICIÓN 3)
+        // =========================================================
+
+        window.tcl_sincronizarTucocelFirebase = async function() {
+            try {
+                await setDoc(doc(db, "tcl_servicell_independent", "comandas_tucocel_data"), {
+                    ventasActivasTurno: tcl_ventasActivasTurno,
+                    comprasActivasTurno: tcl_comprasActivasTurno,
+                    comprasHistorico: tcl_comprasHistorico,
+                    historicoCierres: tcl_historicoCierres
+                });
+            } catch(e) {}
+        };
+
+        window.tcl_agregarLineaVentaTucocel = function() {
+            const concepto = document.getElementById('tcl-input-concepto').value.trim().toUpperCase();
+            const cantidad = parseInt(document.getElementById('tcl-input-cantidad').value) || 1;
+            const precioCOP = window.svc_cleanNumber(document.getElementById('tcl-input-precio-cop').value);
+            const metodo = document.getElementById('tcl-input-metodo').value;
+
+            if(!concepto || precioCOP <= 0) return alert("⚠️ Ingrese descripción y monto de venta válido.");
+
+            tcl_ventasActivasTurno.push({
+                idItem: 'tcl-v-' + Date.now(),
+                concepto, cantidad, precioCOP, metodo
+            });
+
+            document.getElementById('tcl-input-concepto').value = "";
+            document.getElementById('tcl-input-precio-cop').value = "";
+            document.getElementById('tcl-input-concepto').focus();
+
+            window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizerParticionTucocel();
+        };
+
+        window.tcl_eliminarVentaAlVuelo = function(idx) {
+            if(!confirm("¿Desea borrar esta venta específica de Tucocel?")) return;
+            tcl_ventasActivasTurno.splice(idx, 1);
+            window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizerParticionTucocel();
+        };
+
+        window.tcl_conmutarCamposCompraCat = function() {
+            const cat = document.getElementById('tcl-compra-tipo-cat').value;
+            const wrapImei = document.getElementById('wrapper-campo-imei');
+            const lblProd = document.getElementById('lbl-tcl-compra-prod');
+            const wrapProd = document.getElementById('wrapper-bloque-campos-producto');
+
+            if(cat === "TELEFONIA") {
+                if(wrapProd) wrapProd.classList.remove('hidden');
+                if(wrapImei) wrapImei.classList.remove('hidden');
+                if(lblProd) lblProd.innerText = "Marca / Modelo Dispositivo";
+            } else if(cat === "ACCESORIOS") {
+                if(wrapProd) wrapProd.classList.remove('hidden');
+                if(wrapImei) wrapImei.classList.add('hidden');
+                if(lblProd) lblProd.innerText = "Producto / Descripción Accesorio";
+            } else if(cat === "FACTURA") {
+                if(wrapProd) wrapProd.classList.add('hidden');
+                if(wrapImei) wrapImei.classList.add('hidden');
+            }
+        };
+
+        window.tcl_agregarItemACompraActiva = function() {
+            const cat = document.getElementById('tcl-compra-tipo-cat').value;
+            const proveedor = document.getElementById('tcl-compra-proveedor').value.trim().toUpperCase() || "PROVEEDOR GENERAL";
+            const producto = cat === "FACTURA" ? "FACTURA EMPRESA / EGRESO DIRECTO" : document.getElementById('tcl-compra-producto').value.trim().toUpperCase();
+            const imei = cat === "TELEFONIA" ? (document.getElementById('tcl-compra-imei').value.trim() || "N/A") : "N/A";
+            const moneda = document.getElementById('tcl-compra-moneda').value;
+            const costoRaw = window.svc_cleanNumber(document.getElementById('tcl-compra-costo').value);
+            const metodoPagoSalida = document.getElementById('tcl-compra-metodo-pago').value;
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
+
+            if(costoRaw <= 0) return alert("⚠️ Ingrese un monto de costo / factura válido.");
+
+            let costoCOP = moneda === "USD" ? (costoRaw * tCOP) : costoRaw;
+
+            tcl_comprasActivasTurno.push({
+                idItem: 'cmp-sub-' + Date.now(),
+                cat, proveedor, producto, imei, monedaOrig: moneda,
+                costoOrig: costoRaw, costoCOP, metodoPagoSalida
+            });
+
+            document.getElementById('tcl-compra-producto').value = "";
+            document.getElementById('tcl-compra-imei').value = "";
+            document.getElementById('tcl-compra-costo').value = "";
+            document.getElementById('tcl-compra-producto').focus();
+
+            window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizerParticionTucocel();
+        };
+
+        window.tcl_eliminarCompraActivaAlVuelo = function(idx) {
+            tcl_comprasActivasTurno.splice(idx, 1);
+            window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizerParticionTucocel();
+        };
+
+        window.tcl_guardarFacturaCompraEnBloque = async function() {
+            if(tcl_comprasActivasTurno.length === 0) return alert("No hay ítems agregados a la compra activa.");
+
+            const fechaActual = new Date().toLocaleDateString();
+            const horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            tcl_comprasActivasTurno.forEach(item => {
+                tcl_comprasHistorico.unshift({
+                    idCompra: 'cmp-' + Date.now() + Math.random().toString().slice(-3),
+                    fecha: fechaActual,
+                    hora: horaActual,
+                    ...item,
+                    status: "ACTIVO"
+                });
+            });
+
+            tcl_comprasActivasTurno = [];
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizerParticionTucocel();
+            alert("✅ Factura / Compras guardadas en el historial de Tucocel C.A.");
+        };
+
+        window.tcl_anularCompraHistorica = async function(id) {
+            const idx = tcl_comprasHistorico.findIndex(x => x.idCompra === id); if(idx === -1) return;
+            if(!confirm("⚠️ ¿Desea anular esta compra / factura?")) return;
+            tcl_comprasHistorico[idx].status = "ANULADA";
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizerListaComprasHistorico();
+            alert("✅ Compra marcada como anulada.");
+        };
+
+        window.tcl_borrarDefinitivoCompraHistorica = async function(id) {
+            const idx = tcl_comprasHistorico.findIndex(x => x.idCompra === id); if(idx === -1) return;
+            if(!confirm("🛑 ¿Desea BORRAR DEFINITIVAMENTE este registro de compra en Firebase?")) return;
+            tcl_comprasHistorico.splice(idx, 1);
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizerListaComprasHistorico();
+            alert("✅ Registro eliminado por completo de la base de datos.");
+        };
+
+        window.tcl_renderizerListaComprasHistorico = function() {
+            const container = document.getElementById('wrapper-lista-compras-historico-box');
+            const badgeCnt = document.getElementById('badge-cnt-compras-mercan');
+            if(!container) return;
+
+            const busqueda = document.getElementById('tcl-search-compras').value.trim().toUpperCase();
+            let html = "";
+            let cntMatch = 0;
+
+            tcl_comprasHistorico.forEach((c) => {
+                if(c.status === "ANULADA") return;
+                if(busqueda && !c.producto.includes(busqueda) && !c.proveedor.includes(busqueda) && !c.imei.includes(busqueda)) return;
+                cntMatch++;
+
+                let detalleSub = c.cat === "TELEFONIA" ? `IMEI: ${c.imei} | Garantía: 60 Días` : `Pago: ${c.metodoPagoSalida}`;
+
+                html += `
+                    <div class="p-3 bg-slate-950 border border-slate-800 rounded-2xl font-mono text-[11px] space-y-2">
+                        <div class="flex justify-between items-center text-slate-300">
+                            <div>
+                                <b class="text-white text-xs">${c.producto}</b>
+                                <span class="block text-[9px] text-amber-400">Proveedor: ${c.proveedor} | Fecha: ${c.fecha}</span>
+                                <span class="block text-[9px] text-slate-400">${detalleSub}</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="block text-red-400 font-bold">Costo: ${fmtMonto(c.costoCOP)} COP</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 font-sans pt-1 border-t border-slate-900 justify-end">
+                            <button onclick="window.tcl_anularCompraHistorica('${c.idCompra}')" class="bg-amber-600/10 text-amber-400 border border-amber-500/20 px-2 py-1 rounded-lg text-[8px] font-black uppercase">🚫 Anular</button>
+                            <button onclick="window.tcl_borrarDefinitivoCompraHistorica('${c.idCompra}')" class="bg-red-600/10 text-red-400 border border-red-500/20 px-2 py-1 rounded-lg text-[8px] font-black uppercase">🗑️ Borrar</button>
+                        </div>
+                    </div>`;
+            });
+
+            container.innerHTML = html || `<p class="text-center text-slate-500 italic py-3 text-[10px]">Cero compras registradas en el historial.</p>`;
+            if(badgeCnt) badgeCnt.innerText = `${cntMatch} Registros`;
+        };
+
+        window.tcl_renderizerParticionTucocel = function() {
+            const boxLista = document.getElementById('tcl-lista-items-viva-box');
+            const lblCnt = document.getElementById('tcl-lbl-cnt-items');
+            const lblLiveCOP = document.getElementById('tcl-live-cop');
+            const lblLiveUSD = document.getElementById('tcl-live-usd');
+            const lblLiveBs = document.getElementById('tcl-live-bs');
+
+            if(!boxLista) return;
+
+            let htmlItems = "";
+            let totalVentasCOP = 0;
+
+            if(lblCnt) lblCnt.innerText = `📦 ${tcl_ventasActivasTurno.length} Ventas`;
+
+            tcl_ventasActivasTurno.forEach((item, index) => {
+                let sub = item.precioCOP * item.cantidad;
+                totalVentasCOP += sub;
+                htmlItems += `
+                    <div class="p-2 bg-slate-950 border border-slate-800 rounded-xl flex justify-between items-center text-white font-bold">
+                        <div>
+                            <span class="block text-xs">${item.concepto} (x${item.cantidad})</span>
+                            <span class="text-[9px] text-blue-400 uppercase">🛍️ VENTA (${item.metodo})</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="font-mono text-xs text-emerald-400 font-black">${fmtMonto(sub)} COP</span>
+                            <button onclick="window.tcl_eliminarVentaAlVuelo(${index})" class="text-red-500 hover:text-red-600 text-xs font-black px-1.5 py-0.5 rounded border border-slate-800 bg-slate-900">X</button>
+                        </div>
+                    </div>`;
+            });
+
+            boxLista.innerHTML = htmlItems || `<p class="text-center text-slate-500 italic py-4 text-xs">Cero ventas cargadas en Tucocel C.A. hoy.</p>`;
+
+            // RENDER COMPRAS ACTIVAS MULTÍTEM EN CAJA VIVA
+            const boxComprasViva = document.getElementById('tcl-lista-compras-viva-box');
+            const lblCntComprasViva = document.getElementById('tcl-lbl-cnt-compras-viva');
+            const lblTotalComprasViva = document.getElementById('tcl-lbl-total-compras-viva');
+
+            if(boxComprasViva) {
+                let htmlCmp = "";
+                let totalCmpCOP = 0;
+                if(lblCntComprasViva) lblCntComprasViva.innerText = `${tcl_comprasActivasTurno.length} Ítems`;
+
+                tcl_comprasActivasTurno.forEach((c, idx) => {
+                    totalCmpCOP += c.costoCOP;
+                    htmlCmp += `
+                        <div class="p-2 bg-amber-950/30 border border-amber-500/20 rounded-xl flex justify-between items-center text-white font-bold">
+                            <div>
+                                <span class="block text-[10px]">${c.producto} (${c.proveedor})</span>
+                                <span class="text-[8px] text-amber-400 uppercase">${c.cat}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono text-xs text-amber-400 font-black">${fmtMonto(c.costoCOP)} COP</span>
+                                <button onclick="window.tcl_eliminarCompraActivaAlVuelo(${idx})" class="text-red-500 text-xs font-black">X</button>
+                            </div>
+                        </div>`;
+                });
+                boxComprasViva.innerHTML = htmlCmp || `<p class="text-center text-slate-500 italic py-3 text-[10px]">Cero ítems agregados a la compra activa.</p>`;
+                if(lblTotalComprasViva) lblTotalComprasViva.innerText = `${fmtMonto(totalCmpCOP)} COP`;
+            }
+
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
+            const tBs = window.svc_cleanNumber(document.getElementById('cfg-tasa-bs').value) || 4;
+
+            let totalUSD = totalVentasCOP / tCOP;
+            let totalBs = totalVentasCOP / tBs;
+
+            if(lblLiveCOP) lblLiveCOP.innerText = `${fmtMonto(totalVentasCOP)} COP`;
+            if(lblLiveUSD) lblLiveUSD.innerText = `$${window.svc_formatDecimalUSD(totalUSD)}`;
+            if(lblLiveBs) lblLiveBs.innerText = `${fmtMonto(totalBs)} Bs`;
+
+            // ARQUEO DE CAJA
+            const usdGaveta = parseFloat(document.getElementById('tcl-arq-usd').value) || 0;
+            const copGaveta = window.svc_cleanNumber(document.getElementById('tcl-arq-cop').value);
+            const totalFisicoGaveta = (usdGaveta * tCOP) + copGaveta;
+            const diferenciaCOP = totalFisicoGaveta - totalVentasCOP;
+
+            const lblEsperado = document.getElementById('tcl-lbl-esperado-cop');
+            const lblDiferencia = document.getElementById('tcl-lbl-diferencia-cop');
+            const boxStatus = document.getElementById('tcl-box-diferencia-status');
+
+            if(lblEsperado) lblEsperado.innerText = `${fmtMonto(totalVentasCOP)} COP`;
+
+            if(lblDiferencia && boxStatus) {
+                if(diferenciaCOP === 0) {
+                    boxStatus.className = "bg-emerald-950/60 p-2 rounded-xl border border-emerald-500/40 text-center";
+                    lblDiferencia.className = "text-emerald-400 text-xs font-black";
+                    lblDiferencia.innerText = `🟢 CUADRADO (0 COP)`;
+                } else if(diferenciaCOP > 0) {
+                    boxStatus.className = "bg-blue-950/60 p-2 rounded-xl border border-blue-500/40 text-center";
+                    lblDiferencia.className = "text-blue-400 text-xs font-black";
+                    lblDiferencia.innerText = `🔵 SOBRANTE: +${fmtMonto(diferenciaCOP)} COP`;
+                } else {
+                    boxStatus.className = "bg-red-950/60 p-2 rounded-xl border border-red-500/40 text-center";
+                    lblDiferencia.className = "text-red-400 text-xs font-black";
+                    lblDiferencia.innerText = `🔴 FALTANTE: ${fmtMonto(diferenciaCOP)} COP`;
+                }
+            }
+
+            window.tcl_renderizerListaComprasHistorico();
+            window.tcl_renderizerHistoricoTucocel();
+        };
+
+        window.tcl_procesarCierreTucocelModo = async function(modo) {
+            if(tcl_ventasActivasTurno.length === 0) {
+                return alert("No hay ventas cargadas en Tucocel hoy.");
+            }
+
+            let totalVentasCOP = 0;
+            tcl_ventasActivasTurno.forEach(v => { totalVentasCOP += (v.precioCOP * v.cantidad); });
+
+            const usdGaveta = parseFloat(document.getElementById('tcl-arq-usd').value) || 0;
+            const copGaveta = window.svc_cleanNumber(document.getElementById('tcl-arq-cop').value);
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
+
+            const totalFisicoGaveta = (usdGaveta * tCOP) + copGaveta;
+            const diferenciaCOP = totalFisicoGaveta - totalVentasCOP;
+
+            const folioKey = `TCL-${new Date().toLocaleDateString().split('/').join('-')}-${Date.now().toString().slice(-4)}`;
+
+            const registroCierre = {
+                idFolio: folioKey,
+                fecha: new Date().toLocaleDateString(),
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                ventas: [...tcl_ventasActivasTurno],
+                totalVentasCOP,
+                usdGaveta,
+                copGaveta,
+                totalFisicoGaveta,
+                diferenciaCOP,
+                status: "ACTIVO"
+            };
+
+            tcl_historicoCierres.unshift(registroCierre);
+
+            tcl_ventasActivasTurno = [];
+            document.getElementById('tcl-arq-usd').value = "0";
+            document.getElementById('tcl-arq-cop').value = "";
+
+            await window.tcl_sincronizarTucocelFirebase();
+            document.getElementById('wrapper-tucocel-historico-acordeon').classList.remove('hidden');
+            window.tcl_renderizerParticionTucocel();
+
+            if(modo === 'GUARDAR') {
+                alert(`✅ Cierre de Venta Tucocel #${folioKey.slice(-6)} guardado en Bóveda Personal.`);
+            } else if(modo === 'TICKET') {
+                window.tcl_imprimirTicketTucocel(folioKey);
+            }
+        };
+
+        window.tcl_renderizerHistoricoTucocel = function() {
+            const container = document.getElementById('wrapper-lista-cierres-tucocel-guardados');
+            const badgeTotal = document.getElementById('badge-total-cierres-tucocel');
+            if(!container) return;
+
+            let html = "";
+            let cntActivas = 0;
+
+            tcl_historicoCierres.forEach((match, idx) => {
+                if(match.status === "ANULADA") return;
+                cntActivas++;
+
+                let diagStr = "🟢 CUADRADO";
+                if(match.diferenciaCOP > 0) diagStr = `🔵 SOBRANTE (+${fmtMonto(match.diferenciaCOP)} COP)`;
+                if(match.diferenciaCOP < 0) diagStr = `🔴 FALTANTE (${fmtMonto(match.diferenciaCOP)} COP)`;
+
+                html += `
+                    <div class="p-3 bg-slate-950 border border-slate-800 rounded-2xl font-mono text-[11px] space-y-2">
+                        <div onclick="document.getElementById('acc-tcl-${idx}').classList.toggle('hidden')" class="flex justify-between items-center cursor-pointer">
+                            <div>
+                                <b class="text-blue-400 text-xs">Folio #${match.idFolio.slice(-6)}</b> — <span class="text-white">${match.fecha} (${match.hora})</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-emerald-400 font-bold">${fmtMonto(match.totalVentasCOP)} COP</span>
+                                <i class="fa-solid fa-chevron-down text-slate-500"></i>
+                            </div>
+                        </div>
+                        <div id="acc-tcl-${idx}" class="hidden mt-2 pt-2 border-t border-slate-800 space-y-2">
+                            <div class="grid grid-cols-2 gap-2 text-[10px] bg-slate-900 p-2 rounded-xl">
+                                <div>Ventas Totales: <b class="text-white">${fmtMonto(match.totalVentasCOP)} COP</b></div>
+                                <div>Efectivo Contado: <b class="text-blue-400">${fmtMonto(match.totalFisicoGaveta)} COP</b></div>
+                                <div class="col-span-2">Arqueo Caja: <b class="text-emerald-400">${diagStr}</b></div>
+                            </div>
+                            <div class="flex gap-2 font-sans pt-1">
+                                <button onclick="window.tcl_imprimirTicketTucocel('${match.idFolio}')" class="w-full bg-slate-900 border border-slate-800 text-white p-2 rounded-xl text-[9px] font-bold uppercase">🖨️ Ticket</button>
+                                <button onclick="window.tcl_anularCierreTucocel('${match.idFolio}')" class="w-full bg-amber-600/10 text-amber-400 border border-amber-500/20 p-2 rounded-xl text-[9px] font-black uppercase">🚫 Anular</button>
+                                <button onclick="window.tcl_borrarDefinitivoCierreTucocel('${match.idFolio}')" class="w-full bg-red-600/10 text-red-400 border border-red-500/20 p-2 rounded-xl text-[9px] font-black uppercase">🗑️ Borrar</button>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            container.innerHTML = html || `<p class="text-center text-slate-500 italic py-4 text-[10px]">Cero cierres históricos en Tucocel C.A.</p>`;
+            if(badgeTotal) badgeTotal.innerText = `${cntActivas} Cierres`;
+        };
+
+        window.tcl_imprimirTicketTucocel = function(key) {
+            const match = tcl_historicoCierres.find(x => x.idFolio === key); if(!match) return;
+            let itemsTxt = "";
+            match.ventas.forEach(v => {
+                itemsTxt += `${v.concepto.padEnd(25, ' ')} ${fmtMonto(v.precioCOP * v.cantidad)} COP\n`;
+            });
+
+            document.getElementById('contenedor-impresion-termica-fijo').innerHTML = `
+══════════════════════════════════════════
+            TUCOCEL C.A. CORDERO         
+       REPORTE DIARIO DE VENTAS          
+══════════════════════════════════════════
+Folio ID       : #${match.idFolio.slice(-6)}
+Fecha / Hora   : ${match.fecha} - ${match.hora}
+------------------------------------------
+DESCRIPCIÓN                   SUBTOTAL
+------------------------------------------
+${itemsTxt}------------------------------------------
+Total Ventas   : ${fmtMonto(match.totalVentasCOP)} COP
+Gaveta Físico  : $${match.usdGaveta} USD + ${fmtMonto(match.copGaveta)} COP
+Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
+══════════════════════════════════════════
+     🔒 DOCUMENTO PRIVADO TUCOCEL C.A.
+══════════════════════════════════════════`;
+            window.print();
+        };
+
+        window.tcl_anularCierreTucocel = async function(key) {
+            const idx = tcl_historicoCierres.findIndex(x => x.idFolio === key); if(idx === -1) return;
+            if(!confirm("⚠️ ¿Desea anular este cierre de Tucocel?")) return;
+            tcl_historicoCierres[idx].status = "ANULADA";
+            await window.tcl_sincronizarTucocelFirebase();
+            window.svc_descargarServidorCentral();
+            alert("✅ Cierre marcado como anulado.");
+        };
+
+        window.tcl_borrarDefinitivoCierreTucocel = async function(key) {
+            const idx = tcl_historicoCierres.findIndex(x => x.idFolio === key); if(idx === -1) return;
+            if(!confirm("🛑 ¿Desea BORRAR DEFINITIVAMENTE este cierre de la base de datos de Tucocel?")) return;
+            tcl_historicoCierres.splice(idx, 1);
+            await window.tcl_sincronizarTucocelFirebase();
+            window.svc_descargarServidorCentral();
+            alert("✅ Cierre eliminado por completo de Firebase.");
+        };
+
+        // VISOR HOJA BLANCA EXCLUSIVO TUCOCEL C.A. CON PROYECCIÓN MENSUAL
+        window.tcl_abrirVisorHojaBlancaTucocel = function() {
+            let totalVentasAcum = 0;
+            let totalEgresosComprasAcum = 0;
+
+            tcl_historicoCierres.forEach(c => {
+                if(c.status !== "ANULADA") totalVentasAcum += (c.totalVentasCOP || 0);
+            });
+
+            tcl_comprasHistorico.forEach(c => {
+                if(c.status !== "ANULADA") totalEgresosComprasAcum += (c.costoCOP || 0);
+            });
+
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
+            const diferenciaCOP = totalVentasAcum - totalEgresosComprasAcum;
+
+            let estadoBadge = "";
+            if(diferenciaCOP > 0) {
+                estadoBadge = `<div class="p-4 rounded-2xl border-2 bg-emerald-50 border-emerald-500 text-emerald-950 font-bold text-center space-y-1"><span class="block text-[10px] uppercase">🟢 SUPERÁVIT COMERCIAL LIMPIO</span><span class="text-base font-black">${fmtMonto(diferenciaCOP)} COP ($${Math.round(diferenciaCOP/tCOP)} USD)</span></div>`;
+            } else if(diferenciaCOP === 0) {
+                estadoBadge = `<div class="p-4 rounded-2xl border-2 bg-amber-50 border-amber-500 text-amber-950 font-bold text-center space-y-1"><span class="block text-[10px] uppercase">🟡 INVERSIÓN EQUILIBRADA (PUNTO DE EQUILIBRIO)</span><span class="text-base font-black">0 COP</span></div>`;
+            } else {
+                estadoBadge = `<div class="p-4 rounded-2xl border-2 bg-blue-50 border-blue-500 text-blue-950 font-bold text-center space-y-1"><span class="block text-[10px] uppercase">🔵 CAPITAL REINVERTIDO EN MERCANCÍA</span><span class="text-base font-black">-${fmtMonto(Math.abs(diferenciaCOP))} COP (-$${Math.round(Math.abs(diferenciaCOP)/tCOP)} USD)</span></div>`;
+            }
+
+            const renderBox = document.getElementById('contenido-hoja-blanca-tucocel-render');
+            renderBox.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex justify-between border-b pb-2">
+                        <span>Período Auditable:</span>
+                        <strong>${new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase()}</strong>
+                    </div>
+                    <div class="space-y-1.5 text-xs">
+                        <div class="flex justify-between"><span>(+) Total Ventas Mostrador & Servicios:</span> <b class="text-emerald-700">${fmtMonto(totalVentasAcum)} COP</b></div>
+                        <div class="flex justify-between"><span>(-) Total Compras, Inversiones & Facturas:</span> <b class="text-red-600">-${fmtMonto(totalEgresosComprasAcum)} COP</b></div>
+                        <div class="flex justify-between font-bold border-t pt-1 text-slate-950"><span>(=) SALDO NETO COMERCIAL:</span> <b>${fmtMonto(diferenciaCOP)} COP</b></div>
+                    </div>
+                    ${estadoBadge}
+                    <div class="text-[9px] text-slate-500 italic text-center pt-2">
+                        🔒 Documento generado con firma digital auditada desde la Bóveda Privada de Tucocel C.A.
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modal-hoja-blanca-tucocel').classList.remove('hidden');
+        };
+
+        window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
+            let totalVentasAcum = 0;
+            let totalEgresosComprasAcum = 0;
+
+            tcl_historicoCierres.forEach(c => { if(c.status !== "ANULADA") totalVentasAcum += (c.totalVentasCOP || 0); });
+            tcl_comprasHistorico.forEach(c => { if(c.status !== "ANULADA") totalEgresosComprasAcum += (c.costoCOP || 0); });
+
+            const diferenciaCOP = totalVentasAcum - totalEgresosComprasAcum;
+
+            let msg = `🛍️ *INFORME CONSOLIDADO TUCOCEL C.A.*\n` +
+                      `🏢 *TIENDA & SERVICIOS CORDERO*\n` +
+                      `──────────────────────────────\n\n` +
+                      `📊 *TOTAL VENTAS:* ${fmtMonto(totalVentasAcum)} COP\n` +
+                      `📉 *COMPRAS Y FACTURAS:* -${fmtMonto(totalEgresosComprasAcum)} COP\n` +
+                      `💰 *BALANCES Y NETO:* *${fmtMonto(diferenciaCOP)} COP*\n\n` +
+                      `🔒 *DOCUMENTO PRIVADO Y AUDITADO — TUCOCEL C.A.*`;
+
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
         window.onload = function() {
@@ -1869,7 +2610,6 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
 
             if(userParam) document.getElementById('auth-user').value = userParam.toLowerCase();
 
-            // RASTREO Y DESPLIEGUE DIRECTO SI VIENE DESDE LINK DE ORDEN
             if(ordenParam) {
                 setTimeout(() => {
                     const cardTarget = document.getElementById(`card-ord-${ordenParam}`);
