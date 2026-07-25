@@ -23,7 +23,7 @@
             body { background: white !important; color: black !important; margin: 0 !important; padding: 0 !important; }
             body * { display: none !important; visibility: hidden !important; }
             #contenedor-impresion-termica-fijo, #contenedor-impresion-termica-fijo * { display: block !important; visibility: visible !important; }
-            #modal-hoja-blanca-tucocel, #modal-hoja-blanca-tucocel * { display: block !important; visibility: visible !important; }
+            .papel-hoja-blanca, .papel-hoja-blanca * { display: block !important; visibility: visible !important; }
             #contenedor-impresion-termica-fijo { 
                 position: absolute; left: 0; top: 0; width: 100% !important; height: auto !important;
                 background: white !important; color: black !important; margin: 0 !important; padding: 0.5cm !important; 
@@ -866,43 +866,45 @@
     </div>
 
     <!-- VENTANA MODAL HOJA BLANCA SERVICELL -->
-    <div id="modal-hoja-blanca" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center hidden p-4 z-50">
-        <div class="bg-white text-slate-950 rounded-3xl w-full max-w-xl p-6 sm:p-8 space-y-6 shadow-2xl font-mono text-xs">
+    <div id="modal-hoja-blanca" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center hidden p-4 z-50">
+        <div class="papel-hoja-blanca bg-white text-slate-950 rounded-3xl w-full max-w-xl p-6 sm:p-8 space-y-6 shadow-2xl font-mono text-xs overflow-y-auto max-h-[75vh]">
             <div class="border-b-2 border-slate-900 pb-4 flex justify-between items-start">
                 <div>
                     <h3 class="text-base font-black uppercase text-slate-950">SERVICELL — TUCOCEL C.A.</h3>
                     <p class="text-[10px] text-slate-600 font-bold uppercase">Auditoría & Balance de Rentabilidad Mensual</p>
                 </div>
-                <button onclick="document.getElementById('modal-hoja-blanca').classList.add('hidden')" class="text-slate-500 hover:text-slate-950 font-black text-sm">✕ Cerrar</button>
             </div>
             
             <div id="contenido-hoja-blanca-render" class="space-y-4"></div>
+        </div>
 
-            <div class="border-t-2 border-slate-900 pt-4 flex justify-end gap-2 no-imprimir">
-                <button onclick="window.print()" class="bg-slate-950 text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px]"><i class="fa-solid fa-print mr-1"></i> Imprimir</button>
-                <button onclick="document.getElementById('modal-hoja-blanca').classList.add('hidden')" class="bg-slate-200 text-slate-950 font-bold px-4 py-2.5 rounded-xl uppercase text-[10px]">Cerrar</button>
-            </div>
+        <!-- BARRITA DE ACCIÓN FLOTANTE EXTERNA -->
+        <div class="no-imprimir mt-4 bg-slate-900 border border-slate-800 p-3 rounded-2xl flex justify-center gap-2 max-w-xl w-full shadow-2xl">
+            <button onclick="window.print()" class="bg-slate-950 hover:bg-black text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px] border border-slate-800"><i class="fa-solid fa-print mr-1"></i> Imprimir</button>
+            <button onclick="window.svc_ejecutarCierreMensualServicell()" class="bg-red-600 hover:bg-red-700 text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px]"><i class="fa-solid fa-lock mr-1"></i> 🔒 Cerrar Mes & $0</button>
+            <button onclick="document.getElementById('modal-hoja-blanca').classList.add('hidden')" class="bg-slate-800 text-slate-300 font-bold px-4 py-2.5 rounded-xl uppercase text-[10px]">Cerrar</button>
         </div>
     </div>
 
     <!-- VENTANA MODAL HOJA BLANCA EXCLUSIVA TUCOCEL C.A. (PARTICIÓN 3) -->
-    <div id="modal-hoja-blanca-tucocel" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center hidden p-4 z-50">
-        <div class="bg-white text-slate-950 rounded-3xl w-full max-w-xl p-6 sm:p-8 space-y-6 shadow-2xl font-mono text-xs">
+    <div id="modal-hoja-blanca-tucocel" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center hidden p-4 z-50">
+        <div class="papel-hoja-blanca bg-white text-slate-950 rounded-3xl w-full max-w-xl p-6 sm:p-8 space-y-6 shadow-2xl font-mono text-xs overflow-y-auto max-h-[75vh]">
             <div class="border-b-2 border-slate-900 pb-4 flex justify-between items-start">
                 <div>
                     <h3 class="text-base font-black uppercase text-slate-950">TUCOCEL C.A. — CORDERO</h3>
                     <p class="text-[10px] text-slate-600 font-bold uppercase">Informe Ejecutivo de Rendimiento Comercial & Facturas</p>
                 </div>
-                <button onclick="document.getElementById('modal-hoja-blanca-tucocel').classList.add('hidden')" class="text-slate-500 hover:text-slate-950 font-black text-sm">✕ Cerrar</button>
             </div>
             
             <div id="contenido-hoja-blanca-tucocel-render" class="space-y-4"></div>
+        </div>
 
-            <div class="border-t-2 border-slate-900 pt-4 flex justify-end gap-2 no-imprimir">
-                <button onclick="window.print()" class="bg-slate-950 text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px]"><i class="fa-solid fa-print mr-1"></i> Imprimir Hoja Carta</button>
-                <button onclick="window.tcl_enviarWhatsAppHojaBlancaTucocel()" class="bg-emerald-600 text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px]"><i class="fa-brands fa-whatsapp mr-1"></i> Enviar a WhatsApp</button>
-                <button onclick="document.getElementById('modal-hoja-blanca-tucocel').classList.add('hidden')" class="bg-slate-200 text-slate-950 font-bold px-4 py-2.5 rounded-xl uppercase text-[10px]">Cerrar</button>
-            </div>
+        <!-- BARRITA DE ACCIÓN FLOTANTE EXTERNA -->
+        <div class="no-imprimir mt-4 bg-slate-900 border border-slate-800 p-3 rounded-2xl flex justify-center gap-2 max-w-xl w-full shadow-2xl">
+            <button onclick="window.print()" class="bg-slate-950 hover:bg-black text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px] border border-slate-800"><i class="fa-solid fa-print mr-1"></i> Imprimir Hoja Carta</button>
+            <button onclick="window.tcl_enviarWhatsAppHojaBlancaTucocel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px]"><i class="fa-brands fa-whatsapp mr-1"></i> Enviar WhatsApp</button>
+            <button onclick="window.tcl_ejecutarCierreMensualTucocel()" class="bg-red-600 hover:bg-red-700 text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px]"><i class="fa-solid fa-lock mr-1"></i> 🔒 Cerrar Mes & $0</button>
+            <button onclick="document.getElementById('modal-hoja-blanca-tucocel').classList.add('hidden')" class="bg-slate-800 text-slate-300 font-bold px-4 py-2.5 rounded-xl uppercase text-[10px]">Cerrar</button>
         </div>
     </div>
 
@@ -932,6 +934,7 @@
         let svc_tecnicosPerfiles = [];
         let svc_comandaActivaTurno = []; 
         let svc_historicoCierresDiarios = []; 
+        let svc_historicoMesesServicell = [];
         let svc_fotoPatronBase64 = "";
 
         // VARIABLES EXCLUSIVAS TUCOCEL C.A. (PARTICIÓN 3)
@@ -939,6 +942,7 @@
         let tcl_comprasActivasTurno = [];
         let tcl_comprasHistorico = [];
         let tcl_historicoCierres = [];
+        let tcl_historicoMesesTucocel = [];
 
         let rolDeSesionActiva = "BLOQUEADO";
         let usuarioSesionActivo = "";
@@ -1140,7 +1144,8 @@
                     document.getElementById('label-indicador-rol').className = "text-[10px] bg-blue-950/40 px-2.5 py-0.5 border border-blue-500/20 text-blue-400 font-black tracking-widest uppercase block mt-1";
                     
                     tabsContainer.innerHTML = `
-                        <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow shrink-0"><i class="fa-solid fa-cash-register"></i> Recepción</button>
+                        <button id="tab-btn-cerrar" onclick="window.svc_cambiarTab('NINGUNO')" class="bg-red-600/20 text-red-400 border border-red-500/30 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0 hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-xmark"></i> ✖️ CERRAR TODO</button>
+                        <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-cash-register"></i> Recepción</button>
                         <button id="tab-btn-comandas" onclick="window.svc_cambiarTab('comandas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-file-invoice"></i> Comandas Servicell</button>
                         <button id="tab-btn-tucocel" onclick="window.svc_cambiarTab('tucocel')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-shop text-blue-400"></i> Comandas Tucocel</button>
                         <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-users"></i> Expedientes SaaS</button>
@@ -1157,14 +1162,15 @@
                             document.getElementById('label-indicador-rol').innerText = `SESIÓN: MÁSTER AUTORIZADO (${tecMatch.nombre.toUpperCase()})`;
                             document.getElementById('label-indicador-rol').className = "text-[10px] bg-blue-950/40 px-2.5 py-0.5 border border-blue-500/20 text-blue-400 font-black tracking-widest uppercase block mt-1";
                             tabsContainer.innerHTML = `
-                                <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow shrink-0"><i class="fa-solid fa-cash-register"></i> Recepción</button>
+                                <button id="tab-btn-cerrar" onclick="window.svc_cambiarTab('NINGUNO')" class="bg-red-600/20 text-red-400 border border-red-500/30 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0 hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-xmark"></i> ✖️ CERRAR TODO</button>
+                                <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-cash-register"></i> Recepción</button>
                                 <button id="tab-btn-comandas" onclick="window.svc_cambiarTab('comandas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-file-invoice"></i> Comandas Servicell</button>
                                 <button id="tab-btn-tucocel" onclick="window.svc_cambiarTab('tucocel')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-shop text-blue-400"></i> Comandas Tucocel</button>
                                 <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-users"></i> Expedientes SaaS</button>
                                 <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-vault"></i> Finanzas & Balance</button>
                                 <button id="tab-btn-garantias" onclick="window.svc_cambiarTab('garantias')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-history"></i> Garantías Central</button>`;
                         } else {
-                            document.getElementById('label-indicador-rol').innerText = `SESIÓN: TÉCNICO DE MOSTRADOR (${tecMatch.nombre.toUpperCase()})`;
+                            document.getElementById('label-indicador-rol').innerText = `SESIÓN: TÉCNICO OPERADOR (${tecMatch.nombre.toUpperCase()})`;
                             document.getElementById('control-tasas-box').classList.add('hidden');
                             
                             tabsContainer.innerHTML = `
@@ -1242,7 +1248,12 @@
             document.getElementById('form-operador').value = usuarioSesionActivo;
 
             await window.svc_descargarServidorCentral();
-            window.svc_cambiarTab('recepcion');
+            
+            if(rolDeSesionActiva === "MASTER") {
+                window.svc_cambiarTab('NINGUNO'); // Inicia plegado y limpio
+            } else {
+                window.svc_cambiarTab('recepcion');
+            }
         };
 
         window.svc_descargarServidorCentral = async function() {
@@ -1255,6 +1266,7 @@
                     svc_cierresGlobal = docSnap.data().historico || [];
                     svc_comandaActivaTurno = docSnap.data().comandaActivaTurno || [];
                     svc_historicoCierresDiarios = docSnap.data().historicoCierresDiarios || [];
+                    svc_historicoMesesServicell = docSnap.data().historicoMesesServicell || [];
                 }
                 const docSnapTecs = await getDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"));
                 svc_tecnicosPerfiles = docSnapTecs.exists() ? docSnapTecs.data().perfiles || [] : [];
@@ -1269,6 +1281,7 @@
                     tcl_comprasActivasTurno = docSnapTcl.data().comprasActivasTurno || [];
                     tcl_comprasHistorico = docSnapTcl.data().comprasHistorico || [];
                     tcl_historicoCierres = docSnapTcl.data().historicoCierres || [];
+                    tcl_historicoMesesTucocel = docSnapTcl.data().historicoMesesTucocel || [];
                 }
 
                 window.svc_renderizerEcosistema();
@@ -1286,7 +1299,10 @@
             document.getElementById('tab-finanzas').classList.add('hidden');
             document.getElementById('tab-garantias').classList.add('hidden');
 
-            document.getElementById(`tab-${pestaña}`).classList.remove('hidden');
+            if(pestaña !== 'NINGUNO') {
+                const target = document.getElementById(`tab-${pestaña}`);
+                if(target) target.classList.remove('hidden');
+            }
 
             const tabs = ['recepcion', 'comandas', 'tucocel', 'tecnicos', 'finanzas', 'garantias'];
             tabs.forEach(t => {
@@ -1872,6 +1888,29 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             }
         };
 
+        window.svc_ejecutarCierreMensualServicell = async function() {
+            if(!confirm("🛑 ¿Desea ejecutar el CIERRE MENSUAL de Servicell?\n\nLos datos acumulados se archivarán en la Bóveda Histórica y la caja activa del taller volverá a 0 COP.")) return;
+
+            let totalGeneradoMes = 0;
+            svc_historicoCierresDiarios.forEach(c => { if(c.status !== "ANULADA") totalGeneradoMes += (c.totalServicios || 0) + (c.totalVentas || 0); });
+
+            const cierreMesObj = {
+                idMes: 'mes-svc-' + Date.now(),
+                fechaCierre: new Date().toLocaleDateString(),
+                totalGeneradoCOP: totalGeneradoMes,
+                comandas: [...svc_historicoCierresDiarios]
+            };
+
+            svc_historicoMesesServicell.unshift(cierreMesObj);
+            svc_historicoCierresDiarios = [];
+            svc_comandaActivaTurno = [];
+
+            await window.svc_sincronizarConFirebase();
+            document.getElementById('modal-hoja-blanca').classList.add('hidden');
+            window.svc_renderizerEcosistema();
+            alert("✅ Cierre de Mes ejecutado. Servicell ha reiniciado su ciclo a $0 COP.");
+        };
+
         window.svc_enviarWhatsAppNominaSemanalDividido = function() {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const sueldoBaseCOP = window.svc_cleanNumber(document.getElementById('svc-cfg-sueldo-base-cop').value) || 120000;
@@ -2111,7 +2150,14 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
 
         window.svc_sincronizarConFirebase = async function() {
             try { 
-                await setDoc(doc(db, "tcl_servicell_independent", "comandas_data"), { comandas: svc_comandasGlobal, vales: svc_valesGlobal, historico: svc_cierresGlobal, comandaActivaTurno: svc_comandaActivaTurno, historicoCierresDiarios: svc_historicoCierresDiarios }); 
+                await setDoc(doc(db, "tcl_servicell_independent", "comandas_data"), { 
+                    comandas: svc_comandasGlobal, 
+                    vales: svc_valesGlobal, 
+                    historico: svc_cierresGlobal, 
+                    comandaActivaTurno: svc_comandaActivaTurno, 
+                    historicoCierresDiarios: svc_historicoCierresDiarios,
+                    historicoMesesServicell: svc_historicoMesesServicell
+                }); 
             } catch(e) {}
         };
 
@@ -2125,7 +2171,8 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                     ventasActivasTurno: tcl_ventasActivasTurno,
                     comprasActivasTurno: tcl_comprasActivasTurno,
                     comprasHistorico: tcl_comprasHistorico,
-                    historicoCierres: tcl_historicoCierres
+                    historicoCierres: tcl_historicoCierres,
+                    historicoMesesTucocel: tcl_historicoMesesTucocel
                 });
             } catch(e) {}
         };
@@ -2532,7 +2579,7 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
             alert("✅ Cierre eliminado por completo de Firebase.");
         };
 
-        // VISOR HOJA BLANCA EXCLUSIVO TUCOCEL C.A. CON PROYECCIÓN MENSUAL
+        // VISOR HOJA BLANCA EXCLUSIVO TUCOCEL C.A. CON PROYECCIÓN MENSUAL Y CORTE DINÁMICO
         window.tcl_abrirVisorHojaBlancaTucocel = function() {
             let totalVentasAcum = 0;
             let totalEgresosComprasAcum = 0;
@@ -2597,6 +2644,38 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
                       `🔒 *DOCUMENTO PRIVADO Y AUDITADO — TUCOCEL C.A.*`;
 
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
+        window.tcl_ejecutarCierreMensualTucocel = async function() {
+            if(!confirm("🛑 ¿Desea ejecutar el CIERRE MENSUAL de Tucocel C.A.?\n\nTodas las ventas y compras del periodo se empaquetarán en la Bóveda de Auditoría y la caja activa del mes volverá a 0 COP.")) return;
+
+            let totalVentasAcum = 0;
+            let totalEgresosComprasAcum = 0;
+
+            tcl_historicoCierres.forEach(c => { if(c.status !== "ANULADA") totalVentasAcum += (c.totalVentasCOP || 0); });
+            tcl_comprasHistorico.forEach(c => { if(c.status !== "ANULADA") totalEgresosComprasAcum += (c.costoCOP || 0); });
+
+            const cierreMesObj = {
+                idMes: 'mes-tcl-' + Date.now(),
+                fechaCierre: new Date().toLocaleDateString(),
+                totalVentasCOP: totalVentasAcum,
+                totalComprasCOP: totalEgresosComprasAcum,
+                ventas: [...tcl_historicoCierres],
+                compras: [...tcl_comprasHistorico]
+            };
+
+            tcl_historicoMesesTucocel.unshift(cierreMesObj);
+
+            // Reseteo a Cero para el nuevo ciclo
+            tcl_historicoCierres = [];
+            tcl_comprasHistorico = [];
+            tcl_ventasActivasTurno = [];
+            tcl_comprasActivasTurno = [];
+
+            await window.tcl_sincronizarTucocelFirebase();
+            document.getElementById('modal-hoja-blanca-tucocel').classList.add('hidden');
+            window.tcl_renderizerParticionTucocel();
+            alert("✅ Cierre Mensual ejecutado exitosamente. La caja de Tucocel C.A. se ha reiniciado a $0 COP.");
         };
 
         window.onload = function() {
