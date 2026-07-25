@@ -527,8 +527,9 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                            <button onclick="window.svc_enviarWhatsAppNominaSemanalDividido()" class="w-full bg-emerald-700 text-white font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.01]"><i class="fa-brands fa-whatsapp text-sm"></i> Enviar Pago de Semana por WhatsApp</button>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                            <button onclick="window.svc_abrirVisorHojaBlancaSemanal()" class="w-full bg-blue-600 text-white font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.01]"><i class="fa-solid fa-file-lines text-sm"></i> 👁️ Ver Cierre de Semana</button>
+                            <button onclick="window.svc_enviarWhatsAppNominaSemanalDividido()" class="w-full bg-emerald-700 text-white font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.01]"><i class="fa-brands fa-whatsapp text-sm"></i> Enviar Pago por WhatsApp</button>
                             <button onclick="window.svc_ejecutarCierreSemanalNoBorrable()" class="w-full bg-slate-950 border border-red-500/20 text-red-400 font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.01]"><i class="fa-solid fa-lock text-xs"></i> Liquidar Semana y Resetear a $0</button>
                         </div>
                     </div>
@@ -883,13 +884,13 @@
         </div>
     </div>
 
-    <!-- VENTANA MODAL HOJA BLANCA SERVICELL -->
+    <!-- VENTANA MODAL HOJA BLANCA SERVICELL (MENSUAL O SEMANAL) -->
     <div id="modal-hoja-blanca" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center hidden p-4 z-50">
         <div class="papel-hoja-blanca bg-white text-slate-950 rounded-3xl w-full max-w-xl p-6 sm:p-8 space-y-6 shadow-2xl font-mono text-xs overflow-y-auto max-h-[75vh]">
             <div class="border-b-2 border-slate-900 pb-4 flex justify-between items-start">
                 <div>
                     <h3 class="text-base font-black uppercase text-slate-950">SERVICELL — TUCOCEL C.A.</h3>
-                    <p class="text-[10px] text-slate-600 font-bold uppercase">Auditoría & Balance de Rentabilidad Mensual</p>
+                    <p id="lbl-subtitulo-hoja-blanca-svc" class="text-[10px] text-slate-600 font-bold uppercase">Auditoría & Balance Contable</p>
                 </div>
             </div>
             
@@ -899,7 +900,7 @@
         <!-- BARRITA DE ACCIÓN FLOTANTE EXTERNA -->
         <div class="no-imprimir mt-4 bg-slate-900 border border-slate-800 p-3 rounded-2xl flex justify-center gap-2 max-w-xl w-full shadow-2xl">
             <button onclick="window.print()" class="bg-slate-950 hover:bg-black text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px] border border-slate-800"><i class="fa-solid fa-print mr-1"></i> Imprimir</button>
-            <button onclick="window.svc_ejecutarCierreMensualServicell()" class="bg-red-600 hover:bg-red-700 text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px]"><i class="fa-solid fa-lock mr-1"></i> 🔒 Cerrar Mes & $0</button>
+            <button id="btn-accion-cierre-hoja-svc" onclick="window.svc_ejecutarCierreMensualServicell()" class="bg-red-600 hover:bg-red-700 text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px]"><i class="fa-solid fa-lock mr-1"></i> 🔒 Cerrar Mes & $0</button>
             <button onclick="document.getElementById('modal-hoja-blanca').classList.add('hidden')" class="bg-slate-800 text-slate-300 font-bold px-4 py-2.5 rounded-xl uppercase text-[10px]">Cerrar</button>
         </div>
     </div>
@@ -1787,6 +1788,7 @@ Garantía     : ${c.diasGarantia || 2} Días
                       `──────────────────────────────%0A` +
                       `💵 *Caja Bruta Recaudada:* ${fmtMonto(match.totalServicios + match.totalVentas)} COP%0A` +
                       `🟢 *NETO A FAVOR DEL TÉCNICO:* *${fmtMonto(match.gananciaTecnico)} COP*%0A%0A` +
+                      `📌 *Nota:* Este reporte diario refleja únicamente la producción del día. Los adelantos de vales acumulados no se descuentan aquí, se liquidan en el Cierre Semanal de Nómina.%0A%0A` +
                       `🔒 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.* 🔒`;
 
             window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
@@ -1814,7 +1816,8 @@ ${itemsTxt}------------------------------------------
 Total Bruto    : ${fmtMonto(match.totalServicios + match.totalVentas)} COP
 Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
 ══════════════════════════════════════════
-     🔒 EXPEDIENTE CONTABLE BLINDADO
+ 📌 Vales se descuentan en cierre semanal
+ 🔒 EXPEDIENTE CONTABLE BLINDADO
 ══════════════════════════════════════════`;
             window.print();
         };
@@ -1889,6 +1892,10 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             const diferenciaCOP = totalGeneradoMes - alquilerCOP;
 
             if (modo === 'VER') {
+                document.getElementById('lbl-subtitulo-hoja-blanca-svc').innerText = "Auditoría & Balance de Rentabilidad Mensual";
+                document.getElementById('btn-accion-cierre-hoja-svc').innerText = "🔒 Cerrar Mes & $0";
+                document.getElementById('btn-accion-cierre-hoja-svc').onclick = function() { window.svc_ejecutarCierreMensualServicell(); };
+
                 const renderBox = document.getElementById('contenido-hoja-blanca-render');
                 renderBox.innerHTML = `
                     <div class="space-y-3">
@@ -1926,6 +1933,61 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             }
         };
 
+        // VISOR HOJA BLANCA PARA PRE-VISUALIZAR EL CIERRE SEMANAL DE NÓMINA
+        window.svc_abrirVisorHojaBlancaSemanal = function() {
+            const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
+            const sueldoBaseCOP = window.svc_cleanNumber(document.getElementById('svc-cfg-sueldo-base-cop').value) || 120000;
+
+            let comisionServicios = 0;
+            let ventasMostrador = 0;
+            let valesAcumulados = 0;
+
+            svc_historicoCierresDiarios.forEach(c => {
+                if(c.tecKey === tecSeleccionado && c.status !== "ANULADA") {
+                    comisionServicios += (c.gananciaTecnico || 0);
+                    ventasMostrador += (c.totalVentas || 0);
+                }
+            });
+
+            svc_valesGlobal.forEach(v => {
+                if(v.operador === tecSeleccionado) valesAcumulados += (v.monto || 0);
+            });
+
+            const subtotalAFavor = comisionServicios + ventasMostrador + sueldoBaseCOP;
+            const netoPagar = subtotalAFavor - valesAcumulados;
+
+            document.getElementById('lbl-subtitulo-hoja-blanca-svc').innerText = `Liquidación Semanal de Nómina — Operador: ${tecSeleccionado.toUpperCase()}`;
+            document.getElementById('btn-accion-cierre-hoja-svc').innerText = "📲 Enviar WhatsApp a Técnico";
+            document.getElementById('btn-accion-cierre-hoja-svc').onclick = function() { window.svc_enviarWhatsAppNominaSemanalDividido(); };
+
+            const renderBox = document.getElementById('contenido-hoja-blanca-render');
+            renderBox.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex justify-between border-b pb-2">
+                        <span>Técnico / Colaborador:</span>
+                        <strong>${tecSeleccionado.toUpperCase()}</strong>
+                    </div>
+                    <div class="space-y-1 text-xs">
+                        <div class="flex justify-between"><span>(+) Comisiones Servicio Técnico (50%):</span> <b class="text-purple-700">${fmtMonto(comisionServicios)} COP</b></div>
+                        <div class="flex justify-between"><span>(+) Ventas de Mostrador (Directo):</span> <b>${fmtMonto(ventasMostrador)} COP</b></div>
+                        <div class="flex justify-between"><span>(+) Sueldo Base Semanal Fijo:</span> <b class="text-blue-700">${fmtMonto(sueldoBaseCOP)} COP</b></div>
+                        <div class="flex justify-between font-bold border-t pt-1 text-slate-950"><span>(=) SUBTOTAL A FAVOR:</span> <b>${fmtMonto(subtotalAFavor)} COP</b></div>
+                        <div class="flex justify-between text-red-600 pt-1"><span>(-) Deducción por Vales / Adelantos:</span> <b>-${fmtMonto(valesAcumulados)} COP</b></div>
+                    </div>
+                    
+                    <div class="p-4 rounded-2xl border-2 bg-emerald-50 border-emerald-500 text-emerald-950 font-bold text-center space-y-1">
+                        <span class="block text-[10px] uppercase">💰 TOTAL NETO A ENTREGAR AL TÉCNICO</span>
+                        <span class="text-lg font-black">${fmtMonto(netoPagar)} COP</span>
+                    </div>
+
+                    <div class="bg-slate-100 p-3 rounded-xl border border-slate-300 text-[10px] text-slate-700 leading-relaxed font-sans">
+                        📌 <b>OBSERVACIÓN DE AUDITORÍA:</b> Si el operador considera necesario realizar una auditoría a las comandas de su producción realizada durante la semana para compararlas con este pago, puede solicitárselas directamente al Máster.
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal-hoja-blanca').classList.remove('hidden');
+        };
+
         window.svc_ejecutarCierreMensualServicell = async function() {
             if(!confirm("🛑 ¿Desea ejecutar el CIERRE MENSUAL de Servicell?\n\nLos datos acumulados se archivarán en la Bóveda Histórica y la caja activa del taller volverá a 0 COP.")) return;
 
@@ -1952,8 +2014,44 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
         window.svc_enviarWhatsAppNominaSemanalDividido = function() {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const sueldoBaseCOP = window.svc_cleanNumber(document.getElementById('svc-cfg-sueldo-base-cop').value) || 120000;
-            let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN SEMANAL*\n💼 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.*\n\nTécnico: ${tecSeleccionado.toUpperCase()}\nBase Fija Semanal: ${fmtMonto(sueldoBaseCOP)} COP\n🔒 *SISTEMA DE CONTROL — TUCOCEL C.A.*`;
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+
+            let comisionServicios = 0;
+            let ventasMostrador = 0;
+            let valesAcumulados = 0;
+
+            svc_historicoCierresDiarios.forEach(c => {
+                if(c.tecKey === tecSeleccionado && c.status !== "ANULADA") {
+                    comisionServicios += (c.gananciaTecnico || 0);
+                    ventasMostrador += (c.totalVentas || 0);
+                }
+            });
+
+            svc_valesGlobal.forEach(v => {
+                if(v.operador === tecSeleccionado) valesAcumulados += (v.monto || 0);
+            });
+
+            const subtotalAFavor = comisionServicios + ventasMostrador + sueldoBaseCOP;
+            const netoPagar = subtotalAFavor - valesAcumulados;
+
+            let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN SEMANAL — SERVICELL*%0A` +
+                      `🧾 *SERVICIO TÉCNICO DE TUCOCEL C.A.*%0A` +
+                      `──────────────────────────────%0A` +
+                      `👤 *TÉCNICO / OPERADOR:* ${tecSeleccionado.toUpperCase()}%0A` +
+                      `📅 *FECHA DE CORTE:* ${new Date().toLocaleDateString()}%0A` +
+                      `──────────────────────────────%0A%0A` +
+                      `🛠️ *RESUMEN DE PRODUCCIÓN SEMANAL:*%0A` +
+                      `• Comisiones por Servicio Técnico (50%): ${fmtMonto(comisionServicios)} COP%0A` +
+                      `• Ventas de Mostrador Realizadas: ${fmtMonto(ventasMostrador)} COP%0A` +
+                      `• Sueldo Base Semanal Fijo: ${fmtMonto(sueldoBaseCOP)} COP%0A` +
+                      `──────────────────────────────%0A` +
+                      `💵 *SUBTOTAL A FAVOR:* ${fmtMonto(subtotalAFavor)} COP%0A` +
+                      `🔻 *DEDUCCIÓN POR VALES PEDIDOS:* -${fmtMonto(valesAcumulados)} COP%0A` +
+                      `──────────────────────────────%0A` +
+                      `💰 *TOTAL NETO A CANCELAR ESTA SEMANA:* *${fmtMonto(netoPagar)} COP*%0A%0A` +
+                      `📌 *OBSERVACIÓN & AUDITORÍA:*%0A_Si considera necesario realizar una auditoría a las comandas de su producción realizada durante la semana para compararlas con este pago, puede solicitárselas directamente al Máster._%0A%0A` +
+                      `🔒 *DOCUMENTO AUDITADO Y FIRMADO POR TUCOCEL C.A.* 🔒`;
+
+            window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
         };
 
         window.svc_ejecutarCierreSemanalNoBorrable = async function() {
@@ -1971,7 +2069,6 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             if(m <= 0) return alert("Ingrese un monto de vale válido.");
             
             svc_valesGlobal.push({ fecha: new Date().toLocaleDateString(), monto: m, operador: tecSeleccionado });
-            svc_comandaActivaTurno.push({ idItem: 'vale-' + Date.now(), operador: tecSeleccionado, concepto: `DEDUCCIÓN: ADELANTO DE VALE`, cantidad: 1, precioCOP: 0, tipo: "VENTA", metodo: "PESOS", valeDia: m });
             
             document.getElementById('svc-vale-monto-input').value = "";
             window.svc_sincronizarConFirebase(); 
@@ -2026,7 +2123,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                         totalBrutoCaja += sub;
                         if(item.tipo === "SERVICIO") totalServiciosComisionables += sub;
 
-                        let labelMontoDisplay = item.precioCOP > 0 ? `${fmtMonto(sub)} COP` : `VALE: -${fmtMonto(item.valeDia)} COP`;
+                        let labelMontoDisplay = `${fmtMonto(sub)} COP`;
                         htmlItems += `
                             <div class="p-2 bg-slate-950 border border-slate-800 rounded-xl flex justify-between items-center text-white font-bold">
                                 <div>
