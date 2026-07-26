@@ -527,10 +527,9 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
-                            <button onclick="window.svc_abrirVisorHojaBlancaSemanal()" class="w-full bg-blue-600 text-white font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.01]"><i class="fa-solid fa-file-lines text-sm"></i> 👁️ Ver Cierre de Semana</button>
-                            <button onclick="window.svc_enviarWhatsAppNominaSemanalDividido()" class="w-full bg-emerald-700 text-white font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.01]"><i class="fa-brands fa-whatsapp text-sm"></i> Enviar Pago por WhatsApp</button>
-                            <button onclick="window.svc_ejecutarCierreSemanalNoBorrable()" class="w-full bg-slate-950 border border-red-500/20 text-red-400 font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.01]"><i class="fa-solid fa-lock text-xs"></i> Liquidar Semana y Resetear a $0</button>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                            <button onclick="window.svc_abrirVisorHojaBlancaSemanal()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3.5 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"><i class="fa-solid fa-file-lines text-sm"></i> 👁️ Ver Cierre de Semana</button>
+                            <button onclick="window.svc_ejecutarCierreSemanalNoBorrable()" class="w-full bg-slate-950 border border-red-500/30 text-red-400 hover:bg-red-950/40 font-black text-xs py-3.5 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"><i class="fa-solid fa-lock text-xs"></i> Liquidar Semana y Resetear a $0</button>
                         </div>
                     </div>
                 </div>
@@ -1287,7 +1286,7 @@
             await window.svc_descargarServidorCentral();
             
             if(rolDeSesionActiva === "MASTER") {
-                window.svc_cambiarTab('NINGUNO'); // Inicia plegado con Portada Ejecutiva y botón Cerrar Todo activo
+                window.svc_cambiarTab('NINGUNO'); // Inicia plegado con Portada Ejecutiva y botón CERRAR TODO
             } else {
                 window.svc_cambiarTab('recepcion');
             }
@@ -1327,7 +1326,7 @@
         };
 
         window.svc_cambiarTab = function(pestaña) {
-            if(rolDeSesionActiva === "TECNICO" && pestaña !== "recepcion") return;
+            if(rolDeSesionActiva === "TECNICO" && pestaña !== "recepcion" && pestaña !== "NINGUNO") return;
             
             document.getElementById('tab-bienvenida').classList.add('hidden');
             document.getElementById('tab-recepcion').classList.add('hidden');
@@ -1934,19 +1933,30 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             }
         };
 
-        // VISOR HOJA BLANCA PARA PRE-VISUALIZAR EL CIERRE SEMANAL DE NÓMINA
+        // VISOR HOJA BLANCA PARA PRE-VISUALIZAR EL CIERRE SEMANAL DE NÓMINA DETALLADO
         window.svc_abrirVisorHojaBlancaSemanal = function() {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const sueldoBaseCOP = window.svc_cleanNumber(document.getElementById('svc-cfg-sueldo-base-cop').value) || 120000;
+            const comisionPorc = parseFloat(document.getElementById('svc-cfg-comision').value) || 50;
 
+            let totalBrutoTaller = 0;
             let comisionServicios = 0;
             let ventasMostrador = 0;
             let valesAcumulados = 0;
+            let itemsSemanalesHtml = "";
 
             svc_historicoCierresDiarios.forEach(c => {
                 if(c.tecKey === tecSeleccionado && c.status !== "ANULADA") {
+                    c.items.forEach(i => {
+                        let sub = (i.precioCOP || 0) * (i.cantidad || 1);
+                        if(i.tipo === "SERVICIO") {
+                            totalBrutoTaller += sub;
+                        } else {
+                            ventasMostrador += sub;
+                        }
+                        itemsSemanalesHtml += `<li class="text-[10px] text-slate-800 flex justify-between py-0.5 border-b border-slate-200"><span>• ${i.concepto} (x${i.cantidad}) <i class="text-[9px] text-slate-500">(${c.fecha})</i></span><b>${fmtMonto(sub)} COP</b></li>`;
+                    });
                     comisionServicios += (c.gananciaTecnico || 0);
-                    ventasMostrador += (c.totalVentas || 0);
                 }
             });
 
@@ -1968,17 +1978,31 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                         <span>Técnico / Colaborador:</span>
                         <strong>${tecSeleccionado.toUpperCase()}</strong>
                     </div>
-                    <div class="space-y-1 text-xs">
-                        <div class="flex justify-between"><span>(+) Comisiones Servicio Técnico (50%):</span> <b class="text-purple-700">${fmtMonto(comisionServicios)} COP</b></div>
-                        <div class="flex justify-between"><span>(+) Ventas de Mostrador (Directo):</span> <b>${fmtMonto(ventasMostrador)} COP</b></div>
-                        <div class="flex justify-between"><span>(+) Sueldo Base Semanal Fijo:</span> <b class="text-blue-700">${fmtMonto(sueldoBaseCOP)} COP</b></div>
-                        <div class="flex justify-between font-bold border-t pt-1 text-slate-950"><span>(=) SUBTOTAL A FAVOR:</span> <b>${fmtMonto(subtotalAFavor)} COP</b></div>
-                        <div class="flex justify-between text-red-600 pt-1"><span>(-) Deducción por Vales / Adelantos:</span> <b>-${fmtMonto(valesAcumulados)} COP</b></div>
+
+                    <!-- DESGLOSE DETALLADO DE COMANDAS / TRABAJOS DE LA SEMANA -->
+                    <div class="space-y-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                        <span class="text-[10px] font-black uppercase text-slate-700 block border-b border-slate-300 pb-1"><i class="fa-solid fa-list-check mr-1"></i> Auditoría de Producción Realizada en la Semana</span>
+                        <ul class="space-y-1 max-h-40 overflow-y-auto pr-1">
+                            ${itemsSemanalesHtml || '<li class="text-[10px] italic text-slate-500 text-center py-2">Cero comandas registradas en la semana.</li>'}
+                        </ul>
+                        <div class="flex justify-between text-xs font-bold pt-1 border-t border-slate-300 text-slate-900">
+                            <span>(=) Total Facturado en Taller:</span>
+                            <b>${fmtMonto(totalBrutoTaller)} COP</b>
+                        </div>
+                    </div>
+
+                    <!-- MATEMÁTICA Y LIQUIDACIÓN -->
+                    <div class="space-y-1.5 text-xs font-mono bg-slate-900 text-white p-4 rounded-2xl">
+                        <div class="flex justify-between text-purple-300"><span>(+) Comisiones Servicio Técnico (${comisionPorc}%):</span> <b>${fmtMonto(comisionServicios)} COP</b></div>
+                        <div class="flex justify-between text-slate-300"><span>(+) Ventas de Mostrador (Directo):</span> <b>${fmtMonto(ventasMostrador)} COP</b></div>
+                        <div class="flex justify-between text-blue-300"><span>(+) Sueldo Base Semanal Fijo:</span> <b>${fmtMonto(sueldoBaseCOP)} COP</b></div>
+                        <div class="flex justify-between font-bold border-t border-slate-800 pt-1.5 text-white"><span>(=) SUBTOTAL A FAVOR:</span> <b class="text-amber-400">${fmtMonto(subtotalAFavor)} COP</b></div>
+                        <div class="flex justify-between text-red-400 pt-1"><span>(-) Deducción por Vales / Adelantos:</span> <b>-${fmtMonto(valesAcumulados)} COP</b></div>
                     </div>
                     
                     <div class="p-4 rounded-2xl border-2 bg-emerald-50 border-emerald-500 text-emerald-950 font-bold text-center space-y-1">
                         <span class="block text-[10px] uppercase">💰 TOTAL NETO A ENTREGAR AL TÉCNICO</span>
-                        <span class="text-lg font-black">${fmtMonto(netoPagar)} COP</span>
+                        <span class="text-xl font-black">${fmtMonto(netoPagar)} COP</span>
                     </div>
 
                     <div class="bg-slate-100 p-3 rounded-xl border border-slate-300 text-[10px] text-slate-700 leading-relaxed font-sans">
@@ -2015,15 +2039,26 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
         window.svc_enviarWhatsAppNominaSemanalDividido = function() {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const sueldoBaseCOP = window.svc_cleanNumber(document.getElementById('svc-cfg-sueldo-base-cop').value) || 120000;
+            const comisionPorc = parseFloat(document.getElementById('svc-cfg-comision').value) || 50;
 
+            let totalBrutoTaller = 0;
             let comisionServicios = 0;
             let ventasMostrador = 0;
             let valesAcumulados = 0;
+            let itemsTxt = "";
 
             svc_historicoCierresDiarios.forEach(c => {
                 if(c.tecKey === tecSeleccionado && c.status !== "ANULADA") {
+                    c.items.forEach(i => {
+                        let sub = (i.precioCOP || 0) * (i.cantidad || 1);
+                        if(i.tipo === "SERVICIO") {
+                            totalBrutoTaller += sub;
+                        } else {
+                            ventasMostrador += sub;
+                        }
+                        itemsTxt += `• ${i.concepto} (x${i.cantidad}) -> ${fmtMonto(sub)} COP (${c.fecha})%0A`;
+                    });
                     comisionServicios += (c.gananciaTecnico || 0);
-                    ventasMostrador += (c.totalVentas || 0);
                 }
             });
 
@@ -2040,8 +2075,11 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                       `👤 *TÉCNICO / OPERADOR:* ${tecSeleccionado.toUpperCase()}%0A` +
                       `📅 *FECHA DE CORTE:* ${new Date().toLocaleDateString()}%0A` +
                       `──────────────────────────────%0A%0A` +
-                      `🛠️ *RESUMEN DE PRODUCCIÓN SEMANAL:*%0A` +
-                      `• Comisiones por Servicio Técnico (50%): ${fmtMonto(comisionServicios)} COP%0A` +
+                      `📋 *DETALLE DE PRODUCCIÓN SEMANAL:*%0A` +
+                      `${itemsTxt || '• Cero trabajos registrados%0A'}%0A` +
+                      `──────────────────────────────%0A` +
+                      `📊 *Total Facturado Taller:* ${fmtMonto(totalBrutoTaller)} COP%0A` +
+                      `• Comisión Servicio Técnico (${comisionPorc}%): ${fmtMonto(comisionServicios)} COP%0A` +
                       `• Ventas de Mostrador Realizadas: ${fmtMonto(ventasMostrador)} COP%0A` +
                       `• Sueldo Base Semanal Fijo: ${fmtMonto(sueldoBaseCOP)} COP%0A` +
                       `──────────────────────────────%0A` +
@@ -2624,6 +2662,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             }
         };
 
+        // HISTÓRICO TUCOCEL CON PANEL DESPLEGABLE CON EL DESGLOSE DE PRODUCTOS
         window.tcl_renderizerHistoricoTucocel = function() {
             const container = document.getElementById('wrapper-lista-cierres-tucocel-guardados');
             const badgeTotal = document.getElementById('badge-total-cierres-tucocel');
@@ -2640,6 +2679,15 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                 if(match.diferenciaCOP > 0) diagStr = `🔵 SOBRANTE (+${fmtMonto(match.diferenciaCOP)} COP)`;
                 if(match.diferenciaCOP < 0) diagStr = `🔴 FALTANTE (${fmtMonto(match.diferenciaCOP)} COP)`;
 
+                let itemsHtml = "";
+                if(match.ventas && match.ventas.length > 0) {
+                    match.ventas.forEach(v => {
+                        itemsHtml += `<li class="text-[10px] text-slate-300">• ${v.concepto} (x${v.cantidad}) — <b class="text-emerald-400">${fmtMonto(v.precioCOP * v.cantidad)} COP</b> <span class="text-[8px] text-blue-400">(${v.metodo})</span></li>`;
+                    });
+                } else {
+                    itemsHtml = `<li class="text-[10px] text-slate-500 italic">• Cierre en bloque sin desglose de ítems.</li>`;
+                }
+
                 html += `
                     <div class="p-3 bg-slate-950 border border-slate-800 rounded-2xl font-mono text-[11px] space-y-2">
                         <div onclick="document.getElementById('acc-tcl-${idx}').classList.toggle('hidden')" class="flex justify-between items-center cursor-pointer">
@@ -2652,6 +2700,9 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                             </div>
                         </div>
                         <div id="acc-tcl-${idx}" class="hidden mt-2 pt-2 border-t border-slate-800 space-y-2">
+                            <ul class="space-y-1 bg-slate-900 p-2 rounded-xl border border-slate-850">
+                                ${itemsHtml}
+                            </ul>
                             <div class="grid grid-cols-2 gap-2 text-[10px] bg-slate-900 p-2 rounded-xl">
                                 <div>Ventas Totales: <b class="text-white">${fmtMonto(match.totalVentasCOP)} COP</b></div>
                                 <div>Efectivo Contado: <b class="text-blue-400">${fmtMonto(match.totalFisicoGaveta)} COP</b></div>
