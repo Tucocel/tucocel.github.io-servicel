@@ -70,11 +70,11 @@
             <div id="control-tasas-box" class="flex items-center gap-4 bg-slate-950 border border-slate-800 p-3 rounded-2xl text-xs font-bold font-mono">
                 <div class="px-2 border-r border-slate-800">
                     <span class="block text-[9px] text-white uppercase font-sans mb-1">Tasa COP ($)</span>
-                    <input type="text" id="cfg-tasa-cop" value="3.600" onkeyup="window.svc_maskInputFormatted(this); window.svc_calcularConversionesAlVuelo(); window.tcl_renderizerParticionTucocel();" class="w-20 bg-transparent text-amber-400 font-black focus:outline-none text-base">
+                    <input type="text" id="cfg-tasa-cop" value="3.600" onkeyup="window.svc_maskInputFormatted(this); window.svc_guardarTasaFijaDelDia(); window.svc_calcularConversionesAlVuelo(); window.tcl_renderizerParticionTucocel();" class="w-20 bg-transparent text-amber-400 font-black focus:outline-none text-base">
                 </div>
                 <div class="px-2">
                     <span class="block text-[9px] text-white uppercase font-sans mb-1">Tasa Bs vs COP</span>
-                    <input type="text" id="cfg-tasa-bs" value="4" onkeyup="window.svc_maskDecimalRate(this); window.svc_calcularConversionesAlVuelo(); window.tcl_renderizerParticionTucocel();" class="w-16 bg-transparent text-emerald-400 font-black focus:outline-none text-base">
+                    <input type="text" id="cfg-tasa-bs" value="4" onkeyup="window.svc_maskDecimalRate(this); window.svc_guardarTasaFijaDelDia(); window.svc_calcularConversionesAlVuelo(); window.tcl_renderizerParticionTucocel();" class="w-16 bg-transparent text-emerald-400 font-black focus:outline-none text-base">
                 </div>
             </div>
         </div>
@@ -878,16 +878,16 @@
         </div>
     </div>
 
-    <!-- MODAL OBLIGATORIO DE CONSULTA DE TASA -->
+    <!-- MODAL OBLIGATORIO DE CONSULTA / VERIFICACIÓN DE TASA -->
     <div id="modal-alerta-tasa" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md flex items-center justify-center hidden p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 space-y-5 shadow-2xl font-mono text-xs text-center">
             <div class="w-14 h-14 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-center mx-auto text-amber-400 text-2xl">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <div class="space-y-2">
-                <h3 class="text-sm font-black uppercase text-white tracking-wider">Verificación Obligatoria de Tasa</h3>
+                <h3 class="text-sm font-black uppercase text-white tracking-wider">Apertura Diaria — Verificación de Tasa</h3>
                 <p class="text-slate-300 text-xs leading-relaxed font-sans">
-                    Atención Técnico: Asegúrese de estar trabajando con las tasas oficiales actualizadas del día antes de recibir equipos.
+                    Asegúrese de confirmar las tasas oficiales del día ($/COP y Bs/COP) para congelarlas durante toda la jornada.
                 </p>
             </div>
             <div class="space-y-2 font-sans pt-2">
@@ -895,7 +895,7 @@
                     <i class="fa-brands fa-whatsapp text-base"></i> 📲 Consultar Tasa con el Máster
                 </button>
                 <button onclick="window.svc_confirmarTasaYContinuarPlanilla()" class="w-full bg-slate-950 border border-slate-800 text-slate-300 hover:text-white font-bold py-3.5 rounded-xl uppercase tracking-wider text-xs transition">
-                    🟢 Ya conozco la tasa, continuar
+                    🟢 Tasa Confirmada, Fijar Jornada
                 </button>
             </div>
         </div>
@@ -1032,10 +1032,46 @@
             return window.svc_formatPoints(v);
         }
 
+        // FIJACIÓN Y VERIFICACIÓN DE TASA DIARIA ÚNICA
+        window.svc_verificarOIngresarTasaDiaria = async function() {
+            try {
+                const hoyStr = new Date().toLocaleDateString();
+                const docTasa = await getDoc(doc(db, "tcl_servicell_independent", "configuracion_tasas"));
+                
+                if(docTasa.exists() && docTasa.data().fechaFijada === hoyStr) {
+                    const data = docTasa.data();
+                    document.getElementById('cfg-tasa-cop').value = data.tasaCOP || "3.600";
+                    document.getElementById('cfg-tasa-bs').value = data.tasaBs || "4";
+                } else {
+                    document.getElementById('modal-alerta-tasa').classList.remove('hidden');
+                }
+            } catch(e) {}
+        };
+
+        window.svc_guardarTasaFijaDelDia = async function() {
+            try {
+                const hoyStr = new Date().toLocaleDateString();
+                const tasaCOP = document.getElementById('cfg-tasa-cop').value;
+                const tasaBs = document.getElementById('cfg-tasa-bs').value;
+                await setDoc(doc(db, "tcl_servicell_independent", "configuracion_tasas"), {
+                    fechaFijada: hoyStr,
+                    tasaCOP,
+                    tasaBs,
+                    operador: usuarioSesionActivo
+                });
+            } catch(e) {}
+        };
+
+        window.svc_confirmarTasaYContinuarPlanilla = async function() {
+            await window.svc_guardarTasaFijaDelDia();
+            document.getElementById('modal-alerta-tasa').classList.add('hidden');
+            window.svc_toggleFormularioEntrada();
+        };
+
         window.svc_intentarAbrirPlanilla = function() {
             const wrap = document.getElementById('wrapper-formulario-entrada');
             if(wrap.classList.contains('hidden')) {
-                document.getElementById('modal-alerta-tasa').classList.remove('hidden');
+                window.svc_verificarOIngresarTasaDiaria();
             } else {
                 window.svc_toggleFormularioEntrada();
             }
@@ -1044,11 +1080,6 @@
         window.svc_consultarTasaMasterWhatsapp = function() {
             let msg = `🛠️ *SERVICELL — CONSULTA DE TASA DEL DÍA*\n\nHola Máster Robert, el operador *${usuarioSesionActivo.toUpperCase()}* solicita confirmar o actualizar la Tasa de Cambio oficial del día ($/COP y Bs/COP) para procesar recepciones.`;
             window.open(`https://api.whatsapp.com/send?phone=584147357549&text=${encodeURIComponent(msg)}`, '_blank');
-        };
-
-        window.svc_confirmarTasaYContinuarPlanilla = function() {
-            document.getElementById('modal-alerta-tasa').classList.add('hidden');
-            window.svc_toggleFormularioEntrada();
         };
 
         window.svc_toggleFormularioEntrada = function() {
@@ -1302,6 +1333,7 @@
             document.getElementById('form-operador').value = usuarioSesionActivo;
 
             await window.svc_descargarServidorCentral();
+            await window.svc_verificarOIngresarTasaDiaria();
             
             if(rolDeSesionActiva === "MASTER") {
                 window.svc_cambiarTab('NINGUNO');
@@ -1796,11 +1828,12 @@ Garantía     : ${c.diasGarantia || 2} Días
             alert(`🧾 DETALLE AUDITABLE DE COMANDA\n----------------------------------------\nFolio ID : #${match.idFolio}\nFecha    : ${match.fecha} - ${match.hora || ''}\nTécnico  : ${match.tecKey.toUpperCase()}\n----------------------------------------\nDESGLOSE DE ÍTEMS:\n${itemsStr}\n----------------------------------------\nTotal Recaudado : ${fmtMonto(match.totalServicios + match.totalVentas)} COP\nComisión Técnico: ${fmtMonto(match.gananciaTecnico)} COP`);
         };
 
+        // FORMATO REESTRUCTURADO PARA WHATSAPP DIARIO CON SALTO DE LÍNEA
         window.svc_reenviarWhatsAppCierrePasado = function(key) {
             const match = svc_historicoCierresDiarios.find(x => x.idFolio === key || x.fecha === key); if(!match) return;
             let itemsTxt = "";
             match.items.forEach(i => {
-                itemsTxt += `• ${i.concepto} (x${i.cantidad}) -> ${fmtMonto(i.precioCOP * i.cantidad)} COP%0A`;
+                itemsTxt += `• ${i.concepto} (x${i.cantidad})%0A  ↳ *${fmtMonto(i.precioCOP * i.cantidad)} COP*%0A`;
             });
 
             let msg = `🛍️ *DOCUMENTO CONTABLE CORPORATIVO — SERVICELL*%0A` +
@@ -1811,8 +1844,8 @@ Garantía     : ${c.diasGarantia || 2} Días
                       `──────────────────────────────%0A%0A` +
                       `🛠️ *DESGLOSE DE ACTIVIDAD:*%0A${itemsTxt}%0A` +
                       `──────────────────────────────%0A` +
-                      `💵 *Caja Bruta Recaudada:* ${fmtMonto(match.totalServicios + match.totalVentas)} COP%0A` +
-                      `🟢 *NETO A FAVOR DEL TÉCNICO:* *${fmtMonto(match.gananciaTecnico)} COP*%0A%0A` +
+                      `💵 *Caja Bruta Recaudada:*%0A*${fmtMonto(match.totalServicios + match.totalVentas)} COP*%0A%0A` +
+                      `🟢 *NETO A FAVOR DEL TÉCNICO:*%0A*${fmtMonto(match.gananciaTecnico)} COP*%0A%0A` +
                       `📌 *Nota:* Este reporte diario refleja únicamente la producción del día. Los adelantos de vales acumulados no se descuentan aquí, se liquidan en el Cierre Semanal de Nómina.%0A%0A` +
                       `🔒 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.* 🔒`;
 
@@ -2061,6 +2094,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             alert("✅ Cierre de Mes ejecutado. Servicell ha reiniciado su ciclo a $0 COP.");
         };
 
+        // ENVIAR WHATSAPP DE CIERRE SEMANAL CON ANÁLISIS AUTOMÁTICO DE METAS Y SALTO DE LÍNEA
         window.svc_enviarWhatsAppNominaSemanalDividido = function() {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const sueldoBaseCOP = window.svc_cleanNumber(document.getElementById('svc-cfg-sueldo-base-cop').value) || 120000;
@@ -2081,7 +2115,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                         } else {
                             ventasMostrador += sub;
                         }
-                        itemsTxt += `• ${i.concepto} (x${i.cantidad}) -> ${fmtMonto(sub)} COP (${c.fecha})%0A`;
+                        itemsTxt += `• ${i.concepto} (x${i.cantidad})%0A  ↳ *${fmtMonto(sub)} COP* _(${c.fecha})_%0A`;
                     });
                     comisionServicios += (c.gananciaTecnico || 0);
                 }
@@ -2094,24 +2128,43 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             const subtotalAFavor = comisionServicios + ventasMostrador + sueldoBaseCOP;
             const netoPagar = subtotalAFavor - valesAcumulados;
 
+            // LÓGICA DE ANÁLISIS COMERCIAL AUTOMÁTICO
+            let analisisTallerTxt = "";
+            const metaTallerCOP = 500000;
+            if(totalBrutoTaller >= metaTallerCOP) {
+                analisisTallerTxt = `✅ *Laboratorio Activo:* Excelente producción en taller esta semana (${fmtMonto(totalBrutoTaller)} COP). Se cumplió la meta operativa de sustentabilidad.`;
+            } else {
+                analisisTallerTxt = `🔴 *Alerta de Producción Taller:* La producción de servicio técnico cerró en ${fmtMonto(totalBrutoTaller)} COP (Meta Mínima: 500.000 COP).%0A💡 *Sugerencia:* Promocionar revisiones, mantenimientos y cambios de pantalla para incrementar la captación de equipos.`;
+            }
+
+            let analisisMostradorTxt = "";
+            if(ventasMostrador >= 30000) {
+                analisisMostradorTxt = `✅ *Mostrador Comercial:* Buen volumen de rotación en mercancía y accesorios.`;
+            } else {
+                analisisMostradorTxt = `⚠️ *Atención Comercial:* Ventas de mostrador extremadamente bajas o nulas (${fmtMonto(ventasMostrador)} COP).%0A💡 *Sugerencia:* Ofrecer forros, micas, cables y cargadores a cada cliente que ingrese a consultar o dejar un equipo.`;
+            }
+
             let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN SEMANAL — SERVICELL*%0A` +
                       `🧾 *SERVICIO TÉCNICO DE TUCOCEL C.A.*%0A` +
                       `──────────────────────────────%0A` +
                       `👤 *TÉCNICO / OPERADOR:* ${tecSeleccionado.toUpperCase()}%0A` +
                       `📅 *FECHA DE CORTE:* ${new Date().toLocaleDateString()}%0A` +
                       `──────────────────────────────%0A%0A` +
-                      `📋 *DETALLE DE PRODUCCIÓN SEMANAL:*%0A` +
+                      `📋 *DETALLE DE PRODUCCIÓN REALIZADA:*%0A` +
                       `${itemsTxt || '• Cero trabajos registrados%0A'}%0A` +
                       `──────────────────────────────%0A` +
-                      `📊 *Total Facturado Taller:* ${fmtMonto(totalBrutoTaller)} COP%0A` +
-                      `• Comisión Servicio Técnico (${comisionPorc}%): ${fmtMonto(comisionServicios)} COP%0A` +
-                      `• Ventas de Mostrador Realizadas: ${fmtMonto(ventasMostrador)} COP%0A` +
-                      `• Sueldo Base Semanal Fijo: ${fmtMonto(sueldoBaseCOP)} COP%0A` +
+                      `📊 *Total Facturado Taller:*%0A*${fmtMonto(totalBrutoTaller)} COP*%0A%0A` +
+                      `• *Comisión Servicio Técnico (${comisionPorc}%):*%0A*${fmtMonto(comisionServicios)} COP*%0A%0A` +
+                      `• *Ventas de Mostrador Realizadas:*%0A*${fmtMonto(ventasMostrador)} COP*%0A%0A` +
+                      `• *Sueldo Base Semanal Fijo:*%0A*${fmtMonto(sueldoBaseCOP)} COP*%0A` +
                       `──────────────────────────────%0A` +
-                      `💵 *SUBTOTAL A FAVOR:* ${fmtMonto(subtotalAFavor)} COP%0A` +
-                      `🔻 *DEDUCCIÓN POR VALES PEDIDOS:* -${fmtMonto(valesAcumulados)} COP%0A` +
+                      `💵 *SUBTOTAL A FAVOR:*%0A*${fmtMonto(subtotalAFavor)} COP*%0A%0A` +
+                      `🔻 *DEDUCCIÓN POR VALES / ADELANTOS:*%0A*-${fmtMonto(valesAcumulados)} COP*%0A` +
                       `──────────────────────────────%0A` +
-                      `💰 *TOTAL NETO A CANCELAR ESTA SEMANA:* *${fmtMonto(netoPagar)} COP*%0A%0A` +
+                      `💰 *TOTAL NETO A CANCELAR ESTA SEMANA:*%0A*${fmtMonto(netoPagar)} COP*%0A%0A` +
+                      `📊 *ANÁLISIS DE RENDIMIENTO INTELIGENTE:*%0A` +
+                      `${analisisTallerTxt}%0A%0A` +
+                      `${analisisMostradorTxt}%0A%0A` +
                       `📌 *OBSERVACIÓN & AUDITORÍA:*%0A_Si considera necesario realizar una auditoría a las comandas de su producción realizada durante la semana para compararlas con este pago, puede solicitárselas directamente al Máster._%0A%0A` +
                       `🔒 *DOCUMENTO AUDITADO Y FIRMADO POR TUCOCEL C.A.* 🔒`;
 
@@ -2123,14 +2176,12 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             if(!confirm(`⚠️ ¿Desea liquidar la semana para el técnico ${tecSeleccionado.toUpperCase()}?\n\nLas comandas activas pasarán a 'Comandas Liquidadas' y los acumulados del técnico volverán a 0 COP para iniciar semana nueva.`)) return;
 
-            // Marca todas las comandas existentes de este técnico como liquidadas (o todas si es master)
             svc_historicoCierresDiarios.forEach(c => {
                 if (c.tecKey === tecSeleccionado || tecSeleccionado === "MASTER") {
                     c.liquidadoSemana = true;
                 }
             });
 
-            // Resetea los vales del técnico
             if (tecSeleccionado === "MASTER") {
                 svc_valesGlobal = [];
             } else {
@@ -2755,7 +2806,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             alert(`🧾 AUDITORÍA DE CIERRE — TUCOCEL C.A.\n----------------------------------------\nFolio ID : #${match.idFolio}\nFecha    : ${match.fecha} - ${match.hora || ''}\n----------------------------------------\nDESGLOSE DE PRODUCTOS/SERVICIOS:\n${itemsStr}\n----------------------------------------\nTotal Ventas   : ${fmtMonto(match.totalVentasCOP)} COP\nGaveta Físico  : $${match.usdGaveta || 0} USD + ${fmtMonto(match.copGaveta || 0)} COP (${fmtMonto(match.totalFisicoGaveta)} COP)\nArqueo Caja    : ${diagStr}`);
         };
 
-        // HISTÓRICO TUCOCEL CON DESGLOSE FÍSICO EN DÓLARES Y PESOS
+        // HISTÓRICO TUCOCEL CON DESGLOSE FÍSICO EN DÓLARES Y PESOS Y BOTÓN "VER"
         window.tcl_renderizerHistoricoTucocel = function() {
             const container = document.getElementById('wrapper-lista-cierres-tucocel-guardados');
             const badgeTotal = document.getElementById('badge-total-cierres-tucocel');
