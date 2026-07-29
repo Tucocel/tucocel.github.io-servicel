@@ -487,35 +487,37 @@
                     </div>
                 </div>
 
-                <!-- HISTORIAL SERVICELL EN DOS SECCIONES/ACORDEONES -->
+                <!-- BLOQUE 1: HISTORIAL SERVICELL (SEMANA EN CURSO) -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
                     <button onclick="document.getElementById('wrapper-comandas-historico-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-folder-open text-purple-400 text-lg"></i>
-                            <span class="text-xs font-black text-white uppercase tracking-wider">🗂️ Historial Servicell</span>
+                            <span class="text-xs font-black text-white uppercase tracking-wider">🗂️ HISTORIAL SERVICELL (SEMANA EN CURSO)</span>
                         </div>
                         <span id="badge-total-comandas-historial" class="text-[10px] font-black bg-purple-600/20 text-purple-400 px-3 py-1 rounded-xl uppercase">0 Comandas</span>
                     </button>
 
-                    <div id="wrapper-comandas-historico-acordeon" class="hidden p-5 border-t border-slate-800/60 space-y-4">
-                        <!-- CARPETA 1: SEMANA EN CURSO -->
-                        <div class="bg-slate-950 border border-purple-500/30 rounded-2xl p-3 space-y-2">
-                            <span class="text-[11px] font-black text-purple-400 uppercase block border-b border-slate-800 pb-1.5"><i class="fa-solid fa-folder-minus mr-1"></i> 📁 Comandas de la Semana en Curso</span>
-                            <div id="wrapper-lista-comandas-semana-activa" class="space-y-2 max-h-72 overflow-y-auto no-scrollbar pr-1"></div>
-                        </div>
-
-                        <!-- CARPETA 2: COMANDAS LIQUIDADAS (SEMANAS ANTERIORES) -->
-                        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 space-y-2">
-                            <button onclick="document.getElementById('wrapper-lista-comandas-liquidadas-viejas').classList.toggle('hidden')" class="w-full flex justify-between items-center text-[11px] font-black text-slate-400 uppercase border-b border-slate-800 pb-1.5">
-                                <span><i class="fa-solid fa-box-archive mr-1"></i> 📦 Comandas Liquidadas / Semanas Anteriores</span>
-                                <i class="fa-solid fa-chevron-down text-slate-500"></i>
-                            </button>
-                            <div id="wrapper-lista-comandas-liquidadas-viejas" class="hidden space-y-2 max-h-72 overflow-y-auto no-scrollbar pr-1 pt-1"></div>
-                        </div>
+                    <div id="wrapper-comandas-historico-acordeon" class="hidden p-5 border-t border-slate-800/60 space-y-3">
+                        <div id="wrapper-lista-comandas-semana-activa" class="space-y-2 max-h-80 overflow-y-auto no-scrollbar pr-1"></div>
                     </div>
                 </div>
 
-                <!-- NÓMINA SEMANAL -->
+                <!-- BLOQUE 2: COMANDAS LIQUIDADAS (SEMANAS ANTERIORES) COMO BLOQUE INDEPENDIENTE EN EL MEDIO -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
+                    <button onclick="document.getElementById('wrapper-comandas-viejas-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-box-archive text-amber-400 text-lg"></i>
+                            <span class="text-xs font-black text-amber-300 uppercase tracking-wider">📦 COMANDAS LIQUIDADAS (SEMANAS ANTERIORES)</span>
+                        </div>
+                        <span id="badge-total-comandas-viejas" class="text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-xl uppercase">0 Liquidadas</span>
+                    </button>
+
+                    <div id="wrapper-comandas-viejas-acordeon" class="hidden p-5 border-t border-slate-800/60 space-y-3">
+                        <div id="wrapper-lista-comandas-liquidadas-viejas" class="space-y-2 max-h-80 overflow-y-auto no-scrollbar pr-1"></div>
+                    </div>
+                </div>
+
+                <!-- BLOQUE 3: NÓMINA SEMANAL -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
                     <button onclick="document.getElementById('wrapper-nomina-box').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
                         <div class="flex items-center gap-2">
@@ -1723,20 +1725,21 @@ Garantía     : ${c.diasGarantia || 2} Días
             }
         };
 
-        // HISTORIAL SERVICELL ORGANIZADO CON DESGLOSE DE MONEDAS
+        // HISTORIAL SERVICELL EN DOS BLOQUES INDEPENDIENTES (SEMANA EN CURSO VS SEMANAS ANTERIORES)
         window.svc_renderizerHistoricoComandasDirecto = function() {
             const containerActivas = document.getElementById('wrapper-lista-comandas-semana-activa'); 
             const containerViejas = document.getElementById('wrapper-lista-comandas-liquidadas-viejas'); 
-            const badgeTotal = document.getElementById('badge-total-comandas-historial');
+            const badgeTotalActivas = document.getElementById('badge-total-comandas-historial');
+            const badgeTotalViejas = document.getElementById('badge-total-comandas-viejas');
             if(!containerActivas || !containerViejas) return;
 
             let htmlActivas = "";
             let htmlViejas = "";
-            let cntTotal = 0;
+            let cntActivas = 0;
+            let cntViejas = 0;
 
             svc_historicoCierresDiarios.forEach((match, indexIndex) => {
                 if(match.status === "ANULADA") return;
-                cntTotal++;
 
                 let itemsHtml = "";
                 match.items.forEach(i => {
@@ -1773,15 +1776,18 @@ Garantía     : ${c.diasGarantia || 2} Días
                     </div>`;
 
                 if(match.liquidadoSemana === true) {
+                    cntViejas++;
                     htmlViejas += cardHtml;
                 } else {
+                    cntActivas++;
                     htmlActivas += cardHtml;
                 }
             });
 
             containerActivas.innerHTML = htmlActivas || `<p class="text-center text-slate-500 italic py-3 text-[10px]">Cero comandas activas en la semana en curso.</p>`;
             containerViejas.innerHTML = htmlViejas || `<p class="text-center text-slate-500 italic py-3 text-[10px]">Cero comandas archivadas en semanas pasadas.</p>`;
-            if(badgeTotal) badgeTotal.innerText = `${cntTotal} Comandas`;
+            if(badgeTotalActivas) badgeTotalActivas.innerText = `${cntActivas} Comandas`;
+            if(badgeTotalViejas) badgeTotalViejas.innerText = `${cntViejas} Liquidadas`;
         };
 
         window.svc_verDetalleComandaModal = function(idx) {
