@@ -479,7 +479,7 @@
                                 <button onclick="window.svc_procesarComandaModo('WHATSAPP')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black py-3 rounded-xl uppercase shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.02]"><i class="fa-brands fa-whatsapp text-sm"></i> Cierre Día</button>
                                 <button onclick="window.svc_procesarComandaModo('TICKET')" class="bg-slate-950 border border-slate-800 text-white text-[10px] font-black py-3 rounded-xl uppercase shadow flex items-center justify-center gap-1.5 transition-all hover:scale-[1.02]"><i class="fa-solid fa-print text-sm"></i> Ticket Diario</button>
                             </div>
-                            <!-- BOTÓN DE LIQUIDAR SEMANA REUBICADO AQUÍ -->
+                            <!-- BOTÓN DE LIQUIDAR SEMANA REUBICADO -->
                             <button onclick="window.svc_ejecutarCierreSemanalNoBorrable()" class="w-full bg-slate-950 border border-red-500/30 text-red-400 hover:bg-red-950/40 font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-2 transition-all hover:scale-[1.01]">
                                 <i class="fa-solid fa-lock text-xs"></i> Liquidar Semana y Resetear a $0
                             </button>
@@ -1725,7 +1725,7 @@ Garantía     : ${c.diasGarantia || 2} Días
             }
         };
 
-        // HISTORIAL SERVICELL EN DOS BLOQUES INDEPENDIENTES (SEMANA EN CURSO VS SEMANAS ANTERIORES)
+        // HISTORIAL SERVICELL ORGANIZADO EN DOS BLOQUES INDEPENDIENTES (SEMANA EN CURSO VS SEMANAS ANTERIORES)
         window.svc_renderizerHistoricoComandasDirecto = function() {
             const containerActivas = document.getElementById('wrapper-lista-comandas-semana-activa'); 
             const containerViejas = document.getElementById('wrapper-lista-comandas-liquidadas-viejas'); 
@@ -2118,23 +2118,30 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
         };
 
-        // LIQUIDAR SEMANA: MARCA COMANDAS COMO LIQUIDADAS, RESETEA VALES Y LIMPIA CUENTA A $0
+        // LIQUIDAR SEMANA CORREGIDO: MARCA TODAS LAS COMANDAS COMO LIQUIDADA SEMANA
         window.svc_ejecutarCierreSemanalNoBorrable = async function() {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             if(!confirm(`⚠️ ¿Desea liquidar la semana para el técnico ${tecSeleccionado.toUpperCase()}?\n\nLas comandas activas pasarán a 'Comandas Liquidadas' y los acumulados del técnico volverán a 0 COP para iniciar semana nueva.`)) return;
 
+            // Marca todas las comandas existentes de este técnico como liquidadas (o todas si es master)
             svc_historicoCierresDiarios.forEach(c => {
-                if(c.tecKey === tecSeleccionado) {
+                if (c.tecKey === tecSeleccionado || tecSeleccionado === "MASTER") {
                     c.liquidadoSemana = true;
                 }
             });
 
-            svc_valesGlobal = svc_valesGlobal.filter(v => v.operador !== tecSeleccionado); 
+            // Resetea los vales del técnico
+            if (tecSeleccionado === "MASTER") {
+                svc_valesGlobal = [];
+            } else {
+                svc_valesGlobal = svc_valesGlobal.filter(v => v.operador !== tecSeleccionado);
+            }
+
             svc_comandaActivaTurno = svc_comandaActivaTurno.filter(x => x.operador !== tecSeleccionado);
 
             await window.svc_sincronizarConFirebase(); 
             await window.svc_descargarServidorCentral();
-            alert(`✅ Semana liquidada para ${tecSeleccionado.toUpperCase()}. Las comandas de la semana pasaron a la carpeta de Liquidadas y la cuenta se reinició.`);
+            alert(`✅ Semana liquidada para ${tecSeleccionado.toUpperCase()}. Las comandas pasaron a la carpeta de Liquidadas y la cuenta se reinició a $0.`);
         };
 
         window.svc_registrarValeAdelantoColaborador = function() {
