@@ -1723,7 +1723,7 @@ Garantía     : ${c.diasGarantia || 2} Días
             }
         };
 
-        // HISTORIAL ORGANIZADO EN DOS CARPETAS (SEMANA EN CURSO VS LIQUIDADAS)
+        // HISTORIAL SERVICELL ORGANIZADO CON DESGLOSE DE MONEDAS
         window.svc_renderizerHistoricoComandasDirecto = function() {
             const containerActivas = document.getElementById('wrapper-lista-comandas-semana-activa'); 
             const containerViejas = document.getElementById('wrapper-lista-comandas-liquidadas-viejas'); 
@@ -2739,10 +2739,10 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             if(match.diferenciaCOP > 0) diagStr = `🔵 SOBRANTE (+${fmtMonto(match.diferenciaCOP)} COP)`;
             if(match.diferenciaCOP < 0) diagStr = `🔴 FALTANTE (${fmtMonto(match.diferenciaCOP)} COP)`;
 
-            alert(`🧾 AUDITORÍA DE CIERRE — TUCOCEL C.A.\n----------------------------------------\nFolio ID : #${match.idFolio}\nFecha    : ${match.fecha} - ${match.hora || ''}\n----------------------------------------\nDESGLOSE DE PRODUCTOS/SERVICIOS:\n${itemsStr}\n----------------------------------------\nTotal Ventas  : ${fmtMonto(match.totalVentasCOP)} COP\nGaveta Físico : $${match.usdGaveta || 0} USD + ${fmtMonto(match.copGaveta || 0)} COP\nArqueo Caja   : ${diagStr}`);
+            alert(`🧾 AUDITORÍA DE CIERRE — TUCOCEL C.A.\n----------------------------------------\nFolio ID : #${match.idFolio}\nFecha    : ${match.fecha} - ${match.hora || ''}\n----------------------------------------\nDESGLOSE DE PRODUCTOS/SERVICIOS:\n${itemsStr}\n----------------------------------------\nTotal Ventas   : ${fmtMonto(match.totalVentasCOP)} COP\nGaveta Físico  : $${match.usdGaveta || 0} USD + ${fmtMonto(match.copGaveta || 0)} COP (${fmtMonto(match.totalFisicoGaveta)} COP)\nArqueo Caja    : ${diagStr}`);
         };
 
-        // HISTÓRICO TUCOCEL CON BOTÓN "VER" AZUL INCLUIDO
+        // HISTÓRICO TUCOCEL CON DESGLOSE FÍSICO EN DÓLARES Y PESOS
         window.tcl_renderizerHistoricoTucocel = function() {
             const container = document.getElementById('wrapper-lista-cierres-tucocel-guardados');
             const badgeTotal = document.getElementById('badge-total-cierres-tucocel');
@@ -2783,10 +2783,12 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                             <ul class="space-y-1 bg-slate-900 p-2 rounded-xl border border-slate-850">
                                 ${itemsHtml}
                             </ul>
-                            <div class="grid grid-cols-2 gap-2 text-[10px] bg-slate-900 p-2 rounded-xl">
-                                <div>Ventas Totales: <b class="text-white">${fmtMonto(match.totalVentasCOP)} COP</b></div>
-                                <div>Efectivo Contado: <b class="text-blue-400">${fmtMonto(match.totalFisicoGaveta)} COP</b></div>
-                                <div class="col-span-2">Arqueo Caja: <b class="text-emerald-400">${diagStr}</b></div>
+                            <div class="bg-slate-900 p-2.5 rounded-xl space-y-1 text-[10px]">
+                                <div class="flex justify-between"><span>Ventas Totales Esperadas:</span> <b class="text-white">${fmtMonto(match.totalVentasCOP)} COP</b></div>
+                                <div class="flex justify-between text-blue-400 font-bold"><span>Dólares ($) en Gaveta:</span> <b>$${match.usdGaveta || 0} USD</b></div>
+                                <div class="flex justify-between text-amber-400 font-bold"><span>Pesos (COP) en Gaveta:</span> <b>${fmtMonto(match.copGaveta || 0)} COP</b></div>
+                                <div class="flex justify-between border-t border-slate-800 pt-1"><span>Efectivo Contado Total:</span> <b class="text-blue-300">${fmtMonto(match.totalFisicoGaveta)} COP</b></div>
+                                <div class="flex justify-between border-t border-slate-800 pt-1"><span>Arqueo Caja:</span> <b class="text-emerald-400">${diagStr}</b></div>
                             </div>
                             <div class="grid grid-cols-4 gap-1 font-sans pt-1">
                                 <button onclick="window.tcl_verDetalleCierreTucocelModal(${idx})" class="bg-blue-600/10 text-blue-400 border border-blue-500/20 p-2 rounded-xl text-[9px] font-bold uppercase">👁️ Ver</button>
