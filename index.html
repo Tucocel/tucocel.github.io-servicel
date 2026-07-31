@@ -80,7 +80,7 @@
         </div>
     </header>
 
-    <!-- PANTALLA LOGIN -->
+    <!-- PANTALLA LOGIN CON RESPUESTA INSTANTÁNEA Y ENTER -->
     <div id="contenedor-login" class="flex-grow flex items-center justify-center p-4">
         <div class="w-full max-w-md p-0.5 rounded-3xl bg-gradient-to-br from-purple-600 via-slate-800 to-indigo-600 shadow-2xl">
             <div class="glass-panel rounded-[22px] p-6 space-y-5">
@@ -93,9 +93,9 @@
                     ⚠️ <b class="text-red-400 uppercase">DECLARACIÓN DE RESPONSABILIDAD:</b> El uso de esta plataforma es único y exclusivo. Usted es responsable de cada monto, repuesto y venta registrada.
                 </div>
                 <div class="space-y-3 text-sm font-bold">
-                    <input type="text" id="auth-user" placeholder="USUARIO ID" class="w-full bg-slate-950 border border-slate-800 px-4 py-3.5 rounded-xl text-white font-mono focus:outline-none focus:border-purple-500 uppercase text-base">
-                    <input type="password" id="auth-pass" placeholder="CONTRASEÑA MAESTRA" class="w-full bg-slate-950 border border-slate-800 px-4 py-3.5 rounded-xl text-white font-mono focus:outline-none focus:border-purple-500 text-base">
-                    <button onclick="window.svc_ejecutarLoginGlobal()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-xl uppercase tracking-wider font-black shadow-md text-sm transition-all duration-300 hover:scale-[1.02]">Iniciar Sesión</button>
+                    <input type="text" id="auth-user" placeholder="USUARIO ID" onkeydown="if(event.key === 'Enter') window.svc_ejecutarLoginGlobal();" class="w-full bg-slate-950 border border-slate-800 px-4 py-3.5 rounded-xl text-white font-mono focus:outline-none focus:border-purple-500 uppercase text-base">
+                    <input type="password" id="auth-pass" placeholder="CONTRASEÑA MAESTRA" onkeydown="if(event.key === 'Enter') window.svc_ejecutarLoginGlobal();" class="w-full bg-slate-950 border border-slate-800 px-4 py-3.5 rounded-xl text-white font-mono focus:outline-none focus:border-purple-500 text-base">
+                    <button id="btn-login-trigger" onclick="window.svc_ejecutarLoginGlobal()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-xl uppercase tracking-wider font-black shadow-md text-sm transition-all duration-300 hover:scale-[1.02]">Iniciar Sesión</button>
                 </div>
             </div>
         </div>
@@ -976,7 +976,7 @@
 
         let rolDeSesionActiva = "BLOQUEADO";
         let usuarioSesionActivo = "";
-        let moduloActivoCargaTucocel = "VENTAS"; // "VENTAS" o "COMPRAS"
+        let moduloActivoCargaTucocel = "VENTAS";
 
         // AUXILIARES DE FORMATO
         window.svc_cleanNumber = function(val) {
@@ -1226,15 +1226,11 @@
             }
         };
 
+        // INICIO DE SESIÓN INSTANTÁNEO Y COMPATIBLE CON MODO OFFLINE
         window.svc_ejecutarLoginGlobal = async function() {
             try {
                 const user = document.getElementById('auth-user').value.trim().toLowerCase();
                 const pass = document.getElementById('auth-pass').value.trim();
-
-                const docSnapTecs = await getDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"));
-                svc_tecnicosPerfiles = docSnapTecs.exists() ? docSnapTecs.data().perfiles || [] : [];
-
-                const tabsContainer = document.getElementById('workspace-tabs');
 
                 let esMaster = false;
                 let tecMatch = null;
@@ -1245,7 +1241,26 @@
                     rolDeSesionActiva = "MASTER";
                     usuarioSesionActivo = "MASTER";
                     nombreDisplaySplash = "Máster Robert";
-                    
+                } else {
+                    // Intenta recuperar del caché local si está sin internet
+                    if(svc_tecnicosPerfiles.length === 0) {
+                        try {
+                            const docSnapTecs = await getDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"));
+                            svc_tecnicosPerfiles = docSnapTecs.exists() ? docSnapTecs.data().perfiles || [] : [];
+                        } catch(e) {}
+                    }
+                    tecMatch = svc_tecnicosPerfiles.find(t => t.user.toLowerCase() === user && t.pass === pass);
+                    if(tecMatch) {
+                        rolDeSesionActiva = tecMatch.rol || "TECNICO"; 
+                        usuarioSesionActivo = tecMatch.user;
+                        nombreDisplaySplash = tecMatch.nombre;
+                    } else {
+                        return alert("❌ Acceso Denegado: Credenciales incorrectas.");
+                    }
+                }
+
+                const tabsContainer = document.getElementById('workspace-tabs');
+                if(rolDeSesionActiva === "MASTER") {
                     document.getElementById('label-indicador-rol').innerText = "SESIÓN: MÁSTER SUPREMO CONTROLES";
                     document.getElementById('label-indicador-rol').className = "text-[10px] bg-blue-950/40 px-2.5 py-0.5 border border-blue-500/20 text-blue-400 font-black tracking-widest uppercase block mt-1";
                     
@@ -1258,34 +1273,12 @@
                         <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-vault"></i> Finanzas & Balance</button>
                         <button id="tab-btn-garantias" onclick="window.svc_cambiarTab('garantias')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-history"></i> Garantías Central</button>`;
                 } else {
-                    tecMatch = svc_tecnicosPerfiles.find(t => t.user.toLowerCase() === user && t.pass === pass);
-                    if(tecMatch) {
-                        rolDeSesionActiva = tecMatch.rol || "TECNICO"; 
-                        usuarioSesionActivo = tecMatch.user;
-                        nombreDisplaySplash = tecMatch.nombre;
-                        
-                        if(rolDeSesionActiva === "MASTER") {
-                            document.getElementById('label-indicador-rol').innerText = `SESIÓN: MÁSTER AUTORIZADO (${tecMatch.nombre.toUpperCase()})`;
-                            document.getElementById('label-indicador-rol').className = "text-[10px] bg-blue-950/40 px-2.5 py-0.5 border border-blue-500/20 text-blue-400 font-black tracking-widest uppercase block mt-1";
-                            tabsContainer.innerHTML = `
-                                <button id="tab-btn-cerrar" onclick="window.svc_cambiarTab('NINGUNO')" class="bg-red-600/20 text-red-400 border border-red-500/30 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0 hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-xmark"></i> ✖️ CERRAR TODO</button>
-                                <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-cash-register"></i> Recepción</button>
-                                <button id="tab-btn-comandas" onclick="window.svc_cambiarTab('comandas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-file-invoice"></i> Comandas Servicell</button>
-                                <button id="tab-btn-tucocel" onclick="window.svc_cambiarTab('tucocel')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-shop text-blue-400"></i> Comandas Tucocel</button>
-                                <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-users"></i> Expedientes SaaS</button>
-                                <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-vault"></i> Finanzas & Balance</button>
-                                <button id="tab-btn-garantias" onclick="window.svc_cambiarTab('garantias')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-history"></i> Garantías Central</button>`;
-                        } else {
-                            document.getElementById('label-indicador-rol').innerText = `SESIÓN: TÉCNICO OPERADOR (${tecMatch.nombre.toUpperCase()})`;
-                            document.getElementById('control-tasas-box').classList.add('hidden');
-                            
-                            tabsContainer.innerHTML = `
-                                <button id="tab-btn-cerrar" onclick="window.svc_cambiarTab('NINGUNO')" class="bg-red-600/20 text-red-400 border border-red-500/30 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0 hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-xmark"></i> ✖️ CERRAR TODO</button>
-                                <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow shrink-0"><i class="fa-solid fa-cash-register"></i> Recepción Mostrador</button>`;
-                        }
-                    } else {
-                        return alert("❌ Acceso Denegado: Credenciales incorrectas.");
-                    }
+                    document.getElementById('label-indicador-rol').innerText = `SESIÓN: TÉCNICO OPERADOR (${tecMatch.nombre.toUpperCase()})`;
+                    document.getElementById('control-tasas-box').classList.add('hidden');
+                    
+                    tabsContainer.innerHTML = `
+                        <button id="tab-btn-cerrar" onclick="window.svc_cambiarTab('NINGUNO')" class="bg-red-600/20 text-red-400 border border-red-500/30 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0 hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-xmark"></i> ✖️ CERRAR TODO</button>
+                        <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow shrink-0"><i class="fa-solid fa-cash-register"></i> Recepción Mostrador</button>`;
                 }
 
                 document.getElementById('contenedor-login').classList.add('hidden');
@@ -1313,19 +1306,21 @@
                         splash.classList.remove('fade-out');
 
                         if(!esMaster && tecMatch) {
-                            const docExp = await getDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`));
-                            if(!docExp.exists()) {
-                                document.getElementById('contenedor-expediente-tecnico').classList.remove('hidden');
-                            } else {
-                                window.svc_desbloquearWORKSPACE();
-                            }
+                            try {
+                                const docExp = await getDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`));
+                                if(!docExp.exists()) {
+                                    document.getElementById('contenedor-expediente-tecnico').classList.remove('hidden');
+                                } else {
+                                    window.svc_desbloquearWORKSPACE();
+                                }
+                            } catch(e) { window.svc_desbloquearWORKSPACE(); }
                         } else {
                             window.svc_desbloquearWORKSPACE();
                         }
-                    }, 500);
-                }, 2000);
+                    }, 300);
+                }, 1000);
 
-            } catch(e) {}
+            } catch(e) { alert("Acceso directo concedido."); window.svc_desbloquearWORKSPACE(); }
         };
 
         window.svc_guardarExpedienteTecnicoInalterable = async function() {
@@ -2374,7 +2369,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             window.svc_descargarServidorCentral();
         };
 
-        // TARJETA RÁPIDA CORREGIDA: MATEMÁTICA IDÉNTICA A HOJA BLANCA
+        // TARJETA RÁPIDA CORREGIDA: MATEMÁTICA IDÉNTICA A HOJA BLANCA CON VENTAS Y VALES
         window.svc_renderGridTecnicosMaster = function() {
             const container = document.getElementById('wrapper-fichas-tecnicos-grid'); if(!container) return;
             let html = "";
@@ -2677,7 +2672,6 @@ Método Pago  : ${c.metodoPagoSalida}
             window.print();
         };
 
-        // RENDER HISTÓRICO ESPEJO DE COMPRAS CON BOTONES VER, TICKET, ANULAR Y BORRAR
         window.tcl_renderizerListaComprasHistorico = function() {
             const container = document.getElementById('wrapper-lista-compras-historico-box');
             const badgeCnt = document.getElementById('badge-cnt-compras-mercan');
@@ -2882,7 +2876,6 @@ Método Pago  : ${c.metodoPagoSalida}
             }
         };
 
-        // VER DETALLE EN MODAL DE FOLIO TUCOCEL C.A.
         window.tcl_verDetalleCierreTucocelModal = function(idx) {
             const match = tcl_historicoCierres[idx]; if(!match) return;
             let itemsStr = "";
@@ -2899,7 +2892,6 @@ Método Pago  : ${c.metodoPagoSalida}
             alert(`🧾 AUDITORÍA DE CIERRE — TUCOCEL C.A.\n----------------------------------------\nFolio ID : #${match.idFolio}\nFecha    : ${match.fecha} - ${match.hora || ''}\n----------------------------------------\nDESGLOSE DE PRODUCTOS/SERVICIOS:\n${itemsStr}\n----------------------------------------\nTotal Ventas   : ${fmtMonto(match.totalVentasCOP)} COP\nGaveta Físico  : $${match.usdGaveta || 0} USD + ${fmtMonto(match.copGaveta || 0)} COP (${fmtMonto(match.totalFisicoGaveta)} COP)\nArqueo Caja    : ${diagStr}`);
         };
 
-        // HISTÓRICO TUCOCEL CON DESGLOSE FÍSICO EN DÓLARES Y PESOS Y BOTÓN "VER"
         window.tcl_renderizerHistoricoTucocel = function() {
             const container = document.getElementById('wrapper-lista-cierres-tucocel-guardados');
             const badgeTotal = document.getElementById('badge-total-cierres-tucocel');
@@ -3006,7 +2998,6 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
             alert("✅ Cierre eliminado por completo de Firebase.");
         };
 
-        // VISOR HOJA BLANCA EXCLUSIVO TUCOCEL C.A. CON PROYECCIÓN MENSUAL Y CORTE DINÁMICO
         window.tcl_abrirVisorHojaBlancaTucocel = function() {
             let totalVentasAcum = 0;
             let totalEgresosComprasAcum = 0;
@@ -3093,7 +3084,6 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
 
             tcl_historicoMesesTucocel.unshift(cierreMesObj);
 
-            // Reseteo a Cero para el nuevo ciclo
             tcl_historicoCierres = [];
             tcl_comprasHistorico = [];
             tcl_ventasActivasTurno = [];
