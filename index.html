@@ -516,7 +516,7 @@
                     </div>
                 </div>
 
-                <!-- BLOQUE 3: NÓMINA SEMANAL -->
+                <!-- BLOQUE 3: NÓMINA SEMANAL Y REGISTRO DE VALES DEDICADO -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
                     <button onclick="document.getElementById('wrapper-nomina-box').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
                         <div class="flex items-center gap-2">
@@ -536,11 +536,21 @@
                                 <label class="text-[8.5px] text-slate-500 uppercase block">Comisión Taller (%)</label>
                                 <input type="number" id="svc-cfg-comision" value="50" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white text-center font-black focus:outline-none" onkeyup="window.svc_renderizerEcosistema();">
                             </div>
-                            <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-1">
-                                <span class="block text-[8.5px] text-purple-400 uppercase">💸 Registro de Vales Semanales</span>
-                                <div class="flex gap-1">
-                                    <input type="text" id="svc-vale-monto-input" placeholder="Monto COP" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white font-mono focus:outline-none">
-                                    <button onclick="window.svc_registrarValeAdelantoColaborador()" class="bg-purple-600 text-white px-3 rounded-xl font-black uppercase text-[9px]">Abonar</button>
+                            
+                            <!-- REGISTRO DE VALES CON BOTÓN RÁPIDO DE DINERO PERSONAL Y CONCEPTO DEDICADO -->
+                            <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-2 col-span-1 sm:col-span-3">
+                                <span class="block text-[10px] text-purple-400 font-bold uppercase"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> Registro de Vales, Adelantos & Deducciones Justificadas</span>
+                                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
+                                    <div class="sm:col-span-3">
+                                        <input type="text" id="svc-vale-monto-input" placeholder="Monto COP" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white font-mono focus:outline-none text-xs">
+                                    </div>
+                                    <div class="sm:col-span-5">
+                                        <input type="text" id="svc-vale-motivo-input" placeholder="Motivo: Ej. Pago de pantalla, daño de pin..." class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white focus:outline-none text-xs uppercase font-bold">
+                                    </div>
+                                    <div class="sm:col-span-4 flex gap-1.5">
+                                        <button onclick="window.svc_registrarValeRapidoDineroPersonal()" type="button" class="w-full bg-purple-600/30 border border-purple-500/40 hover:bg-purple-600 text-purple-300 hover:text-white py-2.5 px-2 rounded-xl font-black uppercase text-[9px] transition">💸 Dinero Personal</button>
+                                        <button onclick="window.svc_registrarValeConMotivoPersonalizado()" type="button" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2.5 px-2 rounded-xl font-black uppercase text-[9px] shadow transition">➕ Registrar Vale</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1242,7 +1252,6 @@
                     usuarioSesionActivo = "MASTER";
                     nombreDisplaySplash = "Máster Robert";
                 } else {
-                    // Intenta recuperar del caché local si está sin internet
                     if(svc_tecnicosPerfiles.length === 0) {
                         try {
                             const docSnapTecs = await getDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"));
@@ -2011,6 +2020,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             }
         };
 
+        // VISOR HOJA BLANCA CON FÓRMULA CORREGIDA (NO SUMA VENTAS DE MOSTRADOR AL PAGO)
         window.svc_abrirVisorHojaBlancaSemanal = function() {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const sueldoBaseCOP = window.svc_cleanNumber(document.getElementById('svc-cfg-sueldo-base-cop').value) || 120000;
@@ -2020,6 +2030,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             let comisionServicios = 0;
             let ventasMostrador = 0;
             let valesAcumulados = 0;
+            let valesDetalleHtml = "";
             let itemsSemanalesHtml = "";
 
             svc_historicoCierresDiarios.forEach(c => {
@@ -2038,10 +2049,14 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             });
 
             svc_valesGlobal.forEach(v => {
-                if(v.operador === tecSeleccionado) valesAcumulados += (v.monto || 0);
+                if(v.operador === tecSeleccionado) {
+                    valesAcumulados += (v.monto || 0);
+                    valesDetalleHtml += `<li class="text-[10px] text-red-600 flex justify-between"><span>• ${v.motivo || 'Dinero Personal'} (${v.fecha})</span><b>-${fmtMonto(v.monto)} COP</b></li>`;
+                }
             });
 
-            const subtotalAFavor = comisionServicios + ventasMostrador + sueldoBaseCOP;
+            // FÓRMULA CORREGIDA: Sueldo Base + Comisión Taller (SIN SUMAR VENTAS MOSTRADOR)
+            const subtotalAFavor = comisionServicios + sueldoBaseCOP;
             const netoPagar = subtotalAFavor - valesAcumulados;
 
             document.getElementById('lbl-subtitulo-hoja-blanca-svc').innerText = `Liquidación Semanal de Nómina — Operador: ${tecSeleccionado.toUpperCase()}`;
@@ -2058,7 +2073,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
 
                     <div class="space-y-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
                         <span class="text-[10px] font-black uppercase text-slate-700 block border-b border-slate-300 pb-1"><i class="fa-solid fa-list-check mr-1"></i> Auditoría de Producción Realizada en la Semana</span>
-                        <ul class="space-y-1 max-h-40 overflow-y-auto pr-1">
+                        <ul class="space-y-1 max-h-36 overflow-y-auto pr-1">
                             ${itemsSemanalesHtml || '<li class="text-[10px] italic text-slate-500 text-center py-2">Cero comandas registradas en la semana activa.</li>'}
                         </ul>
                         <div class="flex justify-between text-xs font-bold pt-1 border-t border-slate-300 text-slate-900">
@@ -2068,20 +2083,25 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                     </div>
 
                     <div class="space-y-1.5 text-xs font-mono bg-slate-900 text-white p-4 rounded-2xl">
-                        <div class="flex justify-between text-purple-300"><span>(+) Comisiones Servicio Técnico (${comisionPorc}%):</span> <b>${fmtMonto(comisionServicios)} COP</b></div>
-                        <div class="flex justify-between text-slate-300"><span>(+) Ventas de Mostrador (Directo):</span> <b>${fmtMonto(ventasMostrador)} COP</b></div>
+                        <div class="flex justify-between text-purple-300"><span>(+) Comisión Servicio Técnico (${comisionPorc}%):</span> <b>${fmtMonto(comisionServicios)} COP</b></div>
                         <div class="flex justify-between text-blue-300"><span>(+) Sueldo Base Semanal Fijo:</span> <b>${fmtMonto(sueldoBaseCOP)} COP</b></div>
                         <div class="flex justify-between font-bold border-t border-slate-800 pt-1.5 text-white"><span>(=) SUBTOTAL A FAVOR:</span> <b class="text-amber-400">${fmtMonto(subtotalAFavor)} COP</b></div>
                         <div class="flex justify-between text-red-400 pt-1"><span>(-) Deducción por Vales / Adelantos:</span> <b>-${fmtMonto(valesAcumulados)} COP</b></div>
+                        ${valesDetalleHtml ? `<ul class="bg-slate-950 p-2 rounded-xl border border-slate-800 space-y-0.5 mt-1">${valesDetalleHtml}</ul>` : ''}
+                    </div>
+
+                    <div class="bg-slate-100 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs font-bold text-slate-700">
+                        <span>🛍️ Ventas Mostrador Realizadas (Informativo):</span>
+                        <b class="text-emerald-700">${fmtMonto(ventasMostrador)} COP</b>
                     </div>
                     
                     <div class="p-4 rounded-2xl border-2 bg-emerald-50 border-emerald-500 text-emerald-950 font-bold text-center space-y-1">
-                        <span class="block text-[10px] uppercase">💰 TOTAL NETO A ENTREGAR AL TÉCNICO</span>
+                        <span class="block text-[10px] uppercase">💰 TOTAL NETO REAL A ENTREGAR AL TÉCNICO</span>
                         <span class="text-xl font-black">${fmtMonto(netoPagar)} COP</span>
                     </div>
 
                     <div class="bg-slate-100 p-3 rounded-xl border border-slate-300 text-[10px] text-slate-700 leading-relaxed font-sans">
-                        📌 <b>OBSERVACIÓN DE AUDITORÍA:</b> Si el operador considera necesario realizar una auditoría a las comandas de su producción realizada durante la semana para compararlas con este pago, puede solicitárselas directamente al Máster.
+                        📌 <b>OBSERVACIÓN DE AUDITORÍA:</b> Las ventas de mostrador se registran como control de producción del turno pero no se suman al sueldo neto ya que no generan comisión directa.
                     </div>
                 </div>
             `;
@@ -2111,6 +2131,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             alert("✅ Cierre de Mes ejecutado. Servicell ha reiniciado su ciclo a $0 COP.");
         };
 
+        // ENVIAR WHATSAPP DE LIQUIDACIÓN SEMANAL CON MOTIVO DE VALES Y CORRECCIÓN DE FÓRMULA
         window.svc_enviarWhatsAppNominaSemanalDividido = function() {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
             const sueldoBaseCOP = window.svc_cleanNumber(document.getElementById('svc-cfg-sueldo-base-cop').value) || 120000;
@@ -2120,6 +2141,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             let comisionServicios = 0;
             let ventasMostrador = 0;
             let valesAcumulados = 0;
+            let valesTxt = "";
             let itemsTxt = "";
 
             svc_historicoCierresDiarios.forEach(c => {
@@ -2138,10 +2160,14 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             });
 
             svc_valesGlobal.forEach(v => {
-                if(v.operador === tecSeleccionado) valesAcumulados += (v.monto || 0);
+                if(v.operador === tecSeleccionado) {
+                    valesAcumulados += (v.monto || 0);
+                    valesTxt += `  • -${fmtMonto(v.monto)} COP (${v.motivo || 'Dinero Personal'}) - ${v.fecha}%0A`;
+                }
             });
 
-            const subtotalAFavor = comisionServicios + ventasMostrador + sueldoBaseCOP;
+            // FÓRMULA CORREGIDA
+            const subtotalAFavor = comisionServicios + sueldoBaseCOP;
             const netoPagar = subtotalAFavor - valesAcumulados;
 
             let analisisTallerTxt = "";
@@ -2150,13 +2176,6 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                 analisisTallerTxt = `✅ *Laboratorio Activo:* Excelente producción en taller esta semana (${fmtMonto(totalBrutoTaller)} COP). Se cumplió la meta operativa de sustentabilidad.`;
             } else {
                 analisisTallerTxt = `🔴 *Alerta de Producción Taller:* La producción de servicio técnico cerró en ${fmtMonto(totalBrutoTaller)} COP (Meta Mínima: 500.000 COP).%0A💡 *Sugerencia:* Promocionar revisiones, mantenimientos y cambios de pantalla para incrementar la captación de equipos.`;
-            }
-
-            let analisisMostradorTxt = "";
-            if(ventasMostrador >= 30000) {
-                analisisMostradorTxt = `✅ *Mostrador Comercial:* Buen volumen de rotación en mercancía y accesorios.`;
-            } else {
-                analisisMostradorTxt = `⚠️ *Atención Comercial:* Ventas de mostrador extremadamente bajas o nulas (${fmtMonto(ventasMostrador)} COP).%0A💡 *Sugerencia:* Ofrecer forros, micas, cables y cargadores a cada cliente que ingrese a consultar o dejar un equipo.`;
             }
 
             let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN SEMANAL — SERVICELL*%0A` +
@@ -2170,20 +2189,50 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                       `──────────────────────────────%0A` +
                       `📊 *Total Facturado Taller:*%0A*${fmtMonto(totalBrutoTaller)} COP*%0A%0A` +
                       `• *Comisión Servicio Técnico (${comisionPorc}%):*%0A*${fmtMonto(comisionServicios)} COP*%0A%0A` +
-                      `• *Ventas de Mostrador Realizadas:*%0A*${fmtMonto(ventasMostrador)} COP*%0A%0A` +
                       `• *Sueldo Base Semanal Fijo:*%0A*${fmtMonto(sueldoBaseCOP)} COP*%0A` +
                       `──────────────────────────────%0A` +
                       `💵 *SUBTOTAL A FAVOR:*%0A*${fmtMonto(subtotalAFavor)} COP*%0A%0A` +
                       `🔻 *DEDUCCIÓN POR VALES / ADELANTOS:*%0A*-${fmtMonto(valesAcumulados)} COP*%0A` +
+                      `${valesTxt ? `%0A📌 *DESGLOSE DE VALES:*%0A${valesTxt}` : ''}%0A` +
+                      `──────────────────────────────%0A` +
+                      `🛍️ *Ventas Mostrador Atendidas (Informativo):*%0A*${fmtMonto(ventasMostrador)} COP*%0A` +
                       `──────────────────────────────%0A` +
                       `💰 *TOTAL NETO A CANCELAR ESTA SEMANA:*%0A*${fmtMonto(netoPagar)} COP*%0A%0A` +
                       `📊 *ANÁLISIS DE RENDIMIENTO INTELIGENTE:*%0A` +
                       `${analisisTallerTxt}%0A%0A` +
-                      `${analisisMostradorTxt}%0A%0A` +
-                      `📌 *OBSERVACIÓN & AUDITORÍA:*%0A_Si considera necesario realizar una auditoría a las comandas de su producción realizada durante la semana para compararlas con este pago, puede solicitárselas directamente al Máster._%0A%0A` +
                       `🔒 *DOCUMENTO AUDITADO Y FIRMADO POR TUCOCEL C.A.* 🔒`;
 
             window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+        };
+
+        // FUNCIONES DEDICADAS PARA REGISTRO DE VALES CON MOTIVO Y CONCEPTO
+        window.svc_registrarValeRapidoDineroPersonal = function() {
+            const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
+            const m = window.svc_cleanNumber(document.getElementById('svc-vale-monto-input').value);
+            if(m <= 0) return alert("⚠️ Ingrese un monto de vale válido.");
+            
+            svc_valesGlobal.push({ fecha: new Date().toLocaleDateString(), monto: m, motivo: "DINERO PERSONAL", operador: tecSeleccionado });
+            
+            document.getElementById('svc-vale-monto-input').value = "";
+            document.getElementById('svc-vale-motivo-input').value = "";
+            window.svc_sincronizarConFirebase(); 
+            window.svc_renderizerEcosistema();
+            alert(`💸 Vale por ${fmtMonto(m)} COP (Dinero Personal) registrado para ${tecSeleccionado.toUpperCase()}.`);
+        };
+
+        window.svc_registrarValeConMotivoPersonalizado = function() {
+            const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
+            const m = window.svc_cleanNumber(document.getElementById('svc-vale-monto-input').value);
+            const motivo = document.getElementById('svc-vale-motivo-input').value.trim().toUpperCase() || "ADELANTO DE VALE";
+            if(m <= 0) return alert("⚠️ Ingrese un monto de vale válido.");
+            
+            svc_valesGlobal.push({ fecha: new Date().toLocaleDateString(), monto: m, motivo, operador: tecSeleccionado });
+            
+            document.getElementById('svc-vale-monto-input').value = "";
+            document.getElementById('svc-vale-motivo-input').value = "";
+            window.svc_sincronizarConFirebase(); 
+            window.svc_renderizerEcosistema();
+            alert(`💸 Vale de ${fmtMonto(m)} COP ("${motivo}") registrado para ${tecSeleccionado.toUpperCase()}.`);
         };
 
         window.svc_ejecutarCierreSemanalNoBorrable = async function() {
@@ -2207,19 +2256,6 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             await window.svc_sincronizarConFirebase(); 
             await window.svc_descargarServidorCentral();
             alert(`✅ Semana liquidada para ${tecSeleccionado.toUpperCase()}. Las comandas pasaron a la carpeta de Liquidadas y la cuenta se reinició a $0.`);
-        };
-
-        window.svc_registrarValeAdelantoColaborador = function() {
-            const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
-            const m = window.svc_cleanNumber(document.getElementById('svc-vale-monto-input').value);
-            if(m <= 0) return alert("Ingrese un monto de vale válido.");
-            
-            svc_valesGlobal.push({ fecha: new Date().toLocaleDateString(), monto: m, operador: tecSeleccionado });
-            
-            document.getElementById('svc-vale-monto-input').value = "";
-            window.svc_sincronizarConFirebase(); 
-            window.svc_renderizerEcosistema();
-            alert(`💸 Vale de ${fmtMonto(m)} COP abonado al técnico ${tecSeleccionado.toUpperCase()}.`);
         };
 
         window.svc_filtrarComandasBuscador = function() {
@@ -2369,7 +2405,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             window.svc_descargarServidorCentral();
         };
 
-        // TARJETA RÁPIDA CORREGIDA: MATEMÁTICA IDÉNTICA A HOJA BLANCA CON VENTAS Y VALES
+        // TARJETA RÁPIDA CORREGIDA: MATEMÁTICA IDÉNTICA A HOJA BLANCA CON VENTAS INFORMATIVAS
         window.svc_renderGridTecnicosMaster = function() {
             const container = document.getElementById('wrapper-fichas-tecnicos-grid'); if(!container) return;
             let html = "";
@@ -2394,7 +2430,9 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                 });
 
                 const sueldoBaseCOP = window.svc_cleanNumber(document.getElementById('svc-cfg-sueldo-base-cop').value) || 120000;
-                const netoPagarMomento = (genServicioTec + ventasMostradorTec + sueldoBaseCOP) - valesAcum;
+                
+                // FÓRMULA CORREGIDA (SIN SUMAR VENTAS DE MOSTRADOR)
+                const netoPagarMomento = (genServicioTec + sueldoBaseCOP) - valesAcum;
 
                 html += `
                     <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl space-y-2 flex flex-col justify-between">
@@ -2408,10 +2446,10 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                             
                             <div class="mt-2 p-2 bg-slate-950 border border-slate-850 rounded-xl space-y-1 font-mono text-[9px]">
                                 <div class="flex justify-between text-slate-400"><span>• Servicio Taller (50%):</span> <b class="text-purple-400">${fmtMonto(genServicioTec)} COP</b></div>
-                                <div class="flex justify-between text-slate-400"><span>• Ventas Mostrador:</span> <b class="text-emerald-400">${fmtMonto(ventasMostradorTec)} COP</b></div>
+                                <div class="flex justify-between text-slate-400"><span>• Ventas Mostrador (Info):</span> <b class="text-emerald-400">${fmtMonto(ventasMostradorTec)} COP</b></div>
                                 <div class="flex justify-between text-slate-400"><span>• Sueldo Base Fijo:</span> <b class="text-blue-400">${fmtMonto(sueldoBaseCOP)} COP</b></div>
                                 <div class="flex justify-between text-slate-400"><span>• Vales Pedidos:</span> <b class="text-red-400">-${fmtMonto(valesAcum)} COP</b></div>
-                                <div class="flex justify-between text-white font-bold border-t border-slate-900 pt-1"><span>💰 NETO A CANCELAR:</span> <b class="text-emerald-400">${fmtMonto(netoPagarMomento)} COP</b></div>
+                                <div class="flex justify-between text-white font-bold border-t border-slate-900 pt-1"><span>💰 NETO REAL A CANCELAR:</span> <b class="text-emerald-400">${fmtMonto(netoPagarMomento)} COP</b></div>
                             </div>
                         </div>
                         <div class="grid grid-cols-3 gap-1 pt-2 border-t border-slate-950 font-sans">
