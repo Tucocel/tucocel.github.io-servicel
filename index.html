@@ -706,7 +706,7 @@
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-3 gap-2 font-mono">
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono">
                                 <div>
                                     <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">Moneda</label>
                                     <select id="tcl-compra-moneda" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-xs focus:outline-none font-bold">
@@ -715,8 +715,12 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">Costo</label>
-                                    <input type="text" id="tcl-compra-costo" placeholder="0" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-amber-400 text-center font-black text-xs focus:outline-none">
+                                    <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">Costo Compra</label>
+                                    <input type="text" id="tcl-compra-costo" placeholder="Ej: 117" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-amber-400 text-center font-black text-xs focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="text-[8px] text-emerald-400 uppercase block font-sans mb-1">Venta Est. ($USD)</label>
+                                    <input type="text" id="tcl-compra-precio-venta" placeholder="Ej: 145" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-emerald-400 text-center font-black text-xs focus:outline-none">
                                 </div>
                                 <div>
                                     <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">Salida</label>
@@ -2860,19 +2864,29 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             const imei = cat === "TELEFONIA" ? (document.getElementById('tcl-compra-imei').value.trim() || "N/A") : "N/A";
             const moneda = document.getElementById('tcl-compra-moneda').value;
             const costoRaw = window.svc_cleanNumber(document.getElementById('tcl-compra-costo').value);
+            const ventaEstRaw = window.svc_cleanNumber(document.getElementById('tcl-compra-precio-venta') ? document.getElementById('tcl-compra-precio-venta').value : "0");
             const metodoPagoSalida = document.getElementById('tcl-compra-metodo-pago').value;
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
 
             if(costoRaw <= 0) return alert("⚠️ Ingrese un monto de costo / factura válido.");
 
+            let costoUSD = moneda === "USD" ? costoRaw : (costoRaw / tCOP);
             let costoCOP = moneda === "USD" ? (costoRaw * tCOP) : costoRaw;
+
+            let ventaUSD = ventaEstRaw > 0 ? (moneda === "USD" ? ventaEstRaw : (ventaEstRaw / tCOP)) : 0;
+            let ventaCOP = ventaEstRaw > 0 ? (moneda === "USD" ? (ventaEstRaw * tCOP) : ventaEstRaw) : 0;
+
+            let gananciaEstUSD = Math.max(0, ventaUSD - costoUSD);
+            let gananciaEstCOP = Math.round(gananciaEstUSD * tCOP);
 
             const nuevaCompra = {
                 idCompra: 'cmp-' + Date.now() + Math.random().toString().slice(-3),
                 fecha: new Date().toLocaleDateString(),
                 hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 cat, proveedor, producto, imei, monedaOrig: moneda,
-                costoOrig: costoRaw, costoCOP, metodoPagoSalida,
+                costoOrig: costoRaw, costoUSD, costoCOP,
+                ventaUSD, ventaCOP, gananciaEstUSD, gananciaEstCOP,
+                tasaAplica: tCOP, metodoPagoSalida,
                 status: "ACTIVO"
             };
 
@@ -2881,6 +2895,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             document.getElementById('tcl-compra-producto').value = "";
             document.getElementById('tcl-compra-imei').value = "";
             document.getElementById('tcl-compra-costo').value = "";
+            if(document.getElementById('tcl-compra-precio-venta')) document.getElementById('tcl-compra-precio-venta').value = "";
 
             await window.tcl_sincronizarTucocelFirebase();
             
@@ -2954,6 +2969,14 @@ Método Pago  : ${c.metodoPagoSalida}
 
                 let detalleSub = c.cat === "TELEFONIA" ? `IMEI: ${c.imei} | Garantía: 60 Días` : `Pago: ${c.metodoPagoSalida}`;
 
+                let cUSD = c.costoUSD || (c.monedaOrig === "USD" ? c.costoOrig : c.costoCOP / (c.tasaAplica || 3600));
+                let ganUSD = c.gananciaEstUSD || 0;
+                let ganCOP = c.gananciaEstCOP || 0;
+
+                let gananciaHeaderBadge = ganUSD > 0 
+                    ? `<span class="text-emerald-400 font-bold block text-right">+$${window.svc_formatDecimalUSD(ganUSD)} USD (+${fmtMonto(ganCOP)} COP)</span>` 
+                    : `<span class="text-amber-400 font-bold block text-right">$${window.svc_formatDecimalUSD(cUSD)} USD</span>`;
+
                 html += `
                     <div class="p-3 bg-slate-950 border border-slate-800 rounded-2xl font-mono text-[11px] space-y-2">
                         <div onclick="document.getElementById('acc-cmp-${idx}').classList.toggle('hidden')" class="flex justify-between items-center cursor-pointer">
@@ -2962,7 +2985,10 @@ Método Pago  : ${c.metodoPagoSalida}
                                 <span class="block text-[9px] text-slate-400">Proveedor: ${c.proveedor} | ${c.fecha}</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="text-red-400 font-bold">-${fmtMonto(c.costoCOP)} COP</span>
+                                <div class="text-right">
+                                    <span class="text-white font-bold block">Inversión: $${window.svc_formatDecimalUSD(cUSD)} USD</span>
+                                    ${ganUSD > 0 ? `<span class="text-[9px] text-emerald-400 font-extrabold block">Ganancia Est: +${fmtMonto(ganCOP)} COP</span>` : ''}
+                                </div>
                                 <i class="fa-solid fa-chevron-down text-slate-500"></i>
                             </div>
                         </div>
@@ -2970,7 +2996,9 @@ Método Pago  : ${c.metodoPagoSalida}
                             <div class="bg-slate-900 p-2.5 rounded-xl space-y-1 text-[10px] text-slate-300">
                                 <div class="flex justify-between"><span>Categoría:</span> <b>${c.cat}</b></div>
                                 <div class="flex justify-between"><span>Detalle Especial:</span> <b>${detalleSub}</b></div>
-                                <div class="flex justify-between text-amber-400 border-t border-slate-800 pt-1 font-bold"><span>Costo Registrado:</span> <b>${fmtMonto(c.costoCOP)} COP (${c.costoOrig} ${c.monedaOrig})</b></div>
+                                <div class="flex justify-between text-amber-400 border-t border-slate-800 pt-1 font-bold"><span>1. Costo Compra:</span> <b>$${window.svc_formatDecimalUSD(cUSD)} USD (${fmtMonto(c.costoCOP)} COP)</b></div>
+                                ${c.ventaUSD > 0 ? `<div class="flex justify-between text-blue-400 font-bold"><span>2. Venta Est. Cliente:</span> <b>$${window.svc_formatDecimalUSD(c.ventaUSD)} USD (${fmtMonto(c.ventaCOP)} COP)</b></div>` : ''}
+                                ${ganUSD > 0 ? `<div class="flex justify-between text-emerald-400 font-black border-t border-slate-800 pt-1"><span>3. Ganancia Limpia Proyectada:</span> <b>+$${window.svc_formatDecimalUSD(ganUSD)} USD (+${fmtMonto(ganCOP)} COP)</b></div>` : ''}
                             </div>
                             <div class="grid grid-cols-4 gap-1 font-sans pt-1">
                                 <button onclick="window.tcl_verDetalleCompraModal(${idx})" class="bg-blue-600/10 text-blue-400 border border-blue-500/20 p-2 rounded-xl text-[9px] font-bold uppercase">👁️ Ver</button>
