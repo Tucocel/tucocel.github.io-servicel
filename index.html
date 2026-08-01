@@ -2467,7 +2467,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                             </div>`;
                     });
 
-                    if(lblCntItems) lblCntItems.innerText = `📦 ${totalUnidadesItems} Ítems`;
+                    if(lblCntItems) lblCntItems.innerText = `📦 ${itemsFiltrados.length} Tipos (${totalUnidadesItems} Productos)`;
                     boxItems.innerHTML = htmlItems || `<p class="text-center text-slate-500 italic py-4">No hay ventas cargadas para este técnico hoy.</p>`;
                     
                     const comisionPorc = parseFloat(document.getElementById('svc-cfg-comision').value) || 50;
@@ -3100,7 +3100,7 @@ Método Pago  : ${c.metodoPagoSalida}
                     </div>`;
             });
 
-            if(lblCnt) lblCnt.innerText = `📦 ${totalUnidadesVentas} Ítems`;
+            if(lblCnt) lblCnt.innerText = `📦 ${tcl_ventasActivasTurno.length} Tipos (${totalUnidadesVentas} Productos)`;
             boxLista.innerHTML = htmlItems || `<p class="text-center text-slate-500 italic py-4 text-xs">Cero ventas cargadas en Tucocel C.A. hoy.</p>`;
 
             // RENDER COMPRAS ACTIVAS EN PANEL DERECHO EXCLUSIVO
