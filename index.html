@@ -1432,7 +1432,10 @@
             document.getElementById('form-operador-display').value = usuarioSesionActivo.toUpperCase();
             document.getElementById('form-operador').value = usuarioSesionActivo;
 
+            // 1. Descarga e Inyección Inmediata de Datos
             await window.svc_descargarServidorCentral();
+
+            // 2. Verificación de Tasa Oficial con datos ya renderizados
             await window.svc_verificarOIngresarTasaDiaria();
             
             if(rolDeSesionActiva === "MASTER") {
@@ -1470,8 +1473,12 @@
                     tcl_historicoMesesTucocel = docSnapTcl.data().historicoMesesTucocel || [];
                 }
 
+                // RENDERIZADO INMEDIATO COMPLETO DE BÓVEDAS
                 window.svc_renderizerEcosistema();
                 window.tcl_renderizerParticionTucocel();
+                window.tcl_renderizerListaComprasHistorico();
+                window.tcl_renderizerHistoricoTucocel();
+                window.tcl_renderizerMesesLiquidadosHistorico();
             } catch(e) {}
         };
 
@@ -1545,7 +1552,7 @@
 
                 const nuevaComanda = {
                     id: 'ord-' + Date.now(),
-                    nroOrden: String(svc_comandasGlobal.length + 1).padStart(3, '0'), 
+                    nroOrden: String(svc_comandasGlobal.filter(x => x.estatus !== 'ANULADA').length + 1).padStart(3, '0'), 
                     fecha: new Date().toLocaleDateString(),
                     hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     soporte, cliente, cedula, tlf, tipoLinea, modelo, falla, claveManual, fotoPatron: svc_fotoPatronBase64 || "",
@@ -1826,7 +1833,7 @@ Garantía     : ${c.diasGarantia || 2} Días
             const comisionPorc = parseFloat(document.getElementById('svc-cfg-comision').value) || 50;
             let gananciaTecnico = totalServicios * (comisionPorc / 100);
             const fechaStr = new Date().toLocaleDateString().split('/').join('-');
-            const folioKey = `${fechaStr}-${tecSeleccionado}-${Date.now().toString().slice(-4)}`;
+            const folioKey = `FOLIO-${String(svc_historicoCierresDiarios.length + 1).padStart(3, '0')}`;
 
             const registroComandaObj = {
                 idFolio: folioKey,
@@ -2880,7 +2887,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             let gananciaEstCOP = Math.round(gananciaEstUSD * tCOP);
 
             const nuevaCompra = {
-                idCompra: 'cmp-' + Date.now() + Math.random().toString().slice(-3),
+                idCompra: `COMPRA-${String(tcl_comprasHistorico.length + 1).padStart(3, '0')}`,
                 fecha: new Date().toLocaleDateString(),
                 hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 cat, proveedor, producto, imei, monedaOrig: moneda,
@@ -3222,7 +3229,7 @@ Método Pago  : ${c.metodoPagoSalida}
             const totalFisicoGaveta = (usdGaveta * tCOP) + copGaveta;
             const diferenciaCOP = totalFisicoGaveta - totalVentasCOP;
 
-            const folioKey = `TCL-${new Date().toLocaleDateString().split('/').join('-')}-${Date.now().toString().slice(-4)}`;
+            const folioKey = `CIERRE-${String(tcl_historicoCierres.length + 1).padStart(3, '0')}`;
 
             const registroCierre = {
                 idFolio: folioKey,
