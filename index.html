@@ -1382,26 +1382,28 @@
 
                 splash.classList.remove('hidden');
 
-                setTimeout(async () => {
-                    splash.classList.add('fade-out');
-                    setTimeout(async () => {
-                        splash.classList.add('hidden');
-                        splash.classList.remove('fade-out');
-
-                        if(!esMaster && tecMatch) {
-                            try {
-                                const docExp = await getDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`));
-                                if(!docExp.exists()) {
-                                    document.getElementById('contenedor-expediente-tecnico').classList.remove('hidden');
-                                } else {
-                                    window.svc_desbloquearWORKSPACE();
-                                }
-                            } catch(e) { window.svc_desbloquearWORKSPACE(); }
+                // DERECHO Y CARGA BLOQUEANTE HASTA COMPLETAR FIREBASE
+                if(!esMaster && tecMatch) {
+                    try {
+                        const docExp = await getDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`));
+                        if(!docExp.exists()) {
+                            splash.classList.add('hidden');
+                            document.getElementById('contenedor-expediente-tecnico').classList.remove('hidden');
                         } else {
-                            window.svc_desbloquearWORKSPACE();
+                            await window.svc_desbloquearWORKSPACE();
+                            splash.classList.add('fade-out');
+                            setTimeout(() => { splash.classList.add('hidden'); splash.classList.remove('fade-out'); }, 300);
                         }
-                    }, 300);
-                }, 1000);
+                    } catch(e) { 
+                        await window.svc_desbloquearWORKSPACE();
+                        splash.classList.add('fade-out');
+                        setTimeout(() => { splash.classList.add('hidden'); splash.classList.remove('fade-out'); }, 300);
+                    }
+                } else {
+                    await window.svc_desbloquearWORKSPACE();
+                    splash.classList.add('fade-out');
+                    setTimeout(() => { splash.classList.add('hidden'); splash.classList.remove('fade-out'); }, 300);
+                }
 
             } catch(e) { alert("Acceso directo concedido."); window.svc_desbloquearWORKSPACE(); }
         };
@@ -1456,6 +1458,20 @@
                     svc_comandaActivaTurno = docSnap.data().comandaActivaTurno || [];
                     svc_historicoCierresDiarios = docSnap.data().historicoCierresDiarios || [];
                     svc_historicoMesesServicell = docSnap.data().historicoMesesServicell || [];
+
+                    // RESTAURACIÓN AUTOMÁTICA DE COMANDAS DESDE BÓVEDA MENSUAL
+                    if(svc_historicoMesesServicell && svc_historicoMesesServicell.length > 0) {
+                        svc_historicoMesesServicell.forEach(m => {
+                            if(m.comandas && m.comandas.length > 0) {
+                                m.comandas.forEach(c => {
+                                    if(!svc_historicoCierresDiarios.some(existing => existing.idFolio === c.idFolio)) {
+                                        c.liquidadoSemana = true;
+                                        svc_historicoCierresDiarios.push(c);
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
                 const docSnapTecs = await getDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"));
                 svc_tecnicosPerfiles = docSnapTecs.exists() ? docSnapTecs.data().perfiles || [] : [];
@@ -2255,13 +2271,14 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             };
 
             svc_historicoMesesServicell.unshift(cierreMesObj);
-            svc_historicoCierresDiarios = [];
+            // PROTECCIÓN DE HISTORIAL: Se marcan como liquidadas sin vaciar el arreglo de respaldo
+            svc_historicoCierresDiarios.forEach(c => { c.liquidadoSemana = true; });
             svc_comandaActivaTurno = [];
 
             await window.svc_sincronizarConFirebase();
             document.getElementById('modal-hoja-blanca').classList.add('hidden');
             window.svc_renderizerEcosistema();
-            alert("✅ Cierre de Mes ejecutado. Servicell ha reiniciado su ciclo a $0 COP.");
+            alert("✅ Cierre de Mes ejecutado. Servicell ha reiniciado su ciclo a $0 COP sin alterar el historial.");
         };
 
         // ENVIAR WHATSAPP DE LIQUIDACIÓN SEMANAL CON MOTIVO DE VALES Y CORRECCIÓN DE FÓRMULA
