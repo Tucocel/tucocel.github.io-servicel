@@ -1487,6 +1487,26 @@
                     tcl_comprasHistorico = docSnapTcl.data().comprasHistorico || [];
                     tcl_historicoCierres = docSnapTcl.data().historicoCierres || [];
                     tcl_historicoMesesTucocel = docSnapTcl.data().historicoMesesTucocel || [];
+
+                    // RESTAURACIÓN AUTOMÁTICA DE CIERRES Y COMPRAS TUCOCEL DESDE BÓVEDA MENSUAL
+                    if(tcl_historicoMesesTucocel && tcl_historicoMesesTucocel.length > 0) {
+                        tcl_historicoMesesTucocel.forEach(m => {
+                            if(m.ventas && m.ventas.length > 0) {
+                                m.ventas.forEach(v => {
+                                    if(!tcl_historicoCierres.some(existing => existing.idFolio === v.idFolio)) {
+                                        tcl_historicoCierres.push(v);
+                                    }
+                                });
+                            }
+                            if(m.compras && m.compras.length > 0) {
+                                m.compras.forEach(cmp => {
+                                    if(!tcl_comprasHistorico.some(existing => existing.idCompra === cmp.idCompra)) {
+                                        tcl_comprasHistorico.push(cmp);
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
 
                 // RENDERIZADO INMEDIATO COMPLETO DE BÓVEDAS
