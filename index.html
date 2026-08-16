@@ -2670,17 +2670,50 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             alert("✅ Cuenta eliminada por completo.");
         };
 
+        let sistemaConectadoBD = false;
+
+        // RESPALDO LOCAL DE CONTINGENCIA (LOCALSTORAGE)
+        function guardarRespaldoLocalContingencia() {
+            try {
+                localStorage.setItem("tcl_backup_ventas_activas", JSON.stringify(tcl_ventasActivasTurno));
+                localStorage.setItem("tcl_backup_compras_hist", JSON.stringify(tcl_comprasHistorico));
+                localStorage.setItem("tcl_backup_cierres_hist", JSON.stringify(tcl_historicoCierres));
+                localStorage.setItem("svc_backup_comandas_global", JSON.stringify(svc_comandasGlobal));
+                localStorage.setItem("svc_backup_cierres_diarios", JSON.stringify(svc_historicoCierresDiarios));
+            } catch(e) {}
+        }
+
         window.svc_sincronizarConFirebase = async function() {
-            try { 
+            try {
+                guardarRespaldoLocalContingencia();
+                // Verificación de integridad: Evitar sobrescribir con arreglos vacíos si el servidor tiene datos
+                const docSnapCheck = await getDoc(doc(db, "tcl_servicell_independent", "comandas_data"));
+                let comandasFinal = [...svc_comandasGlobal];
+                let historicoCierresFinal = [...svc_historicoCierresDiarios];
+                
+                if (docSnapCheck.exists()) {
+                    const dataServ = docSnapCheck.data();
+                    if (comandasFinal.length === 0 && dataServ.comandas && dataServ.comandas.length > 0) {
+                        comandasFinal = dataServ.comandas;
+                        svc_comandasGlobal = dataServ.comandas;
+                    }
+                    if (historicoCierresFinal.length === 0 && dataServ.historicoCierresDiarios && dataServ.historicoCierresDiarios.length > 0) {
+                        historicoCierresFinal = dataServ.historicoCierresDiarios;
+                        svc_historicoCierresDiarios = dataServ.historicoCierresDiarios;
+                    }
+                }
+
                 await setDoc(doc(db, "tcl_servicell_independent", "comandas_data"), { 
-                    comandas: svc_comandasGlobal, 
+                    comandas: comandasFinal, 
                     vales: svc_valesGlobal, 
                     historico: svc_cierresGlobal, 
                     comandaActivaTurno: svc_comandaActivaTurno, 
-                    historicoCierresDiarios: svc_historicoCierresDiarios,
+                    historicoCierresDiarios: historicoCierresFinal,
                     historicoMesesServicell: svc_historicoMesesServicell
                 }); 
-            } catch(e) {}
+            } catch(e) {
+                console.error("Error sincronizando Servicell:", e);
+            }
         };
 
         // =========================================================
@@ -2689,14 +2722,39 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
 
         window.tcl_sincronizarTucocelFirebase = async function() {
             try {
+                guardarRespaldoLocalContingencia();
+                // Verificación de integridad: Evitar sobrescribir con arreglos vacíos si el servidor tiene datos
+                const docSnapCheckTcl = await getDoc(doc(db, "tcl_servicell_independent", "comandas_tucocel_data"));
+                let cierresFinal = [...tcl_historicoCierres];
+                let comprasFinal = [...tcl_comprasHistorico];
+                let mesesFinal = [...tcl_historicoMesesTucocel];
+
+                if (docSnapCheckTcl.exists()) {
+                    const dataServTcl = docSnapCheckTcl.data();
+                    if (cierresFinal.length === 0 && dataServTcl.historicoCierres && dataServTcl.historicoCierres.length > 0) {
+                        cierresFinal = dataServTcl.historicoCierres;
+                        tcl_historicoCierres = dataServTcl.historicoCierres;
+                    }
+                    if (comprasFinal.length === 0 && dataServTcl.comprasHistorico && dataServTcl.comprasHistorico.length > 0) {
+                        comprasFinal = dataServTcl.comprasHistorico;
+                        tcl_comprasHistorico = dataServTcl.comprasHistorico;
+                    }
+                    if (mesesFinal.length === 0 && dataServTcl.historicoMesesTucocel && dataServTcl.historicoMesesTucocel.length > 0) {
+                        mesesFinal = dataServTcl.historicoMesesTucocel;
+                        tcl_historicoMesesTucocel = dataServTcl.historicoMesesTucocel;
+                    }
+                }
+
                 await setDoc(doc(db, "tcl_servicell_independent", "comandas_tucocel_data"), {
                     ventasActivasTurno: tcl_ventasActivasTurno,
                     comprasActivasTurno: tcl_comprasActivasTurno,
-                    comprasHistorico: tcl_comprasHistorico,
-                    historicoCierres: tcl_historicoCierres,
-                    historicoMesesTucocel: tcl_historicoMesesTucocel
+                    comprasHistorico: comprasFinal,
+                    historicoCierres: cierresFinal,
+                    historicoMesesTucocel: mesesFinal
                 });
-            } catch(e) {}
+            } catch(e) {
+                console.error("Error sincronizando Tucocel:", e);
+            }
         };
 
         // CONMUTADOR TIPO CÁPSULA ENTRE VENTAS Y COMPRAS CON REESTRUCTURACIÓN DE PANELES Y COLORES DUALES
