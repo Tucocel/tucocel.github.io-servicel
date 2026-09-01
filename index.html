@@ -6,7 +6,7 @@
     <title>TUCOCEL C.A. / SERVICELL — Sistema Máster Unificado</title>
     
     <!-- CONFIGURACIÓN PWA -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNlcnZpY2VsIE1hc3RlciIsCiAgInNob3J0X25hbWUiOiAiU2VydmljZWwiLAogICtzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAyMDYxNyIsCiAgInRoZW1lX2NvbG9yIjogIiNhODU1ZjciLAogICpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yOTA3LzI5MDc2MjgucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmcifQogIF0KfQ==">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNlcnZpY2VsIE1hc3RlciIsCiAgInNob3J0X25hbWUiOiAiU2VydmljZWwiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAyMDYxNyIsCiAgInRoZW1lX2NvbG9yIjogIiNhODU1ZjciLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yOTA3LzI5MDc2MjgucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -46,7 +46,7 @@
         
         <div class="text-center space-y-2 mt-6">
             <h1 class="text-xs font-black tracking-widest text-purple-400 uppercase">TUCOCEL C.A. — SERVICELL</h1>
-            <h2 id="splash-title" class="text-xl sm:text-2xl font-black text-white uppercase tracking-tight"></h2>
+            <h2 id="splash-title" class="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">TUCOCEL SERVICELL</h2>
             <p id="splash-sub" class="text-xs text-slate-400 flex items-center justify-center gap-2 pt-2">
                 <i class="fa-solid fa-spinner animate-spin text-purple-400"></i> Cargando espacio de trabajo...
             </p>
@@ -168,10 +168,10 @@
                     <!-- CONTEO SEMANAL EN ACORDEÓN -->
                     <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
                         <button onclick="document.getElementById('wrapper-conteo-semanal').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
-                            <div class="flex items-center gap-2">
+                            <span class="flex items-center gap-2">
                                 <i class="fa-solid fa-chart-line text-emerald-400 text-lg"></i>
                                 <span class="text-xs font-black text-white uppercase tracking-wider">Conteo & Resumen Semanal</span>
-                            </div>
+                            </span>
                             <span class="text-[10px] font-black bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-xl uppercase">📊 Ver Conteo</span>
                         </button>
 
@@ -198,10 +198,10 @@
                     <!-- PLANILLA DE ENTRADA -->
                     <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
                         <button onclick="window.svc_intentarAbrirPlanilla()" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
-                            <div class="flex items-center gap-2">
+                            <span class="flex items-center gap-2">
                                 <i class="fa-solid fa-square-plus text-purple-500 text-lg"></i>
                                 <span class="text-xs font-black text-white uppercase tracking-wider">Planilla de Entrada / Recepción</span>
-                            </div>
+                            </span>
                             <span id="label-toggle-form" class="text-[10px] font-black bg-purple-600/20 text-purple-400 px-2.5 py-1 rounded-xl uppercase">➕ Desplegar Planilla</span>
                         </button>
 
@@ -280,7 +280,7 @@
                                         <input type="file" id="form-foto-patron" accept="image/*" onchange="window.svc_procesarFotoPatronMostrador(this)" class="hidden">
                                     </label>
                                     <div id="wrapper-miniatura-patron" class="hidden flex justify-center bg-slate-900 p-2.5 rounded-xl border border-slate-800">
-                                        <img id="img-patron-preview" class="max-h-28 rounded-lg object-contain border border-slate-800" src="" alt="Patrón">
+                                        <img id="img-patron-preview" class="max-h-28 rounded-lg object-contain border border-slate-800" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Patrón">
                                     </div>
                                 </div>
 
@@ -489,10 +489,10 @@
                 <!-- BLOQUE 1: HISTORIAL SERVICELL (SEMANA EN CURSO) -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
                     <button onclick="document.getElementById('wrapper-comandas-historico-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
-                        <div class="flex items-center gap-2">
+                        <span class="flex items-center gap-2">
                             <i class="fa-solid fa-folder-open text-purple-400 text-lg"></i>
                             <span class="text-xs font-black text-white uppercase tracking-wider">🗂️ HISTORIAL SERVICELL (SEMANA EN CURSO)</span>
-                        </div>
+                        </span>
                         <span id="badge-total-comandas-historial" class="text-[10px] font-black bg-purple-600/20 text-purple-400 px-3 py-1 rounded-xl uppercase">0 Comandas</span>
                     </button>
 
@@ -504,10 +504,10 @@
                 <!-- BLOQUE 2: COMANDAS LIQUIDADAS (SEMANAS ANTERIORES) CON REVERSIÓN / DESLIQUIDACIÓN -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
                     <button onclick="document.getElementById('wrapper-comandas-viejas-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
-                        <div class="flex items-center gap-2">
+                        <span class="flex items-center gap-2">
                             <i class="fa-solid fa-box-archive text-amber-400 text-lg"></i>
                             <span class="text-xs font-black text-amber-300 uppercase tracking-wider">📦 COMANDAS LIQUIDADAS (SEMANAS ANTERIORES)</span>
-                        </div>
+                        </span>
                         <span id="badge-total-comandas-viejas" class="text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-xl uppercase">0 Liquidadas</span>
                     </button>
 
@@ -519,10 +519,10 @@
                 <!-- BLOQUE 3: HISTÓRICO DE SEMANAS CERRADAS (LIQUIDACIONES DE NÓMINA) -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
                     <button onclick="document.getElementById('wrapper-semanas-cerradas-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
-                        <div class="flex items-center gap-2">
+                        <span class="flex items-center gap-2">
                             <i class="fa-solid fa-calendar-check text-emerald-400 text-lg"></i>
                             <span class="text-xs font-black text-emerald-300 uppercase tracking-wider">📅 HISTÓRICO DE SEMANAS CERRADAS (LIQUIDACIONES)</span>
-                        </div>
+                        </span>
                         <span id="badge-total-semanas-cerradas" class="text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl uppercase">0 Semanas Cerradas</span>
                     </button>
 
@@ -534,10 +534,10 @@
                 <!-- BLOQUE 3: NÓMINA SEMANAL Y REGISTRO DE VALES DEDICADO -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
                     <button onclick="document.getElementById('wrapper-nomina-box').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
-                        <div class="flex items-center gap-2">
+                        <span class="flex items-center gap-2">
                             <i class="fa-solid fa-vault text-purple-400 text-lg"></i>
                             <span class="text-xs font-black text-white uppercase tracking-wider">Nómina Semanal, Vales & Cierre de Semana</span>
-                        </div>
+                        </span>
                         <span class="text-[10px] font-black bg-purple-600/20 text-purple-400 px-3 py-1 rounded-xl uppercase">⚙️ Ver Nómina</span>
                     </button>
 
@@ -693,52 +693,53 @@
                             <button onclick="window.tcl_agregarLineaVentaTucocel()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3.5 rounded-xl uppercase tracking-wider shadow transition-all duration-300">➕ Añadir a la Venta de Tucocel</button>
                         </div>
 
-                        <!-- FORMULARIO 2: CARGA DE COMPRAS / FACTURAS DE MERCANCÍA (ÁMBAR - OCULTO INICIALMENTE) -->
+                        <!-- FORMULARIO 2: CARGA DE COMPRAS / FACTURAS DE MERCANCÍA POR LOTE (ÁMBAR - OCULTO INICIALMENTE) -->
                         <div id="wrapper-form-compras-tucocel" class="hidden space-y-3 text-xs font-bold">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 <div>
-                                    <label class="text-[9px] text-amber-400 uppercase block mb-1">Categoría</label>
+                                    <label class="text-[9px] text-amber-400 uppercase block mb-1">Categoría de Ítem</label>
                                     <select id="tcl-compra-tipo-cat" onchange="window.tcl_conmutarCamposCompraCat()" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white font-bold focus:outline-none">
                                         <option value="TELEFONIA" selected>📱 Telefonía (Requiere IMEI)</option>
                                         <option value="ACCESORIOS">🎧 Accesorios / Especiales</option>
-                                        <option value="FACTURA">📄 Solo Factura / Empresa</option>
+                                        <option value="FACTURA">📄 Solo Factura / Egreso General</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="text-[9px] text-amber-400 uppercase block mb-1">Proveedor / Empresa</label>
-                                    <input type="text" id="tcl-compra-proveedor" placeholder="Ej: PROVEEDOR / DISTRIBUIDOR" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white uppercase focus:outline-none">
+                                    <label class="text-[9px] text-amber-400 uppercase block mb-1">Proveedor / Empresa (Autoguardado)</label>
+                                    <input type="text" id="tcl-compra-proveedor" list="lista-proveedores-datalist" placeholder="Ej: PROVEEDOR / DISTRIBUIDOR" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white uppercase focus:outline-none">
+                                    <datalist id="lista-proveedores-datalist"></datalist>
                                 </div>
                             </div>
 
                             <div id="wrapper-bloque-campos-producto" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 <div>
                                     <label id="lbl-tcl-compra-prod" class="text-[9px] text-amber-400 uppercase block mb-1">Marca / Modelo</label>
-                                    <input type="text" id="tcl-compra-producto" placeholder="Ej: MODELO DISPOSITIVO" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white uppercase focus:outline-none">
+                                    <input type="text" id="tcl-compra-producto" placeholder="Ej: MODELO DISPOSITIVO" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white uppercase focus:outline-none" onkeydown="if(event.key === 'Enter') window.tcl_agregarItemLoteCompra();">
                                 </div>
                                 <div id="wrapper-campo-imei">
                                     <label class="text-[9px] text-amber-400 uppercase block mb-1">Código IMEI</label>
-                                    <input type="text" id="tcl-compra-imei" placeholder="Ej: 864521098877123" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white font-mono focus:outline-none">
+                                    <input type="text" id="tcl-compra-imei" placeholder="Ej: 864521098877123" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white font-mono focus:outline-none" onkeydown="if(event.key === 'Enter') window.tcl_agregarItemLoteCompra();">
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono">
                                 <div>
-                                    <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">Moneda</label>
+                                    <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">Moneda Costo</label>
                                     <select id="tcl-compra-moneda" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-xs focus:outline-none font-bold">
                                         <option value="USD" selected>Dólares ($)</option>
                                         <option value="COP">Pesos (COP)</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">Costo Compra</label>
-                                    <input type="text" id="tcl-compra-costo" placeholder="Ej: 117" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-amber-400 text-center font-black text-xs focus:outline-none">
+                                    <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">Costo Unitario</label>
+                                    <input type="text" id="tcl-compra-costo" placeholder="Ej: 117" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-amber-400 text-center font-black text-xs focus:outline-none" onkeydown="if(event.key === 'Enter') window.tcl_agregarItemLoteCompra();">
                                 </div>
                                 <div>
                                     <label class="text-[8px] text-emerald-400 uppercase block font-sans mb-1">Venta Est. ($USD)</label>
-                                    <input type="text" id="tcl-compra-precio-venta" placeholder="Ej: 145" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-emerald-400 text-center font-black text-xs focus:outline-none">
+                                    <input type="text" id="tcl-compra-precio-venta" placeholder="Ej: 145" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-emerald-400 text-center font-black text-xs focus:outline-none" onkeydown="if(event.key === 'Enter') window.tcl_agregarItemLoteCompra();">
                                 </div>
                                 <div>
-                                    <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">Salida</label>
+                                    <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">Salida Caja</label>
                                     <select id="tcl-compra-metodo-pago" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-xs focus:outline-none font-bold">
                                         <option value="EFECTIVO_PESOS">Ef. Pesos</option>
                                         <option value="EFECTIVO_USD">Ef. USD</option>
@@ -747,7 +748,7 @@
                                 </div>
                             </div>
 
-                            <button onclick="window.tcl_guardarCompraDirectoTucocel()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs py-3.5 rounded-xl uppercase tracking-wider shadow">💾 Registrar Compra de Mercancía</button>
+                            <button onclick="window.tcl_agregarItemLoteCompra()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow transition-all duration-300">➕ Añadir a la Compra / Factura</button>
                         </div>
 
                     </div>
@@ -805,23 +806,32 @@
                             </div>
                         </div>
 
-                        <!-- MÓDULO DER 2: VISTA EXCLUSIVA DE COMPRAS & FACTURAS DEL DÍA (ÁMBAR - OCULTO INICIALMENTE) -->
+                        <!-- MÓDULO DER 2: VISTA EXCLUSIVA DE COMPRA POR LOTE EN CURSO (ÁMBAR - OCULTO INICIALMENTE) -->
                         <div id="wrapper-der-compras-box" class="hidden space-y-4">
                             <div class="space-y-3">
                                 <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                                    <h5 class="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-list-check"></i> Facturas & Inversiones Cargadas Hoy</h5>
+                                    <h5 class="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-cart-flatbed"></i> Lote Activo de Compra / Factura</h5>
                                     <span id="tcl-lbl-cnt-compras-viva" class="text-[10px] font-black text-amber-300 bg-amber-950/60 border border-amber-500/30 px-2.5 py-0.5 rounded-full font-mono">0 Ítems</span>
                                 </div>
-                                <div id="tcl-lista-compras-viva-box" class="space-y-1.5 max-h-56 overflow-y-auto no-scrollbar text-xs"></div>
+                                <div id="tcl-lista-compras-viva-box" class="space-y-1.5 max-h-48 overflow-y-auto no-scrollbar text-xs"></div>
                             </div>
 
-                            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 font-mono">
-                                <span class="text-[10px] text-amber-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-chart-pie mr-1"></i> Resumen de Salidas & Inversión</span>
+                            <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-2 font-mono">
+                                <span class="text-[10px] text-amber-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-calculator mr-1"></i> Resumen del Lote a Registrar</span>
                                 <div class="flex justify-between text-xs py-1 border-b border-slate-900">
-                                    <span class="text-slate-400">Total Gastado / Invertido:</span>
-                                    <b id="tcl-lbl-total-compras-viva" class="text-amber-400 text-sm font-black">0 COP</b>
+                                    <span class="text-slate-400">Inversión Total Lote:</span>
+                                    <b id="tcl-lbl-total-compras-viva" class="text-amber-400 text-sm font-black">0 COP ($0.00 USD)</b>
                                 </div>
-                                <p class="text-[9px] text-slate-500 italic pt-1">📌 Las compras registradas reducen automáticamente el saldo neto en el Informe Hoja Blanca de Tucocel C.A.</p>
+                                <div class="flex justify-between text-xs py-1">
+                                    <span class="text-slate-400">Ganancia Estimada Total:</span>
+                                    <b id="tcl-lbl-total-gan-est-compras" class="text-emerald-400 font-bold">+0 COP</b>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-slate-800 pt-2 grid grid-cols-1 gap-2">
+                                <button onclick="window.tcl_guardarFacturaLoteCompraFinal()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs py-3.5 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-2 transition-all hover:scale-[1.01]">
+                                    <i class="fa-solid fa-floppy-disk text-sm"></i> 💾 Guardar Factura / Compra Completa
+                                </button>
                             </div>
                         </div>
 
@@ -832,10 +842,10 @@
                 <!-- BÓVEDA 1: HISTÓRICO DE VENTAS TUCOCEL C.A. -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
                     <button onclick="document.getElementById('wrapper-tucocel-historico-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
-                        <div class="flex items-center gap-2">
+                        <span class="flex items-center gap-2">
                             <i class="fa-solid fa-folder-open text-blue-400 text-lg"></i>
                             <span class="text-xs font-black text-white uppercase tracking-wider">🗂️ Histórico de Cierres & Ventas Tucocel C.A.</span>
-                        </div>
+                        </span>
                         <span id="badge-total-cierres-tucocel" class="text-[10px] font-black bg-blue-600/20 text-blue-400 px-3 py-1 rounded-xl uppercase">0 Cierres</span>
                     </button>
 
@@ -847,10 +857,10 @@
                 <!-- BÓVEDA 2: HISTÓRICO ESPEJO DE COMPRAS & FACTURAS DE MERCANCÍA -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
                     <button onclick="document.getElementById('wrapper-compras-historico-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
-                        <div class="flex items-center gap-2">
+                        <span class="flex items-center gap-2">
                             <i class="fa-solid fa-truck-ramp-box text-amber-400 text-lg"></i>
                             <span class="text-xs font-black text-amber-300 uppercase tracking-wider">🚚 Histórico de Compras & Facturas de Mercancía</span>
-                        </div>
+                        </span>
                         <span id="badge-cnt-compras-mercan" class="text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-xl uppercase">0 Registros</span>
                     </button>
 
@@ -864,10 +874,10 @@
                 <!-- BÓVEDA 3: CIERRES & VENTAS LIQUIDADAS (MESES ANTERIORES) -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
                     <button onclick="document.getElementById('wrapper-tucocel-meses-viejos-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
-                        <div class="flex items-center gap-2">
+                        <span class="flex items-center gap-2">
                             <i class="fa-solid fa-box-archive text-emerald-400 text-lg"></i>
                             <span class="text-xs font-black text-emerald-300 uppercase tracking-wider">📦 CIERRES & VENTAS LIQUIDADAS (MESES ANTERIORES)</span>
-                        </div>
+                        </span>
                         <span id="badge-total-meses-viejos-tucocel" class="text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl uppercase">0 Meses Liquidados</span>
                     </button>
 
@@ -883,10 +893,10 @@
             <div id="tab-tecnicos" class="lg:col-span-12 hidden w-full space-y-4">
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
                     <button onclick="document.getElementById('wrapper-expedientes-box-tab').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
-                        <div class="flex items-center gap-2">
+                        <span class="flex items-center gap-2">
                             <i class="fa-solid fa-folder-open text-amber-500 text-lg"></i>
                             <span class="text-xs font-black text-white uppercase tracking-wider">Servidor de Expedientes Técnicos & Base de Datos de Personal</span>
-                        </div>
+                        </span>
                         <span class="text-[10px] font-black bg-amber-500/20 text-amber-400 px-3 py-1 rounded-xl uppercase">📁 Ver Expedientes</span>
                     </button>
 
@@ -1073,6 +1083,7 @@
         let tcl_comprasHistorico = [];
         let tcl_historicoCierres = [];
         let tcl_historicoMesesTucocel = [];
+        let tcl_proveedoresGuardados = ["PROVEEDOR GENERAL", "DISTRIBUIDOR CENTRAL", "MERCADO LIBRE"];
 
         let rolDeSesionActiva = "BLOQUEADO";
         let usuarioSesionActivo = "";
@@ -1258,14 +1269,39 @@
             window.svc_calcularConversionesAlVuelo(true);
         };
 
+        // MEJORA TÉCNICA APLICADA: Compresor inteligente Canvas de Base64 para resguardo del límite de 1MB de Firestore
         window.svc_procesarFotoPatronMostrador = function(input) {
             const file = input.files[0];
             if(!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                svc_fotoPatronBase64 = e.target.result;
-                document.getElementById('img-patron-preview').src = svc_fotoPatronBase64;
-                document.getElementById('wrapper-miniatura-patron').classList.remove('hidden');
+                const imgTemp = new Image();
+                imgTemp.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let maxDim = 450;
+                    let width = imgTemp.width;
+                    let height = imgTemp.height;
+                    if (width > height) {
+                        if (width > maxDim) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        }
+                    } else {
+                        if (height > maxDim) {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(imgTemp, 0, 0, width, height);
+                    // Compresión ultra ligera en JPEG al 55% de calidad (Pasa de 3-5MB a sólo ~20KB protegiendo la base de datos)
+                    svc_fotoPatronBase64 = canvas.toDataURL('image/jpeg', 0.55);
+                    document.getElementById('img-patron-preview').src = svc_fotoPatronBase64;
+                    document.getElementById('wrapper-miniatura-patron').classList.remove('hidden');
+                };
+                imgTemp.src = e.target.result;
             };
             reader.readAsDataURL(file);
         };
@@ -3200,10 +3236,28 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
             }
         };
 
-        window.tcl_guardarCompraDirectoTucocel = async function() {
+        // AUTOGUARDADO Y SUGERENCIA INTELIGENTE DE PROVEEDORES
+        window.tcl_actualizarDatalistProveedores = function() {
+            const dl = document.getElementById('lista-proveedores-datalist');
+            if(!dl) return;
+            // Extraer proveedores únicos del historial de compras y de la lista en memoria
+            tcl_comprasHistorico.forEach(c => {
+                if(c.proveedor && !tcl_proveedoresGuardados.includes(c.proveedor.toUpperCase())) {
+                    tcl_proveedoresGuardados.push(c.proveedor.toUpperCase());
+                }
+            });
+            let optsHtml = "";
+            tcl_proveedoresGuardados.forEach(p => {
+                optsHtml += `<option value="${p}">`;
+            });
+            dl.innerHTML = optsHtml;
+        };
+
+        // MÓDULO DE COMPRAS POR LOTE: AÑADIR PRODUCTO A LA LISTA TEMPORAL ACTIVA
+        window.tcl_agregarItemLoteCompra = function() {
             const cat = document.getElementById('tcl-compra-tipo-cat').value;
             const proveedor = document.getElementById('tcl-compra-proveedor').value.trim().toUpperCase() || "PROVEEDOR GENERAL";
-            const producto = cat === "FACTURA" ? "FACTURA EMPRESA / EGRESO DIRECTO" : document.getElementById('tcl-compra-producto').value.trim().toUpperCase();
+            const producto = cat === "FACTURA" ? "FACTURA EMPRESA / EGRESO GENERAL" : document.getElementById('tcl-compra-producto').value.trim().toUpperCase();
             const imei = cat === "TELEFONIA" ? (document.getElementById('tcl-compra-imei').value.trim() || "N/A") : "N/A";
             const moneda = document.getElementById('tcl-compra-moneda').value;
             const costoRaw = window.svc_cleanNumber(document.getElementById('tcl-compra-costo').value);
@@ -3211,7 +3265,14 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
             const metodoPagoSalida = document.getElementById('tcl-compra-metodo-pago').value;
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
 
-            if(costoRaw <= 0) return alert("⚠️ Ingrese un monto de costo / factura válido.");
+            if(!producto) return alert("⚠️ Ingrese el nombre/modelo del producto.");
+            if(costoRaw <= 0) return alert("⚠️ Ingrese un costo unitario válido.");
+
+            // Autoguardar proveedor en la lista inteligente
+            if(proveedor && !tcl_proveedoresGuardados.includes(proveedor)) {
+                tcl_proveedoresGuardados.push(proveedor);
+                window.tcl_actualizarDatalistProveedores();
+            }
 
             let costoUSD = moneda === "USD" ? costoRaw : (costoRaw / tCOP);
             let costoCOP = moneda === "USD" ? (costoRaw * tCOP) : costoRaw;
@@ -3222,19 +3283,96 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
             let gananciaEstUSD = Math.max(0, ventaUSD - costoUSD);
             let gananciaEstCOP = Math.round(gananciaEstUSD * tCOP);
 
-            const nuevaCompra = {
-                idCompra: `COMPRA-${String(tcl_comprasHistorico.length + 1).padStart(3, '0')}`,
-                fecha: new Date().toLocaleDateString(),
-                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            const itemCompra = {
+                idTemp: 'cmp-item-' + Date.now() + Math.random().toString(36).substr(2, 4),
                 cat, proveedor, producto, imei, monedaOrig: moneda,
                 costoOrig: costoRaw, costoUSD, costoCOP,
                 ventaUSD, ventaCOP, gananciaEstUSD, gananciaEstCOP,
-                tasaAplica: tCOP, metodoPagoSalida,
+                tasaAplica: tCOP, metodoPagoSalida
+            };
+
+            tcl_comprasActivasTurno.push(itemCompra);
+
+            // Limpiar solo los campos específicos del producto, manteniendo el proveedor y categoría para carga ágil
+            document.getElementById('tcl-compra-producto').value = "";
+            document.getElementById('tcl-compra-imei').value = "";
+            document.getElementById('tcl-compra-costo').value = "";
+            if(document.getElementById('tcl-compra-precio-venta')) document.getElementById('tcl-compra-precio-venta').value = "";
+            document.getElementById('tcl-compra-producto').focus();
+
+            window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizerParticionTucocel();
+        };
+
+        window.tcl_eliminarItemLoteCompraAlVuelo = function(idx) {
+            if(!confirm("¿Desea quitar este ítem del lote de compra actual?")) return;
+            tcl_comprasActivasTurno.splice(idx, 1);
+            window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizerParticionTucocel();
+        };
+
+        // GUARDADO DE FACTURA / COMPRA COMPLETA (UN SOLO MOVIMIENTO AGRUPADO)
+        window.tcl_guardarFacturaLoteCompraFinal = async function() {
+            if(tcl_comprasActivasTurno.length === 0) {
+                return alert("⚠️ No hay ítems en el lote de compra. Añada al menos un producto.");
+            }
+
+            const proveedorPrincipal = tcl_comprasActivasTurno[0].proveedor || "PROVEEDOR GENERAL";
+            let totalCostoCOP = 0;
+            let totalCostoUSD = 0;
+            let totalVentaCOP = 0;
+            let totalVentaUSD = 0;
+            let totalGananciaCOP = 0;
+            let totalGananciaUSD = 0;
+            let categoriasSet = new Set();
+            let listaProductosDesc = [];
+
+            tcl_comprasActivasTurno.forEach(item => {
+                totalCostoCOP += item.costoCOP;
+                totalCostoUSD += item.costoUSD;
+                totalVentaCOP += item.ventaCOP;
+                totalVentaUSD += item.ventaUSD;
+                totalGananciaCOP += item.gananciaEstCOP;
+                totalGananciaUSD += item.gananciaEstUSD;
+                categoriasSet.add(item.cat);
+                listaProductosDesc.push(item.cat === "TELEFONIA" ? `${item.producto} (IMEI: ${item.imei})` : item.producto);
+            });
+
+            const catResumen = categoriasSet.size === 1 ? Array.from(categoriasSet)[0] : "LOTE MIXTO";
+            const productoResumen = tcl_comprasActivasTurno.length === 1 
+                ? tcl_comprasActivasTurno[0].producto 
+                : `FACTURA LOTE (${tcl_comprasActivasTurno.length} PRODUCTOS): ${listaProductosDesc.slice(0, 2).join(', ')}${tcl_comprasActivasTurno.length > 2 ? '...' : ''}`;
+
+            const imeiResumen = tcl_comprasActivasTurno.length === 1 ? tcl_comprasActivasTurno[0].imei : `${tcl_comprasActivasTurno.filter(x => x.imei !== 'N/A').length} IMEIs`;
+            const metodoSalida = tcl_comprasActivasTurno[0].metodoPagoSalida || "EFECTIVO_PESOS";
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
+
+            const nuevaFacturaCompra = {
+                idCompra: `COMPRA-${String(tcl_comprasHistorico.length + 1).padStart(3, '0')}`,
+                fecha: new Date().toLocaleDateString(),
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                cat: catResumen,
+                proveedor: proveedorPrincipal,
+                producto: productoResumen,
+                imei: imeiResumen,
+                monedaOrig: "USD",
+                costoOrig: totalCostoUSD,
+                costoUSD: totalCostoUSD,
+                costoCOP: totalCostoCOP,
+                ventaUSD: totalVentaUSD,
+                ventaCOP: totalVentaCOP,
+                gananciaEstUSD: totalGananciaUSD,
+                gananciaEstCOP: totalGananciaCOP,
+                tasaAplica: tCOP,
+                metodoPagoSalida: metodoSalida,
+                itemsLote: [...tcl_comprasActivasTurno],
                 status: "ACTIVO"
             };
 
-            tcl_comprasHistorico.unshift(nuevaCompra);
+            tcl_comprasHistorico.unshift(nuevaFacturaCompra);
+            tcl_comprasActivasTurno = [];
 
+            document.getElementById('tcl-compra-proveedor').value = "";
             document.getElementById('tcl-compra-producto').value = "";
             document.getElementById('tcl-compra-imei').value = "";
             document.getElementById('tcl-compra-costo').value = "";
@@ -3246,7 +3384,7 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
             window.tcl_actualizarVistaModuloCargaTucocel();
             window.tcl_renderizerParticionTucocel();
             
-            alert(`✅ Compra de mercancía guardada exitosamente en el Historial.`);
+            alert(`✅ Factura de Compra #${nuevaFacturaCompra.idCompra} registrada con éxito (${nuevaFacturaCompra.itemsLote.length} ítems agrupados).`);
         };
 
         window.tcl_anularCompraHistorica = async function(id) {
@@ -3310,6 +3448,13 @@ Método Pago  : ${c.metodoPagoSalida}
                 if(busqueda && !c.producto.includes(busqueda) && !c.proveedor.includes(busqueda) && !c.imei.includes(busqueda)) return;
                 cntMatch++;
 
+                let itemsDesgloseHtml = "";
+                if(c.itemsLote && c.itemsLote.length > 0) {
+                    c.itemsLote.forEach(it => {
+                        let im = it.imei && it.imei !== 'N/A' ? ` [IMEI: ${it.imei}]` : '';
+                        itemsDesgloseHtml += `<li class="text-[10px] text-slate-300">• ${it.producto}${im} — <b class="text-amber-400">$${window.svc_formatDecimalUSD(it.costoUSD)} USD</b> (${fmtMonto(it.costoCOP)} COP)</li>`;
+                    });
+                }
                 let detalleSub = c.cat === "TELEFONIA" ? `IMEI: ${c.imei} | Garantía: 60 Días` : `Pago: ${c.metodoPagoSalida}`;
 
                 let cUSD = c.costoUSD || (c.monedaOrig === "USD" ? c.costoOrig : c.costoCOP / (c.tasaAplica || 3600));
@@ -3336,12 +3481,13 @@ Método Pago  : ${c.metodoPagoSalida}
                             </div>
                         </div>
                         <div id="acc-cmp-${idx}" class="hidden mt-2 pt-2 border-t border-slate-800 space-y-2">
+                            ${itemsDesgloseHtml ? `<ul class="space-y-1 bg-slate-900 p-2 rounded-xl border border-slate-850"><span class="text-[9px] font-black uppercase text-amber-400 block border-b border-slate-800 pb-1">ÍTEMS EN ESTA FACTURA:</span>${itemsDesgloseHtml}</ul>` : ''}
                             <div class="bg-slate-900 p-2.5 rounded-xl space-y-1 text-[10px] text-slate-300">
                                 <div class="flex justify-between"><span>Categoría:</span> <b>${c.cat}</b></div>
                                 <div class="flex justify-between"><span>Detalle Especial:</span> <b>${detalleSub}</b></div>
-                                <div class="flex justify-between text-amber-400 border-t border-slate-800 pt-1 font-bold"><span>1. Costo Compra:</span> <b>$${window.svc_formatDecimalUSD(cUSD)} USD (${fmtMonto(c.costoCOP)} COP)</b></div>
-                                ${c.ventaUSD > 0 ? `<div class="flex justify-between text-blue-400 font-bold"><span>2. Venta Est. Cliente:</span> <b>$${window.svc_formatDecimalUSD(c.ventaUSD)} USD (${fmtMonto(c.ventaCOP)} COP)</b></div>` : ''}
-                                ${ganUSD > 0 ? `<div class="flex justify-between text-emerald-400 font-black border-t border-slate-800 pt-1"><span>3. Ganancia Limpia Proyectada:</span> <b>+$${window.svc_formatDecimalUSD(ganUSD)} USD (+${fmtMonto(ganCOP)} COP)</b></div>` : ''}
+                                <div class="flex justify-between text-amber-400 border-t border-slate-800 pt-1 font-bold"><span>1. Inversión Total Factura:</span> <b>$${window.svc_formatDecimalUSD(cUSD)} USD (${fmtMonto(c.costoCOP)} COP)</b></div>
+                                ${c.ventaUSD > 0 ? `<div class="flex justify-between text-blue-400 font-bold"><span>2. Venta Est. Total Lote:</span> <b>$${window.svc_formatDecimalUSD(c.ventaUSD)} USD (${fmtMonto(c.ventaCOP)} COP)</b></div>` : ''}
+                                ${ganUSD > 0 ? `<div class="flex justify-between text-emerald-400 font-black border-t border-slate-800 pt-1"><span>3. Ganancia Proyectada Total:</span> <b>+$${window.svc_formatDecimalUSD(ganUSD)} USD (+${fmtMonto(ganCOP)} COP)</b></div>` : ''}
                             </div>
                             <div class="grid grid-cols-4 gap-1 font-sans pt-1">
                                 <button onclick="window.tcl_verDetalleCompraModal(${idx})" class="bg-blue-600/10 text-blue-400 border border-blue-500/20 p-2 rounded-xl text-[9px] font-bold uppercase">👁️ Ver</button>
@@ -3474,38 +3620,45 @@ Método Pago  : ${c.metodoPagoSalida}
             if(lblCnt) lblCnt.innerText = `📦 ${tcl_ventasActivasTurno.length} Tipos (${totalUnidadesVentas} Productos)`;
             boxLista.innerHTML = htmlItems || `<p class="text-center text-slate-500 italic py-4 text-xs">Cero ventas cargadas en Tucocel C.A. hoy.</p>`;
 
-            // RENDER COMPRAS ACTIVAS EN PANEL DERECHO EXCLUSIVO
+            // RENDER LOTE DE COMPRAS ACTIVO EN PANEL DERECHO EXCLUSIVO
             const boxComprasViva = document.getElementById('tcl-lista-compras-viva-box');
             const lblCntComprasViva = document.getElementById('tcl-lbl-cnt-compras-viva');
             const lblTotalComprasViva = document.getElementById('tcl-lbl-total-compras-viva');
+            const lblTotalGanEstCompras = document.getElementById('tcl-lbl-total-gan-est-compras');
 
-            let totalCmpCOP = 0;
-            let totalUnidadesCompras = 0;
+            let totalLoteCmpCOP = 0;
+            let totalLoteCmpUSD = 0;
+            let totalLoteGanEstCOP = 0;
 
-            tcl_comprasHistorico.forEach((c) => {
-                if(c.status !== "ANULADA") {
-                    totalUnidadesCompras += 1;
-                    totalCmpCOP += c.costoCOP;
-                }
+            tcl_comprasActivasTurno.forEach((item) => {
+                totalLoteCmpCOP += item.costoCOP;
+                totalLoteCmpUSD += item.costoUSD;
+                totalLoteGanEstCOP += item.gananciaEstCOP;
             });
 
             if(boxComprasViva) {
                 let htmlCmp = "";
-                tcl_comprasHistorico.forEach((c, idx) => {
-                    if(c.status === "ANULADA") return;
+                tcl_comprasActivasTurno.forEach((item, idx) => {
+                    let imeiTag = item.imei && item.imei !== 'N/A' ? ` | IMEI: ${item.imei}` : '';
                     htmlCmp += `
                         <div class="p-2 bg-slate-950 border border-slate-800 rounded-xl flex justify-between items-center text-white font-bold">
                             <div>
-                                <span class="block text-[10px]">${c.producto} (${c.proveedor})</span>
-                                <span class="text-[8px] text-amber-400 uppercase">${c.cat}</span>
+                                <span class="block text-[10px]">${item.producto} (${item.proveedor})</span>
+                                <span class="text-[8px] text-amber-400 uppercase">${item.cat}${imeiTag}</span>
                             </div>
-                            <span class="font-mono text-xs text-red-400 font-black">-${fmtMonto(c.costoCOP)} COP</span>
+                            <div class="flex items-center gap-3">
+                                <span class="font-mono text-xs text-amber-400 font-black">-$${window.svc_formatDecimalUSD(item.costoUSD)} USD (${fmtMonto(item.costoCOP)} COP)</span>
+                                <button onclick="window.tcl_eliminarItemLoteCompraAlVuelo(${idx})" class="text-red-500 hover:text-red-600 text-xs font-black px-1.5 py-0.5 rounded border border-slate-800 bg-slate-900">X</button>
+                            </div>
                         </div>`;
                 });
-                if(lblCntComprasViva) lblCntComprasViva.innerText = `${totalUnidadesCompras} Ítems`;
-                boxComprasViva.innerHTML = htmlCmp || `<p class="text-center text-slate-500 italic py-3 text-[10px]">Cero facturas de compras registradas hoy.</p>`;
-                if(lblTotalComprasViva) lblTotalComprasViva.innerText = `${fmtMonto(totalCmpCOP)} COP`;
+                if(lblCntComprasViva) lblCntComprasViva.innerText = `📦 ${tcl_comprasActivasTurno.length} Ítems en Lote`;
+                boxComprasViva.innerHTML = htmlCmp || `<p class="text-center text-slate-500 italic py-3 text-[10px]">Cero ítems agregados al lote actual. Use "➕ Añadir a la Compra".</p>`;
+                if(lblTotalComprasViva) lblTotalComprasViva.innerText = `${fmtMonto(totalLoteCmpCOP)} COP ($${window.svc_formatDecimalUSD(totalLoteCmpUSD)} USD)`;
+                if(lblTotalGanEstCompras) lblTotalGanEstCompras.innerText = `+${fmtMonto(totalLoteGanEstCOP)} COP`;
             }
+
+            window.tcl_actualizarDatalistProveedores();
 
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
             const tBs = window.svc_cleanRate(document.getElementById('cfg-tasa-bs').value) || 4;
@@ -3870,4 +4023,3 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
     </script>
 </body>
 </html>
-
