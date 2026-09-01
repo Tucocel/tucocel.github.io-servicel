@@ -839,12 +839,12 @@
 
                 </div>
 
-                <!-- BÓVEDA 1: HISTÓRICO DE VENTAS TUCOCEL C.A. -->
+                <!-- BÓVEDA 1: HISTÓRICO DE VENTAS (MES EN CURSO) -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
                     <button onclick="document.getElementById('wrapper-tucocel-historico-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
                         <span class="flex items-center gap-2">
                             <i class="fa-solid fa-folder-open text-blue-400 text-lg"></i>
-                            <span class="text-xs font-black text-white uppercase tracking-wider">🗂️ Histórico de Cierres & Ventas Tucocel C.A.</span>
+                            <span class="text-xs font-black text-white uppercase tracking-wider">🗂️ HISTÓRICO DE VENTAS & CIERRES (MES EN CURSO)</span>
                         </span>
                         <span id="badge-total-cierres-tucocel" class="text-[10px] font-black bg-blue-600/20 text-blue-400 px-3 py-1 rounded-xl uppercase">0 Cierres</span>
                     </button>
@@ -854,12 +854,27 @@
                     </div>
                 </div>
 
-                <!-- BÓVEDA 2: HISTÓRICO ESPEJO DE COMPRAS & FACTURAS DE MERCANCÍA -->
+                <!-- BÓVEDA 2: CIERRES Y CUADRES DIARIOS LIQUIDADOS (MESES ANTERIORES) CON REVERSIÓN -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
+                    <button onclick="document.getElementById('wrapper-tucocel-viejos-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-box-archive text-amber-400 text-lg"></i>
+                            <span class="text-xs font-black text-amber-300 uppercase tracking-wider">📦 CIERRES & CUADRES DIARIOS LIQUIDADOS (MESES ANTERIORES)</span>
+                        </span>
+                        <span id="badge-total-cierres-viejos-tucocel" class="text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-xl uppercase">0 Liquidados</span>
+                    </button>
+
+                    <div id="wrapper-tucocel-viejos-acordeon" class="hidden p-5 border-t border-slate-800/60 space-y-3">
+                        <div id="wrapper-lista-cierres-tucocel-viejos" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
+                    </div>
+                </div>
+
+                <!-- BÓVEDA 3: HISTÓRICO DE COMPRAS & FACTURAS DE MERCANCÍA (MES EN CURSO) -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
                     <button onclick="document.getElementById('wrapper-compras-historico-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
                         <span class="flex items-center gap-2">
                             <i class="fa-solid fa-truck-ramp-box text-amber-400 text-lg"></i>
-                            <span class="text-xs font-black text-amber-300 uppercase tracking-wider">🚚 Histórico de Compras & Facturas de Mercancía</span>
+                            <span class="text-xs font-black text-amber-300 uppercase tracking-wider">🚚 COMPRAS & FACTURAS DE MERCANCÍA (MES EN CURSO)</span>
                         </span>
                         <span id="badge-cnt-compras-mercan" class="text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-xl uppercase">0 Registros</span>
                     </button>
@@ -870,13 +885,32 @@
                             <div id="wrapper-lista-compras-historico-box" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
                         </div>
                     </div>
+                </div>
+
+                <!-- BÓVEDA 4: COMPRAS & FACTURAS LIQUIDADAS (MESES ANTERIORES) CON REVERSIÓN -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
+                    <button onclick="document.getElementById('wrapper-compras-viejas-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-box-archive text-amber-500 text-lg"></i>
+                            <span class="text-xs font-black text-amber-400 uppercase tracking-wider">📦 COMPRAS & FACTURAS LIQUIDADAS (MESES ANTERIORES)</span>
+                        </span>
+                        <span id="badge-cnt-compras-viejas" class="text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-xl uppercase">0 Liquidadas</span>
+                    </button>
+
+                    <div id="wrapper-compras-viejas-acordeon" class="hidden p-5 border-t border-slate-800/60 space-y-3">
+                        <div class="space-y-3">
+                            <input type="text" id="tcl-search-compras-viejas" onkeyup="window.tcl_renderizerListaComprasHistorico()" placeholder="🔍 Buscar en compras de meses anteriores..." class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-xs text-white focus:outline-none">
+                            <div id="wrapper-lista-compras-viejas-box" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
+                        </div>
+                    </div>
+                </div>
                
-                <!-- BÓVEDA 3: CIERRES & VENTAS LIQUIDADAS (MESES ANTERIORES) -->
+                <!-- BÓVEDA 5: HISTÓRICO DE MESES CERRADOS (LIQUIDACIONES MENSUALES) -->
                 <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
                     <button onclick="document.getElementById('wrapper-tucocel-meses-viejos-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
                         <span class="flex items-center gap-2">
-                            <i class="fa-solid fa-box-archive text-emerald-400 text-lg"></i>
-                            <span class="text-xs font-black text-emerald-300 uppercase tracking-wider">📦 CIERRES & VENTAS LIQUIDADAS (MESES ANTERIORES)</span>
+                            <i class="fa-solid fa-calendar-check text-emerald-400 text-lg"></i>
+                            <span class="text-xs font-black text-emerald-300 uppercase tracking-wider">📅 HISTÓRICO DE MESES CERRADOS (LIQUIDACIONES)</span>
                         </span>
                         <span id="badge-total-meses-viejos-tucocel" class="text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl uppercase">0 Meses Liquidados</span>
                     </button>
@@ -885,8 +919,6 @@
                         <div id="wrapper-lista-meses-viejos-tucocel" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
                     </div>
                 </div>
- </div>
-
             </div>
 
             <!-- PARTICIÓN 4: EXPEDIENTES Y TÉCNICOS SAAS -->
@@ -1604,6 +1636,7 @@
                             if(m.ventas && m.ventas.length > 0) {
                                 m.ventas.forEach(v => {
                                     if(!tcl_historicoCierres.some(existing => existing.idFolio === v.idFolio)) {
+                                        v.liquidadoMes = true;
                                         tcl_historicoCierres.push(v);
                                     }
                                 });
@@ -1611,6 +1644,7 @@
                             if(m.compras && m.compras.length > 0) {
                                 m.compras.forEach(cmp => {
                                     if(!tcl_comprasHistorico.some(existing => existing.idCompra === cmp.idCompra)) {
+                                        cmp.liquidadoMes = true;
                                         tcl_comprasHistorico.push(cmp);
                                     }
                                 });
@@ -3435,18 +3469,27 @@ Método Pago  : ${c.metodoPagoSalida}
         };
 
         window.tcl_renderizerListaComprasHistorico = function() {
-            const container = document.getElementById('wrapper-lista-compras-historico-box');
-            const badgeCnt = document.getElementById('badge-cnt-compras-mercan');
-            if(!container) return;
+            const containerActivo = document.getElementById('wrapper-lista-compras-historico-box');
+            const containerViejo = document.getElementById('wrapper-lista-compras-viejas-box');
+            const badgeCntActivo = document.getElementById('badge-cnt-compras-mercan');
+            const badgeCntViejo = document.getElementById('badge-cnt-compras-viejas');
+            if(!containerActivo) return;
 
-            const busqueda = document.getElementById('tcl-search-compras').value.trim().toUpperCase();
-            let html = "";
-            let cntMatch = 0;
+            const busqueda = (document.getElementById('tcl-search-compras') ? document.getElementById('tcl-search-compras').value : '').trim().toUpperCase();
+            const busquedaVieja = (document.getElementById('tcl-search-compras-viejas') ? document.getElementById('tcl-search-compras-viejas').value : '').trim().toUpperCase();
+
+            let htmlActivo = "";
+            let htmlViejo = "";
+            let cntMatchActivo = 0;
+            let cntMatchViejo = 0;
 
             tcl_comprasHistorico.forEach((c, idx) => {
                 if(c.status === "ANULADA") return;
-                if(busqueda && !c.producto.includes(busqueda) && !c.proveedor.includes(busqueda) && !c.imei.includes(busqueda)) return;
-                cntMatch++;
+
+                let isLiquidado = (c.liquidadoMes === true);
+                let query = isLiquidado ? busquedaVieja : busqueda;
+
+                if(query && !c.producto.includes(query) && !c.proveedor.includes(query) && !c.imei.includes(query)) return;
 
                 let itemsDesgloseHtml = "";
                 if(c.itemsLote && c.itemsLote.length > 0) {
@@ -3461,11 +3504,7 @@ Método Pago  : ${c.metodoPagoSalida}
                 let ganUSD = c.gananciaEstUSD || 0;
                 let ganCOP = c.gananciaEstCOP || 0;
 
-                let gananciaHeaderBadge = ganUSD > 0 
-                    ? `<span class="text-emerald-400 font-bold block text-right">+$${window.svc_formatDecimalUSD(ganUSD)} USD (+${fmtMonto(ganCOP)} COP)</span>` 
-                    : `<span class="text-amber-400 font-bold block text-right">$${window.svc_formatDecimalUSD(cUSD)} USD</span>`;
-
-                html += `
+                let cardHtml = `
                     <div class="p-3 bg-slate-950 border border-slate-800 rounded-2xl font-mono text-[11px] space-y-2">
                         <div onclick="document.getElementById('acc-cmp-${idx}').classList.toggle('hidden')" class="flex justify-between items-center cursor-pointer">
                             <div>
@@ -3492,18 +3531,41 @@ Método Pago  : ${c.metodoPagoSalida}
                             <div class="grid grid-cols-4 gap-1 font-sans pt-1">
                                 <button onclick="window.tcl_verDetalleCompraModal(${idx})" class="bg-blue-600/10 text-blue-400 border border-blue-500/20 p-2 rounded-xl text-[9px] font-bold uppercase">👁️ Ver</button>
                                 <button onclick="window.tcl_imprimirTicketCompra('${c.idCompra}')" class="bg-slate-900 border border-slate-800 text-white p-2 rounded-xl text-[9px] font-bold uppercase">🖨️ Ticket</button>
-                                <button onclick="window.tcl_anularCompraHistorica('${c.idCompra}')" class="bg-amber-600/10 text-amber-400 border border-amber-500/20 p-2 rounded-xl text-[9px] font-black uppercase">🚫 Anular</button>
+                                ${isLiquidado 
+                                    ? `<button onclick="window.tcl_revertirCompraLiquidadaAActiva('${c.idCompra}')" class="bg-amber-600/20 text-amber-400 border border-amber-500/30 p-2 rounded-xl text-[9px] font-black uppercase">🔄 Revertir</button>`
+                                    : `<button onclick="window.tcl_anularCompraHistorica('${c.idCompra}')" class="bg-amber-600/10 text-amber-400 border border-amber-500/20 p-2 rounded-xl text-[9px] font-black uppercase">🚫 Anular</button>`}
                                 <button onclick="window.tcl_borrarDefinitivoCompraHistorica('${c.idCompra}')" class="bg-red-600/10 text-red-400 border border-red-500/20 p-2 rounded-xl text-[9px] font-black uppercase">🗑️ Borrar</button>
                             </div>
                         </div>
                     </div>`;
+
+                if(isLiquidado) {
+                    cntMatchViejo++;
+                    htmlViejo += cardHtml;
+                } else {
+                    cntMatchActivo++;
+                    htmlActivo += cardHtml;
+                }
             });
 
-            container.innerHTML = html || `<p class="text-center text-slate-500 italic py-4 text-[10px]">Cero compras registradas en el historial.</p>`;
-            if(badgeCnt) badgeCnt.innerText = `${cntMatch} Registros`;
+            containerActivo.innerHTML = htmlActivo || `<p class="text-center text-slate-500 italic py-4 text-[10px]">Cero compras activas en el mes en curso.</p>`;
+            if(containerViejo) containerViejo.innerHTML = htmlViejo || `<p class="text-center text-slate-500 italic py-4 text-[10px]">Cero compras archivadas de meses anteriores.</p>`;
+            if(badgeCntActivo) badgeCntActivo.innerText = `${cntMatchActivo} Registros`;
+            if(badgeCntViejo) badgeCntViejo.innerText = `${cntMatchViejo} Liquidadas`;
         };
 
-        
+        window.tcl_revertirCompraLiquidadaAActiva = async function(id) {
+            const c = tcl_comprasHistorico.find(x => x.idCompra === id); if(!c) return;
+            if(!confirm(`🔄 ¿Desea desliquidar/revertir la compra #${c.idCompra.slice(-6)}?
+
+Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja Blanca.`)) return;
+
+            c.liquidadoMes = false;
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizerParticionTucocel();
+            alert("✅ Compra desliquidada. Regresó al Histórico de Compras del Mes en Curso.");
+        };
+
         window.tcl_renderizerMesesLiquidadosHistorico = function() {
             const container = document.getElementById('wrapper-lista-meses-viejos-tucocel');
             const badgeCnt = document.getElementById('badge-total-meses-viejos-tucocel');
@@ -3767,16 +3829,19 @@ Método Pago  : ${c.metodoPagoSalida}
         };
 
         window.tcl_renderizerHistoricoTucocel = function() {
-            const container = document.getElementById('wrapper-lista-cierres-tucocel-guardados');
-            const badgeTotal = document.getElementById('badge-total-cierres-tucocel');
-            if(!container) return;
+            const containerActivos = document.getElementById('wrapper-lista-cierres-tucocel-guardados');
+            const containerViejos = document.getElementById('wrapper-lista-cierres-tucocel-viejos');
+            const badgeTotalActivos = document.getElementById('badge-total-cierres-tucocel');
+            const badgeTotalViejos = document.getElementById('badge-total-cierres-viejos-tucocel');
+            if(!containerActivos) return;
 
-            let html = "";
-            let cntActivas = 0;
+            let htmlActivos = "";
+            let htmlViejos = "";
+            let cntActivos = 0;
+            let cntViejos = 0;
 
             tcl_historicoCierres.forEach((match, idx) => {
                 if(match.status === "ANULADA") return;
-                cntActivas++;
 
                 let diagStr = "🟢 CUADRADO";
                 if(match.diferenciaCOP > 0) diagStr = `🔵 SOBRANTE (+${fmtMonto(match.diferenciaCOP)} COP)`;
@@ -3791,7 +3856,7 @@ Método Pago  : ${c.metodoPagoSalida}
                     itemsHtml = `<li class="text-[10px] text-slate-500 italic">• Cierre en bloque sin desglose de ítems.</li>`;
                 }
 
-                html += `
+                let cardHtml = `
                     <div class="p-3 bg-slate-950 border border-slate-800 rounded-2xl font-mono text-[11px] space-y-2">
                         <div onclick="document.getElementById('acc-tcl-${idx}').classList.toggle('hidden')" class="flex justify-between items-center cursor-pointer">
                             <div>
@@ -3816,15 +3881,39 @@ Método Pago  : ${c.metodoPagoSalida}
                             <div class="grid grid-cols-4 gap-1 font-sans pt-1">
                                 <button onclick="window.tcl_verDetalleCierreTucocelModal(${idx})" class="bg-blue-600/10 text-blue-400 border border-blue-500/20 p-2 rounded-xl text-[9px] font-bold uppercase">👁️ Ver</button>
                                 <button onclick="window.tcl_imprimirTicketTucocel('${match.idFolio}')" class="bg-slate-900 border border-slate-800 text-white p-2 rounded-xl text-[9px] font-bold uppercase">🖨️ Ticket</button>
-                                <button onclick="window.tcl_anularCierreTucocel('${match.idFolio}')" class="bg-amber-600/10 text-amber-400 border border-amber-500/20 p-2 rounded-xl text-[9px] font-black uppercase">🚫 Anular</button>
+                                ${match.liquidadoMes === true 
+                                    ? `<button onclick="window.tcl_revertirCierreLiquidadoAActivo('${match.idFolio}')" class="bg-amber-600/20 text-amber-400 border border-amber-500/30 p-2 rounded-xl text-[9px] font-black uppercase">🔄 Revertir</button>`
+                                    : `<button onclick="window.tcl_anularCierreTucocel('${match.idFolio}')" class="bg-amber-600/10 text-amber-400 border border-amber-500/20 p-2 rounded-xl text-[9px] font-black uppercase">🚫 Anular</button>`}
                                 <button onclick="window.tcl_borrarDefinitivoCierreTucocel('${match.idFolio}')" class="bg-red-600/10 text-red-400 border border-red-500/20 p-2 rounded-xl text-[9px] font-black uppercase">🗑️ Borrar</button>
                             </div>
                         </div>
                     </div>`;
+
+                if(match.liquidadoMes === true) {
+                    cntViejos++;
+                    htmlViejos += cardHtml;
+                } else {
+                    cntActivos++;
+                    htmlActivos += cardHtml;
+                }
             });
 
-            container.innerHTML = html || `<p class="text-center text-slate-500 italic py-4 text-[10px]">Cero cierres históricos en Tucocel C.A.</p>`;
-            if(badgeTotal) badgeTotal.innerText = `${cntActivas} Cierres`;
+            containerActivos.innerHTML = htmlActivos || `<p class="text-center text-slate-500 italic py-4 text-[10px]">Cero cierres activos en el mes en curso.</p>`;
+            if(containerViejos) containerViejos.innerHTML = htmlViejos || `<p class="text-center text-slate-500 italic py-4 text-[10px]">Cero cierres liquidados de meses anteriores.</p>`;
+            if(badgeTotalActivos) badgeTotalActivos.innerText = `${cntActivos} Cierres`;
+            if(badgeTotalViejos) badgeTotalViejos.innerText = `${cntViejos} Liquidados`;
+        };
+
+        window.tcl_revertirCierreLiquidadoAActivo = async function(folio) {
+            const match = tcl_historicoCierres.find(x => x.idFolio === folio); if(!match) return;
+            if(!confirm(`🔄 ¿Desea desliquidar/revertir el cierre #${match.idFolio.slice(-6)}?
+
+Volverá a estar activo en el mes en curso para recalcular la caja y la Hoja Blanca.`)) return;
+
+            match.liquidadoMes = false;
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizerParticionTucocel();
+            alert("✅ Cierre desliquidado. Regresó al Histórico de Ventas del Mes en Curso.");
         };
 
         window.tcl_imprimirTicketTucocel = function(key) {
@@ -3877,11 +3966,11 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
             let totalEgresosComprasAcum = 0;
 
             tcl_historicoCierres.forEach(c => {
-                if(c.status !== "ANULADA") totalVentasAcum += (c.totalVentasCOP || 0);
+                if(c.status !== "ANULADA" && c.liquidadoMes !== true) totalVentasAcum += (c.totalVentasCOP || 0);
             });
 
             tcl_comprasHistorico.forEach(c => {
-                if(c.status !== "ANULADA") totalEgresosComprasAcum += (c.costoCOP || 0);
+                if(c.status !== "ANULADA" && c.liquidadoMes !== true) totalEgresosComprasAcum += (c.costoCOP || 0);
             });
 
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
@@ -3942,8 +4031,8 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
             let totalVentasAcum = 0;
             let totalEgresosComprasAcum = 0;
 
-            tcl_historicoCierres.forEach(c => { if(c.status !== "ANULADA") totalVentasAcum += (c.totalVentasCOP || 0); });
-            tcl_comprasHistorico.forEach(c => { if(c.status !== "ANULADA") totalEgresosComprasAcum += (c.costoCOP || 0); });
+            tcl_historicoCierres.forEach(c => { if(c.status !== "ANULADA" && c.liquidadoMes !== true) totalVentasAcum += (c.totalVentasCOP || 0); });
+            tcl_comprasHistorico.forEach(c => { if(c.status !== "ANULADA" && c.liquidadoMes !== true) totalEgresosComprasAcum += (c.costoCOP || 0); });
 
             const diferenciaCOP = totalVentasAcum - totalEgresosComprasAcum;
 
@@ -3959,13 +4048,28 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
         };
 
         window.tcl_ejecutarCierreMensualTucocel = async function() {
-            if(!confirm("🛑 ¿Desea ejecutar el CIERRE MENSUAL de Tucocel C.A.?\n\nTodas las ventas y compras del periodo se empaquetarán en la Bóveda de Auditoría y la caja activa del mes volverá a 0 COP.")) return;
+            if(!confirm("🛑 ¿Desea ejecutar el CIERRE MENSUAL de Tucocel C.A.?\n\nLos cierres y compras del mes activo pasarán a la sección de 'LIQUIDADOS (MESES ANTERIORES)' y la caja activa del mes volverá a $0 COP sin perder ningún registro.")) return;
 
             let totalVentasAcum = 0;
             let totalEgresosComprasAcum = 0;
+            let ventasMesActivo = [];
+            let comprasMesActivo = [];
 
-            tcl_historicoCierres.forEach(c => { if(c.status !== "ANULADA") totalVentasAcum += (c.totalVentasCOP || 0); });
-            tcl_comprasHistorico.forEach(c => { if(c.status !== "ANULADA") totalEgresosComprasAcum += (c.costoCOP || 0); });
+            tcl_historicoCierres.forEach(c => { 
+                if(c.status !== "ANULADA" && c.liquidadoMes !== true) {
+                    totalVentasAcum += (c.totalVentasCOP || 0);
+                    ventasMesActivo.push({ ...c });
+                    c.liquidadoMes = true; // Blindaje: se marca como liquidado en lugar de vaciar el arreglo
+                }
+            });
+
+            tcl_comprasHistorico.forEach(c => { 
+                if(c.status !== "ANULADA" && c.liquidadoMes !== true) {
+                    totalEgresosComprasAcum += (c.costoCOP || 0);
+                    comprasMesActivo.push({ ...c });
+                    c.liquidadoMes = true; // Blindaje: se marca como liquidada
+                }
+            });
 
             let rendPct = 0;
             if (tcl_historicoMesesTucocel && tcl_historicoMesesTucocel.length > 0) {
@@ -3981,21 +4085,20 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
                 totalComprasCOP: totalEgresosComprasAcum,
                 gananciaLimpiaCOP: totalVentasAcum - totalEgresosComprasAcum,
                 rendimientoPct: rendPct,
-                ventas: [...tcl_historicoCierres],
-                compras: [...tcl_comprasHistorico]
+                ventas: ventasMesActivo,
+                compras: comprasMesActivo
             };
 
             tcl_historicoMesesTucocel.unshift(cierreMesObj);
 
-            tcl_historicoCierres = [];
-            tcl_comprasHistorico = [];
             tcl_ventasActivasTurno = [];
             tcl_comprasActivasTurno = [];
 
             await window.tcl_sincronizarTucocelFirebase();
             document.getElementById('modal-hoja-blanca-tucocel').classList.add('hidden');
+            document.getElementById('wrapper-tucocel-viejos-acordeon').classList.remove('hidden');
             window.tcl_renderizerParticionTucocel();
-            alert(`✅ Cierre Mensual ejecutado exitosamente.\nRendimiento Registrado: ${rendPct >= 0 ? '+' : ''}${rendPct.toFixed(1)}% vs Mes Anterior.\nLa caja de Tucocel C.A. se ha reiniciado a $0 COP.`);
+            alert(`✅ Cierre Mensual ejecutado exitosamente.\nRendimiento Registrado: ${rendPct >= 0 ? '+' : ''}${rendPct.toFixed(1)}% vs Mes Anterior.\nLa caja activa de Tucocel C.A. se ha reiniciado a $0 COP.`);
         };
 
         window.onload = function() {
