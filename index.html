@@ -67,14 +67,27 @@
                 </div>
             </div>
             
-            <div id="control-tasas-box" class="flex items-center gap-4 bg-slate-950 border border-slate-800 p-3 rounded-2xl text-xs font-bold font-mono">
-                <div class="px-2 border-r border-slate-800">
-                    <span class="block text-[9px] text-white uppercase font-sans mb-1">Tasa COP ($)</span>
+            <div id="control-tasas-box" class="flex flex-wrap items-center gap-2.5 sm:gap-4 bg-slate-950 border border-slate-800 p-2.5 sm:p-3 rounded-2xl text-xs font-bold font-mono">
+                <div class="flex items-center gap-2 px-1">
+                    <span id="status-conexion-tasas-cloud" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" title="Conexión activa con Firebase"></span>
+                    <span class="text-[9px] text-slate-400 uppercase font-sans hidden sm:inline">Nube</span>
+                </div>
+                <div class="px-2 border-l border-r border-slate-800">
+                    <span class="block text-[9px] text-white uppercase font-sans mb-0.5">Tasa COP ($)</span>
                     <input type="text" id="cfg-tasa-cop" value="3.600" onkeyup="window.svc_maskInputFormatted(this); window.svc_guardarTasaFijaDelDia(); window.svc_calcularConversionesAlVuelo(); window.tcl_renderizerParticionTucocel();" class="w-20 bg-transparent text-amber-400 font-black focus:outline-none text-base">
                 </div>
-                <div class="px-2">
-                    <span class="block text-[9px] text-white uppercase font-sans mb-1">Tasa Bs vs COP</span>
-                    <input type="text" id="cfg-tasa-bs" value="4" onkeyup="window.svc_maskDecimalRate(this); window.svc_guardarTasaFijaDelDia(); window.svc_calcularConversionesAlVuelo(); window.tcl_renderizerParticionTucocel();" class="w-16 bg-transparent text-emerald-400 font-black focus:outline-none text-base">
+                <div class="px-2 border-r border-slate-800">
+                    <span class="block text-[9px] text-white uppercase font-sans mb-0.5">Tasa Bs/COP</span>
+                    <input type="text" id="cfg-tasa-bs" value="4" onkeyup="window.svc_maskDecimalRate(this); window.svc_guardarTasaFijaDelDia(); window.svc_calcularConversionesAlVuelo(); window.tcl_renderizerParticionTucocel();" class="w-14 bg-transparent text-emerald-400 font-black focus:outline-none text-base">
+                </div>
+                <div class="flex items-center gap-1.5 pl-1">
+                    <button onclick="window.svc_exportarRespaldoJSON()" type="button" class="bg-indigo-600/30 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/40 px-2.5 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider transition flex items-center gap-1" title="Descargar copia de seguridad en JSON">
+                        <i class="fa-solid fa-file-arrow-down"></i> Backup
+                    </button>
+                    <input type="file" id="inp-svc-restore-json" accept=".json,application/json" class="hidden" onchange="window.svc_importarRespaldoJSON(event)">
+                    <button onclick="document.getElementById('inp-svc-restore-json').click()" type="button" class="bg-purple-600/30 hover:bg-purple-600 text-purple-300 hover:text-white border border-purple-500/40 px-2.5 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider transition flex items-center gap-1" title="Restaurar copia desde archivo JSON">
+                        <i class="fa-solid fa-file-arrow-up"></i> Cargar
+                    </button>
                 </div>
             </div>
         </div>
@@ -1170,18 +1183,43 @@
         }
 
         // CONTROL Y FIJACIÓN DE TASAS DIFERENCIADO POR ROL DE USUARIO
-        window.svc_verificarOIngresarTasaDiaria = async function() {
+                // CARGA ANTICIPADA Y CACHÉ LOCAL INMEDIATO DE TASAS (Evita valores por defecto en PC)
+        window.svc_precargarTasasInmediatas = async function() {
             try {
-                const hoyStr = new Date().toLocaleDateString();
+                // 1. Lectura ultra rápida desde localStorage de contingencia
+                const tasaCopLocal = localStorage.getItem("svc_cached_tasa_cop");
+                const tasaBsLocal = localStorage.getItem("svc_cached_tasa_bs");
+                if(tasaCopLocal) document.getElementById('cfg-tasa-cop').value = tasaCopLocal;
+                if(tasaBsLocal) document.getElementById('cfg-tasa-bs').value = tasaBsLocal;
+
+                // 2. Consulta directa a Firebase Firestore
                 const docTasa = await getDoc(doc(db, "tcl_servicell_independent", "configuracion_tasas"));
-                const boxAcciones = document.getElementById('modal-tasa-acciones-box');
-                const lblSub = document.getElementById('modal-tasa-sub');
-                
                 if(docTasa.exists()) {
                     const data = docTasa.data();
-                    document.getElementById('cfg-tasa-cop').value = data.tasaCOP || "3.600";
-                    document.getElementById('cfg-tasa-bs').value = data.tasaBs || "4";
+                    if(data.tasaCOP) {
+                        document.getElementById('cfg-tasa-cop').value = data.tasaCOP;
+                        localStorage.setItem("svc_cached_tasa_cop", data.tasaCOP);
+                    }
+                    if(data.tasaBs) {
+                        document.getElementById('cfg-tasa-bs').value = data.tasaBs;
+                        localStorage.setItem("svc_cached_tasa_bs", data.tasaBs);
+                    }
                 }
+                const badgeTasa = document.getElementById('status-conexion-tasas-cloud');
+                if(badgeTasa) {
+                    badgeTasa.className = "w-2 h-2 rounded-full bg-emerald-400";
+                    badgeTasa.title = "Tasas sincronizadas con la nube";
+                }
+            } catch(e) {
+                console.warn("Precarga de tasas offline:", e);
+            }
+        };
+
+        window.svc_verificarOIngresarTasaDiaria = async function() {
+            try {
+                await window.svc_precargarTasasInmediatas();
+                const boxAcciones = document.getElementById('modal-tasa-acciones-box');
+                const lblSub = document.getElementById('modal-tasa-sub');
 
                 if(rolDeSesionActiva === "MASTER") {
                     lblSub.innerText = "Máster Robert: Confirme la tasa oficial registrada en la base de datos o fije una nueva tasa para la jornada.";
@@ -1207,16 +1245,19 @@
             } catch(e) {}
         };
 
-        window.svc_guardarTasaFijaDelDia = async function() {
+                window.svc_guardarTasaFijaDelDia = async function() {
             try {
                 const hoyStr = new Date().toLocaleDateString();
                 const tasaCOP = document.getElementById('cfg-tasa-cop').value;
                 const tasaBs = document.getElementById('cfg-tasa-bs').value;
+                localStorage.setItem("svc_cached_tasa_cop", tasaCOP);
+                localStorage.setItem("svc_cached_tasa_bs", tasaBs);
                 await setDoc(doc(db, "tcl_servicell_independent", "configuracion_tasas"), {
                     fechaFijada: hoyStr,
                     tasaCOP,
                     tasaBs,
-                    operador: usuarioSesionActivo
+                    operador: usuarioSesionActivo,
+                    timestamp: Date.now()
                 });
             } catch(e) {}
         };
@@ -2993,24 +3034,46 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
             } catch(e) {}
         }
 
+                // FUSIÓN ATÓMICA BLINDADA: Nunca borra datos previos aunque el cliente inicie con 1 solo ítem
+        function fusionarPorClaveUnica(locales, remotos, claveId) {
+            const mapa = new Map();
+            (remotos || []).forEach(item => {
+                if (item && item[claveId]) mapa.set(item[claveId], item);
+            });
+            (locales || []).forEach(item => {
+                if (item && item[claveId]) mapa.set(item[claveId], item);
+            });
+            return Array.from(mapa.values());
+        }
+
         window.svc_sincronizarConFirebase = async function() {
             try {
                 guardarRespaldoLocalContingencia();
-                // Verificación de integridad: Evitar sobrescribir con arreglos vacíos si el servidor tiene datos
-                const docSnapCheck = await getDoc(doc(db, "tcl_servicell_independent", "comandas_data"));
+                
+                // 1. Consultar estado remoto en tiempo real antes de escribir
                 let comandasFinal = [...svc_comandasGlobal];
                 let historicoCierresFinal = [...svc_historicoCierresDiarios];
-                
-                if (docSnapCheck.exists()) {
-                    const dataServ = docSnapCheck.data();
-                    if (comandasFinal.length === 0 && dataServ.comandas && dataServ.comandas.length > 0) {
-                        comandasFinal = dataServ.comandas;
-                        svc_comandasGlobal = dataServ.comandas;
+                let valesFinal = [...svc_valesGlobal];
+                let semanasFinal = [...svc_historicoSemanasLiquidadas];
+                let mesesFinal = [...svc_historicoMesesServicell];
+
+                try {
+                    const docSnapCheck = await getDoc(doc(db, "tcl_servicell_independent", "comandas_data"));
+                    if (docSnapCheck.exists()) {
+                        const dataServ = docSnapCheck.data();
+                        comandasFinal = fusionarPorClaveUnica(svc_comandasGlobal, dataServ.comandas, 'id');
+                        historicoCierresFinal = fusionarPorClaveUnica(svc_historicoCierresDiarios, dataServ.historicoCierresDiarios, 'idFolio');
+                        semanasFinal = fusionarPorClaveUnica(svc_historicoSemanasLiquidadas, dataServ.historicoSemanasLiquidadas, 'idSemana');
+                        mesesFinal = fusionarPorClaveUnica(svc_historicoMesesServicell, dataServ.historicoMesesServicell, 'idMes');
+                        
+                        // Actualizar memoria local con la unión garantizada
+                        svc_comandasGlobal = comandasFinal;
+                        svc_historicoCierresDiarios = historicoCierresFinal;
+                        svc_historicoSemanasLiquidadas = semanasFinal;
+                        svc_historicoMesesServicell = mesesFinal;
                     }
-                    if (historicoCierresFinal.length === 0 && dataServ.historicoCierresDiarios && dataServ.historicoCierresDiarios.length > 0) {
-                        historicoCierresFinal = dataServ.historicoCierresDiarios;
-                        svc_historicoCierresDiarios = dataServ.historicoCierresDiarios;
-                    }
+                } catch(errFetch) {
+                    console.warn("Fusión remota previa no completada, escribiendo local asegurado:", errFetch);
                 }
 
                 await setDoc(doc(db, "tcl_servicell_independent", "comandas_data"), { 
@@ -3019,8 +3082,9 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                     historico: svc_cierresGlobal, 
                     comandaActivaTurno: svc_comandaActivaTurno, 
                     historicoCierresDiarios: historicoCierresFinal,
-                    historicoMesesServicell: svc_historicoMesesServicell,
-                    historicoSemanasLiquidadas: svc_historicoSemanasLiquidadas
+                    historicoMesesServicell: mesesFinal,
+                    historicoSemanasLiquidadas: semanasFinal,
+                    ultimaModificacion: Date.now()
                 }); 
             } catch(e) {
                 console.error("Error sincronizando Servicell:", e);
@@ -3031,29 +3095,28 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
         // MOTOR DE FUNCIONES EXCLUSIVAS DE TUCOCEL C.A. (PARTICIÓN 3)
         // =========================================================
 
-        window.tcl_sincronizarTucocelFirebase = async function() {
+                window.tcl_sincronizarTucocelFirebase = async function() {
             try {
                 guardarRespaldoLocalContingencia();
-                // Verificación de integridad: Evitar sobrescribir con arreglos vacíos si el servidor tiene datos
-                const docSnapCheckTcl = await getDoc(doc(db, "tcl_servicell_independent", "comandas_tucocel_data"));
+                
                 let cierresFinal = [...tcl_historicoCierres];
                 let comprasFinal = [...tcl_comprasHistorico];
                 let mesesFinal = [...tcl_historicoMesesTucocel];
 
-                if (docSnapCheckTcl.exists()) {
-                    const dataServTcl = docSnapCheckTcl.data();
-                    if (cierresFinal.length === 0 && dataServTcl.historicoCierres && dataServTcl.historicoCierres.length > 0) {
-                        cierresFinal = dataServTcl.historicoCierres;
-                        tcl_historicoCierres = dataServTcl.historicoCierres;
+                try {
+                    const docSnapCheckTcl = await getDoc(doc(db, "tcl_servicell_independent", "comandas_tucocel_data"));
+                    if (docSnapCheckTcl.exists()) {
+                        const dataServTcl = docSnapCheckTcl.data();
+                        cierresFinal = fusionarPorClaveUnica(tcl_historicoCierres, dataServTcl.historicoCierres, 'idFolio');
+                        comprasFinal = fusionarPorClaveUnica(tcl_comprasHistorico, dataServTcl.comprasHistorico, 'idCompra');
+                        mesesFinal = fusionarPorClaveUnica(tcl_historicoMesesTucocel, dataServTcl.historicoMesesTucocel, 'idMes');
+                        
+                        tcl_historicoCierres = cierresFinal;
+                        tcl_comprasHistorico = comprasFinal;
+                        tcl_historicoMesesTucocel = mesesFinal;
                     }
-                    if (comprasFinal.length === 0 && dataServTcl.comprasHistorico && dataServTcl.comprasHistorico.length > 0) {
-                        comprasFinal = dataServTcl.comprasHistorico;
-                        tcl_comprasHistorico = dataServTcl.comprasHistorico;
-                    }
-                    if (mesesFinal.length === 0 && dataServTcl.historicoMesesTucocel && dataServTcl.historicoMesesTucocel.length > 0) {
-                        mesesFinal = dataServTcl.historicoMesesTucocel;
-                        tcl_historicoMesesTucocel = dataServTcl.historicoMesesTucocel;
-                    }
+                } catch(errFetch) {
+                    console.warn("Fusión previa Tucocel no completada:", errFetch);
                 }
 
                 await setDoc(doc(db, "tcl_servicell_independent", "comandas_tucocel_data"), {
@@ -3061,7 +3124,8 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                     comprasActivasTurno: tcl_comprasActivasTurno,
                     comprasHistorico: comprasFinal,
                     historicoCierres: cierresFinal,
-                    historicoMesesTucocel: mesesFinal
+                    historicoMesesTucocel: mesesFinal,
+                    ultimaModificacion: Date.now()
                 });
             } catch(e) {
                 console.error("Error sincronizando Tucocel:", e);
@@ -4101,7 +4165,99 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
             alert(`✅ Cierre Mensual ejecutado exitosamente.\nRendimiento Registrado: ${rendPct >= 0 ? '+' : ''}${rendPct.toFixed(1)}% vs Mes Anterior.\nLa caja activa de Tucocel C.A. se ha reiniciado a $0 COP.`);
         };
 
-        window.onload = function() {
+        
+        // =========================================================
+        // HERRAMIENTAS DE RESPALDO Y RESTAURACIÓN DIRECTA JSON
+        // =========================================================
+        window.svc_exportarRespaldoJSON = function() {
+            try {
+                const respaldoCompleto = {
+                    fecha: new Date().toISOString(),
+                    tasas: {
+                        tasaCOP: document.getElementById('cfg-tasa-cop')?.value || "3.600",
+                        tasaBs: document.getElementById('cfg-tasa-bs')?.value || "4"
+                    },
+                    servicell: {
+                        comandas: svc_comandasGlobal,
+                        historicoCierresDiarios: svc_historicoCierresDiarios,
+                        vales: svc_valesGlobal,
+                        semanasLiquidadas: svc_historicoSemanasLiquidadas,
+                        mesesServicell: svc_historicoMesesServicell,
+                        tecnicos: svc_tecnicosPerfiles
+                    },
+                    tucocel: {
+                        historicoCierres: tcl_historicoCierres,
+                        comprasHistorico: tcl_comprasHistorico,
+                        historicoMeses: tcl_historicoMesesTucocel
+                    }
+                };
+
+                const dataStr = JSON.stringify(respaldoCompleto, null, 2);
+                const blob = new Blob([dataStr], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `respaldo_servicell_tucocel_${new Date().toISOString().slice(0, 10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                alert("✅ Archivo JSON de respaldo descargado exitosamente en este dispositivo.");
+            } catch(e) {
+                alert("Error al exportar JSON: " + (e.message || e));
+            }
+        };
+
+        window.svc_importarRespaldoJSON = function(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if(!data || (!data.servicell && !data.tucocel)) {
+                        return alert("⚠️ El archivo no contiene un formato de respaldo válido de Servicell / Tucocel.");
+                    }
+
+                    if(!confirm("📥 Se detectó un respaldo con fecha " + (data.fecha || 'reciente') + ".\n\n¿Desea restaurar estos datos y sincronizarlos con la nube?")) return;
+
+                    if(data.tasas) {
+                        if(data.tasas.tasaCOP) document.getElementById('cfg-tasa-cop').value = data.tasas.tasaCOP;
+                        if(data.tasas.tasaBs) document.getElementById('cfg-tasa-bs').value = data.tasas.tasaBs;
+                        await window.svc_guardarTasaFijaDelDia();
+                    }
+
+                    if(data.servicell) {
+                        if(Array.isArray(data.servicell.comandas)) svc_comandasGlobal = data.servicell.comandas;
+                        if(Array.isArray(data.servicell.historicoCierresDiarios)) svc_historicoCierresDiarios = data.servicell.historicoCierresDiarios;
+                        if(Array.isArray(data.servicell.vales)) svc_valesGlobal = data.servicell.vales;
+                        if(Array.isArray(data.servicell.semanasLiquidadas)) svc_historicoSemanasLiquidadas = data.servicell.semanasLiquidadas;
+                        if(Array.isArray(data.servicell.mesesServicell)) svc_historicoMesesServicell = data.servicell.mesesServicell;
+                        if(Array.isArray(data.servicell.tecnicos)) svc_tecnicosPerfiles = data.servicell.tecnicos;
+                        await window.svc_sincronizarConFirebase();
+                    }
+
+                    if(data.tucocel) {
+                        if(Array.isArray(data.tucocel.historicoCierres)) tcl_historicoCierres = data.tucocel.historicoCierres;
+                        if(Array.isArray(data.tucocel.comprasHistorico)) tcl_comprasHistorico = data.tucocel.comprasHistorico;
+                        if(Array.isArray(data.tucocel.historicoMeses)) tcl_historicoMesesTucocel = data.tucocel.historicoMeses;
+                        await window.tcl_sincronizarTucocelFirebase();
+                    }
+
+                    window.svc_renderizerEcosistema();
+                    window.tcl_renderizerParticionTucocel();
+                    alert("🎉 ¡Restauración completa! Todos los datos fueron inyectados en la memoria y sincronizados con Firebase.");
+                } catch(err) {
+                    alert("Error al restaurar JSON: " + (err.message || err));
+                } finally {
+                    event.target.value = '';
+                }
+            };
+            reader.readAsText(file);
+        };
+
+window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const userParam = urlParams.get('user');
             const ordenParam = urlParams.get('orden');
