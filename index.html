@@ -28,14 +28,72 @@
         .fade-out { opacity: 0; pointer-events: none; transition: opacity 0.5s ease-out; }
         
         @media print {
-            body { background: white !important; color: black !important; margin: 0 !important; padding: 0 !important; }
-            body * { display: none !important; visibility: hidden !important; }
-            #contenedor-impresion-termica-fijo, #contenedor-impresion-termica-fijo * { display: block !important; visibility: visible !important; }
-            .papel-hoja-blanca, .papel-hoja-blanca * { display: block !important; visibility: visible !important; }
+            @page {
+                size: auto;
+                margin: 5mm !important;
+            }
+            html, body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 100% !important;
+                overflow: visible !important;
+            }
+            body > *:not(#contenedor-impresion-termica-fijo):not(#modal-hoja-blanca):not(#modal-hoja-blanca-tucocel) {
+                display: none !important;
+            }
             #contenedor-impresion-termica-fijo { 
-                position: absolute; left: 0; top: 0; width: 100% !important; height: auto !important;
-                background: white !important; color: black !important; margin: 0 !important; padding: 0.5cm !important; 
-                font-family: 'Courier New', Courier, monospace; font-size: 12px; line-height: 1.4; text-align: left;
+                display: block !important;
+                visibility: visible !important;
+                position: static !important;
+                width: 100% !important;
+                max-width: 80mm !important;
+                margin: 0 auto !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                font-family: 'Courier New', Courier, monospace !important;
+                font-size: 11px !important;
+                line-height: 1.3 !important;
+                text-align: left !important;
+                padding: 2mm !important;
+            }
+            #contenedor-impresion-termica-fijo * {
+                visibility: visible !important;
+                color: #000000 !important;
+            }
+            #modal-hoja-blanca, #modal-hoja-blanca-tucocel {
+                display: block !important;
+                position: static !important;
+                background: transparent !important;
+                padding: 0 !important;
+                margin: 0 auto !important;
+                width: 100% !important;
+                max-width: 190mm !important;
+                box-shadow: none !important;
+            }
+            .papel-hoja-blanca {
+                display: block !important;
+                position: static !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                padding: 4mm !important;
+                margin: 0 auto !important;
+                width: 100% !important;
+                max-width: 190mm !important;
+                box-shadow: none !important;
+                border: none !important;
+                max-height: none !important;
+                overflow: visible !important;
+            }
+            .papel-hoja-blanca * {
+                visibility: visible !important;
+                color: #000000 !important;
+            }
+            .no-imprimir {
+                display: none !important;
             }
         }
     </style>
@@ -455,7 +513,8 @@
                         <div class="space-y-3 text-xs font-bold">
                             <div>
                                 <label class="text-[10px] text-slate-400 uppercase block mb-1">Descripción de Tarea / Repuesto (Ganancia Neta Limpia)</label>
-                                <input type="text" id="svc-input-concepto" placeholder="Ej: REPARACIÓN PIN REDMI NOTE 13" onkeydown="if(event.key === 'Enter') window.svc_agregarLineaComandaDiaria();" class="w-full bg-slate-950 border border-slate-800 p-3.5 rounded-xl text-white font-bold uppercase focus:outline-none focus:border-purple-500 text-sm">
+                                <input type="text" id="svc-input-concepto" list="lista-conceptos-servicell" placeholder="Ej: REPARACIÓN PIN, PANTALLA, MANTENIMIENTO..." onkeydown="if(event.key === 'Enter') window.svc_agregarLineaComandaDiaria();" class="w-full bg-slate-950 border border-slate-800 p-3.5 rounded-xl text-white font-bold uppercase focus:outline-none focus:border-purple-500 text-sm">
+                                <datalist id="lista-conceptos-servicell"></datalist>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
@@ -644,7 +703,8 @@
                             </div>
                             <div>
                                 <label class="text-[10px] text-slate-400 uppercase block mb-1">Descripción de Producto / Servicio</label>
-                                <input type="text" id="tcl-input-concepto" placeholder="Ej: FORRO + IMPRESIÓN A4 / REDMI NOTE 13" onkeydown="if(event.key === 'Enter') window.tcl_agregarLineaVentaTucocel();" class="w-full bg-slate-950 border border-slate-800 p-3.5 rounded-xl text-white font-bold uppercase focus:outline-none focus:border-blue-500 text-sm">
+                                <input type="text" id="tcl-input-concepto" list="lista-conceptos-tucocel" placeholder="Ej: FORRO, VIDRIO, LÍNEA 4G, CARGADOR TIPO C..." onkeydown="if(event.key === 'Enter') window.tcl_agregarLineaVentaTucocel();" class="w-full bg-slate-950 border border-slate-800 p-3.5 rounded-xl text-white font-bold uppercase focus:outline-none focus:border-blue-500 text-sm">
+                                <datalist id="lista-conceptos-tucocel"></datalist>
                             </div>
 
                             <!-- BLOQUE ESTÁNDAR GENERAL -->
@@ -2322,11 +2382,17 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             const idx = svc_historicoCierresDiarios.findIndex(x => x.idFolio === key || x.fecha === key); if(idx === -1) return;
             const match = svc_historicoCierresDiarios[idx];
 
-            if(confirm(`⚠️ ¿Desea anular definitivamente la comanda #${match.idFolio.slice(-6)}?`)) {
+            if(confirm(`⚠️ ¿Desea anular y eliminar definitivamente la comanda #${match.idFolio.slice(-6)}?`)) {
                 svc_historicoCierresDiarios.splice(idx, 1);
+                // Retirar también de cualquier mes archivado si estuviera
+                svc_historicoMesesServicell.forEach(m => {
+                    if (Array.isArray(m.comandas)) {
+                        m.comandas = m.comandas.filter(c => c.idFolio !== key);
+                    }
+                });
                 await window.svc_sincronizarConFirebase();
-                window.svc_descargarServidorCentral();
-                alert("✅ Comanda anulada correctamente.");
+                window.svc_renderizerEcosistema();
+                alert("✅ Comanda eliminada por completo de la base de datos.");
             }
         };
 
@@ -2917,16 +2983,30 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
 
                 const sFilte = document.getElementById('filtro-comanda-tecnico-asignado');
                 let opts = "";
-                svc_tecnicosPerfiles.forEach(t => { opts += `<option value="${t.user}">${t.nombre.toUpperCase()}</option>`; });
+                let tecsOrdenados = [...svc_tecnicosPerfiles].sort((a, b) => {
+                    if (a.user === 'nelson') return -1;
+                    if (b.user === 'nelson') return 1;
+                    return 0;
+                });
+                if (!tecsOrdenados.some(t => t.user === 'nelson')) {
+                    tecsOrdenados.unshift({ user: 'nelson', nombre: 'NELSON' });
+                }
+                tecsOrdenados.forEach(t => { 
+                    opts += `<option value="${t.user}">${t.nombre.toUpperCase()}</option>`; 
+                });
                 opts += `<option value="MASTER">👑 MÁSTER (DUEÑO)</option>`;
                 
                 if(sFilte) {
                     const tecPrevio = sFilte.value;
                     sFilte.innerHTML = opts;
-                    if(tecPrevio) sFilte.value = tecPrevio;
+                    if(tecPrevio && Array.from(sFilte.options).some(o => o.value === tecPrevio)) {
+                        sFilte.value = tecPrevio;
+                    } else {
+                        sFilte.value = 'nelson';
+                    }
                 }
 
-                const tecSeleccionado = sFilte ? sFilte.value : "MASTER";
+                const tecSeleccionado = sFilte ? (sFilte.value || 'nelson') : 'nelson';
 
                 const boxItems = document.getElementById('svc-lista-items-comanda-box');
                 const lblCntItems = document.getElementById('lbl-cnt-items-cargados');
@@ -3190,43 +3270,17 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
         window.svc_sincronizarConFirebase = async function() {
             try {
                 guardarRespaldoLocalContingencia();
-                
-                // 1. Consultar estado remoto en tiempo real antes de escribir
-                let comandasFinal = [...svc_comandasGlobal];
-                let historicoCierresFinal = [...svc_historicoCierresDiarios];
-                let valesFinal = [...svc_valesGlobal];
-                let semanasFinal = [...svc_historicoSemanasLiquidadas];
-                let mesesFinal = [...svc_historicoMesesServicell];
-
-                try {
-                    const docSnapCheck = await getDoc(doc(db, "tcl_servicell_independent", "comandas_data"));
-                    if (docSnapCheck.exists()) {
-                        const dataServ = docSnapCheck.data();
-                        comandasFinal = fusionarPorClaveUnica(svc_comandasGlobal, dataServ.comandas, 'id');
-                        historicoCierresFinal = fusionarPorClaveUnica(svc_historicoCierresDiarios, dataServ.historicoCierresDiarios, 'idFolio');
-                        semanasFinal = fusionarPorClaveUnica(svc_historicoSemanasLiquidadas, dataServ.historicoSemanasLiquidadas, 'idSemana');
-                        mesesFinal = fusionarPorClaveUnica(svc_historicoMesesServicell, dataServ.historicoMesesServicell, 'idMes');
-                        
-                        // Actualizar memoria local con la unión garantizada
-                        svc_comandasGlobal = comandasFinal;
-                        svc_historicoCierresDiarios = historicoCierresFinal;
-                        svc_historicoSemanasLiquidadas = semanasFinal;
-                        svc_historicoMesesServicell = mesesFinal;
-                    }
-                } catch(errFetch) {
-                    console.warn("Fusión remota previa no completada, escribiendo local asegurado:", errFetch);
-                }
-
                 await setDoc(doc(db, "tcl_servicell_independent", "comandas_data"), { 
-                    comandas: comandasFinal, 
+                    comandas: svc_comandasGlobal, 
                     vales: svc_valesGlobal, 
                     historico: svc_cierresGlobal, 
                     comandaActivaTurno: svc_comandaActivaTurno, 
-                    historicoCierresDiarios: historicoCierresFinal,
-                    historicoMesesServicell: mesesFinal,
-                    historicoSemanasLiquidadas: semanasFinal,
+                    historicoCierresDiarios: svc_historicoCierresDiarios,
+                    historicoMesesServicell: svc_historicoMesesServicell,
+                    historicoSemanasLiquidadas: svc_historicoSemanasLiquidadas,
                     ultimaModificacion: Date.now()
                 }); 
+                console.log("☁️ [Firestore] Comandas y datos Servicell sincronizados.");
             } catch(e) {
                 console.error("Error sincronizando Servicell:", e);
             }
@@ -3239,35 +3293,15 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                 window.tcl_sincronizarTucocelFirebase = async function() {
             try {
                 guardarRespaldoLocalContingencia();
-                
-                let cierresFinal = [...tcl_historicoCierres];
-                let comprasFinal = [...tcl_comprasHistorico];
-                let mesesFinal = [...tcl_historicoMesesTucocel];
-
-                try {
-                    const docSnapCheckTcl = await getDoc(doc(db, "tcl_servicell_independent", "comandas_tucocel_data"));
-                    if (docSnapCheckTcl.exists()) {
-                        const dataServTcl = docSnapCheckTcl.data();
-                        cierresFinal = fusionarPorClaveUnica(tcl_historicoCierres, dataServTcl.historicoCierres, 'idFolio');
-                        comprasFinal = fusionarPorClaveUnica(tcl_comprasHistorico, dataServTcl.comprasHistorico, 'idCompra');
-                        mesesFinal = fusionarPorClaveUnica(tcl_historicoMesesTucocel, dataServTcl.historicoMesesTucocel, 'idMes');
-                        
-                        tcl_historicoCierres = cierresFinal;
-                        tcl_comprasHistorico = comprasFinal;
-                        tcl_historicoMesesTucocel = mesesFinal;
-                    }
-                } catch(errFetch) {
-                    console.warn("Fusión previa Tucocel no completada:", errFetch);
-                }
-
                 await setDoc(doc(db, "tcl_servicell_independent", "comandas_tucocel_data"), {
                     ventasActivasTurno: tcl_ventasActivasTurno,
                     comprasActivasTurno: tcl_comprasActivasTurno,
-                    comprasHistorico: comprasFinal,
-                    historicoCierres: cierresFinal,
-                    historicoMesesTucocel: mesesFinal,
+                    comprasHistorico: tcl_comprasHistorico,
+                    historicoCierres: tcl_historicoCierres,
+                    historicoMesesTucocel: tcl_historicoMesesTucocel,
                     ultimaModificacion: Date.now()
                 });
+                console.log("☁️ [Firestore] Ventas y datos Tucocel C.A. sincronizados.");
             } catch(e) {
                 console.error("Error sincronizando Tucocel:", e);
             }
@@ -3854,7 +3888,8 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
 
 
         window.tcl_renderizerParticionTucocel = function() {
-            const boxLista = document.getElementById('tcl-lista-items-viva-box');
+  
+            if (typeof window.tcl_actualizarDatalistsConceptos === 'function') window.tcl_actualizarDatalistsConceptos();          const boxLista = document.getElementById('tcl-lista-items-viva-box');
             const lblCnt = document.getElementById('tcl-lbl-cnt-items');
             const lblLiveCOP = document.getElementById('tcl-live-cop');
             const lblLiveUSD = document.getElementById('tcl-live-usd');
@@ -4166,7 +4201,52 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
             alert("✅ Cierre eliminado por completo de Firebase.");
         };
 
-        window.tcl_abrirVisorHojaBlancaTucocel = function() {
+        
+        // GESTIÓN INTELIGENTE DE CONCEPTOS FRECUENTES Y AUTOCOMPLETADO
+        let tcl_conceptosFrecuentes = ["VIDRIO TEMPLADO", "VIDRIO CERÁMICA", "LÍNEA MOVISTAR 4G", "LÍNEA 4GB", "CARGADOR TIPO C", "CARGADOR TIPO C ORIGINAL", "CARGADOR V8", "FORRO", "CABLE TIPO C", "CABLE LIGHTNING", "AUDÍFONOS", "PANTALLA", "REPARACIÓN PIN"];
+        let svc_conceptosFrecuentes = ["REPARACIÓN PIN DE CARGA", "CAMBIO DE PANTALLA", "MANTENIMIENTO GENERAL", "REVISIÓN TÉCNICA", "CAMBIO DE BATERÍA", "SOFTWARE / FLASHEO", "LIMPIEZA DE HUMEDAD"];
+
+        window.tcl_actualizarDatalistsConceptos = function() {
+            const dlTcl = document.getElementById('lista-conceptos-tucocel');
+            if (dlTcl) {
+                // Agregar conceptos usados en ventas históricas
+                tcl_historicoCierres.forEach(c => {
+                    (c.ventas || []).forEach(v => {
+                        let cnorm = (v.concepto || '').replace(/^📱 TELÉFONO:\s*/i, '').trim().toUpperCase();
+                        if (cnorm && !tcl_conceptosFrecuentes.includes(cnorm)) tcl_conceptosFrecuentes.push(cnorm);
+                    });
+                });
+                dlTcl.innerHTML = tcl_conceptosFrecuentes.map(x => `<option value="${x}">`).join('');
+            }
+
+            const dlSvc = document.getElementById('lista-conceptos-servicell');
+            if (dlSvc) {
+                svc_historicoCierresDiarios.forEach(c => {
+                    (c.items || []).forEach(i => {
+                        let cnorm = (i.concepto || '').trim().toUpperCase();
+                        if (cnorm && !svc_conceptosFrecuentes.includes(cnorm)) svc_conceptosFrecuentes.push(cnorm);
+                    });
+                });
+                dlSvc.innerHTML = svc_conceptosFrecuentes.map(x => `<option value="${x}">`).join('');
+            }
+        };
+
+        // AGRUPADOR INTELIGENTE DE PRODUCTOS PARA REPORTE DE FIN DE MES
+        function clasificarConceptoGeneral(concepto) {
+            let s = (concepto || '').toUpperCase().trim();
+            if (s.includes('VIDRIO')) return 'VIDRIOS TEMPLADOS / PROTECTORES';
+            if (s.includes('4G') || s.includes('4GB') || s.includes('LINEA') || s.includes('LÍNEA')) return 'LÍNEAS MOVISTAR 4G / 4GB';
+            if (s.includes('CARGADOR') && (s.includes('TIPO C') || s.includes('TIPO-C') || s.includes('TYPE C'))) return 'CARGADORES TIPO C';
+            if (s.includes('CARGADOR') && s.includes('V8')) return 'CARGADORES V8';
+            if (s.includes('CARGADOR')) return 'CARGADORES (OTROS)';
+            if (s.includes('FORRO') || s.includes('FUNDA')) return 'FORROS / FUNDAS';
+            if (s.includes('AUDIFONO') || s.includes('AUDÍFONO')) return 'AUDÍFONOS';
+            if (s.includes('PIN') || s.includes('PIN DE CARGA')) return 'REPARACIÓN PINES DE CARGA';
+            if (s.includes('PANTALLA')) return 'REEMPLAZO DE PANTALLAS';
+            if (s.includes('TELÉFONO') || s.includes('TELEFONO')) return 'EQUIPOS SMARTPHONES';
+            return s; // Nombre tal cual
+        }
+window.tcl_abrirVisorHojaBlancaTucocel = function() {
             let totalVentasAcum = 0;
             let totalEgresosComprasAcum = 0;
 
@@ -4209,6 +4289,48 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
                 estadoBadge = `<div class="p-4 rounded-2xl border-2 bg-blue-50 border-blue-950 font-bold text-center space-y-1"><span class="block text-[10px] uppercase">🔵 CAPITAL REINVERTIDO EN MERCANCÍA</span><span class="text-base font-black">-${fmtMonto(Math.abs(diferenciaCOP))} COP (-$${Math.round(Math.abs(diferenciaCOP)/tCOP)} USD)</span></div>`;
             }
 
+            // Agrupación estadística de productos más vendidos en el período
+            let mapaConteoProductos = {};
+            tcl_historicoCierres.forEach(c => {
+                if(c.status !== "ANULADA" && c.liquidadoMes !== true) {
+                    (c.ventas || []).forEach(v => {
+                        let grupo = clasificarConceptoGeneral(v.concepto);
+                        let cant = v.cantidad || 1;
+                        let sub = (v.precioCOP || 0) * cant;
+                        if (!mapaConteoProductos[grupo]) {
+                            mapaConteoProductos[grupo] = { cant: 0, subtotalCOP: 0 };
+                        }
+                        mapaConteoProductos[grupo].cant += cant;
+                        mapaConteoProductos[grupo].subtotalCOP += sub;
+                    });
+                }
+            });
+
+            let arrayTopVendidos = Object.keys(mapaConteoProductos).map(k => ({
+                concepto: k,
+                cant: mapaConteoProductos[k].cant,
+                subtotalCOP: mapaConteoProductos[k].subtotalCOP
+            })).sort((a, b) => b.cant - a.cant);
+
+            let topVendidosHtml = "";
+            if (arrayTopVendidos.length > 0) {
+                topVendidosHtml = `
+                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
+                        <span class="text-[10px] font-black uppercase text-blue-900 block border-b border-slate-200 pb-1">
+                            <i class="fa-solid fa-ranking-star text-amber-500 mr-1"></i> TOP PRODUCTOS / SERVICIOS MÁS VENDIDOS:
+                        </span>
+                        <div class="space-y-1 max-h-44 overflow-y-auto pr-1">
+                            ${arrayTopVendidos.map(p => `
+                                <div class="flex justify-between items-center text-[10px] py-1 border-b border-slate-100">
+                                    <span class="font-bold text-slate-800">• <strong>${p.cant}x</strong> ${p.concepto}</span>
+                                    <b class="font-mono text-emerald-700">${fmtMonto(p.subtotalCOP)} COP</b>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
             const renderBox = document.getElementById('contenido-hoja-blanca-tucocel-render');
             renderBox.innerHTML = `
                 <div class="space-y-4">
@@ -4221,6 +4343,7 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
                         <div class="flex justify-between"><span>(-) Total Compras, Inversiones & Facturas:</span> <b class="text-red-600">-${fmtMonto(totalEgresosComprasAcum)} COP</b></div>
                         <div class="flex justify-between font-bold border-t pt-1 text-slate-950"><span>(=) SALDO NETO COMERCIAL:</span> <b>${fmtMonto(diferenciaCOP)} COP</b></div>
                     </div>
+                    ${topVendidosHtml}
                     ${comparativoBadgeHtml}
                     ${estadoBadge}
                     <div class="text-[9px] text-slate-500 italic text-center pt-2">
