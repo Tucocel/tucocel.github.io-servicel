@@ -1888,37 +1888,42 @@
         // INICIO DE SESIÓN INSTANTÁNEO Y COMPATIBLE CON MODO OFFLINE
         window.svc_ejecutarLoginGlobal = async function() {
             try {
-                const user = document.getElementById('auth-user').value.trim().toLowerCase();
-                const pass = document.getElementById('auth-pass').value.trim();
+                const userEl = document.getElementById('auth-user');
+                const passEl = document.getElementById('auth-pass');
+                const user = (userEl ? userEl.value : '').trim().toLowerCase();
+                const pass = (passEl ? passEl.value : '').trim();
 
                 let esMaster = false;
                 let tecMatch = null;
                 let nombreDisplaySplash = "";
 
-                if(user === "tucocel" && pass === "Razu2020.") {
+                if (user === "tucocel" && pass === "Razu2020.") {
                     esMaster = true;
                     rolDeSesionActiva = "MASTER";
                     usuarioSesionActivo = "MASTER";
                     nombreDisplaySplash = "Máster Robert";
                 } else {
-                    if(svc_tecnicosPerfiles.length === 0) {
+                    if (svc_tecnicosPerfiles.length === 0) {
                         try {
                             const docSnapTecs = await getDoc(doc(db, "tcl_servicell_independent", "tecnicos_perfiles"));
                             svc_tecnicosPerfiles = docSnapTecs.exists() ? docSnapTecs.data().perfiles || [] : [];
-                        } catch(e) {}
+                        } catch(e) {
+                            console.warn("Fallo cargando perfiles:", e);
+                        }
                     }
                     tecMatch = svc_tecnicosPerfiles.find(t => t.user.toLowerCase() === user && t.pass === pass);
-                    if(tecMatch) {
+                    if (tecMatch) {
                         rolDeSesionActiva = tecMatch.rol || "TECNICO"; 
                         usuarioSesionActivo = tecMatch.user;
                         nombreDisplaySplash = tecMatch.nombre;
                     } else {
-                        return alert("❌ Acceso Denegado: Credenciales incorrectas.");
+                        return alert("❌ Acceso Denegado: Usuario o Contraseña incorrectos.");
                     }
                 }
 
+                // Configurar barra de navegación y pestañas según el rol
                 const tabsContainer = document.getElementById('workspace-tabs');
-                if(rolDeSesionActiva === "MASTER") {
+                if (rolDeSesionActiva === "MASTER") {
                     document.getElementById('label-indicador-rol').innerText = "SESIÓN: MÁSTER SUPREMO CONTROLES";
                     document.getElementById('label-indicador-rol').className = "text-[10px] bg-blue-950/40 px-2.5 py-0.5 border border-blue-500/20 text-blue-400 font-black tracking-widest uppercase block mt-1";
                     
@@ -1941,48 +1946,27 @@
                         <button id="tab-btn-inventario" onclick="window.svc_cambiarTab('inventario')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-boxes-stacked text-purple-400"></i> Consultar Inventario</button>`;
                 }
 
+                // Ocultar pantalla de login
                 document.getElementById('contenedor-login').classList.add('hidden');
-                const splash = document.getElementById('splash-welcome');
-                const titleBox = document.getElementById('splash-title');
-                const subBox = document.getElementById('splash-sub');
-                const iconBox = document.getElementById('splash-icon');
 
-                if(esMaster || rolDeSesionActiva === "MASTER") {
-                    titleBox.innerText = `¡Bienvenido, ${nombreDisplaySplash}!`;
-                    subBox.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-blue-400"></i> Desbloqueando Bóvedas Financieras...`;
-                    iconBox.className = "fa-solid fa-crown text-amber-400";
-                } else {
-                    titleBox.innerText = `¡Bienvenido, ${nombreDisplaySplash}!`;
-                    subBox.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-purple-400"></i> Cargando módulo de Recepción en Mostrador...`;
-                    iconBox.className = "fa-solid fa-screwdriver-wrench text-purple-400";
-                }
-
-                splash.classList.remove('hidden');
-
-                // DERECHO Y CARGA BLOQUEANTE HASTA COMPLETAR FIREBASE
-                if(!esMaster && tecMatch) {
+                // Si es técnico sin expediente, solicitar llenarlo
+                if (!esMaster && tecMatch) {
                     try {
                         const docExp = await getDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`));
-                        if(!docExp.exists()) {
-                            splash.classList.add('hidden');
+                        if (!docExp.exists()) {
                             document.getElementById('contenedor-expediente-tecnico').classList.remove('hidden');
-                        } else {
-                            await window.svc_desbloquearWORKSPACE();
-                            splash.classList.add('fade-out');
-                            setTimeout(() => { splash.classList.add('hidden'); splash.classList.remove('fade-out'); }, 300);
+                            return;
                         }
-                    } catch(e) { 
-                        await window.svc_desbloquearWORKSPACE();
-                        splash.classList.add('fade-out');
-                        setTimeout(() => { splash.classList.add('hidden'); splash.classList.remove('fade-out'); }, 300);
-                    }
-                } else {
-                    await window.svc_desbloquearWORKSPACE();
-                    splash.classList.add('fade-out');
-                    setTimeout(() => { splash.classList.add('hidden'); splash.classList.remove('fade-out'); }, 300);
+                    } catch(e) {}
                 }
 
-            } catch(e) { alert("Acceso directo concedido."); window.svc_desbloquearWORKSPACE(); }
+                // Desbloqueo directo e inmediato
+                window.svc_desbloquearWORKSPACE();
+
+            } catch(e) {
+                console.error("Error en login:", e);
+                window.svc_desbloquearWORKSPACE();
+            }
         };
 
         window.svc_guardarExpedienteTecnicoInalterable = async function() {
@@ -2004,14 +1988,24 @@
             window.svc_desbloquearWORKSPACE();
         };
 
-        window.svc_desbloquearWORKSPACE = async function() {
-            document.getElementById('main-header').classList.remove('hidden');
-            document.getElementById('contenedor-workspace').classList.remove('hidden');
+        window.svc_desbloquearWORKSPACE = function() {
+            // 1. Mostrar cabecera y espacio de trabajo de inmediato
+            const header = document.getElementById('main-header');
+            const ws = document.getElementById('contenedor-workspace');
+            const loginBox = document.getElementById('contenedor-login');
+            const splash = document.getElementById('splash-welcome');
 
-            document.getElementById('form-operador-display').value = usuarioSesionActivo.toUpperCase();
-            document.getElementById('form-operador').value = usuarioSesionActivo;
+            if(header) header.classList.remove('hidden');
+            if(ws) ws.classList.remove('hidden');
+            if(loginBox) loginBox.classList.add('hidden');
+            if(splash) splash.classList.add('hidden');
 
-            // 0. Inyección Inmediata desde Caché Local (Cero segundos en blanco o tablas en cero)
+            const opDisp = document.getElementById('form-operador-display');
+            const opVal = document.getElementById('form-operador');
+            if(opDisp) opDisp.value = (usuarioSesionActivo || 'MASTER').toUpperCase();
+            if(opVal) opVal.value = (usuarioSesionActivo || 'MASTER');
+
+            // 2. Cargar respaldo local de contingencia instantáneamente
             cargarRespaldoLocalContingencia();
             window.svc_renderizerEcosistema();
             window.tcl_renderizerParticionTucocel();
@@ -2019,23 +2013,26 @@
             window.tcl_renderizerHistoricoTucocel();
             window.tcl_renderizerMesesLiquidadosHistorico();
 
-            // 1. Descarga e Inyección Fresca desde la Nube (Firebase)
-            await window.svc_descargarServidorCentral();
-
-            // 2. Activación de Escuchadores en Tiempo Real (onSnapshot Bidireccional PC <-> Móvil)
-            window.svc_iniciarListenersTiempoReal();
-
-            // 3. Verificación de Tasa Oficial con datos ya renderizados
-            await window.svc_verificarOIngresarTasaDiaria();
-            
+            // 3. Activar pestaña inicial
             if(rolDeSesionActiva === "MASTER") {
                 window.svc_cambiarTab('NINGUNO');
             } else {
                 window.svc_cambiarTab('recepcion');
             }
+
+            // 4. Sincronización en segundo plano con Firebase sin congelar la pantalla
+            setTimeout(async () => {
+                try {
+                    await window.svc_descargarServidorCentral();
+                    window.svc_iniciarListenersTiempoReal();
+                    await window.svc_verificarOIngresarTasaDiaria();
+                } catch(errCloud) {
+                    console.warn("Sincronización background:", errCloud);
+                }
+            }, 100);
         };
 
-                // =========================================================
+        // =========================================================
         // SINCRONIZACIÓN EN TIEMPO REAL BI-DIRECCIONAL (onSnapshot)
         // =========================================================
         let svc_unsubListeners = [];
@@ -2801,24 +2798,37 @@ Garantía     : ${c.diasGarantia || 2} Días
         window.svc_reenviarWhatsAppCierrePasado = function(key) {
             const match = svc_historicoCierresDiarios.find(x => x.idFolio === key || x.fecha === key); if(!match) return;
             let itemsTxt = "";
-            match.items.forEach(i => {
-                itemsTxt += `• ${i.concepto} (x${i.cantidad})%0A  ↳ *${fmtMonto(i.precioCOP * i.cantidad)} COP*%0A`;
+            let totalUnidadesServicell = 0;
+            match.items.forEach((i, idx) => {
+                const cant = i.cantidad || 1;
+                totalUnidadesServicell += cant;
+                const sub = (i.precioCOP || 0) * cant;
+                itemsTxt += `${idx + 1}. *${i.concepto}* (x${cant})\n   ↳ *${fmtMonto(sub)} COP* [${i.tipo || 'SERVICIO'}]\n`;
             });
 
-            let msg = `🛍️ *DOCUMENTO CONTABLE CORPORATIVO — SERVICELL*%0A` +
-                      `🧾 *SERVICIO TÉCNICO DE TUCOCEL C.A.*%0A` +
-                      `──────────────────────────────%0A` +
-                      `👤 *TÉCNICO / OPERADOR:* ${match.tecKey.toUpperCase()}%0A` +
-                      `📅 *FECHA:* ${match.fecha}%0A` +
-                      `──────────────────────────────%0A%0A` +
-                      `🛠️ *DESGLOSE DE ACTIVIDAD:*%0A${itemsTxt}%0A` +
-                      `──────────────────────────────%0A` +
-                      `💵 *Caja Bruta Recaudada:*%0A*${fmtMonto(match.totalServicios + match.totalVentas)} COP*%0A%0A` +
-                      `🟢 *NETO A FAVOR DEL TÉCNICO:*%0A*${fmtMonto(match.gananciaTecnico)} COP*%0A%0A` +
-                      `📌 *Nota:* Este reporte diario refleja únicamente la producción del día. Los adelantos de vales acumulados no se descuentan aquí, se liquidan en el Cierre Semanal de Nómina.%0A%0A` +
-                      `🔒 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.* 🔒`;
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+            const totalBruto = (match.totalServicios || 0) + (match.totalVentas || 0);
+            const totalUSD = totalBruto / tCOP;
 
-            window.svc_compartirTextoUniversal('Reporte Corporativo', msg);
+            let msg = `🛍️ *REPORTE DIARIO DE COMANDA — SERVICELL*\n` +
+                      `🧾 *SERVICIO TÉCNICO DE TUCOCEL C.A.*\n` +
+                      `──────────────────────────────\n` +
+                      `👤 *Técnico / Operador:* ${match.tecKey.toUpperCase()}\n` +
+                      `📅 *Fecha:* ${match.fecha} | *Hora:* ${match.hora || ''}\n` +
+                      `🔖 *Folio:* #${match.idFolio}\n` +
+                      `──────────────────────────────\n\n` +
+                      `🛠️ *DESGLOSE DE ACTIVIDAD / TRABAJOS:*\n` +
+                      `${itemsTxt}\n` +
+                      `──────────────────────────────\n` +
+                      `📦 *Total Trabajos / Ítems:* ${match.items.length} (${totalUnidadesServicell} unidades)\n` +
+                      `🔧 *Total Servicios Taller:* ${fmtMonto(match.totalServicios)} COP\n` +
+                      `🛍️ *Total Ventas Mostrador:* ${fmtMonto(match.totalVentas)} COP\n` +
+                      `💵 *CAJA BRUTA RECAUDADA:* *${fmtMonto(totalBruto)} COP* ($${totalUSD.toFixed(2)} USD)\n\n` +
+                      `🟢 *NETO A FAVOR DEL TÉCNICO (50%):*\n*${fmtMonto(match.gananciaTecnico)} COP* ($${(match.gananciaTecnico/tCOP).toFixed(2)} USD)\n\n` +
+                      `📌 *Nota de Nómina:* Este reporte diario refleja la producción del turno. Los vales o adelantos se liquidan formalmente en el Cierre Semanal.\n\n` +
+                      `🔒 *SERVICELL — TUCOCEL C.A.*`;
+
+            window.svc_compartirTextoUniversal('Reporte de Comanda Servicell', msg);
         };
 
         window.svc_reimprimirTicketPasado = function(key) {
@@ -3129,6 +3139,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             let valesAcumulados = 0;
             let valesTxt = "";
             let itemsTxt = "";
+            let idxTrabajo = 1;
 
             svc_historicoCierresDiarios.forEach(c => {
                 if(c.tecKey === tecSeleccionado && c.status !== "ANULADA" && c.liquidadoSemana !== true) {
@@ -3139,7 +3150,8 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                         } else {
                             ventasMostrador += sub;
                         }
-                        itemsTxt += `• ${i.concepto} (x${i.cantidad})%0A  ↳ *${fmtMonto(sub)} COP* _(${c.fecha})_%0A`;
+                        itemsTxt += `${idxTrabajo}. *${i.concepto}* (x${i.cantidad || 1})\n   ↳ *${fmtMonto(sub)} COP* _(${c.fecha})_\n`;
+                        idxTrabajo++;
                     });
                     comisionServicios += (c.gananciaTecnico || 0);
                 }
@@ -3148,47 +3160,45 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
             svc_valesGlobal.forEach(v => {
                 if(v.operador === tecSeleccionado) {
                     valesAcumulados += (v.monto || 0);
-                    valesTxt += `  • -${fmtMonto(v.monto)} COP (${v.motivo || 'Dinero Personal'}) - ${v.fecha}%0A`;
+                    valesTxt += `   • -${fmtMonto(v.monto)} COP (${v.motivo || 'Dinero Personal'}) [${v.fecha}]\n`;
                 }
             });
 
-            // FÓRMULA CORREGIDA
             const subtotalAFavor = comisionServicios + sueldoBaseCOP;
             const netoPagar = subtotalAFavor - valesAcumulados;
 
             let analisisTallerTxt = "";
             const metaTallerCOP = 500000;
             if(totalBrutoTaller >= metaTallerCOP) {
-                analisisTallerTxt = `✅ *Laboratorio Activo:* Excelente producción en taller esta semana (${fmtMonto(totalBrutoTaller)} COP). Se cumplió la meta operativa de sustentabilidad.`;
+                analisisTallerTxt = `✅ *Laboratorio Activo:* Excelente producción en taller esta semana (${fmtMonto(totalBrutoTaller)} COP). Meta cumplida con superávit.`;
             } else {
-                analisisTallerTxt = `🔴 *Alerta de Producción Taller:* La producción de servicio técnico cerró en ${fmtMonto(totalBrutoTaller)} COP (Meta Mínima: 500.000 COP).%0A💡 *Sugerencia:* Promocionar revisiones, mantenimientos y cambios de pantalla para incrementar la captación de equipos.`;
+                analisisTallerTxt = `💡 *Sugerencia Operativa:* La producción de servicio técnico cerró en ${fmtMonto(totalBrutoTaller)} COP (Meta Mínima: 500.000 COP). Impulsar revisiones y cambios de pantalla.`;
             }
 
-            let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN SEMANAL — SERVICELL*%0A` +
-                      `🧾 *SERVICIO TÉCNICO DE TUCOCEL C.A.*%0A` +
-                      `──────────────────────────────%0A` +
-                      `👤 *TÉCNICO / OPERADOR:* ${tecSeleccionado.toUpperCase()}%0A` +
-                      `📅 *FECHA DE CORTE:* ${new Date().toLocaleDateString()}%0A` +
-                      `──────────────────────────────%0A%0A` +
-                      `📋 *DETALLE DE PRODUCCIÓN REALIZADA:*%0A` +
-                      `${itemsTxt || '• Cero trabajos registrados%0A'}%0A` +
-                      `──────────────────────────────%0A` +
-                      `📊 *Total Facturado Taller:*%0A*${fmtMonto(totalBrutoTaller)} COP*%0A%0A` +
-                      `• *Comisión Servicio Técnico (${comisionPorc}%):*%0A*${fmtMonto(comisionServicios)} COP*%0A%0A` +
-                      `• *Sueldo Base Semanal Fijo:*%0A*${fmtMonto(sueldoBaseCOP)} COP*%0A` +
-                      `──────────────────────────────%0A` +
-                      `💵 *SUBTOTAL A FAVOR:*%0A*${fmtMonto(subtotalAFavor)} COP*%0A%0A` +
-                      `🔻 *DEDUCCIÓN POR VALES / ADELANTOS:*%0A*-${fmtMonto(valesAcumulados)} COP*%0A` +
-                      `${valesTxt ? `%0A📌 *DESGLOSE DE VALES:*%0A${valesTxt}` : ''}%0A` +
-                      `──────────────────────────────%0A` +
-                      `🛍️ *Ventas Mostrador Atendidas (Informativo):*%0A*${fmtMonto(ventasMostrador)} COP*%0A` +
-                      `──────────────────────────────%0A` +
-                      `💰 *TOTAL NETO A CANCELAR ESTA SEMANA:*%0A*${fmtMonto(netoPagar)} COP*%0A%0A` +
-                      `📊 *ANÁLISIS DE RENDIMIENTO INTELIGENTE:*%0A` +
-                      `${analisisTallerTxt}%0A%0A` +
-                      `🔒 *DOCUMENTO AUDITADO Y FIRMADO POR TUCOCEL C.A.* 🔒`;
+            let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN SEMANAL*\n` +
+                      `🧾 *SERVICELL — SERVICIO TÉCNICO TUCOCEL C.A.*\n` +
+                      `──────────────────────────────\n` +
+                      `👤 *Técnico / Operador:* ${tecSeleccionado.toUpperCase()}\n` +
+                      `📅 *Fecha de Corte:* ${new Date().toLocaleDateString()}\n` +
+                      `──────────────────────────────\n\n` +
+                      `📋 *DETALLE DE PRODUCCIÓN REALIZADA:*\n` +
+                      `${itemsTxt || '• Cero trabajos registrados en la semana\n'}\n` +
+                      `──────────────────────────────\n` +
+                      `📊 *Total Facturado Taller:* *${fmtMonto(totalBrutoTaller)} COP*\n\n` +
+                      `• *Comisión Servicio Técnico (${comisionPorc}%):* *${fmtMonto(comisionServicios)} COP*\n` +
+                      `• *Sueldo Base Semanal Fijo:* *${fmtMonto(sueldoBaseCOP)} COP*\n` +
+                      `──────────────────────────────\n` +
+                      `💵 *SUBTOTAL A FAVOR:* *${fmtMonto(subtotalAFavor)} COP*\n\n` +
+                      `🔻 *DEDUCCIÓN POR VALES / ADELANTOS:* *-${fmtMonto(valesAcumulados)} COP*\n` +
+                      `${valesTxt ? `\n📌 *DESGLOSE DE VALES:*\n${valesTxt}` : ''}\n` +
+                      `──────────────────────────────\n` +
+                      `🛍️ *Ventas Mostrador Atendidas (Info):* ${fmtMonto(ventasMostrador)} COP\n` +
+                      `──────────────────────────────\n` +
+                      `💰 *TOTAL NETO A CANCELAR:*\n*${fmtMonto(netoPagar)} COP*\n\n` +
+                      `📊 *ESTADO:*\n${analisisTallerTxt}\n\n` +
+                      `🔒 *DOCUMENTO AUDITADO — TUCOCEL C.A.*`;
 
-            window.svc_compartirTextoUniversal('Reporte Corporativo', msg);
+            window.svc_compartirTextoUniversal('Liquidación Semanal Servicell', msg);
         };
 
         // FUNCIONES DEDICADAS PARA REGISTRO DE VALES CON MOTIVO Y CONCEPTO
@@ -3373,39 +3383,41 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
         window.svc_reenviarWhatsAppSemanaLiquidada = function(idx) {
             const sem = svc_historicoSemanasLiquidadas[idx]; if(!sem) return;
             let itemsTxt = "";
+            let idxTrabajo = 1;
             if(sem.items && sem.items.length > 0) {
                 sem.items.forEach(i => {
-                    itemsTxt += `• ${i.concepto} (x${i.cantidad})%0A  ↳ *${fmtMonto(i.precioCOP * i.cantidad)} COP* _(${i.fecha})_%0A`;
+                    itemsTxt += `${idxTrabajo}. *${i.concepto}* (x${i.cantidad || 1})\n   ↳ *${fmtMonto((i.precioCOP || 0) * (i.cantidad || 1))} COP* _(${i.fecha})_\n`;
+                    idxTrabajo++;
                 });
             }
             let valesTxt = "";
             if(sem.vales && sem.vales.length > 0) {
                 sem.vales.forEach(v => {
-                    valesTxt += `  • -${fmtMonto(v.monto)} COP (${v.motivo || 'Dinero Personal'}) - ${v.fecha}%0A`;
+                    valesTxt += `   • -${fmtMonto(v.monto)} COP (${v.motivo || 'Dinero Personal'}) [${v.fecha}]\n`;
                 });
             }
 
-            let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN SEMANAL — SERVICELL*%0A` +
-                      `🧾 *SERVICIO TÉCNICO DE TUCOCEL C.A.*%0A` +
-                      `──────────────────────────────%0A` +
-                      `👤 *TÉCNICO / OPERADOR:* ${sem.tecKey.toUpperCase()}%0A` +
-                      `📅 *CORTE REGISTRADO:* #${sem.idSemana} (${sem.fechaCierre})%0A` +
-                      `──────────────────────────────%0A%0A` +
-                      `📋 *DETALLE DE PRODUCCIÓN REALIZADA:*%0A` +
-                      `${itemsTxt || '• Cero trabajos registrados%0A'}%0A` +
-                      `──────────────────────────────%0A` +
-                      `📊 *Total Facturado Taller:*%0A*${fmtMonto(sem.totalBrutoTaller)} COP*%0A%0A` +
-                      `• *Comisión Servicio Técnico (${sem.comisionPorc}%):*%0A*${fmtMonto(sem.comisionServicios)} COP*%0A%0A` +
-                      `• *Sueldo Base Semanal Fijo:*%0A*${fmtMonto(sem.sueldoBaseCOP)} COP*%0A` +
-                      `──────────────────────────────%0A` +
-                      `💵 *SUBTOTAL A FAVOR:*%0A*${fmtMonto(sem.subtotalAFavor)} COP*%0A%0A` +
-                      `🔻 *DEDUCCIÓN POR VALES / ADELANTOS:*%0A*-${fmtMonto(sem.valesAcumulados)} COP*%0A` +
-                      `${valesTxt ? `%0A📌 *DESGLOSE DE VALES:*%0A${valesTxt}` : ''}%0A` +
-                      `──────────────────────────────%0A` +
-                      `💰 *TOTAL NETO PAGADO ESTA SEMANA:*%0A*${fmtMonto(sem.netoPagar)} COP*%0A%0A` +
-                      `🔒 *DOCUMENTO AUDITADO Y FIRMADO POR TUCOCEL C.A.* 🔒`;
+            let msg = `👑 *COMPROBANTE DE LIQUIDACIÓN SEMANAL CERRADA*\n` +
+                      `🧾 *SERVICELL — SERVICIO TÉCNICO TUCOCEL C.A.*\n` +
+                      `──────────────────────────────\n` +
+                      `👤 *Técnico / Operador:* ${sem.tecKey.toUpperCase()}\n` +
+                      `📅 *Corte Registrado:* #${sem.idSemana} (${sem.fechaCierre})\n` +
+                      `──────────────────────────────\n\n` +
+                      `📋 *DETALLE DE PRODUCCIÓN REALIZADA:*\n` +
+                      `${itemsTxt || '• Cero trabajos registrados\n'}\n` +
+                      `──────────────────────────────\n` +
+                      `📊 *Total Facturado Taller:* *${fmtMonto(sem.totalBrutoTaller)} COP*\n\n` +
+                      `• *Comisión Servicio Técnico (${sem.comisionPorc}%):* *${fmtMonto(sem.comisionServicios)} COP*\n` +
+                      `• *Sueldo Base Semanal Fijo:* *${fmtMonto(sem.sueldoBaseCOP)} COP*\n` +
+                      `──────────────────────────────\n` +
+                      `💵 *SUBTOTAL A FAVOR:* *${fmtMonto(sem.subtotalAFavor)} COP*\n\n` +
+                      `🔻 *DEDUCCIÓN POR VALES / ADELANTOS:* *-${fmtMonto(sem.valesAcumulados)} COP*\n` +
+                      `${valesTxt ? `\n📌 *DESGLOSE DE VALES:*\n${valesTxt}` : ''}\n` +
+                      `──────────────────────────────\n` +
+                      `💰 *TOTAL NETO PAGADO ESTA SEMANA:*\n*${fmtMonto(sem.netoPagar)} COP*\n\n` +
+                      `🔒 *DOCUMENTO AUDITADO — TUCOCEL C.A.*`;
 
-            window.svc_compartirTextoUniversal('Reporte Corporativo', msg);
+            window.svc_compartirTextoUniversal('Liquidación Semanal Cerrada', msg);
         };
 
         window.svc_filtrarComandasBuscador = function() {
@@ -4700,30 +4712,30 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
         // Abre el selector nativo de Android (WhatsApp, WhatsApp Business, Gmail, Bluetooth, etc.)
         // =========================================================
         window.svc_compartirTextoUniversal = async function(titulo, texto, telefonoDirecto = null) {
-            // Si el dispositivo móvil o navegador soporta la API nativa de compartir
+            // Saneamiento de saltos de línea para evitar literales '%0A' en WhatsApp
+            let textoLimpio = String(texto || '').split('%0A').join('\n');
+
+            // Selector nativo de compartir (Android / iOS)
             if (navigator && navigator.share) {
                 try {
                     await navigator.share({
                         title: titulo || "TUCOCEL C.A. / SERVICELL",
-                        text: texto
+                        text: textoLimpio
                     });
                     return;
                 } catch (e) {
-                    if (e.name === 'AbortError') {
-                        // El usuario canceló la hoja de compartir
-                        return;
-                    }
-                    console.warn("navigator.share falló, usando fallback:", e);
+                    if (e.name === 'AbortError') return;
+                    console.warn("navigator.share no completado, usando enlace web:", e);
                 }
             }
 
-            // Fallback para PC de escritorio o navegadores sin soporte Web Share
+            // Alternativa para navegadores sin menú nativo (PC)
             if (telefonoDirecto) {
                 let cleanPhone = String(telefonoDirecto).replace(/\D/g, '');
                 if(!cleanPhone.startsWith('58')) cleanPhone = '58' + cleanPhone;
-                window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(texto)}`, '_blank');
+                window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(textoLimpio)}`, '_blank');
             } else {
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textoLimpio)}`, '_blank');
             }
         };
 
