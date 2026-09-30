@@ -513,7 +513,7 @@
                         <div class="space-y-3 text-xs font-bold">
                             <div>
                                 <label class="text-[10px] text-slate-400 uppercase block mb-1">Descripción de Tarea / Repuesto (Ganancia Neta Limpia)</label>
-                                <input type="text" id="svc-input-concepto" list="lista-conceptos-servicell" placeholder="Ej: REPARACIÓN PIN, PANTALLA, MANTENIMIENTO..." onkeydown="if(event.key === 'Enter') window.svc_agregarLineaComandaDiaria();" class="w-full bg-slate-950 border border-slate-800 p-3.5 rounded-xl text-white font-bold uppercase focus:outline-none focus:border-purple-500 text-sm">
+                                <input type="text" id="svc-input-concepto" list="lista-conceptos-servicell" onchange="window.svc_alSeleccionarConceptoComandaAuto(this.value)" oninput="window.svc_alSeleccionarConceptoComandaAuto(this.value)" placeholder="Ej: REPARACIÓN PIN, PANTALLA, VIDRIO TEMPLADO..." onkeydown="if(event.key === 'Enter') window.svc_agregarLineaComandaDiaria();" class="w-full bg-slate-950 border border-slate-800 p-3.5 rounded-xl text-white font-bold uppercase focus:outline-none focus:border-purple-500 text-sm">
                                 <datalist id="lista-conceptos-servicell"></datalist>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
@@ -652,6 +652,184 @@
 
                         <div class="pt-1">
                             <button onclick="window.svc_abrirVisorHojaBlancaSemanal()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3.5 rounded-xl uppercase tracking-wider shadow flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"><i class="fa-solid fa-file-lines text-sm"></i> 👁️ Ver Cierre de Semana</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                        <!-- PARTICIÓN INVENTARIO SERVICELL (REPUESTOS Y ACCESORIOS CON STOCK REAL) -->
+            <div id="tab-inventario" class="lg:col-span-12 hidden w-full space-y-6 text-slate-300">
+                <!-- BANDERÍN INFORMATIVO INVENTARIO -->
+                <div class="bg-gradient-to-r from-purple-900/40 via-slate-900 to-indigo-900/40 border border-purple-500/30 p-4 sm:p-5 rounded-3xl flex flex-col sm:flex-row justify-between items-center gap-4 shadow-xl">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-purple-500/20 border border-purple-400/40 text-purple-400 rounded-2xl flex items-center justify-center text-2xl font-black">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-black text-white uppercase tracking-wider">INVENTARIO DE TALLER & ACCESORIOS SERVICELL</h3>
+                            <p class="text-[10.5px] text-slate-400">Control de stock de repuestos y accesorios. Las ventas descuentan unidades automáticamente; los servicios de mano de obra no consumen stock.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-purple-950/60 border border-purple-500/30 text-purple-300 text-[10px] font-mono px-3 py-1.5 rounded-xl uppercase font-bold">
+                            📦 Descuento automático al facturar
+                        </span>
+                    </div>
+                </div>
+
+                <!-- TARJETAS MÉTRICAS DE STOCK -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono">
+                    <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl text-center shadow-md">
+                        <span class="text-[9px] font-black text-purple-400 block uppercase tracking-wider font-sans mb-1">🏷️ Variedad de Productos</span>
+                        <b id="lbl-inv-total-productos" class="text-xl sm:text-2xl text-white font-black">0 Ítems</b>
+                    </div>
+                    <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl text-center shadow-md">
+                        <span class="text-[9px] font-black text-emerald-400 block uppercase tracking-wider font-sans mb-1">📦 Unidades en Stock</span>
+                        <b id="lbl-inv-total-unidades" class="text-xl sm:text-2xl text-emerald-400 font-black">0 Unid.</b>
+                    </div>
+                    <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl text-center shadow-md">
+                        <span class="text-[9px] font-black text-amber-400 block uppercase tracking-wider font-sans mb-1">💰 Valorización Estimada</span>
+                        <b id="lbl-inv-valor-total" class="text-xl sm:text-2xl text-amber-400 font-black">0 COP</b>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <!-- FORMULARIO DE CARGA / SUMA DE PRODUCTO CON CATEGORÍAS CREADAS LIBREMENTE -->
+                    <div class="lg:col-span-5 bg-slate-900/60 border border-purple-500/40 p-5 rounded-3xl shadow-xl space-y-4">
+                        <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
+                            <h4 class="text-xs sm:text-sm font-black text-purple-400 uppercase tracking-widest flex items-center gap-2">
+                                <i class="fa-solid fa-plus-circle"></i> Cargar Producto o Sumar Stock
+                            </h4>
+                            <span class="text-[9px] text-slate-500 font-mono">MULTIMONEDA</span>
+                        </div>
+
+                        <div class="space-y-3 text-xs font-bold">
+                            <div>
+                                <label class="text-[9.5px] text-slate-300 uppercase block mb-1">Nombre / Modelo del Accesorio o Repuesto</label>
+                                <input type="text" id="inv-in-nombre" placeholder="Ej: VIDRIO TEMPLADO REDMI 13" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white uppercase text-xs focus:outline-none focus:border-purple-500 font-bold" oninput="window.svc_verificarCoincidenciaInventarioAuto(this.value)">
+                                <span id="lbl-inv-coincidencia-aviso" class="text-[9px] text-amber-400 mt-1 block hidden">💡 Ya existe este producto. Si guardas, se sumará la cantidad ingresada al stock actual.</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-[9.5px] text-slate-300 uppercase block mb-1">Categoría (Crea o elige la tuya)</label>
+                                    <input type="text" id="inv-in-categoria" list="lista-categorias-inventario" placeholder="Ej: PANTALLAS, FORROS..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white uppercase font-bold text-xs focus:outline-none focus:border-purple-500">
+                                    <datalist id="lista-categorias-inventario"></datalist>
+                                </div>
+                                <div>
+                                    <label class="text-[9.5px] text-slate-300 uppercase block mb-1">Cantidad a Ingresar</label>
+                                    <input type="number" id="inv-in-stock" value="1" min="1" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white text-center font-black focus:outline-none text-sm">
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-3 font-mono">
+                                <span class="text-[9px] text-purple-400 font-black uppercase block tracking-wider font-sans">Control de Precios & Costos</span>
+                                
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="text-[8.5px] text-slate-400 uppercase block font-sans mb-1">Moneda Venta</label>
+                                        <select id="inv-in-moneda-venta" onchange="window.svc_recalcularPreciosInventarioInput()" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white text-xs font-bold focus:outline-none">
+                                            <option value="COP" selected>Pesos (COP)</option>
+                                            <option value="USD">Dólares ($USD)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[8.5px] text-emerald-400 uppercase block font-sans mb-1">Precio Venta Público</label>
+                                        <input type="text" id="inv-in-precio-venta" placeholder="Ej: 15.000" onkeyup="window.svc_maskInputFormatted(this); window.svc_recalcularPreciosInventarioInput();" class="w-full bg-slate-900 border border-emerald-500/40 p-2 rounded-xl text-emerald-400 text-center font-black text-xs focus:outline-none">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="text-[8.5px] text-slate-400 uppercase block font-sans mb-1">Moneda Costo (Opc.)</label>
+                                        <select id="inv-in-moneda-costo" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white text-xs font-bold focus:outline-none">
+                                            <option value="USD" selected>Dólares ($)</option>
+                                            <option value="COP">Pesos (COP)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[8.5px] text-amber-400 uppercase block font-sans mb-1">Costo Unitario</label>
+                                        <input type="text" id="inv-in-costo" placeholder="Ej: 1.50" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-amber-400 text-center font-black text-xs focus:outline-none">
+                                    </div>
+                                </div>
+
+                                <div class="text-[9.5px] text-slate-400 text-center pt-1 border-t border-slate-900">
+                                    <span id="lbl-inv-equiv-venta">Equivalente: $0.00 USD</span>
+                                </div>
+                            </div>
+
+                            <button onclick="window.svc_guardarOActualizarProductoInventario()" type="button" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs py-3.5 rounded-xl uppercase tracking-wider shadow-lg transition-all hover:scale-[1.01]">
+                                💾 Registrar / Sumar a Inventario
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- LISTA Y TABLA DE INVENTARIO CON ACCIONES -->
+                    <div class="lg:col-span-7 bg-slate-900/60 border border-slate-800 p-5 rounded-3xl shadow-xl space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-800 pb-3">
+                            <h4 class="text-xs sm:text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-purple-400"></i> Existencias en Taller
+                            </h4>
+                            <div class="flex items-center gap-2 w-full sm:w-auto">
+                                <select id="inv-filtro-categoria" onchange="window.svc_renderizarInventarioTaller()" class="bg-slate-950 border border-slate-800 text-slate-300 text-[10px] font-bold p-2 rounded-xl focus:outline-none uppercase">
+                                    <option value="TODAS">📁 Todas las Categorías</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- BUSCADOR EN TIEMPO REAL -->
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-xs"></i>
+                            <input type="text" id="inv-buscar-input" onkeyup="window.svc_renderizarInventarioTaller()" placeholder="Buscar producto por nombre o categoría..." class="w-full bg-slate-950 border border-slate-800 pl-9 pr-3.5 py-2.5 rounded-xl text-xs text-white uppercase focus:outline-none focus:border-purple-500 font-medium">
+                        </div>
+
+                        <!-- LISTA DE PRODUCTOS -->
+                        <div id="wrapper-lista-inventario-box" class="space-y-2.5 max-h-[500px] overflow-y-auto no-scrollbar pr-1"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL DE EDICIÓN FLOTANTE DE PRODUCTO DE INVENTARIO -->
+            <div id="modal-editar-producto-inv" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center hidden p-4 z-50">
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl font-mono text-xs">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
+                        <h4 class="text-xs font-black text-purple-400 uppercase tracking-wider flex items-center gap-1.5 font-sans">
+                            <i class="fa-solid fa-pen-to-square"></i> Modificar Producto de Inventario
+                        </h4>
+                        <button onclick="document.getElementById('modal-editar-producto-inv').classList.add('hidden')" class="text-slate-400 hover:text-white text-sm">✖</button>
+                    </div>
+
+                    <input type="hidden" id="modal-edit-inv-id">
+
+                    <div class="space-y-3 font-sans font-bold">
+                        <div>
+                            <label class="text-[9px] text-slate-400 uppercase block mb-1">Nombre / Descripción</label>
+                            <input type="text" id="modal-edit-inv-nombre" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white uppercase text-xs focus:outline-none focus:border-purple-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-[9px] text-slate-400 uppercase block mb-1">Categoría</label>
+                                <input type="text" id="modal-edit-inv-cat" list="lista-categorias-inventario" placeholder="Categoría..." class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white uppercase text-xs focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="text-[9px] text-slate-400 uppercase block mb-1">Stock Actual (Unid.)</label>
+                                <input type="number" id="modal-edit-inv-stock" min="0" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-center font-black text-xs font-mono focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 font-mono">
+                            <div>
+                                <label class="text-[8.5px] text-emerald-400 uppercase block font-sans mb-1">Precio Venta (COP)</label>
+                                <input type="text" id="modal-edit-inv-precio-cop" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-emerald-400 text-center font-black text-xs focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="text-[8.5px] text-amber-400 uppercase block font-sans mb-1">Costo Unit. ($USD)</label>
+                                <input type="text" id="modal-edit-inv-costo-usd" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-amber-400 text-center font-black text-xs focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 pt-2">
+                            <button onclick="document.getElementById('modal-editar-producto-inv').classList.add('hidden')" type="button" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl uppercase text-[10px]">Cancelar</button>
+                            <button onclick="window.svc_guardarCambiosModalEditarInventario()" type="button" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-black py-2.5 rounded-xl uppercase text-[10px] shadow">Guardar Cambios</button>
                         </div>
                     </div>
                 </div>
@@ -1000,6 +1178,47 @@
                         <div id="wrapper-lista-meses-viejos-tucocel" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
                     </div>
                 </div>
+
+                <!-- BÓVEDA 6: GESTOR DE PROVEEDORES & CATÁLOGO AUTO-GUARDADO TUCOCEL (CORRECCIÓN Y LIMPIEZA) -->
+                <div class="bg-slate-900/60 border border-blue-500/40 rounded-3xl overflow-hidden shadow-xl space-y-2">
+                    <button onclick="document.getElementById('wrapper-tucocel-gestor-catalogo-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-blue-500/20">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-blue-400 text-lg"></i>
+                            <span class="text-xs font-black text-blue-300 uppercase tracking-wider">⚙️ GESTOR DE PROVEEDORES & CATÁLOGO AUTO-GUARDADO TUCOCEL</span>
+                        </span>
+                        <span id="badge-total-catalogo-tucocel" class="text-[10px] font-black bg-blue-600/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-xl uppercase">🔧 Administrar Nombres</span>
+                    </button>
+
+                    <div id="wrapper-tucocel-gestor-catalogo-acordeon" class="hidden p-5 border-t border-slate-800/60 space-y-5">
+                        <p class="text-[10.5px] text-slate-400">
+                            Edita o elimina nombres mal escritos o duplicados para que las sugerencias automáticas de compras y ventas se mantengan limpias y profesionales.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <!-- BLOQUE 1: PROVEEDORES GUARDADOS -->
+                            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                                    <span class="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                                        <i class="fa-solid fa-truck"></i> Proveedores Registrados (<span id="lbl-cnt-proveedores-gestor">0</span>)
+                                    </span>
+                                    <button onclick="window.tcl_agregarNuevoProveedorManual()" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 text-[9px] font-black px-2 py-1 rounded-lg uppercase">➕ Añadir</button>
+                                </div>
+                                <div id="wrapper-lista-proveedores-gestor-box" class="space-y-1.5 max-h-60 overflow-y-auto no-scrollbar pr-1 text-xs"></div>
+                            </div>
+
+                            <!-- BLOQUE 2: CONCEPTOS / PRODUCTOS SUGERIDOS DE VENTAS -->
+                            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                                    <span class="text-xs font-black text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
+                                        <i class="fa-solid fa-tags"></i> Nombres / Conceptos de Ventas (<span id="lbl-cnt-conceptos-gestor">0</span>)
+                                    </span>
+                                    <button onclick="window.tcl_agregarNuevoConceptoManual()" class="bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-500/30 text-[9px] font-black px-2 py-1 rounded-lg uppercase">➕ Añadir</button>
+                                </div>
+                                <div id="wrapper-lista-conceptos-gestor-box" class="space-y-1.5 max-h-60 overflow-y-auto no-scrollbar pr-1 text-xs"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- PARTICIÓN 4: EXPEDIENTES Y TÉCNICOS SAAS -->
@@ -1189,6 +1408,8 @@
         let svc_historicoMesesServicell = [];
         let svc_historicoSemanasLiquidadas = [];
         let svc_fotoPatronBase64 = "";
+        let svc_inventarioGlobal = []; // Bóveda de Repuestos y Accesorios Servicell
+        let svc_categoriasInventario = ["REPUESTOS", "ACCESORIOS", "PANTALLAS", "BATERÍAS", "CARGADORES", "VIDRIOS"]; // Categorías libres creadas por el usuario
 
         // VARIABLES EXCLUSIVAS TUCOCEL C.A. (PARTICIÓN 3)
         let tcl_ventasActivasTurno = [];
@@ -1197,6 +1418,7 @@
         let tcl_historicoCierres = [];
         let tcl_historicoMesesTucocel = [];
         let tcl_proveedoresGuardados = ["PROVEEDOR GENERAL", "DISTRIBUIDOR CENTRAL", "MERCADO LIBRE"];
+        let tcl_conceptosFrecuentes = ["VIDRIO TEMPLADO", "VIDRIO CERÁMICA", "LÍNEA MOVISTAR 4G", "LÍNEA 4GB", "CARGADOR TIPO C", "CARGADOR V8", "FORRO", "CABLE TIPO C", "AUDÍFONOS", "PANTALLA", "REPARACIÓN PIN"];
 
         let rolDeSesionActiva = "BLOQUEADO";
         let usuarioSesionActivo = "";
@@ -1544,6 +1766,7 @@
                         <button id="tab-btn-cerrar" onclick="window.svc_cambiarTab('NINGUNO')" class="bg-red-600/20 text-red-400 border border-red-500/30 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0 hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-xmark"></i> ✖️ CERRAR TODO</button>
                         <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-cash-register"></i> Recepción</button>
                         <button id="tab-btn-comandas" onclick="window.svc_cambiarTab('comandas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-file-invoice"></i> Comandas Servicell</button>
+                        <button id="tab-btn-inventario" onclick="window.svc_cambiarTab('inventario')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-boxes-stacked text-purple-400"></i> Inventario Taller</button>
                         <button id="tab-btn-tucocel" onclick="window.svc_cambiarTab('tucocel')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-shop text-blue-400"></i> Comandas Tucocel</button>
                         <button id="tab-btn-tecnicos" onclick="window.svc_cambiarTab('tecnicos')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-users"></i> Expedientes SaaS</button>
                         <button id="tab-btn-finanzas" onclick="window.svc_cambiarTab('finanzas')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-vault"></i> Finanzas & Balance</button>
@@ -1554,7 +1777,8 @@
                     
                     tabsContainer.innerHTML = `
                         <button id="tab-btn-cerrar" onclick="window.svc_cambiarTab('NINGUNO')" class="bg-red-600/20 text-red-400 border border-red-500/30 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0 hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-xmark"></i> ✖️ CERRAR TODO</button>
-                        <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow shrink-0"><i class="fa-solid fa-cash-register"></i> Recepción Mostrador</button>`;
+                        <button id="tab-btn-recepcion" onclick="window.svc_cambiarTab('recepcion')" class="bg-purple-600 text-white font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shadow shrink-0"><i class="fa-solid fa-cash-register"></i> Recepción Mostrador</button>
+                        <button id="tab-btn-inventario" onclick="window.svc_cambiarTab('inventario')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-boxes-stacked text-purple-400"></i> Consultar Inventario</button>`;
                 }
 
                 document.getElementById('contenedor-login').classList.add('hidden');
@@ -1674,6 +1898,8 @@
                         svc_historicoCierresDiarios = data.historicoCierresDiarios || [];
                         svc_historicoMesesServicell = data.historicoMesesServicell || [];
                         svc_historicoSemanasLiquidadas = data.historicoSemanasLiquidadas || [];
+                        if(data.inventarioGlobal) svc_inventarioGlobal = data.inventarioGlobal;
+                        if(data.categoriasInventario) svc_categoriasInventario = data.categoriasInventario;
 
                         guardarRespaldoLocalContingencia();
                         window.svc_renderizerEcosistema();
@@ -1691,6 +1917,8 @@
                         tcl_comprasHistorico = data.comprasHistorico || [];
                         tcl_historicoCierres = data.historicoCierres || [];
                         tcl_historicoMesesTucocel = data.historicoMesesTucocel || [];
+                        if(data.proveedoresGuardados) tcl_proveedoresGuardados = data.proveedoresGuardados;
+                        if(data.conceptosGuardados) tcl_conceptosFrecuentes = data.conceptosGuardados;
 
                         guardarRespaldoLocalContingencia();
                         window.tcl_renderizerParticionTucocel();
@@ -1738,6 +1966,12 @@ window.svc_descargarServidorCentral = async function() {
                     svc_historicoCierresDiarios = docSnap.data().historicoCierresDiarios || [];
                     svc_historicoMesesServicell = docSnap.data().historicoMesesServicell || [];
                     svc_historicoSemanasLiquidadas = docSnap.data().historicoSemanasLiquidadas || [];
+                    if(docSnap.data().inventarioGlobal) {
+                        svc_inventarioGlobal = docSnap.data().inventarioGlobal;
+                    }
+                    if(docSnap.data().categoriasInventario) {
+                        svc_categoriasInventario = docSnap.data().categoriasInventario;
+                    }
 
                     // RESTAURACIÓN AUTOMÁTICA DE COMANDAS DESDE BÓVEDA MENSUAL
                     if(svc_historicoMesesServicell && svc_historicoMesesServicell.length > 0) {
@@ -1824,6 +2058,12 @@ window.svc_descargarServidorCentral = async function() {
                     tcl_comprasHistorico = docSnapTcl.data().comprasHistorico || [];
                     tcl_historicoCierres = docSnapTcl.data().historicoCierres || [];
                     tcl_historicoMesesTucocel = docSnapTcl.data().historicoMesesTucocel || [];
+                    if(docSnapTcl.data().proveedoresGuardados) {
+                        tcl_proveedoresGuardados = docSnapTcl.data().proveedoresGuardados;
+                    }
+                    if(docSnapTcl.data().conceptosGuardados) {
+                        tcl_conceptosFrecuentes = docSnapTcl.data().conceptosGuardados;
+                    }
 
                     // RESTAURACIÓN AUTOMÁTICA DE CIERRES Y COMPRAS TUCOCEL DESDE BÓVEDA MENSUAL
                     if(tcl_historicoMesesTucocel && tcl_historicoMesesTucocel.length > 0) {
@@ -1858,11 +2098,13 @@ window.svc_descargarServidorCentral = async function() {
         };
 
         window.svc_cambiarTab = function(pestaña) {
-            if(rolDeSesionActiva === "TECNICO" && pestaña !== "recepcion" && pestaña !== "NINGUNO") return;
+            if(rolDeSesionActiva === "TECNICO" && pestaña !== "recepcion" && pestaña !== "inventario" && pestaña !== "NINGUNO") return;
             
             document.getElementById('tab-bienvenida').classList.add('hidden');
             document.getElementById('tab-recepcion').classList.add('hidden');
             document.getElementById('tab-comandas').classList.add('hidden');
+            const tabInv = document.getElementById('tab-inventario');
+            if(tabInv) tabInv.classList.add('hidden');
             document.getElementById('tab-tucocel').classList.add('hidden');
             document.getElementById('tab-tecnicos').classList.add('hidden');
             document.getElementById('tab-finanzas').classList.add('hidden');
@@ -1877,10 +2119,13 @@ window.svc_descargarServidorCentral = async function() {
                 if(pestaña === 'tucocel') {
                     moduloActivoCargaTucocel = "VENTAS";
                     window.tcl_actualizarVistaModuloCargaTucocel();
+                    window.tcl_renderizarGestorProveedoresYConceptos();
+                } else if(pestaña === 'inventario') {
+                    window.svc_renderizarInventarioTaller();
                 }
             }
 
-            const tabs = ['recepcion', 'comandas', 'tucocel', 'tecnicos', 'finanzas', 'garantias'];
+            const tabs = ['recepcion', 'comandas', 'inventario', 'tucocel', 'tecnicos', 'finanzas', 'garantias'];
             tabs.forEach(t => {
                 const el = document.getElementById(`tab-btn-${t}`);
                 if(el) {
@@ -2174,19 +2419,62 @@ Garantía     : ${c.diasGarantia || 2} Días
             window.print();
         };
 
+        window.svc_alSeleccionarConceptoComandaAuto = function(valor) {
+            if(!valor) return;
+            const limpio = valor.split('(')[0].trim().toUpperCase();
+            const match = svc_inventarioGlobal.find(p => p.nombre.toUpperCase() === limpio || p.nombre.toUpperCase() === valor.trim().toUpperCase());
+            if(match) {
+                const inPrecio = document.getElementById('svc-input-precio-cop');
+                const inTipo = document.getElementById('svc-input-tipo');
+                if(inPrecio && !inPrecio.value) {
+                    inPrecio.value = window.svc_formatPoints(match.precioVentaCOP || 0);
+                }
+                if(inTipo) {
+                    inTipo.value = "VENTA"; // Accesorios se marcan como VENTA
+                }
+            }
+        };
+
         window.svc_agregarLineaComandaDiaria = function() {
             const tecSeleccionado = document.getElementById('filtro-comanda-tecnico-asignado').value;
-            const concepto = document.getElementById('svc-input-concepto').value.trim().toUpperCase();
+            let conceptoRaw = document.getElementById('svc-input-concepto').value.trim().toUpperCase();
+            let concepto = conceptoRaw.replace(/\(STOCK:?\s*\d+\)/gi, '').trim();
             const cantidad = parseInt(document.getElementById('svc-input-cantidad').value) || 1;
             const precioCOP = window.svc_cleanNumber(document.getElementById('svc-input-precio-cop').value);
             const tipo = document.getElementById('svc-input-tipo').value;
             const metodo = document.getElementById('svc-input-metodo').value;
 
             if(!concepto || precioCOP <= 0) return alert("⚠️ Ingrese descripción y monto de ganancia neta válido.");
-            svc_comandaActivaTurno.push({ idItem: 'manual-' + Date.now(), operador: tecSeleccionado, concepto, cantidad, precioCOP, tipo, metodo, valeDia: 0 });
+
+            // Si es VENTA, verificar si coincide con inventario para reservar y avisar
+            let invIdAsociado = null;
+            if(tipo === "VENTA") {
+                const matchInv = svc_inventarioGlobal.find(p => p.nombre.toUpperCase() === concepto);
+                if(matchInv) {
+                    invIdAsociado = matchInv.id;
+                    if(matchInv.stock < cantidad) {
+                        if(!confirm(`⚠️ ATENCIÓN DE INVENTARIO:\nSolo quedan ${matchInv.stock} unidades de "${matchInv.nombre}" en stock y estás cargando ${cantidad}.\n¿Deseas continuar y registrar de todas formas?`)) {
+                            return;
+                        }
+                    }
+                }
+            }
+
+            svc_comandaActivaTurno.push({ 
+                idItem: 'manual-' + Date.now(), 
+                operador: tecSeleccionado, 
+                concepto, 
+                cantidad, 
+                precioCOP, 
+                tipo, 
+                metodo, 
+                invId: invIdAsociado,
+                valeDia: 0 
+            });
             
             document.getElementById('svc-input-concepto').value = "";
             document.getElementById('svc-input-precio-cop').value = "";
+            document.getElementById('svc-input-cantidad').value = "1";
             document.getElementById('svc-input-concepto').focus();
 
             window.svc_sincronizarConFirebase();
@@ -2209,6 +2497,26 @@ Garantía     : ${c.diasGarantia || 2} Días
             let gananciaTecnico = totalServicios * (comisionPorc / 100);
             const fechaStr = new Date().toLocaleDateString().split('/').join('-');
             const folioKey = `FOLIO-${String(svc_historicoCierresDiarios.length + 1).padStart(3, '0')}`;
+
+            // DESCUENTO AUTOMÁTICO EN INVENTARIO AL FACTURAR (SOLO TIPO VENTA / ACCESORIOS)
+            let productosDescontadosInventario = [];
+            itemsFiltrados.forEach(item => {
+                if(item.tipo === "VENTA") {
+                    let match = null;
+                    if(item.invId) {
+                        match = svc_inventarioGlobal.find(p => p.id === item.invId);
+                    }
+                    if(!match) {
+                        match = svc_inventarioGlobal.find(p => p.nombre.toUpperCase() === item.concepto.toUpperCase());
+                    }
+                    if(match) {
+                        const cantADescontar = item.cantidad || 1;
+                        match.stock = Math.max(0, match.stock - cantADescontar);
+                        productosDescontadosInventario.push(`${match.nombre} (-${cantADescontar}) [Quedan: ${match.stock}]`);
+                    }
+                }
+                // Si es "SERVICIO", mano de obra no lleva inventario ni descuenta nada
+            });
 
             const registroComandaObj = {
                 idFolio: folioKey,
@@ -3205,12 +3513,17 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                 localStorage.setItem("tcl_backup_compras_hist", JSON.stringify(tcl_comprasHistorico));
                 localStorage.setItem("tcl_backup_cierres_hist", JSON.stringify(tcl_historicoCierres));
                 localStorage.setItem("tcl_backup_meses_hist", JSON.stringify(tcl_historicoMesesTucocel));
+                localStorage.setItem("tcl_backup_proveedores_guardados", JSON.stringify(tcl_proveedoresGuardados));
+                localStorage.setItem("tcl_backup_conceptos_frecuentes", JSON.stringify(tcl_conceptosFrecuentes));
+
                 localStorage.setItem("svc_backup_comandas_global", JSON.stringify(svc_comandasGlobal));
                 localStorage.setItem("svc_backup_cierres_diarios", JSON.stringify(svc_historicoCierresDiarios));
                 localStorage.setItem("svc_backup_vales_global", JSON.stringify(svc_valesGlobal));
                 localStorage.setItem("svc_backup_semanas_hist", JSON.stringify(svc_historicoSemanasLiquidadas));
                 localStorage.setItem("svc_backup_meses_hist", JSON.stringify(svc_historicoMesesServicell));
                 localStorage.setItem("svc_backup_comanda_activa", JSON.stringify(svc_comandaActivaTurno));
+                localStorage.setItem("svc_backup_inventario_global", JSON.stringify(svc_inventarioGlobal));
+                localStorage.setItem("svc_backup_categorias_inv", JSON.stringify(svc_categoriasInventario));
             } catch(e) {}
         }
 
@@ -3231,6 +3544,12 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                 const bMesesHist = localStorage.getItem("tcl_backup_meses_hist");
                 if (bMesesHist) tcl_historicoMesesTucocel = JSON.parse(bMesesHist);
 
+                const bProv = localStorage.getItem("tcl_backup_proveedores_guardados");
+                if (bProv) tcl_proveedoresGuardados = JSON.parse(bProv);
+
+                const bConc = localStorage.getItem("tcl_backup_conceptos_frecuentes");
+                if (bConc) tcl_conceptosFrecuentes = JSON.parse(bConc);
+
                 const bCmdGlobal = localStorage.getItem("svc_backup_comandas_global");
                 if (bCmdGlobal) svc_comandasGlobal = JSON.parse(bCmdGlobal);
 
@@ -3248,6 +3567,12 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
 
                 const bCmdAct = localStorage.getItem("svc_backup_comanda_activa");
                 if (bCmdAct) svc_comandaActivaTurno = JSON.parse(bCmdAct);
+
+                const bInv = localStorage.getItem("svc_backup_inventario_global");
+                if (bInv) svc_inventarioGlobal = JSON.parse(bInv);
+
+                const bCats = localStorage.getItem("svc_backup_categorias_inv");
+                if (bCats) svc_categoriasInventario = JSON.parse(bCats);
 
                 console.log("⚡ Respaldo local de contingencia inyectado en memoria.");
             } catch(e) {
@@ -3278,9 +3603,11 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                     historicoCierresDiarios: svc_historicoCierresDiarios,
                     historicoMesesServicell: svc_historicoMesesServicell,
                     historicoSemanasLiquidadas: svc_historicoSemanasLiquidadas,
+                    inventarioGlobal: svc_inventarioGlobal,
+                    categoriasInventario: svc_categoriasInventario,
                     ultimaModificacion: Date.now()
                 }); 
-                console.log("☁️ [Firestore] Comandas y datos Servicell sincronizados.");
+                console.log("☁️ [Firestore] Comandas e inventario Servicell sincronizados.");
             } catch(e) {
                 console.error("Error sincronizando Servicell:", e);
             }
@@ -3299,9 +3626,11 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                     comprasHistorico: tcl_comprasHistorico,
                     historicoCierres: tcl_historicoCierres,
                     historicoMesesTucocel: tcl_historicoMesesTucocel,
+                    proveedoresGuardados: tcl_proveedoresGuardados,
+                    conceptosGuardados: tcl_conceptosFrecuentes,
                     ultimaModificacion: Date.now()
                 });
-                console.log("☁️ [Firestore] Ventas y datos Tucocel C.A. sincronizados.");
+                console.log("☁️ [Firestore] Ventas y catálogos Tucocel C.A. sincronizados.");
             } catch(e) {
                 console.error("Error sincronizando Tucocel:", e);
             }
@@ -3513,17 +3842,12 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
         window.tcl_actualizarDatalistProveedores = function() {
             const dl = document.getElementById('lista-proveedores-datalist');
             if(!dl) return;
-            // Extraer proveedores únicos del historial de compras y de la lista en memoria
-            tcl_comprasHistorico.forEach(c => {
-                if(c.proveedor && !tcl_proveedoresGuardados.includes(c.proveedor.toUpperCase())) {
-                    tcl_proveedoresGuardados.push(c.proveedor.toUpperCase());
-                }
-            });
             let optsHtml = "";
             tcl_proveedoresGuardados.forEach(p => {
                 optsHtml += `<option value="${p}">`;
             });
             dl.innerHTML = optsHtml;
+            window.tcl_renderizarGestorProveedoresYConceptos();
         };
 
         // MÓDULO DE COMPRAS POR LOTE: AÑADIR PRODUCTO A LA LISTA TEMPORAL ACTIVA
@@ -4202,33 +4526,459 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
         };
 
         
-        // GESTIÓN INTELIGENTE DE CONCEPTOS FRECUENTES Y AUTOCOMPLETADO
-        let tcl_conceptosFrecuentes = ["VIDRIO TEMPLADO", "VIDRIO CERÁMICA", "LÍNEA MOVISTAR 4G", "LÍNEA 4GB", "CARGADOR TIPO C", "CARGADOR TIPO C ORIGINAL", "CARGADOR V8", "FORRO", "CABLE TIPO C", "CABLE LIGHTNING", "AUDÍFONOS", "PANTALLA", "REPARACIÓN PIN"];
+
+        // =========================================================
+        // MOTOR DE INVENTARIO SERVICELL (ACCESORIOS & REPUESTOS)
+        // CON CREACIÓN DINÁMICA DE CATEGORÍAS POR EL USUARIO
+        // =========================================================
+        window.svc_actualizarDatalistCategoriasInventario = function() {
+            const dl = document.getElementById('lista-categorias-inventario');
+            const selFiltro = document.getElementById('inv-filtro-categoria');
+            if(!dl) return;
+
+            // Extraer categorías únicas de los productos y de la lista base
+            svc_inventarioGlobal.forEach(p => {
+                const c = (p.categoria || '').trim().toUpperCase();
+                if(c && !svc_categoriasInventario.includes(c)) {
+                    svc_categoriasInventario.push(c);
+                }
+            });
+
+            dl.innerHTML = svc_categoriasInventario.map(c => `<option value="${c}">`).join('');
+
+            if(selFiltro) {
+                const valActual = selFiltro.value || "TODAS";
+                let opts = `<option value="TODAS">📁 Todas las Categorías</option>`;
+                svc_categoriasInventario.forEach(c => {
+                    opts += `<option value="${c}">${c}</option>`;
+                });
+                selFiltro.innerHTML = opts;
+                if(Array.from(selFiltro.options).some(o => o.value === valActual)) {
+                    selFiltro.value = valActual;
+                }
+            }
+        };
+
+        window.svc_verificarCoincidenciaInventarioAuto = function(nombreIngresado) {
+            const lbl = document.getElementById('lbl-inv-coincidencia-aviso');
+            if(!lbl) return;
+            const limpio = (nombreIngresado || '').trim().toUpperCase();
+            if(!limpio) {
+                lbl.classList.add('hidden');
+                return;
+            }
+            const match = svc_inventarioGlobal.find(p => p.nombre.toUpperCase() === limpio);
+            if(match) {
+                lbl.innerText = `💡 Ya existe este producto (Stock actual: ${match.stock} unid. / Venta: ${fmtMonto(match.precioVentaCOP)} COP). Si guardas, se sumarán las unidades.`;
+                lbl.classList.remove('hidden');
+                const inPrecio = document.getElementById('inv-in-precio-venta');
+                const inCat = document.getElementById('inv-in-categoria');
+                if(inPrecio && !inPrecio.value) inPrecio.value = window.svc_formatPoints(match.precioVentaCOP || 0);
+                if(inCat && match.categoria) inCat.value = match.categoria;
+            } else {
+                lbl.classList.add('hidden');
+            }
+        };
+
+        window.svc_recalcularPreciosInventarioInput = function() {
+            const moneda = document.getElementById('inv-in-moneda-venta')?.value || "COP";
+            const valRaw = window.svc_cleanNumber(document.getElementById('inv-in-precio-venta')?.value);
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+            const lbl = document.getElementById('lbl-inv-equiv-venta');
+            if(!lbl) return;
+
+            if(valRaw <= 0) {
+                lbl.innerText = "Equivalente: $0.00 USD";
+                return;
+            }
+
+            if(moneda === "USD") {
+                const cop = valRaw * tCOP;
+                lbl.innerText = `Equivalente en Pesos: ${fmtMonto(cop)} COP`;
+            } else {
+                const usd = valRaw / tCOP;
+                lbl.innerText = `Equivalente en Dólares: $${window.svc_formatDecimalUSD(usd)} USD`;
+            }
+        };
+
+        window.svc_guardarOActualizarProductoInventario = async function() {
+            const nombre = document.getElementById('inv-in-nombre').value.trim().toUpperCase();
+            let categoria = (document.getElementById('inv-in-categoria').value || '').trim().toUpperCase() || "ACCESORIOS";
+            const cantIngresar = parseInt(document.getElementById('inv-in-stock').value) || 1;
+            const monedaVenta = document.getElementById('inv-in-moneda-venta').value;
+            const precioVentaRaw = window.svc_cleanNumber(document.getElementById('inv-in-precio-venta').value);
+            const monedaCosto = document.getElementById('inv-in-moneda-costo').value;
+            const costoUnitRaw = window.svc_cleanNumber(document.getElementById('inv-in-costo').value);
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
+
+            if(!nombre) return alert("⚠️ Ingrese el nombre del accesorio o repuesto.");
+            if(cantIngresar <= 0) return alert("⚠️ La cantidad debe ser mayor a 0.");
+            if(precioVentaRaw <= 0) return alert("⚠️ Ingrese un precio de venta válido.");
+
+            // Si es una categoría nueva creada por el usuario, agregarla dinámicamente
+            if(categoria && !svc_categoriasInventario.includes(categoria)) {
+                svc_categoriasInventario.push(categoria);
+                window.svc_actualizarDatalistCategoriasInventario();
+            }
+
+            const precioVentaCOP = monedaVenta === "USD" ? Math.round(precioVentaRaw * tCOP) : precioVentaRaw;
+            const precioVentaUSD = monedaVenta === "USD" ? precioVentaRaw : (precioVentaRaw / tCOP);
+
+            const costoUnitUSD = monedaCosto === "COP" ? (costoUnitRaw / tCOP) : costoUnitRaw;
+            const costoUnitCOP = monedaCosto === "COP" ? costoUnitRaw : Math.round(costoUnitRaw * tCOP);
+
+            const matchExistente = svc_inventarioGlobal.find(p => p.nombre.toUpperCase() === nombre);
+
+            if(matchExistente) {
+                matchExistente.stock = (matchExistente.stock || 0) + cantIngresar;
+                matchExistente.categoria = categoria;
+                matchExistente.precioVentaCOP = precioVentaCOP;
+                matchExistente.precioVentaUSD = precioVentaUSD;
+                if(costoUnitRaw > 0) {
+                    matchExistente.costoUnitCOP = costoUnitCOP;
+                    matchExistente.costoUnitUSD = costoUnitUSD;
+                }
+                matchExistente.ultimaActualizacion = new Date().toLocaleDateString();
+                alert(`📦 ¡Stock sumado exitosamente!\n\nProducto: "${matchExistente.nombre}"\nStock anterior: ${matchExistente.stock - cantIngresar}\nNuevas unidades: +${cantIngresar}\nStock total actual: ${matchExistente.stock} unidades.`);
+            } else {
+                const nuevoProd = {
+                    id: 'inv-' + Date.now(),
+                    codigo: 'ACC-' + Math.floor(100 + Math.random() * 900),
+                    nombre,
+                    categoria,
+                    stock: cantIngresar,
+                    monedaVenta,
+                    precioVentaCOP,
+                    precioVentaUSD,
+                    monedaCosto,
+                    costoUnitCOP,
+                    costoUnitUSD,
+                    fechaRegistro: new Date().toLocaleDateString(),
+                    ultimaActualizacion: new Date().toLocaleDateString()
+                };
+                svc_inventarioGlobal.unshift(nuevoProd);
+                alert(`✅ Producto "${nombre}" registrado con éxito en el inventario (${cantIngresar} unidades en categoría ${categoria}).`);
+            }
+
+            document.getElementById('inv-in-nombre').value = "";
+            document.getElementById('inv-in-stock').value = "1";
+            document.getElementById('inv-in-precio-venta').value = "";
+            document.getElementById('inv-in-costo').value = "";
+            const lblAviso = document.getElementById('lbl-inv-coincidencia-aviso');
+            if(lblAviso) lblAviso.classList.add('hidden');
+
+            await window.svc_sincronizarConFirebase();
+            window.svc_renderizarInventarioTaller();
+            window.tcl_actualizarDatalistsConceptos();
+        };
+
+        window.svc_sumarStockRapidoPrompt = async function(id) {
+            const match = svc_inventarioGlobal.find(p => p.id === id); if(!match) return;
+            const cantStr = prompt(`📦 SUMAR STOCK DE MERCANCÍA\n\nProducto: ${match.nombre}\nStock actual: ${match.stock} unidades.\n\n¿Cuántas unidades nuevas vas a ingresar?`, "1");
+            if(!cantStr) return;
+            const cant = parseInt(cantStr, 10);
+            if(isNaN(cant) || cant <= 0) return alert("Cantidad inválida.");
+
+            match.stock = (match.stock || 0) + cant;
+            match.ultimaActualizacion = new Date().toLocaleDateString();
+
+            await window.svc_sincronizarConFirebase();
+            window.svc_renderizarInventarioTaller();
+            alert(`✅ Stock actualizado: Ahora tienes ${match.stock} unidades de "${match.nombre}".`);
+        };
+
+        window.svc_abrirModalEditarInventario = function(id) {
+            const match = svc_inventarioGlobal.find(p => p.id === id); if(!match) return;
+            document.getElementById('modal-edit-inv-id').value = match.id;
+            document.getElementById('modal-edit-inv-nombre').value = match.nombre;
+            document.getElementById('modal-edit-inv-cat').value = match.categoria || "ACCESORIOS";
+            document.getElementById('modal-edit-inv-stock').value = match.stock || 0;
+            document.getElementById('modal-edit-inv-precio-cop').value = window.svc_formatPoints(match.precioVentaCOP || 0);
+            document.getElementById('modal-edit-inv-costo-usd').value = match.costoUnitUSD ? match.costoUnitUSD.toFixed(2) : "0";
+
+            window.svc_actualizarDatalistCategoriasInventario();
+            document.getElementById('modal-editar-producto-inv').classList.remove('hidden');
+        };
+
+        window.svc_guardarCambiosModalEditarInventario = async function() {
+            const id = document.getElementById('modal-edit-inv-id').value;
+            const match = svc_inventarioGlobal.find(p => p.id === id); if(!match) return;
+
+            const nombre = document.getElementById('modal-edit-inv-nombre').value.trim().toUpperCase();
+            const categoria = (document.getElementById('modal-edit-inv-cat').value || '').trim().toUpperCase() || "ACCESORIOS";
+            const stock = parseInt(document.getElementById('modal-edit-inv-stock').value, 10);
+            const precioCOP = window.svc_cleanNumber(document.getElementById('modal-edit-inv-precio-cop').value);
+            const costoUSD = parseFloat(document.getElementById('modal-edit-inv-costo-usd').value) || 0;
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+
+            if(!nombre || isNaN(stock) || stock < 0 || precioCOP <= 0) {
+                return alert("⚠️ Complete todos los campos con valores válidos.");
+            }
+
+            if(categoria && !svc_categoriasInventario.includes(categoria)) {
+                svc_categoriasInventario.push(categoria);
+                window.svc_actualizarDatalistCategoriasInventario();
+            }
+
+            match.nombre = nombre;
+            match.categoria = categoria;
+            match.stock = stock;
+            match.precioVentaCOP = precioCOP;
+            match.precioVentaUSD = precioCOP / tCOP;
+            match.costoUnitUSD = costoUSD;
+            match.costoUnitCOP = Math.round(costoUSD * tCOP);
+            match.ultimaActualizacion = new Date().toLocaleDateString();
+
+            await window.svc_sincronizarConFirebase();
+            document.getElementById('modal-editar-producto-inv').classList.add('hidden');
+            window.svc_renderizarInventarioTaller();
+            window.tcl_actualizarDatalistsConceptos();
+            alert("✅ Producto de inventario modificado con éxito.");
+        };
+
+        window.svc_eliminarProductoInventario = async function(id) {
+            const idx = svc_inventarioGlobal.findIndex(p => p.id === id); if(idx === -1) return;
+            const match = svc_inventarioGlobal[idx];
+            if(!confirm(`⚠️ ¿Seguro que deseas eliminar definitivamente "${match.nombre}" del inventario de Servicell?`)) return;
+
+            svc_inventarioGlobal.splice(idx, 1);
+            await window.svc_sincronizarConFirebase();
+            window.svc_renderizarInventarioTaller();
+            window.tcl_actualizarDatalistsConceptos();
+            alert("🗑️ Producto eliminado del inventario.");
+        };
+
+        window.svc_renderizarInventarioTaller = function() {
+            const container = document.getElementById('wrapper-lista-inventario-box');
+            const lblTotalProds = document.getElementById('lbl-inv-total-productos');
+            const lblTotalUnids = document.getElementById('lbl-inv-total-unidades');
+            const lblValorTotal = document.getElementById('lbl-inv-valor-total');
+            if(!container) return;
+
+            window.svc_actualizarDatalistCategoriasInventario();
+
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+            const q = (document.getElementById('inv-buscar-input')?.value || '').trim().toUpperCase();
+            const filtroCat = document.getElementById('inv-filtro-categoria')?.value || 'TODAS';
+
+            let totalProds = svc_inventarioGlobal.length;
+            let totalUnidades = 0;
+            let totalValorCOP = 0;
+
+            let html = "";
+
+            svc_inventarioGlobal.forEach(p => {
+                const cant = p.stock || 0;
+                totalUnidades += cant;
+                const pCOP = p.precioVentaCOP || 0;
+                totalValorCOP += (pCOP * cant);
+
+                if(filtroCat !== 'TODAS' && (p.categoria || '').toUpperCase() !== filtroCat.toUpperCase()) return;
+                if(q && !p.nombre.toUpperCase().includes(q) && !(p.categoria || '').toUpperCase().includes(q) && !(p.codigo || '').toUpperCase().includes(q)) return;
+
+                let badgeStock = "";
+                if(cant > 5) {
+                    badgeStock = `<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase font-mono">🟢 ${cant} en Stock</span>`;
+                } else if(cant > 0) {
+                    badgeStock = `<span class="bg-amber-500/20 text-amber-400 border border-amber-500/40 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase font-mono animate-pulse">🟡 Solo ${cant} Unid.</span>`;
+                } else {
+                    badgeStock = `<span class="bg-red-500/20 text-red-400 border border-red-500/40 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase font-mono">🔴 Agotado (0)</span>`;
+                }
+
+                const usdEquiv = p.precioVentaUSD || (pCOP / tCOP);
+
+                html += `
+                    <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5 hover:border-purple-500/40 transition">
+                        <div class="space-y-0.5 flex-1 min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <b class="text-white text-xs uppercase tracking-tight truncate">${p.nombre}</b>
+                                ${badgeStock}
+                            </div>
+                            <div class="text-[9.5px] text-slate-400 font-mono flex items-center gap-3 pt-0.5">
+                                <span>Categoría: <b class="text-purple-300">${p.categoria || 'ACCESORIOS'}</b></span>
+                                <span>Código: <b>${p.codigo || 'N/A'}</b></span>
+                                ${p.costoUnitUSD ? `<span>Costo: <b class="text-slate-500">$${p.costoUnitUSD.toFixed(2)}</b></span>` : ''}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto border-t sm:border-t-0 border-slate-900 pt-2 sm:pt-0">
+                            <div class="text-left sm:text-right font-mono">
+                                <span class="text-emerald-400 text-sm font-black block">${fmtMonto(pCOP)} COP</span>
+                                <span class="text-[9px] text-slate-400 block">$${window.svc_formatDecimalUSD(usdEquiv)} USD</span>
+                            </div>
+
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <button onclick="window.svc_sumarStockRapidoPrompt('${p.id}')" title="Sumar unidades de mercancía" class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40 p-2 rounded-xl text-[10px] font-black uppercase transition flex items-center gap-1">
+                                    <i class="fa-solid fa-plus text-xs"></i> <span class="hidden sm:inline">Stock</span>
+                                </button>
+                                <button onclick="window.svc_abrirModalEditarInventario('${p.id}')" title="Editar producto" class="bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/40 p-2 rounded-xl text-[10px] font-black uppercase transition flex items-center gap-1">
+                                    <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                </button>
+                                <button onclick="window.svc_eliminarProductoInventario('${p.id}')" title="Eliminar producto" class="bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/40 p-2 rounded-xl text-[10px] font-black uppercase transition flex items-center gap-1">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            container.innerHTML = html || `<p class="text-center text-slate-500 italic py-8 text-xs">Cero productos encontrados en el inventario.</p>`;
+
+            if(lblTotalProds) lblTotalProds.innerText = `${totalProds} Ítems`;
+            if(lblTotalUnids) lblTotalUnids.innerText = `${totalUnidades} Unid.`;
+            if(lblValorTotal) lblValorTotal.innerText = `${fmtMonto(totalValorCOP)} COP ($${window.svc_formatDecimalUSD(totalValorCOP/tCOP)} USD)`;
+        };
+
+
+        // =========================================================
+        // MOTOR GESTOR DE PROVEEDORES & CATÁLOGO AUTO-GUARDADO TUCOCEL
+        // =========================================================
+        window.tcl_renderizarGestorProveedoresYConceptos = function() {
+            const boxProv = document.getElementById('wrapper-lista-proveedores-gestor-box');
+            const boxConc = document.getElementById('wrapper-lista-conceptos-gestor-box');
+            const cntP = document.getElementById('lbl-cnt-proveedores-gestor');
+            const cntC = document.getElementById('lbl-cnt-conceptos-gestor');
+
+            if(boxProv) {
+                let htmlP = "";
+                tcl_proveedoresGuardados.forEach((prov, idx) => {
+                    htmlP += `
+                        <div class="bg-slate-900 border border-slate-800 p-2 rounded-xl flex justify-between items-center text-slate-200">
+                            <span class="truncate pr-2 font-bold uppercase text-[11px]">${prov}</span>
+                            <div class="flex items-center gap-1 shrink-0">
+                                <button onclick="window.tcl_editarProveedorManual(${idx})" class="text-blue-400 hover:text-blue-300 bg-slate-950 p-1 px-2 rounded border border-slate-800 text-[10px] font-bold">✏️ Editar</button>
+                                <button onclick="window.tcl_eliminarProveedorManual(${idx})" class="text-red-400 hover:text-red-300 bg-slate-950 p-1 px-2 rounded border border-slate-800 text-[10px] font-bold">🗑️</button>
+                            </div>
+                        </div>`;
+                });
+                boxProv.innerHTML = htmlP || `<p class="text-center text-slate-500 italic py-2 text-[10px]">Cero proveedores guardados.</p>`;
+                if(cntP) cntP.innerText = tcl_proveedoresGuardados.length;
+            }
+
+            if(boxConc) {
+                let htmlC = "";
+                tcl_conceptosFrecuentes.forEach((conc, idx) => {
+                    htmlC += `
+                        <div class="bg-slate-900 border border-slate-800 p-2 rounded-xl flex justify-between items-center text-slate-200">
+                            <span class="truncate pr-2 font-bold uppercase text-[11px]">${conc}</span>
+                            <div class="flex items-center gap-1 shrink-0">
+                                <button onclick="window.tcl_editarConceptoManual(${idx})" class="text-blue-400 hover:text-blue-300 bg-slate-950 p-1 px-2 rounded border border-slate-800 text-[10px] font-bold">✏️ Editar</button>
+                                <button onclick="window.tcl_eliminarConceptoManual(${idx})" class="text-red-400 hover:text-red-300 bg-slate-950 p-1 px-2 rounded border border-slate-800 text-[10px] font-bold">🗑️</button>
+                            </div>
+                        </div>`;
+                });
+                boxConc.innerHTML = htmlC || `<p class="text-center text-slate-500 italic py-2 text-[10px]">Cero conceptos sugeridos.</p>`;
+                if(cntC) cntC.innerText = tcl_conceptosFrecuentes.length;
+            }
+        };
+
+        window.tcl_agregarNuevoProveedorManual = async function() {
+            const nuevo = prompt("Ingrese el nombre del nuevo Proveedor / Empresa:");
+            if(!nuevo || !nuevo.trim()) return;
+            const norm = nuevo.trim().toUpperCase();
+            if(tcl_proveedoresGuardados.includes(norm)) return alert("Este proveedor ya está en la lista.");
+
+            tcl_proveedoresGuardados.push(norm);
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_actualizarDatalistProveedores();
+            window.tcl_renderizarGestorProveedoresYConceptos();
+            alert(`✅ Proveedor "${norm}" añadido.`);
+        };
+
+        window.tcl_editarProveedorManual = async function(idx) {
+            const actual = tcl_proveedoresGuardados[idx];
+            const modificado = prompt("Modificar nombre del Proveedor:", actual);
+            if(!modificado || !modificado.trim()) return;
+            const norm = modificado.trim().toUpperCase();
+
+            tcl_proveedoresGuardados[idx] = norm;
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_actualizarDatalistProveedores();
+            window.tcl_renderizarGestorProveedoresYConceptos();
+            alert(`✅ Proveedor actualizado a "${norm}".`);
+        };
+
+        window.tcl_eliminarProveedorManual = async function(idx) {
+            const actual = tcl_proveedoresGuardados[idx];
+            if(!confirm(`¿Deseas eliminar el proveedor "${actual}" de las sugerencias?`)) return;
+
+            tcl_proveedoresGuardados.splice(idx, 1);
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_actualizarDatalistProveedores();
+            window.tcl_renderizarGestorProveedoresYConceptos();
+        };
+
+        window.tcl_agregarNuevoConceptoManual = async function() {
+            const nuevo = prompt("Ingrese el nombre del nuevo producto/concepto para sugerencias de venta en Tucocel:");
+            if(!nuevo || !nuevo.trim()) return;
+            const norm = nuevo.trim().toUpperCase();
+            if(tcl_conceptosFrecuentes.includes(norm)) return alert("Este concepto ya está registrado.");
+
+            tcl_conceptosFrecuentes.push(norm);
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_actualizarDatalistsConceptos();
+            window.tcl_renderizarGestorProveedoresYConceptos();
+            alert(`✅ Concepto "${norm}" agregado a sugerencias.`);
+        };
+
+        window.tcl_editarConceptoManual = async function(idx) {
+            const actual = tcl_conceptosFrecuentes[idx];
+            const modificado = prompt("Corregir o editar nombre del producto/concepto sugerido:", actual);
+            if(!modificado || !modificado.trim()) return;
+            const norm = modificado.trim().toUpperCase();
+
+            tcl_conceptosFrecuentes[idx] = norm;
+
+            // Actualizar también en las ventas activas del turno si coincide
+            tcl_ventasActivasTurno.forEach(v => {
+                if(v.concepto.toUpperCase() === actual.toUpperCase()) {
+                    v.concepto = norm;
+                }
+            });
+
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_actualizarDatalistsConceptos();
+            window.tcl_renderizerParticionTucocel();
+            window.tcl_renderizarGestorProveedoresYConceptos();
+            alert(`✅ Concepto modificado a "${norm}".`);
+        };
+
+        window.tcl_eliminarConceptoManual = async function(idx) {
+            const actual = tcl_conceptosFrecuentes[idx];
+            if(!confirm(`¿Deseas eliminar "${actual}" del catálogo de nombres sugeridos?`)) return;
+
+            tcl_conceptosFrecuentes.splice(idx, 1);
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_actualizarDatalistsConceptos();
+            window.tcl_renderizarGestorProveedoresYConceptos();
+        };
+
+        // GESTIÓN DE CONCEPTOS Y SUGERENCIAS LIMPIAS
         let svc_conceptosFrecuentes = ["REPARACIÓN PIN DE CARGA", "CAMBIO DE PANTALLA", "MANTENIMIENTO GENERAL", "REVISIÓN TÉCNICA", "CAMBIO DE BATERÍA", "SOFTWARE / FLASHEO", "LIMPIEZA DE HUMEDAD"];
 
         window.tcl_actualizarDatalistsConceptos = function() {
+            // Datalist limpio de Tucocel: se alimenta SOLO de la lista administrada (sin rescatar errores viejos del historial)
             const dlTcl = document.getElementById('lista-conceptos-tucocel');
             if (dlTcl) {
-                // Agregar conceptos usados en ventas históricas
-                tcl_historicoCierres.forEach(c => {
-                    (c.ventas || []).forEach(v => {
-                        let cnorm = (v.concepto || '').replace(/^📱 TELÉFONO:\s*/i, '').trim().toUpperCase();
-                        if (cnorm && !tcl_conceptosFrecuentes.includes(cnorm)) tcl_conceptosFrecuentes.push(cnorm);
-                    });
-                });
                 dlTcl.innerHTML = tcl_conceptosFrecuentes.map(x => `<option value="${x}">`).join('');
             }
 
+            // Datalist de Servicell: muestra los servicios base y TODOS los productos del inventario con su stock en tiempo real
             const dlSvc = document.getElementById('lista-conceptos-servicell');
             if (dlSvc) {
-                svc_historicoCierresDiarios.forEach(c => {
-                    (c.items || []).forEach(i => {
-                        let cnorm = (i.concepto || '').trim().toUpperCase();
-                        if (cnorm && !svc_conceptosFrecuentes.includes(cnorm)) svc_conceptosFrecuentes.push(cnorm);
-                    });
+                let opciones = [];
+                svc_inventarioGlobal.forEach(p => {
+                    opciones.push(`${p.nombre} (Stock: ${p.stock})`);
                 });
-                dlSvc.innerHTML = svc_conceptosFrecuentes.map(x => `<option value="${x}">`).join('');
+                svc_conceptosFrecuentes.forEach(s => {
+                    if(!opciones.some(o => o.toUpperCase().startsWith(s.toUpperCase()))) {
+                        opciones.push(s);
+                    }
+                });
+                dlSvc.innerHTML = opciones.map(x => `<option value="${x}">`).join('');
             }
+
+            window.tcl_renderizarGestorProveedoresYConceptos();
         };
 
         // AGRUPADOR INTELIGENTE DE PRODUCTOS PARA REPORTE DE FIN DE MES
@@ -4447,12 +5197,16 @@ window.tcl_abrirVisorHojaBlancaTucocel = function() {
                         vales: svc_valesGlobal,
                         semanasLiquidadas: svc_historicoSemanasLiquidadas,
                         mesesServicell: svc_historicoMesesServicell,
-                        tecnicos: svc_tecnicosPerfiles
+                        tecnicos: svc_tecnicosPerfiles,
+                        inventario: svc_inventarioGlobal,
+                        categoriasInventario: svc_categoriasInventario
                     },
                     tucocel: {
                         historicoCierres: tcl_historicoCierres,
                         comprasHistorico: tcl_comprasHistorico,
-                        historicoMeses: tcl_historicoMesesTucocel
+                        historicoMeses: tcl_historicoMesesTucocel,
+                        proveedores: tcl_proveedoresGuardados,
+                        conceptos: tcl_conceptosFrecuentes
                     }
                 };
 
