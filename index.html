@@ -42,7 +42,7 @@
                 min-height: 100% !important;
                 overflow: visible !important;
             }
-            body > *:not(#contenedor-impresion-termica-fijo):not(#modal-hoja-blanca):not(#modal-hoja-blanca-tucocel) {
+            body > *:not(#contenedor-impresion-termica-fijo):not(#modal-hoja-blanca):not(#modal-hoja-blanca-tucocel):not(#modal-hoja-a4-inventario) {
                 display: none !important;
             }
             #contenedor-impresion-termica-fijo { 
@@ -64,7 +64,7 @@
                 visibility: visible !important;
                 color: #000000 !important;
             }
-            #modal-hoja-blanca, #modal-hoja-blanca-tucocel {
+            #modal-hoja-blanca, #modal-hoja-blanca-tucocel, #modal-hoja-a4-inventario {
                 display: block !important;
                 position: static !important;
                 background: transparent !important;
@@ -694,72 +694,104 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                    <!-- FORMULARIO DE CARGA / SUMA DE PRODUCTO CON CATEGORÍAS CREADAS LIBREMENTE -->
-                    <div class="lg:col-span-5 bg-slate-900/60 border border-purple-500/40 p-5 rounded-3xl shadow-xl space-y-4">
-                        <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
-                            <h4 class="text-xs sm:text-sm font-black text-purple-400 uppercase tracking-widest flex items-center gap-2">
-                                <i class="fa-solid fa-plus-circle"></i> Cargar Producto o Sumar Stock
-                            </h4>
-                            <span class="text-[9px] text-slate-500 font-mono">MULTIMONEDA</span>
+                    <!-- PANEL DE INGRESO DE MERCANCÍA POR LOTE (MULTIMONEDA) -->
+                    <div class="lg:col-span-5 space-y-4">
+                        <!-- CAJA 1: FORMULARIO PARA AÑADIR PRODUCTO AL LOTE -->
+                        <div class="bg-slate-900/60 border border-purple-500/40 p-5 rounded-3xl shadow-xl space-y-3.5">
+                            <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
+                                <h4 class="text-xs sm:text-sm font-black text-purple-400 uppercase tracking-widest flex items-center gap-2">
+                                    <i class="fa-solid fa-cart-flatbed"></i> Ingreso de Mercancía
+                                </h4>
+                                <span class="text-[9px] text-slate-500 font-mono">CARGA POR LOTE</span>
+                            </div>
+
+                            <div class="space-y-3 text-xs font-bold">
+                                <div>
+                                    <label class="text-[9.5px] text-slate-300 uppercase block mb-1">Nombre / Modelo del Accesorio o Repuesto</label>
+                                    <input type="text" id="inv-in-nombre" placeholder="Ej: CARGADOR V8, VIDRIO REDMI 13..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white uppercase text-xs focus:outline-none focus:border-purple-500 font-bold" oninput="window.svc_verificarCoincidenciaInventarioAuto(this.value)" onkeydown="if(event.key === 'Enter') window.svc_agregarProductoAlLoteIngreso();">
+                                    <span id="lbl-inv-coincidencia-aviso" class="text-[9px] text-amber-400 mt-1 block hidden">💡 Ya existe en inventario. Al guardar el lote se sumarán las unidades al stock actual.</span>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="text-[9.5px] text-slate-300 uppercase block mb-1">Categoría</label>
+                                        <input type="text" id="inv-in-categoria" list="lista-categorias-inventario" placeholder="Ej: CARGADORES, VIDRIOS..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white uppercase font-bold text-xs focus:outline-none focus:border-purple-500">
+                                        <datalist id="lista-categorias-inventario"></datalist>
+                                    </div>
+                                    <div>
+                                        <label class="text-[9.5px] text-slate-300 uppercase block mb-1">Cantidad a Ingresar</label>
+                                        <input type="number" id="inv-in-stock" value="1" min="1" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white text-center font-black focus:outline-none text-sm" onkeydown="if(event.key === 'Enter') window.svc_agregarProductoAlLoteIngreso();">
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-3 font-mono">
+                                    <span class="text-[9px] text-purple-400 font-black uppercase block tracking-wider font-sans">Costos & Precios de Venta</span>
+                                    
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="text-[8.5px] text-slate-400 uppercase block font-sans mb-1">Moneda Venta</label>
+                                            <select id="inv-in-moneda-venta" onchange="window.svc_recalcularPreciosInventarioInput()" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white text-xs font-bold focus:outline-none">
+                                                <option value="COP" selected>Pesos (COP)</option>
+                                                <option value="USD">Dólares ($USD)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[8.5px] text-emerald-400 uppercase block font-sans mb-1">Precio Venta Público</label>
+                                            <input type="text" id="inv-in-precio-venta" placeholder="Ej: 15.000" onkeyup="window.svc_maskInputFormatted(this); window.svc_recalcularPreciosInventarioInput();" onkeydown="if(event.key === 'Enter') window.svc_agregarProductoAlLoteIngreso();" class="w-full bg-slate-900 border border-emerald-500/40 p-2 rounded-xl text-emerald-400 text-center font-black text-xs focus:outline-none">
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="text-[8.5px] text-slate-400 uppercase block font-sans mb-1">Moneda Costo (Opc.)</label>
+                                            <select id="inv-in-moneda-costo" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white text-xs font-bold focus:outline-none">
+                                                <option value="USD" selected>Dólares ($)</option>
+                                                <option value="COP">Pesos (COP)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[8.5px] text-amber-400 uppercase block font-sans mb-1">Costo Unitario</label>
+                                            <input type="text" id="inv-in-costo" placeholder="Ej: 1.50" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-amber-400 text-center font-black text-xs focus:outline-none" onkeydown="if(event.key === 'Enter') window.svc_agregarProductoAlLoteIngreso();">
+                                        </div>
+                                    </div>
+
+                                    <div class="text-[9.5px] text-slate-400 text-center pt-1 border-t border-slate-900">
+                                        <span id="lbl-inv-equiv-venta">Equivalente: $0.00 USD</span>
+                                    </div>
+                                </div>
+
+                                <button onclick="window.svc_agregarProductoAlLoteIngreso()" type="button" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow transition-all hover:scale-[1.01] flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-plus text-xs"></i> ➕ Añadir al Lote de Ingreso
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="space-y-3 text-xs font-bold">
-                            <div>
-                                <label class="text-[9.5px] text-slate-300 uppercase block mb-1">Nombre / Modelo del Accesorio o Repuesto</label>
-                                <input type="text" id="inv-in-nombre" placeholder="Ej: VIDRIO TEMPLADO REDMI 13" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white uppercase text-xs focus:outline-none focus:border-purple-500 font-bold" oninput="window.svc_verificarCoincidenciaInventarioAuto(this.value)">
-                                <span id="lbl-inv-coincidencia-aviso" class="text-[9px] text-amber-400 mt-1 block hidden">💡 Ya existe este producto. Si guardas, se sumará la cantidad ingresada al stock actual.</span>
+                        <!-- CAJA 2: BANDEJA EN VIVO DEL LOTE DE INGRESO (CARGA MULTIPLE) -->
+                        <div class="bg-slate-900/60 border border-purple-500/40 p-4 sm:p-5 rounded-3xl shadow-xl space-y-3.5">
+                            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                                <h5 class="text-xs font-black text-purple-300 uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fa-solid fa-boxes-packing text-amber-400"></i> Lote Activo por Ingresar
+                                </h5>
+                                <span id="lbl-lote-ingreso-badge-cnt" class="text-[10px] font-black text-purple-300 bg-purple-950/60 border border-purple-500/30 px-2.5 py-0.5 rounded-full font-mono">
+                                    0 Ítems (0 Unid.)
+                                </span>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-2">
-                                <div>
-                                    <label class="text-[9.5px] text-slate-300 uppercase block mb-1">Categoría (Crea o elige la tuya)</label>
-                                    <input type="text" id="inv-in-categoria" list="lista-categorias-inventario" placeholder="Ej: PANTALLAS, FORROS..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white uppercase font-bold text-xs focus:outline-none focus:border-purple-500">
-                                    <datalist id="lista-categorias-inventario"></datalist>
-                                </div>
-                                <div>
-                                    <label class="text-[9.5px] text-slate-300 uppercase block mb-1">Cantidad a Ingresar</label>
-                                    <input type="number" id="inv-in-stock" value="1" min="1" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white text-center font-black focus:outline-none text-sm">
-                                </div>
-                            </div>
+                            <div id="wrapper-lote-ingreso-items-box" class="space-y-1.5 max-h-48 overflow-y-auto no-scrollbar text-xs"></div>
 
-                            <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-3 font-mono">
-                                <span class="text-[9px] text-purple-400 font-black uppercase block tracking-wider font-sans">Control de Precios & Costos</span>
-                                
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div>
-                                        <label class="text-[8.5px] text-slate-400 uppercase block font-sans mb-1">Moneda Venta</label>
-                                        <select id="inv-in-moneda-venta" onchange="window.svc_recalcularPreciosInventarioInput()" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white text-xs font-bold focus:outline-none">
-                                            <option value="COP" selected>Pesos (COP)</option>
-                                            <option value="USD">Dólares ($USD)</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="text-[8.5px] text-emerald-400 uppercase block font-sans mb-1">Precio Venta Público</label>
-                                        <input type="text" id="inv-in-precio-venta" placeholder="Ej: 15.000" onkeyup="window.svc_maskInputFormatted(this); window.svc_recalcularPreciosInventarioInput();" class="w-full bg-slate-900 border border-emerald-500/40 p-2 rounded-xl text-emerald-400 text-center font-black text-xs focus:outline-none">
-                                    </div>
+                            <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-1.5 font-mono text-[11px]">
+                                <div class="flex justify-between items-center text-slate-300">
+                                    <span>Total Unidades a Ingresar:</span>
+                                    <b id="lbl-lote-ingreso-total-unids" class="text-white font-black text-xs">0 Unidades</b>
                                 </div>
-
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div>
-                                        <label class="text-[8.5px] text-slate-400 uppercase block font-sans mb-1">Moneda Costo (Opc.)</label>
-                                        <select id="inv-in-moneda-costo" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white text-xs font-bold focus:outline-none">
-                                            <option value="USD" selected>Dólares ($)</option>
-                                            <option value="COP">Pesos (COP)</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="text-[8.5px] text-amber-400 uppercase block font-sans mb-1">Costo Unitario</label>
-                                        <input type="text" id="inv-in-costo" placeholder="Ej: 1.50" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-amber-400 text-center font-black text-xs focus:outline-none">
-                                    </div>
-                                </div>
-
-                                <div class="text-[9.5px] text-slate-400 text-center pt-1 border-t border-slate-900">
-                                    <span id="lbl-inv-equiv-venta">Equivalente: $0.00 USD</span>
+                                <div class="flex justify-between items-center text-amber-400 font-bold border-t border-slate-900 pt-1">
+                                    <span>Inversión Estimada Lote:</span>
+                                    <b id="lbl-lote-ingreso-total-inversion" class="text-sm font-black">0 COP ($0.00 USD)</b>
                                 </div>
                             </div>
 
-                            <button onclick="window.svc_guardarOActualizarProductoInventario()" type="button" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs py-3.5 rounded-xl uppercase tracking-wider shadow-lg transition-all hover:scale-[1.01]">
-                                💾 Registrar / Sumar a Inventario
+                            <button onclick="window.svc_guardarLoteIngresoMercanciaFinal()" type="button" class="w-full bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-black text-xs py-3.5 rounded-xl uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.01]">
+                                <i class="fa-solid fa-floppy-disk text-sm"></i> 💾 Guardar Lote & Cargar a Inventario
                             </button>
                         </div>
                     </div>
@@ -770,10 +802,16 @@
                             <h4 class="text-xs sm:text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
                                 <i class="fa-solid fa-list-check text-purple-400"></i> Existencias en Taller
                             </h4>
-                            <div class="flex items-center gap-2 w-full sm:w-auto">
-                                <select id="inv-filtro-categoria" onchange="window.svc_renderizarInventarioTaller()" class="bg-slate-950 border border-slate-800 text-slate-300 text-[10px] font-bold p-2 rounded-xl focus:outline-none uppercase">
+                            <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap">
+                                <select id="inv-filtro-categoria" onchange="window.svc_renderizarInventarioTaller()" class="bg-slate-950 border border-slate-800 text-slate-300 text-[10px] font-bold p-2 rounded-xl focus:outline-none uppercase flex-1 sm:flex-none">
                                     <option value="TODAS">📁 Todas las Categorías</option>
                                 </select>
+                                <button onclick="window.svc_abrirModalGestorCategorias()" type="button" title="Crear, editar o eliminar categorías" class="bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white border border-purple-500/40 px-2.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition flex items-center gap-1.5 shrink-0">
+                                    <i class="fa-solid fa-sliders text-xs"></i> <span>⚙️ Categorías</span>
+                                </button>
+                                <button onclick="window.svc_abrirModalOpcionesExportarInventario()" type="button" title="Imprimir en A4 o Compartir Inventario" class="bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/40 px-2.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition flex items-center gap-1.5 shrink-0">
+                                    <i class="fa-solid fa-print text-xs"></i> <span>📄 Reporte A4 / Enviar</span>
+                                </button>
                             </div>
                         </div>
 
@@ -832,6 +870,126 @@
                             <button onclick="window.svc_guardarCambiosModalEditarInventario()" type="button" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-black py-2.5 rounded-xl uppercase text-[10px] shadow">Guardar Cambios</button>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- MODAL DE GESTIÓN, EDICIÓN Y CREACIÓN DE CATEGORÍAS SERVICELL -->
+            <div id="modal-gestor-categorias-inv" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center hidden p-4 z-50">
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl font-mono text-xs">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
+                        <div>
+                            <h4 class="text-xs font-black text-purple-400 uppercase tracking-wider flex items-center gap-1.5 font-sans">
+                                <i class="fa-solid fa-sliders"></i> Gestor de Categorías de Inventario
+                            </h4>
+                            <span class="text-[9.5px] text-slate-400 font-sans block mt-0.5">Crea, edita o elimina las categorías a tu medida.</span>
+                        </div>
+                        <button onclick="document.getElementById('modal-gestor-categorias-inv').classList.add('hidden')" class="text-slate-400 hover:text-white text-sm">✖</button>
+                    </div>
+
+                    <!-- BOTÓN AGREGAR CATEGORÍA -->
+                    <div class="flex gap-2">
+                        <input type="text" id="in-nueva-cat-modal" placeholder="Nombre nueva categoría (Ej: PANTALLAS, FLEX...)" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white font-sans font-bold text-xs uppercase focus:outline-none focus:border-purple-500" onkeydown="if(event.key === 'Enter') window.svc_agregarNuevaCategoriaModal();">
+                        <button onclick="window.svc_agregarNuevaCategoriaModal()" type="button" class="bg-purple-600 hover:bg-purple-700 text-white font-black px-3.5 py-2.5 rounded-xl text-[10px] uppercase tracking-wider transition shrink-0">
+                            ➕ Añadir
+                        </button>
+                    </div>
+
+                    <!-- LISTA DE CATEGORÍAS ADMINISTRADAS -->
+                    <div class="space-y-1.5 max-h-64 overflow-y-auto no-scrollbar pr-1" id="wrapper-lista-categorias-modal-box"></div>
+
+                    <div class="pt-2 border-t border-slate-800 flex justify-end">
+                        <button onclick="document.getElementById('modal-gestor-categorias-inv').classList.add('hidden')" type="button" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-4 py-2 rounded-xl uppercase text-[10px]">
+                            Listo / Cerrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL DE OPCIONES PARA IMPRIMIR O COMPARTIR INVENTARIO (CON O SIN COSTOS) -->
+            <div id="modal-opciones-exportar-inv" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center hidden p-4 z-50">
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl font-mono text-xs">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
+                        <div>
+                            <h4 class="text-xs font-black text-indigo-400 uppercase tracking-wider flex items-center gap-1.5 font-sans">
+                                <i class="fa-solid fa-file-invoice"></i> Reporte e Impresión de Inventario A4
+                            </h4>
+                            <span class="text-[9.5px] text-slate-400 font-sans block mt-0.5">Elige cómo deseas imprimir o enviar el inventario.</span>
+                        </div>
+                        <button onclick="document.getElementById('modal-opciones-exportar-inv').classList.add('hidden')" class="text-slate-400 hover:text-white text-sm">✖</button>
+                    </div>
+
+                    <div class="space-y-3 font-sans">
+                        <!-- OPCIÓN 1: MOSTRAR U OCULTAR COSTOS -->
+                        <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-2">
+                            <span class="text-[9.5px] text-slate-300 font-bold uppercase block tracking-wider">¿Deseas incluir los costos unitarios?</span>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2.5 cursor-pointer text-xs text-slate-300">
+                                    <input type="radio" name="opt-inv-modo-costos" value="SOLO_VENTA" checked class="text-purple-600 focus:ring-0">
+                                    <span>🛍️ <b>Solo Precios de Venta al Público</b> (Ideal para clientes o catálogo)</span>
+                                </label>
+                                <label class="flex items-center gap-2.5 cursor-pointer text-xs text-slate-300">
+                                    <input type="radio" name="opt-inv-modo-costos" value="CON_COSTO" class="text-purple-600 focus:ring-0">
+                                    <span>💼 <b>Venta + Costos Unitarios & Ganancia</b> (Para control interno y auditoría)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- OPCIÓN 2: FILTRO DE CATEGORÍAS -->
+                        <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-2">
+                            <span class="text-[9.5px] text-slate-300 font-bold uppercase block tracking-wider">¿Qué productos deseas incluir?</span>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2.5 cursor-pointer text-xs text-slate-300">
+                                    <input type="radio" name="opt-inv-alcance" value="TODOS" checked class="text-purple-600 focus:ring-0">
+                                    <span>📦 <b>Todos los productos en Inventario</b></span>
+                                </label>
+                                <label class="flex items-center gap-2.5 cursor-pointer text-xs text-slate-300">
+                                    <input type="radio" name="opt-inv-alcance" value="FILTRADOS" class="text-purple-600 focus:ring-0">
+                                    <span>🔍 <b>Solo la categoría o búsqueda filtrada actual</b></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- BOTONES DE ACCIÓN: IMPRIMIR A4 O COMPARTIR NATIVO -->
+                        <div class="grid grid-cols-2 gap-2 pt-2">
+                            <button onclick="window.svc_generarEImprimirHojaA4Inventario()" type="button" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-3 rounded-xl uppercase text-[10px] tracking-wider shadow flex items-center justify-center gap-1.5 transition">
+                                <i class="fa-solid fa-print text-xs"></i> 🖨️ Imprimir Hoja A4
+                            </button>
+                            <button onclick="window.svc_compartirInventarioUniversal()" type="button" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl uppercase text-[10px] tracking-wider shadow flex items-center justify-center gap-1.5 transition">
+                                <i class="fa-solid fa-share-nodes text-xs"></i> 📲 Compartir / Enviar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL HOJA BLANCA / A4 DE INVENTARIO SERVICELL -->
+            <div id="modal-hoja-a4-inventario" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center hidden p-3 sm:p-4 z-50">
+                <div class="papel-hoja-blanca bg-white text-slate-950 rounded-3xl w-full max-w-3xl p-6 sm:p-8 space-y-5 shadow-2xl font-mono text-xs overflow-y-auto max-h-[85vh]">
+                    <div class="border-b-2 border-slate-900 pb-3 flex justify-between items-start">
+                        <div>
+                            <h3 class="text-base font-black uppercase text-slate-950">SERVICELL — TUCOCEL C.A.</h3>
+                            <p class="text-[10px] text-slate-600 font-bold uppercase tracking-wider" id="lbl-hoja-a4-inv-subtitulo">Reporte Oficial de Inventario & Existencias de Taller</p>
+                        </div>
+                        <div class="text-right font-mono text-[9px] text-slate-600">
+                            <span id="lbl-hoja-a4-inv-fecha" class="block font-bold">FECHA: --/--/----</span>
+                            <span id="lbl-hoja-a4-inv-tasa" class="block">TASA COP: 3.600</span>
+                        </div>
+                    </div>
+                    
+                    <div id="contenido-hoja-a4-inventario-render" class="space-y-4"></div>
+                </div>
+
+                <!-- BARRA FLOTANTE DE ACCIÓN -->
+                <div class="no-imprimir mt-3 bg-slate-900 border border-slate-800 p-2.5 rounded-2xl flex justify-center gap-2 max-w-3xl w-full shadow-2xl">
+                    <button onclick="window.print()" class="bg-slate-950 hover:bg-black text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px] border border-slate-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-print"></i> Mandar a Imprimir
+                    </button>
+                    <button onclick="window.svc_compartirInventarioUniversal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px] flex items-center gap-1.5">
+                        <i class="fa-solid fa-share-nodes"></i> Compartir
+                    </button>
+                    <button onclick="document.getElementById('modal-hoja-a4-inventario').classList.add('hidden')" class="bg-slate-800 text-slate-300 font-bold px-4 py-2.5 rounded-xl uppercase text-[10px]">
+                        Cerrar
+                    </button>
                 </div>
             </div>
 
@@ -1410,6 +1568,8 @@
         let svc_fotoPatronBase64 = "";
         let svc_inventarioGlobal = []; // Bóveda de Repuestos y Accesorios Servicell
         let svc_categoriasInventario = ["REPUESTOS", "ACCESORIOS", "PANTALLAS", "BATERÍAS", "CARGADORES", "VIDRIOS"]; // Categorías libres creadas por el usuario
+        let svc_loteIngresoMercanciaActivo = []; // Lote activo de ingreso de mercancía
+        let svc_historicoIngresosMercancia = []; // Historial de lotes/ingresos registrados
 
         // VARIABLES EXCLUSIVAS TUCOCEL C.A. (PARTICIÓN 3)
         let tcl_ventasActivasTurno = [];
@@ -1972,6 +2132,9 @@ window.svc_descargarServidorCentral = async function() {
                     if(docSnap.data().categoriasInventario) {
                         svc_categoriasInventario = docSnap.data().categoriasInventario;
                     }
+                    if(docSnap.data().historicoIngresosMercancia) {
+                        svc_historicoIngresosMercancia = docSnap.data().historicoIngresosMercancia;
+                    }
 
                     // RESTAURACIÓN AUTOMÁTICA DE COMANDAS DESDE BÓVEDA MENSUAL
                     if(svc_historicoMesesServicell && svc_historicoMesesServicell.length > 0) {
@@ -2249,7 +2412,7 @@ window.svc_descargarServidorCentral = async function() {
                             `🛡️ *Garantía de Servicio:* ${match.diasGarantia || 2} Días continuos tras la entrega.\n` +
                             `🔒 _Su equipo queda en proceso de reparación bajo estricto resguardo técnico. Le avisaremos apenas esté listo._`;
 
-            window.open(`https://api.whatsapp.com/send?phone=${match.tlf}&text=${encodeURIComponent(msgCliente)}`, '_blank');
+            window.svc_compartirTextoUniversal('Orden de Taller - Servicell', msgCliente, match.tlf);
         };
 
         window.svc_renderizerHistoricoRecepciones = function() {
@@ -2361,7 +2524,7 @@ window.svc_descargarServidorCentral = async function() {
                       `🛡️ *Garantía de Servicio:* ${c.diasGarantia || 2} Días continuos tras la entrega.\n` +
                       `🔒 _Su equipo queda bajo estricto resguardo técnico._`;
 
-            window.open(`https://api.whatsapp.com/send?phone=${c.tlf}&text=${encodeURIComponent(msg)}`, '_blank');
+            window.svc_compartirTextoUniversal('Notificación de Servicio - Servicell', msg, c.tlf);
         };
 
         window.svc_notificarListoRetiro = async function(id) {
@@ -2378,7 +2541,7 @@ window.svc_descargarServidorCentral = async function() {
                       `📋 *Saldo Pendiente a Cancelar:* *${displayRestanteStr}*\n\n` +
                       `Puede pasar por nuestro laboratorio Servicell / Tucocel c.a. para retirarlo. ¡Gracias por preferirnos!`;
 
-            window.open(`https://api.whatsapp.com/send?phone=${c.tlf}&text=${encodeURIComponent(msg)}`, '_blank');
+            window.svc_compartirTextoUniversal('Notificación de Servicio - Servicell', msg, c.tlf);
         };
 
         window.svc_finalizarYEntregar = async function(id) {
@@ -2655,7 +2818,7 @@ Garantía     : ${c.diasGarantia || 2} Días
                       `📌 *Nota:* Este reporte diario refleja únicamente la producción del día. Los adelantos de vales acumulados no se descuentan aquí, se liquidan en el Cierre Semanal de Nómina.%0A%0A` +
                       `🔒 *SERVICELL — SERVICIO TÉCNICO DE TUCOCEL C.A.* 🔒`;
 
-            window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+            window.svc_compartirTextoUniversal('Reporte Corporativo', msg);
         };
 
         window.svc_reimprimirTicketPasado = function(key) {
@@ -2799,7 +2962,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                     msg += `🔴 *SUBVENCIÓN TUCOCEL C.A.:* -${fmtMonto(Math.abs(diferenciaCOP))} COP\n`;
                 }
                 msg += `\n🔒 *DOCUMENTO CONTABLE OFICIAL — TUCOCEL C.A.*`;
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+                window.svc_compartirTextoUniversal('Reporte Corporativo', msg);
             }
         };
 
@@ -3025,7 +3188,7 @@ Comisión Tec   : ${fmtMonto(match.gananciaTecnico)} COP
                       `${analisisTallerTxt}%0A%0A` +
                       `🔒 *DOCUMENTO AUDITADO Y FIRMADO POR TUCOCEL C.A.* 🔒`;
 
-            window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+            window.svc_compartirTextoUniversal('Reporte Corporativo', msg);
         };
 
         // FUNCIONES DEDICADAS PARA REGISTRO DE VALES CON MOTIVO Y CONCEPTO
@@ -3242,7 +3405,7 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                       `💰 *TOTAL NETO PAGADO ESTA SEMANA:*%0A*${fmtMonto(sem.netoPagar)} COP*%0A%0A` +
                       `🔒 *DOCUMENTO AUDITADO Y FIRMADO POR TUCOCEL C.A.* 🔒`;
 
-            window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+            window.svc_compartirTextoUniversal('Reporte Corporativo', msg);
         };
 
         window.svc_filtrarComandasBuscador = function() {
@@ -3399,7 +3562,7 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                       `🔗 *Ingresa al siguiente enlace para completar tu ficha:* \n${linkUnicoGenerated}\n\n` +
                       `⚠️ *Por favor, no compartas este enlace con nadie.*`;
 
-            window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(msgInv)}`, '_blank');
+            window.svc_compartirTextoUniversal('Credenciales de Acceso - Servicell', msgInv, cleanPhone);
 
             document.getElementById('adm-tec-nombre').value = "";
             document.getElementById('adm-tec-pass').value = "";
@@ -3488,7 +3651,7 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                       `🔗 *Ingresa al siguiente enlace:* \n${t.linkUnicoGenerated}\n\n` +
                       `⚠️ *Por favor, no compartas este enlace con nadie.*`;
 
-            window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(msgInv)}`, '_blank');
+            window.svc_compartirTextoUniversal('Credenciales de Acceso - Servicell', msgInv, cleanPhone);
         };
 
         window.svc_borrarDefinitivamenteTecnico = async function(idx) {
@@ -3524,6 +3687,7 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                 localStorage.setItem("svc_backup_comanda_activa", JSON.stringify(svc_comandaActivaTurno));
                 localStorage.setItem("svc_backup_inventario_global", JSON.stringify(svc_inventarioGlobal));
                 localStorage.setItem("svc_backup_categorias_inv", JSON.stringify(svc_categoriasInventario));
+                localStorage.setItem("svc_backup_ingresos_mercancia", JSON.stringify(svc_historicoIngresosMercancia));
             } catch(e) {}
         }
 
@@ -3574,6 +3738,9 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                 const bCats = localStorage.getItem("svc_backup_categorias_inv");
                 if (bCats) svc_categoriasInventario = JSON.parse(bCats);
 
+                const bIngresos = localStorage.getItem("svc_backup_ingresos_mercancia");
+                if (bIngresos) svc_historicoIngresosMercancia = JSON.parse(bIngresos);
+
                 console.log("⚡ Respaldo local de contingencia inyectado en memoria.");
             } catch(e) {
                 console.warn("Aviso carga respaldo local:", e);
@@ -3605,6 +3772,7 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                     historicoSemanasLiquidadas: svc_historicoSemanasLiquidadas,
                     inventarioGlobal: svc_inventarioGlobal,
                     categoriasInventario: svc_categoriasInventario,
+                    historicoIngresosMercancia: svc_historicoIngresosMercancia,
                     ultimaModificacion: Date.now()
                 }); 
                 console.log("☁️ [Firestore] Comandas e inventario Servicell sincronizados.");
@@ -4527,7 +4695,221 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
 
         
 
+                // =========================================================
+        // MOTOR DE COMPARTIR UNIVERSAL MULTI-PLATAFORMA
+        // Abre el selector nativo de Android (WhatsApp, WhatsApp Business, Gmail, Bluetooth, etc.)
         // =========================================================
+        window.svc_compartirTextoUniversal = async function(titulo, texto, telefonoDirecto = null) {
+            // Si el dispositivo móvil o navegador soporta la API nativa de compartir
+            if (navigator && navigator.share) {
+                try {
+                    await navigator.share({
+                        title: titulo || "TUCOCEL C.A. / SERVICELL",
+                        text: texto
+                    });
+                    return;
+                } catch (e) {
+                    if (e.name === 'AbortError') {
+                        // El usuario canceló la hoja de compartir
+                        return;
+                    }
+                    console.warn("navigator.share falló, usando fallback:", e);
+                }
+            }
+
+            // Fallback para PC de escritorio o navegadores sin soporte Web Share
+            if (telefonoDirecto) {
+                let cleanPhone = String(telefonoDirecto).replace(/\D/g, '');
+                if(!cleanPhone.startsWith('58')) cleanPhone = '58' + cleanPhone;
+                window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(texto)}`, '_blank');
+            } else {
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
+            }
+        };
+
+        // =========================================================
+        // REPORTE A4 & COMPARTIR INVENTARIO (CON O SIN COSTOS)
+        // =========================================================
+        window.svc_abrirModalOpcionesExportarInventario = function() {
+            const modal = document.getElementById('modal-opciones-exportar-inv');
+            if(modal) modal.classList.remove('hidden');
+        };
+
+        window.svc_obtenerProductosFiltradosParaReporte = function() {
+            const alcance = document.querySelector('input[name="opt-inv-alcance"]:checked')?.value || "TODOS";
+            const filtroCat = document.getElementById('inv-filtro-categoria')?.value || 'TODAS';
+            const q = (document.getElementById('inv-buscar-input')?.value || '').trim().toUpperCase();
+
+            let lista = [...svc_inventarioGlobal];
+
+            if(alcance === "FILTRADOS") {
+                if(filtroCat !== 'TODAS') {
+                    lista = lista.filter(p => (p.categoria || '').toUpperCase() === filtroCat.toUpperCase());
+                }
+                if(q) {
+                    lista = lista.filter(p => (p.nombre || '').toUpperCase().includes(q) || (p.categoria || '').toUpperCase().includes(q) || (p.codigo || '').toUpperCase().includes(q));
+                }
+            }
+            return lista;
+        };
+
+        window.svc_generarEImprimirHojaA4Inventario = function() {
+            const productos = window.svc_obtenerProductosFiltradosParaReporte();
+            if(productos.length === 0) return alert("No hay productos disponibles para generar el reporte.");
+
+            const modoCostos = document.querySelector('input[name="opt-inv-modo-costos"]:checked')?.value || "SOLO_VENTA";
+            const conCostos = (modoCostos === "CON_COSTO");
+
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+
+            document.getElementById('modal-opciones-exportar-inv').classList.add('hidden');
+            document.getElementById('lbl-hoja-a4-inv-fecha').innerText = `FECHA: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            document.getElementById('lbl-hoja-a4-inv-tasa').innerText = `TASA COP: ${fmtMonto(tCOP)} COP/USD`;
+            document.getElementById('lbl-hoja-a4-inv-subtitulo').innerText = conCostos ? "Reporte Oficial de Auditoría & Costos de Taller" : "Catálogo y Lista de Precios de Venta al Público";
+
+            let filasHtml = "";
+            let totalUnidades = 0;
+            let totalValorVentaCOP = 0;
+            let totalInversionCOP = 0;
+
+            productos.forEach((p, idx) => {
+                const cant = p.stock || 0;
+                totalUnidades += cant;
+                const pCOP = p.precioVentaCOP || 0;
+                const subVenta = pCOP * cant;
+                totalValorVentaCOP += subVenta;
+
+                const cCOP = p.costoUnitCOP || (p.costoUnitUSD ? Math.round(p.costoUnitUSD * tCOP) : 0);
+                const subCosto = cCOP * cant;
+                totalInversionCOP += subCosto;
+
+                filasHtml += `
+                    <tr class="border-b border-slate-200 text-[10px]">
+                        <td class="py-1.5 px-2 text-center text-slate-500 font-mono">${idx + 1}</td>
+                        <td class="py-1.5 px-2 font-bold text-slate-900 uppercase">${p.nombre}</td>
+                        <td class="py-1.5 px-2 text-slate-600 font-sans uppercase">${p.categoria || 'ACCESORIOS'}</td>
+                        <td class="py-1.5 px-2 text-center font-bold font-mono ${cant > 0 ? 'text-slate-950' : 'text-red-600'}">${cant} unid.</td>
+                        <td class="py-1.5 px-2 text-right font-mono font-bold text-slate-900">${fmtMonto(pCOP)} COP</td>
+                        ${conCostos ? `
+                            <td class="py-1.5 px-2 text-right font-mono text-slate-700">${cCOP > 0 ? '$' + (p.costoUnitUSD || (cCOP/tCOP)).toFixed(2) : '-'}</td>
+                            <td class="py-1.5 px-2 text-right font-mono font-bold ${pCOP > cCOP ? 'text-emerald-700' : 'text-slate-700'}">+${fmtMonto(pCOP - cCOP)} COP</td>
+                        ` : ''}
+                    </tr>`;
+            });
+
+            const totalGananciaCOP = Math.max(0, totalValorVentaCOP - totalInversionCOP);
+
+            const renderBox = document.getElementById('contenido-hoja-a4-inventario-render');
+            renderBox.innerHTML = `
+                <div class="space-y-4">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b-2 border-slate-900 text-[9.5px] uppercase font-black text-slate-950 bg-slate-100">
+                                    <th class="py-2 px-2 text-center">N°</th>
+                                    <th class="py-2 px-2">Descripción Producto / Repuesto</th>
+                                    <th class="py-2 px-2">Categoría</th>
+                                    <th class="py-2 px-2 text-center">Stock</th>
+                                    <th class="py-2 px-2 text-right">Precio Venta (COP)</th>
+                                    ${conCostos ? `
+                                        <th class="py-2 px-2 text-right">Costo Unit.</th>
+                                        <th class="py-2 px-2 text-right">Ganancia Est.</th>
+                                    ` : ''}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${filasHtml}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- RESUMEN FINAL AUDITADO -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-300 space-y-2 font-mono text-xs">
+                        <div class="flex justify-between items-center text-slate-700">
+                            <span>Variedad de Ítems Listados:</span>
+                            <b class="text-slate-950 font-black">${productos.length} Productos</b>
+                        </div>
+                        <div class="flex justify-between items-center text-slate-700">
+                            <span>Total Unidades en Stock:</span>
+                            <b class="text-slate-950 font-black">${totalUnidades} Unidades</b>
+                        </div>
+                        <div class="flex justify-between items-center text-slate-950 font-bold border-t border-slate-200 pt-1.5">
+                            <span>Valorización Total en Ventas (Público):</span>
+                            <b class="text-slate-950 text-sm font-black">${fmtMonto(totalValorVentaCOP)} COP ($${window.svc_formatDecimalUSD(totalValorVentaCOP/tCOP)} USD)</b>
+                        </div>
+                        ${conCostos ? `
+                            <div class="flex justify-between items-center text-amber-800 border-t border-slate-200 pt-1.5">
+                                <span>Inversión Total en Costos:</span>
+                                <b>${fmtMonto(totalInversionCOP)} COP ($${window.svc_formatDecimalUSD(totalInversionCOP/tCOP)} USD)</b>
+                            </div>
+                            <div class="flex justify-between items-center text-emerald-800 font-black text-sm">
+                                <span>Ganancia Bruta Proyectada:</span>
+                                <b>+${fmtMonto(totalGananciaCOP)} COP (+$${window.svc_formatDecimalUSD(totalGananciaCOP/tCOP)} USD)</b>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="text-[8.5px] text-slate-500 italic text-center pt-1 border-t border-slate-200">
+                        Documento generado por el Sistema Unificado TUCOCEL C.A. / SERVICELL — Todos los derechos reservados.
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modal-hoja-a4-inventario').classList.remove('hidden');
+        };
+
+        window.svc_compartirInventarioUniversal = async function() {
+            const productos = window.svc_obtenerProductosFiltradosParaReporte();
+            if(productos.length === 0) return alert("No hay productos para compartir.");
+
+            const modoCostos = document.querySelector('input[name="opt-inv-modo-costos"]:checked')?.value || "SOLO_VENTA";
+            const conCostos = (modoCostos === "CON_COSTO");
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+
+            let texto = `📦 *INVENTARIO OFICIAL — SERVICELL / TUCOCEL C.A.*\n`;
+            texto += `📅 Fecha: ${new Date().toLocaleDateString()} | Tasa: ${fmtMonto(tCOP)} COP/USD\n`;
+            texto += `──────────────────────────────\n\n`;
+
+            let totalPiezas = 0;
+            let totalVentaCOP = 0;
+            let totalCostoCOP = 0;
+
+            productos.forEach((p, idx) => {
+                const cant = p.stock || 0;
+                totalPiezas += cant;
+                const pCOP = p.precioVentaCOP || 0;
+                totalVentaCOP += (pCOP * cant);
+
+                const cCOP = p.costoUnitCOP || (p.costoUnitUSD ? Math.round(p.costoUnitUSD * tCOP) : 0);
+                totalCostoCOP += (cCOP * cant);
+
+                texto += `${idx + 1}. *${p.nombre}* [${p.categoria || 'ACCESORIOS'}]\n`;
+                texto += `   • Stock: *${cant} unid.* | Venta: *${fmtMonto(pCOP)} COP* ($${(pCOP/tCOP).toFixed(2)} USD)\n`;
+                if(conCostos) {
+                    texto += `   • Costo Unit: $${(p.costoUnitUSD || (cCOP/tCOP)).toFixed(2)} USD | Margen: +${fmtMonto(pCOP - cCOP)} COP\n`;
+                }
+            });
+
+            texto += `\n──────────────────────────────\n`;
+            texto += `📊 *TOTAL VARIEDAD:* ${productos.length} Productos\n`;
+            texto += `📦 *TOTAL PIEZAS EN STOCK:* ${totalPiezas} Unidades\n`;
+            texto += `💰 *VALORIZACIÓN TOTAL VENTAS:* *${fmtMonto(totalVentaCOP)} COP* ($${window.svc_formatDecimalUSD(totalVentaCOP/tCOP)} USD)\n`;
+            if(conCostos) {
+                texto += `💼 *INVERSIÓN TOTAL EN COSTO:* ${fmtMonto(totalCostoCOP)} COP\n`;
+                texto += `🟢 *GANANCIA TOTAL ESTIMADA:* +${fmtMonto(totalVentaCOP - totalCostoCOP)} COP\n`;
+            }
+            texto += `\n🔒 *SERVICELL & TUCOCEL C.A.*`;
+
+            const modalOpc = document.getElementById('modal-opciones-exportar-inv');
+            if(modalOpc) modalOpc.classList.add('hidden');
+
+            await window.svc_compartirTextoUniversal(
+                conCostos ? "Reporte de Inventario con Costos - Servicell" : "Lista de Precios e Inventario - Servicell",
+                texto
+            );
+        };
+
+// =========================================================
         // MOTOR DE INVENTARIO SERVICELL (ACCESORIOS & REPUESTOS)
         // CON CREACIÓN DINÁMICA DE CATEGORÍAS POR EL USUARIO
         // =========================================================
@@ -4536,14 +4918,7 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
             const selFiltro = document.getElementById('inv-filtro-categoria');
             if(!dl) return;
 
-            // Extraer categorías únicas de los productos y de la lista base
-            svc_inventarioGlobal.forEach(p => {
-                const c = (p.categoria || '').trim().toUpperCase();
-                if(c && !svc_categoriasInventario.includes(c)) {
-                    svc_categoriasInventario.push(c);
-                }
-            });
-
+            // Se alimenta EXCLUSIVAMENTE de la lista administrada por el usuario
             dl.innerHTML = svc_categoriasInventario.map(c => `<option value="${c}">`).join('');
 
             if(selFiltro) {
@@ -4557,6 +4932,108 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
                     selFiltro.value = valActual;
                 }
             }
+        };
+
+        window.svc_abrirModalGestorCategorias = function() {
+            const modal = document.getElementById('modal-gestor-categorias-inv');
+            const inNueva = document.getElementById('in-nueva-cat-modal');
+            if(inNueva) inNueva.value = "";
+            window.svc_renderizarListaCategoriasModal();
+            if(modal) modal.classList.remove('hidden');
+        };
+
+        window.svc_renderizarListaCategoriasModal = function() {
+            const box = document.getElementById('wrapper-lista-categorias-modal-box');
+            if(!box) return;
+
+            let html = "";
+            svc_categoriasInventario.forEach((cat, idx) => {
+                const cantidadProductosAsociados = svc_inventarioGlobal.filter(p => (p.categoria || '').toUpperCase() === cat.toUpperCase()).length;
+                html += `
+                    <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex justify-between items-center text-slate-200">
+                        <div class="truncate pr-2">
+                            <b class="text-white text-xs uppercase font-sans">${cat}</b>
+                            <span class="block text-[9px] text-slate-500 font-mono">${cantidadProductosAsociados} producto(s) asignado(s)</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button onclick="window.svc_editarCategoriaModal(${idx})" type="button" class="text-blue-400 hover:text-blue-300 bg-slate-900 hover:bg-slate-850 p-1.5 px-2.5 rounded-lg border border-slate-800 text-[10px] font-bold font-sans">
+                                ✏️ Editar
+                            </button>
+                            <button onclick="window.svc_eliminarCategoriaModal(${idx})" type="button" class="text-red-400 hover:text-red-300 bg-slate-900 hover:bg-slate-850 p-1.5 px-2 rounded-lg border border-slate-800 text-[10px] font-bold font-sans" title="Eliminar categoría">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>`;
+            });
+
+            box.innerHTML = html || `<p class="text-center text-slate-500 italic py-4 text-xs font-sans">No tienes categorías creadas aún. Escribe una arriba y presiona "➕ Añadir".</p>`;
+        };
+
+        window.svc_agregarNuevaCategoriaModal = async function() {
+            const input = document.getElementById('in-nueva-cat-modal');
+            const val = (input ? input.value : '').trim().toUpperCase();
+            if(!val) return alert("Por favor escribe el nombre de la categoría.");
+            if(svc_categoriasInventario.includes(val)) return alert("Esta categoría ya existe.");
+
+            svc_categoriasInventario.push(val);
+            if(input) input.value = "";
+
+            await window.svc_sincronizarConFirebase();
+            window.svc_actualizarDatalistCategoriasInventario();
+            window.svc_renderizarListaCategoriasModal();
+            window.svc_renderizarInventarioTaller();
+        };
+
+        window.svc_editarCategoriaModal = async function(idx) {
+            const catActual = svc_categoriasInventario[idx];
+            const nuevaCat = prompt("Modificar nombre de la categoría:", catActual);
+            if(!nuevaCat || !nuevaCat.trim()) return;
+            const norm = nuevaCat.trim().toUpperCase();
+
+            // Renombrar en la lista
+            svc_categoriasInventario[idx] = norm;
+
+            // Actualizar todos los productos que tenían la categoría anterior
+            let contadorActualizados = 0;
+            svc_inventarioGlobal.forEach(p => {
+                if((p.categoria || '').toUpperCase() === catActual.toUpperCase()) {
+                    p.categoria = norm;
+                    contadorActualizados++;
+                }
+            });
+
+            await window.svc_sincronizarConFirebase();
+            window.svc_actualizarDatalistCategoriasInventario();
+            window.svc_renderizarListaCategoriasModal();
+            window.svc_renderizarInventarioTaller();
+            alert(`✅ Categoría actualizada a "${norm}". (${contadorActualizados} producto(s) actualizados).`);
+        };
+
+        window.svc_eliminarCategoriaModal = async function(idx) {
+            const catActual = svc_categoriasInventario[idx];
+            const productosAsociados = svc_inventarioGlobal.filter(p => (p.categoria || '').toUpperCase() === catActual.toUpperCase()).length;
+
+            let mensajeConfirm = `¿Deseas eliminar la categoría "${catActual}"?`;
+            if(productosAsociados > 0) {
+                mensajeConfirm = `⚠️ Hay ${productosAsociados} producto(s) asignados a "${catActual}".\nSi eliminas esta categoría, los productos pasarán a categoría "ACCESORIOS".\n\n¿Deseas continuar?`;
+            }
+
+            if(!confirm(mensajeConfirm)) return;
+
+            // Si tenían esa categoría, reasignar a ACCESORIOS o dejar libre
+            svc_inventarioGlobal.forEach(p => {
+                if((p.categoria || '').toUpperCase() === catActual.toUpperCase()) {
+                    p.categoria = "ACCESORIOS";
+                }
+            });
+
+            svc_categoriasInventario.splice(idx, 1);
+
+            await window.svc_sincronizarConFirebase();
+            window.svc_actualizarDatalistCategoriasInventario();
+            window.svc_renderizarListaCategoriasModal();
+            window.svc_renderizarInventarioTaller();
+            alert(`🗑️ Categoría "${catActual}" eliminada.`);
         };
 
         window.svc_verificarCoincidenciaInventarioAuto = function(nombreIngresado) {
@@ -4601,7 +5078,7 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
             }
         };
 
-        window.svc_guardarOActualizarProductoInventario = async function() {
+        window.svc_agregarProductoAlLoteIngreso = function() {
             const nombre = document.getElementById('inv-in-nombre').value.trim().toUpperCase();
             let categoria = (document.getElementById('inv-in-categoria').value || '').trim().toUpperCase() || "ACCESORIOS";
             const cantIngresar = parseInt(document.getElementById('inv-in-stock').value) || 1;
@@ -4615,7 +5092,6 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
             if(cantIngresar <= 0) return alert("⚠️ La cantidad debe ser mayor a 0.");
             if(precioVentaRaw <= 0) return alert("⚠️ Ingrese un precio de venta válido.");
 
-            // Si es una categoría nueva creada por el usuario, agregarla dinámicamente
             if(categoria && !svc_categoriasInventario.includes(categoria)) {
                 svc_categoriasInventario.push(categoria);
                 window.svc_actualizarDatalistCategoriasInventario();
@@ -4627,49 +5103,143 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
             const costoUnitUSD = monedaCosto === "COP" ? (costoUnitRaw / tCOP) : costoUnitRaw;
             const costoUnitCOP = monedaCosto === "COP" ? costoUnitRaw : Math.round(costoUnitRaw * tCOP);
 
-            const matchExistente = svc_inventarioGlobal.find(p => p.nombre.toUpperCase() === nombre);
+            svc_loteIngresoMercanciaActivo.push({
+                idTemp: 'lote-it-' + Date.now() + Math.random().toString(36).substr(2, 4),
+                nombre,
+                categoria,
+                cantidad: cantIngresar,
+                monedaVenta,
+                precioVentaCOP,
+                precioVentaUSD,
+                monedaCosto,
+                costoUnitCOP,
+                costoUnitUSD
+            });
 
-            if(matchExistente) {
-                matchExistente.stock = (matchExistente.stock || 0) + cantIngresar;
-                matchExistente.categoria = categoria;
-                matchExistente.precioVentaCOP = precioVentaCOP;
-                matchExistente.precioVentaUSD = precioVentaUSD;
-                if(costoUnitRaw > 0) {
-                    matchExistente.costoUnitCOP = costoUnitCOP;
-                    matchExistente.costoUnitUSD = costoUnitUSD;
-                }
-                matchExistente.ultimaActualizacion = new Date().toLocaleDateString();
-                alert(`📦 ¡Stock sumado exitosamente!\n\nProducto: "${matchExistente.nombre}"\nStock anterior: ${matchExistente.stock - cantIngresar}\nNuevas unidades: +${cantIngresar}\nStock total actual: ${matchExistente.stock} unidades.`);
-            } else {
-                const nuevoProd = {
-                    id: 'inv-' + Date.now(),
-                    codigo: 'ACC-' + Math.floor(100 + Math.random() * 900),
-                    nombre,
-                    categoria,
-                    stock: cantIngresar,
-                    monedaVenta,
-                    precioVentaCOP,
-                    precioVentaUSD,
-                    monedaCosto,
-                    costoUnitCOP,
-                    costoUnitUSD,
-                    fechaRegistro: new Date().toLocaleDateString(),
-                    ultimaActualizacion: new Date().toLocaleDateString()
-                };
-                svc_inventarioGlobal.unshift(nuevoProd);
-                alert(`✅ Producto "${nombre}" registrado con éxito en el inventario (${cantIngresar} unidades en categoría ${categoria}).`);
-            }
-
+            // Limpieza ágil de inputs para seguir cargando el siguiente ítem de inmediato
             document.getElementById('inv-in-nombre').value = "";
             document.getElementById('inv-in-stock').value = "1";
             document.getElementById('inv-in-precio-venta').value = "";
             document.getElementById('inv-in-costo').value = "";
             const lblAviso = document.getElementById('lbl-inv-coincidencia-aviso');
             if(lblAviso) lblAviso.classList.add('hidden');
+            document.getElementById('inv-in-nombre').focus();
+
+            window.svc_renderizarBandejaLoteIngreso();
+        };
+
+        window.svc_eliminarItemLoteIngreso = function(idx) {
+            svc_loteIngresoMercanciaActivo.splice(idx, 1);
+            window.svc_renderizarBandejaLoteIngreso();
+        };
+
+        window.svc_renderizarBandejaLoteIngreso = function() {
+            const box = document.getElementById('wrapper-lote-ingreso-items-box');
+            const lblBadge = document.getElementById('lbl-lote-ingreso-badge-cnt');
+            const lblTotalUnids = document.getElementById('lbl-lote-ingreso-total-unids');
+            const lblInversion = document.getElementById('lbl-lote-ingreso-total-inversion');
+            if(!box) return;
+
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
+
+            let html = "";
+            let totalPiezas = 0;
+            let totalInversionCOP = 0;
+            let totalInversionUSD = 0;
+
+            svc_loteIngresoMercanciaActivo.forEach((item, index) => {
+                totalPiezas += item.cantidad;
+                const subCOP = (item.costoUnitCOP || 0) * item.cantidad;
+                const subUSD = (item.costoUnitUSD || 0) * item.cantidad;
+                totalInversionCOP += subCOP;
+                totalInversionUSD += subUSD;
+
+                html += `
+                    <div class="p-2 bg-slate-950 border border-slate-800 rounded-xl flex justify-between items-center text-white font-bold">
+                        <div class="truncate pr-2">
+                            <span class="block text-xs font-sans">${item.cantidad}x ${item.nombre}</span>
+                            <span class="text-[9px] text-purple-400 uppercase font-mono">${item.categoria} | Venta: ${fmtMonto(item.precioVentaCOP)} COP</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 shrink-0">
+                            <span class="font-mono text-[10.5px] text-amber-400 font-bold">${item.costoUnitUSD > 0 ? '$' + (item.costoUnitUSD * item.cantidad).toFixed(2) + ' USD' : fmtMonto(subCOP) + ' COP'}</span>
+                            <button onclick="window.svc_eliminarItemLoteIngreso(${index})" type="button" class="text-red-500 hover:text-red-600 text-xs font-black px-1.5 py-0.5 rounded border border-slate-800 bg-slate-900" title="Quitar este producto del lote">X</button>
+                        </div>
+                    </div>`;
+            });
+
+            box.innerHTML = html || `<p class="text-center text-slate-500 italic py-3 text-[10px] font-sans">No hay productos añadidos al lote. Escribe los datos arriba y presiona "➕ Añadir al Lote".</p>`;
+
+            if(lblBadge) lblBadge.innerText = `${svc_loteIngresoMercanciaActivo.length} Ítems (${totalPiezas} Unid.)`;
+            if(lblTotalUnids) lblTotalUnids.innerText = `${totalPiezas} Unidades en total`;
+            if(lblInversion) lblInversion.innerText = `${fmtMonto(totalInversionCOP)} COP ($${window.svc_formatDecimalUSD(totalInversionUSD)} USD)`;
+        };
+
+        window.svc_guardarLoteIngresoMercanciaFinal = async function() {
+            if(svc_loteIngresoMercanciaActivo.length === 0) {
+                return alert("⚠️ El lote de ingreso está vacío. Añade al menos un producto.");
+            }
+
+            let piezasIngresadas = 0;
+            let inversionLoteCOP = 0;
+            let resumenProductos = [];
+
+            svc_loteIngresoMercanciaActivo.forEach(item => {
+                piezasIngresadas += item.cantidad;
+                inversionLoteCOP += (item.costoUnitCOP * item.cantidad);
+                resumenProductos.push(`${item.cantidad}x ${item.nombre}`);
+
+                const matchExistente = svc_inventarioGlobal.find(p => p.nombre.toUpperCase() === item.nombre.toUpperCase());
+                if(matchExistente) {
+                    matchExistente.stock = (matchExistente.stock || 0) + item.cantidad;
+                    matchExistente.categoria = item.categoria;
+                    matchExistente.precioVentaCOP = item.precioVentaCOP;
+                    matchExistente.precioVentaUSD = item.precioVentaUSD;
+                    if(item.costoUnitCOP > 0) {
+                        matchExistente.costoUnitCOP = item.costoUnitCOP;
+                        matchExistente.costoUnitUSD = item.costoUnitUSD;
+                    }
+                    matchExistente.ultimaActualizacion = new Date().toLocaleDateString();
+                } else {
+                    const nuevoProd = {
+                        id: 'inv-' + Date.now() + Math.random().toString(36).substr(2, 4),
+                        codigo: 'ACC-' + Math.floor(100 + Math.random() * 900),
+                        nombre: item.nombre,
+                        categoria: item.categoria,
+                        stock: item.cantidad,
+                        monedaVenta: item.monedaVenta,
+                        precioVentaCOP: item.precioVentaCOP,
+                        precioVentaUSD: item.precioVentaUSD,
+                        monedaCosto: item.monedaCosto,
+                        costoUnitCOP: item.costoUnitCOP,
+                        costoUnitUSD: item.costoUnitUSD,
+                        fechaRegistro: new Date().toLocaleDateString(),
+                        ultimaActualizacion: new Date().toLocaleDateString()
+                    };
+                    svc_inventarioGlobal.unshift(nuevoProd);
+                }
+            });
+
+            // Registro histórico del lote ingresado para control contable del día
+            const registroLote = {
+                idLote: 'ING-' + Date.now(),
+                fecha: new Date().toLocaleDateString(),
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                totalItems: svc_loteIngresoMercanciaActivo.length,
+                totalPiezas: piezasIngresadas,
+                inversionCOP: inversionLoteCOP,
+                resumen: resumenProductos.slice(0, 3).join(', ') + (resumenProductos.length > 3 ? '...' : '')
+            };
+            svc_historicoIngresosMercancia.unshift(registroLote);
+
+            const totalProductosCargados = svc_loteIngresoMercanciaActivo.length;
+            svc_loteIngresoMercanciaActivo = [];
 
             await window.svc_sincronizarConFirebase();
+            window.svc_renderizarBandejaLoteIngreso();
             window.svc_renderizarInventarioTaller();
             window.tcl_actualizarDatalistsConceptos();
+
+            alert(`✅ ¡INGRESO DE MERCANCÍA EXITOSO!\n\nSe han cargado ${totalProductosCargados} tipos de productos (${piezasIngresadas} unidades en total).\nEl stock y los precios en el taller quedaron actualizados.`);
         };
 
         window.svc_sumarStockRapidoPrompt = async function(id) {
@@ -4749,6 +5319,7 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
         };
 
         window.svc_renderizarInventarioTaller = function() {
+            window.svc_renderizarBandejaLoteIngreso();
             const container = document.getElementById('wrapper-lista-inventario-box');
             const lblTotalProds = document.getElementById('lbl-inv-total-productos');
             const lblTotalUnids = document.getElementById('lbl-inv-total-unidades');
@@ -5122,7 +5693,7 @@ window.tcl_abrirVisorHojaBlancaTucocel = function() {
                       `💰 *BALANCES Y NETO:* *${fmtMonto(diferenciaCOP)} COP*\n\n` +
                       `🔒 *DOCUMENTO PRIVADO Y AUDITADO — TUCOCEL C.A.*`;
 
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+            window.svc_compartirTextoUniversal('Reporte Corporativo', msg);
         };
 
         window.tcl_ejecutarCierreMensualTucocel = async function() {
