@@ -1139,7 +1139,7 @@
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono">
+                            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 font-mono">
                                 <div>
                                     <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">Moneda Costo</label>
                                     <select id="tcl-compra-moneda" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-xs focus:outline-none font-bold">
@@ -1148,8 +1148,12 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">Costo Unitario</label>
+                                    <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">Costo Mercancía</label>
                                     <input type="text" id="tcl-compra-costo" placeholder="Ej: 117" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-amber-400 text-center font-black text-xs focus:outline-none" onkeydown="if(event.key === 'Enter') window.tcl_agregarItemLoteCompra();">
+                                </div>
+                                <div>
+                                    <label class="text-[8px] text-amber-300 uppercase block font-sans mb-1">Flete / Traída COP (Opc)</label>
+                                    <input type="text" id="tcl-compra-flete-cop" placeholder="Ej: 15.000" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-950 border border-amber-500/30 p-2.5 rounded-xl text-amber-300 text-center font-black text-xs focus:outline-none" onkeydown="if(event.key === 'Enter') window.tcl_agregarItemLoteCompra();">
                                 </div>
                                 <div>
                                     <label class="text-[8px] text-emerald-400 uppercase block font-sans mb-1">Venta Est. ($USD)</label>
@@ -1516,12 +1520,16 @@
     </div>
 
     <!-- VENTANA MODAL HOJA BLANCA EXCLUSIVA TUCOCEL C.A. (PARTICIÓN 3) -->
-    <div id="modal-hoja-blanca-tucocel" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center hidden p-4 z-50">
-        <div class="papel-hoja-blanca bg-white text-slate-950 rounded-3xl w-full max-w-xl p-6 sm:p-8 space-y-6 shadow-2xl font-mono text-xs overflow-y-auto max-h-[75vh]">
-            <div class="border-b-2 border-slate-900 pb-4 flex justify-between items-start">
+    <div id="modal-hoja-blanca-tucocel" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center hidden p-3 sm:p-4 z-50">
+        <div class="papel-hoja-blanca bg-white text-slate-950 rounded-3xl w-full max-w-4xl p-6 sm:p-8 space-y-5 shadow-2xl font-mono text-xs overflow-y-auto max-h-[85vh]">
+            <div class="border-b-2 border-slate-900 pb-3 flex justify-between items-start">
                 <div>
-                    <h3 class="text-base font-black uppercase text-slate-950">TUCOCEL C.A. — CORDERO</h3>
-                    <p class="text-[10px] text-slate-600 font-bold uppercase">Informe Ejecutivo de Rendimiento Comercial & Facturas</p>
+                    <h3 class="text-lg font-black uppercase text-slate-950">TUCOCEL C.A. — CORDERO</h3>
+                    <p class="text-[10.5px] text-slate-700 font-bold uppercase tracking-wider">Informe Ejecutivo Mensual de Rendimiento Comercial, Ventas & Facturas</p>
+                </div>
+                <div class="text-right font-mono text-[9.5px] text-slate-700">
+                    <span class="block font-bold">AUDITORÍA CONTABLE</span>
+                    <span class="block text-slate-500">FORMATO A4 / CARTA</span>
                 </div>
             </div>
             
@@ -1529,9 +1537,9 @@
         </div>
 
         <!-- BARRITA DE ACCIÓN FLOTANTE EXTERNA -->
-        <div class="no-imprimir mt-4 bg-slate-900 border border-slate-800 p-3 rounded-2xl flex justify-center gap-2 max-w-xl w-full shadow-2xl">
-            <button onclick="window.print()" class="bg-slate-950 hover:bg-black text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px] border border-slate-800"><i class="fa-solid fa-print mr-1"></i> Imprimir Hoja Carta</button>
-            <button onclick="window.tcl_enviarWhatsAppHojaBlancaTucocel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px]"><i class="fa-brands fa-whatsapp mr-1"></i> Enviar WhatsApp</button>
+        <div class="no-imprimir mt-3 bg-slate-900 border border-slate-800 p-2.5 rounded-2xl flex justify-center gap-2 max-w-4xl w-full shadow-2xl">
+            <button onclick="window.print()" class="bg-slate-950 hover:bg-black text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px] border border-slate-800"><i class="fa-solid fa-print mr-1"></i> Imprimir Hoja A4</button>
+            <button onclick="window.tcl_enviarWhatsAppHojaBlancaTucocel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px]"><i class="fa-brands fa-whatsapp mr-1"></i> Compartir Resumen</button>
             <button onclick="window.tcl_ejecutarCierreMensualTucocel()" class="bg-red-600 hover:bg-red-700 text-white font-black px-4 py-2.5 rounded-xl uppercase text-[10px]"><i class="fa-solid fa-lock mr-1"></i> 🔒 Cerrar Mes & $0</button>
             <button onclick="document.getElementById('modal-hoja-blanca-tucocel').classList.add('hidden')" class="bg-slate-800 text-slate-300 font-bold px-4 py-2.5 rounded-xl uppercase text-[10px]">Cerrar</button>
         </div>
@@ -1895,13 +1903,11 @@
 
                 let esMaster = false;
                 let tecMatch = null;
-                let nombreDisplaySplash = "";
 
                 if (user === "tucocel" && pass === "Razu2020.") {
                     esMaster = true;
                     rolDeSesionActiva = "MASTER";
                     usuarioSesionActivo = "MASTER";
-                    nombreDisplaySplash = "Máster Robert";
                 } else {
                     if (svc_tecnicosPerfiles.length === 0) {
                         try {
@@ -1915,7 +1921,6 @@
                     if (tecMatch) {
                         rolDeSesionActiva = tecMatch.rol || "TECNICO"; 
                         usuarioSesionActivo = tecMatch.user;
-                        nombreDisplaySplash = tecMatch.nombre;
                     } else {
                         return alert("❌ Acceso Denegado: Usuario o Contraseña incorrectos.");
                     }
@@ -1946,10 +1951,10 @@
                         <button id="tab-btn-inventario" onclick="window.svc_cambiarTab('inventario')" class="bg-slate-900 text-slate-400 border border-slate-800 font-black py-3 px-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 shrink-0"><i class="fa-solid fa-boxes-stacked text-purple-400"></i> Consultar Inventario</button>`;
                 }
 
-                // Ocultar pantalla de login
+                // Ocultar formulario de login
                 document.getElementById('contenedor-login').classList.add('hidden');
 
-                // Si es técnico sin expediente, solicitar llenarlo
+                // Si es técnico sin expediente previo, solicitar registro
                 if (!esMaster && tecMatch) {
                     try {
                         const docExp = await getDoc(doc(db, "tcl_servicell_independent", `expediente_${usuarioSesionActivo}`));
@@ -1960,7 +1965,7 @@
                     } catch(e) {}
                 }
 
-                // Desbloqueo directo e inmediato
+                // Ingreso directo inmediato sin pantalla splash
                 window.svc_desbloquearWORKSPACE();
 
             } catch(e) {
@@ -1989,16 +1994,14 @@
         };
 
         window.svc_desbloquearWORKSPACE = function() {
-            // 1. Mostrar cabecera y espacio de trabajo de inmediato
+            // 1. Mostrar cabecera y espacio de trabajo de inmediato en el fondo
             const header = document.getElementById('main-header');
             const ws = document.getElementById('contenedor-workspace');
             const loginBox = document.getElementById('contenedor-login');
-            const splash = document.getElementById('splash-welcome');
 
             if(header) header.classList.remove('hidden');
             if(ws) ws.classList.remove('hidden');
             if(loginBox) loginBox.classList.add('hidden');
-            if(splash) splash.classList.add('hidden');
 
             const opDisp = document.getElementById('form-operador-display');
             const opVal = document.getElementById('form-operador');
@@ -4038,6 +4041,7 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
             const imei = cat === "TELEFONIA" ? (document.getElementById('tcl-compra-imei').value.trim() || "N/A") : "N/A";
             const moneda = document.getElementById('tcl-compra-moneda').value;
             const costoRaw = window.svc_cleanNumber(document.getElementById('tcl-compra-costo').value);
+            const fleteCOP = window.svc_cleanNumber(document.getElementById('tcl-compra-flete-cop') ? document.getElementById('tcl-compra-flete-cop').value : "0");
             const ventaEstRaw = window.svc_cleanNumber(document.getElementById('tcl-compra-precio-venta') ? document.getElementById('tcl-compra-precio-venta').value : "0");
             const metodoPagoSalida = document.getElementById('tcl-compra-metodo-pago').value;
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
@@ -4051,26 +4055,39 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                 window.tcl_actualizarDatalistProveedores();
             }
 
-            let costoUSD = moneda === "USD" ? costoRaw : (costoRaw / tCOP);
-            let costoCOP = moneda === "USD" ? (costoRaw * tCOP) : costoRaw;
+            const fleteUSD = fleteCOP > 0 ? (fleteCOP / tCOP) : 0;
+
+            let costoBaseUSD = moneda === "USD" ? costoRaw : (costoRaw / tCOP);
+            let costoBaseCOP = moneda === "USD" ? (costoRaw * tCOP) : costoRaw;
+
+            // Costo total = Mercancía + Flete pagado por traerla
+            let costoTotalUSD = costoBaseUSD + fleteUSD;
+            let costoTotalCOP = costoBaseCOP + fleteCOP;
 
             let ventaUSD = ventaEstRaw > 0 ? (moneda === "USD" ? ventaEstRaw : (ventaEstRaw / tCOP)) : 0;
             let ventaCOP = ventaEstRaw > 0 ? (moneda === "USD" ? (ventaEstRaw * tCOP) : ventaEstRaw) : 0;
 
-            let gananciaEstUSD = Math.max(0, ventaUSD - costoUSD);
+            let gananciaEstUSD = Math.max(0, ventaUSD - costoTotalUSD);
             let gananciaEstCOP = Math.round(gananciaEstUSD * tCOP);
 
             const itemCompra = {
                 idTemp: 'cmp-item-' + Date.now() + Math.random().toString(36).substr(2, 4),
                 cat, proveedor, producto, imei, monedaOrig: moneda,
-                costoOrig: costoRaw, costoUSD, costoCOP,
+                costoMercanciaOrig: costoRaw,
+                costoMercanciaUSD: costoBaseUSD,
+                costoMercanciaCOP: costoBaseCOP,
+                fleteCOP: fleteCOP,
+                fleteUSD: fleteUSD,
+                costoOrig: costoTotalUSD,
+                costoUSD: costoTotalUSD,
+                costoCOP: costoTotalCOP,
                 ventaUSD, ventaCOP, gananciaEstUSD, gananciaEstCOP,
                 tasaAplica: tCOP, metodoPagoSalida
             };
 
             tcl_comprasActivasTurno.push(itemCompra);
 
-            // Limpiar solo los campos específicos del producto, manteniendo el proveedor y categoría para carga ágil
+            // Limpiar campos específicos manteniendo proveedor y flete para agilidad
             document.getElementById('tcl-compra-producto').value = "";
             document.getElementById('tcl-compra-imei').value = "";
             document.getElementById('tcl-compra-costo').value = "";
@@ -4081,7 +4098,7 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
             window.tcl_renderizerParticionTucocel();
         };
 
-        window.tcl_eliminarItemLoteCompraAlVuelo = function(idx) {
+window.tcl_eliminarItemLoteCompraAlVuelo = function(idx) {
             if(!confirm("¿Desea quitar este ítem del lote de compra actual?")) return;
             tcl_comprasActivasTurno.splice(idx, 1);
             window.tcl_sincronizarTucocelFirebase();
@@ -4338,14 +4355,17 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
                             </div>
                             <div id="acc-mes-${idx}" class="hidden mt-2 pt-2 border-t border-slate-800 space-y-2">
                                 <div class="bg-slate-900 p-2.5 rounded-xl space-y-1 text-[10px] text-slate-300">
-                                    <div class="flex justify-between"><span>(+) Total Ganancia Real Venta / Servicios:</span> <b class="text-emerald-400">${fmtMonto(m.totalVentasCOP)} COP</b></div>
-                                    <div class="flex justify-between"><span>(-) Total Compras, Inversiones & Facturas:</span> <b class="text-red-400">-${fmtMonto(m.totalComprasCOP || 0)} COP</b></div>
-                                    <div class="flex justify-between text-white font-bold border-t border-slate-800 pt-1"><span>(=) SALDO NETO LIMPIO DEL MES:</span> <b class="text-emerald-400">${fmtMonto(m.gananciaLimpiaCOP || (m.totalVentasCOP - (m.totalComprasCOP||0)))} COP</b></div>
+                                    <div class="flex justify-between"><span>(+) Total Ventas / Servicios:</span> <b class="text-emerald-400">${fmtMonto(m.totalVentasCOP)} COP</b></div>
+                                    <div class="flex justify-between"><span>(-) Total Compras, Mercancía & Fletes:</span> <b class="text-red-400">-${fmtMonto(m.totalComprasCOP || 0)} COP</b></div>
+                                    <div class="flex justify-between text-white font-bold border-t border-slate-800 pt-1"><span>(=) GANANCIA NETA DEL MES:</span> <b class="text-emerald-400">${fmtMonto(m.gananciaLimpiaCOP || (m.totalVentasCOP - (m.totalComprasCOP||0)))} COP</b></div>
                                     <div class="flex justify-between border-t border-slate-800 pt-1"><span>Rendimiento vs Mes Previo:</span> <b>${pctTxt}</b></div>
                                 </div>
-                                <div class="pt-1 font-sans">
-                                    <button onclick="window.tcl_verTotalTrabajoRealizadoMesModal(${idx})" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow flex items-center justify-center gap-1.5">
-                                        <i class="fa-solid fa-file-lines text-xs"></i> 👁️ Ver Total de Trabajo Realizado (Reporte Detallado)
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 font-sans">
+                                    <button onclick="window.tcl_verTotalTrabajoRealizadoMesModal(${idx})" class="w-full bg-blue-600/30 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/40 p-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow flex items-center justify-center gap-1.5 transition">
+                                        <i class="fa-solid fa-file-lines text-xs"></i> 👁️ Ver Resumen
+                                    </button>
+                                    <button onclick="window.tcl_abrirVisorHojaBlancaTucocel(${idx})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow flex items-center justify-center gap-1.5 transition">
+                                        <i class="fa-solid fa-print text-xs"></i> 🖨️ Imprimir Hoja A4 del Mes
                                     </button>
                                 </div>
                             </div>
@@ -5579,133 +5599,374 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
             if (s.includes('TELÉFONO') || s.includes('TELEFONO')) return 'EQUIPOS SMARTPHONES';
             return s; // Nombre tal cual
         }
-window.tcl_abrirVisorHojaBlancaTucocel = function() {
+window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
             let totalVentasAcum = 0;
             let totalEgresosComprasAcum = 0;
-
-            tcl_historicoCierres.forEach(c => {
-                if(c.status !== "ANULADA" && c.liquidadoMes !== true) totalVentasAcum += (c.totalVentasCOP || 0);
-            });
-
-            tcl_comprasHistorico.forEach(c => {
-                if(c.status !== "ANULADA" && c.liquidadoMes !== true) totalEgresosComprasAcum += (c.costoCOP || 0);
-            });
-
-            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
-            const diferenciaCOP = totalVentasAcum - totalEgresosComprasAcum;
-
-            // ANÁLISIS COMPARATIVO AUTOMÁTICO VS MES ANTERIOR
-            let comparativoBadgeHtml = "";
-            if (tcl_historicoMesesTucocel && tcl_historicoMesesTucocel.length > 0) {
-                const mesAnt = tcl_historicoMesesTucocel[0];
-                const ventasAnt = mesAnt.totalVentasCOP || 1;
-                const difVar = totalVentasAcum - ventasAnt;
-                const pctVar = ((difVar) / ventasAnt) * 100;
-
-                if (pctVar > 0) {
-                    comparativoBadgeHtml = `<div class="p-2.5 bg-emerald-100 border border-emerald-400 text-emerald-950 rounded-xl text-center text-[10px] font-bold">🟢 <b>+${pctVar.toFixed(1)}% CRECIMIENTO / SUPERÁVIT</b> comparado con el mes anterior (${fmtMonto(ventasAnt)} COP).</div>`;
-                } else if (pctVar < 0) {
-                    comparativoBadgeHtml = `<div class="p-2.5 bg-red-100 border border-red-400 text-red-950 rounded-xl text-center text-[10px] font-bold">🔴 <b>${pctVar.toFixed(1)}% DÉFICIT</b> comparado con el mes anterior (${fmtMonto(ventasAnt)} COP).</div>`;
-                } else {
-                    comparativoBadgeHtml = `<div class="p-2.5 bg-amber-100 border border-amber-400 text-amber-950 rounded-xl text-center text-[10px] font-bold">🟡 <b>0.0% MISMO NIVEL</b> de rendimiento comparado con el mes anterior.</div>`;
-                }
-            } else {
-                comparativoBadgeHtml = `<div class="p-2.5 bg-slate-100 border border-slate-300 text-slate-700 rounded-xl text-center text-[10px] font-bold">ℹ️ <b>PRIMER MES EN REGISTRO:</b> Base inicial para el análisis comparativo automático.</div>`;
-            }
-
-            let estadoBadge = "";
-            if(diferenciaCOP > 0) {
-                estadoBadge = `<div class="p-4 rounded-2xl border-2 bg-emerald-50 border-emerald-500 text-emerald-950 font-bold text-center space-y-1"><span class="block text-[10px] uppercase">🟢 SUPERÁVIT COMERCIAL LIMPIO</span><span class="text-base font-black">${fmtMonto(diferenciaCOP)} COP ($${Math.round(diferenciaCOP/tCOP)} USD)</span></div>`;
-            } else if(diferenciaCOP === 0) {
-                estadoBadge = `<div class="p-4 rounded-2xl border-2 bg-amber-50 border-amber-500 text-amber-950 font-bold text-center space-y-1"><span class="block text-[10px] uppercase">🟡 INVERSIÓN EQUILIBRADA (PUNTO DE EQUILIBRIO)</span><span class="text-base font-black">0 COP</span></div>`;
-            } else {
-                estadoBadge = `<div class="p-4 rounded-2xl border-2 bg-blue-50 border-blue-950 font-bold text-center space-y-1"><span class="block text-[10px] uppercase">🔵 CAPITAL REINVERTIDO EN MERCANCÍA</span><span class="text-base font-black">-${fmtMonto(Math.abs(diferenciaCOP))} COP (-$${Math.round(Math.abs(diferenciaCOP)/tCOP)} USD)</span></div>`;
-            }
-
-            // Agrupación estadística de productos más vendidos en el período
+            let telefonosVendidosDetalle = [];
             let mapaConteoProductos = {};
-            tcl_historicoCierres.forEach(c => {
-                if(c.status !== "ANULADA" && c.liquidadoMes !== true) {
+            let comprasDetalleMes = [];
+            let totalFletesComprasCOP = 0;
+            let periodoDisplay = "";
+            let fechaCierreDisplay = "";
+
+            const esMesPasado = (mesHistoricoIdx !== null && tcl_historicoMesesTucocel[mesHistoricoIdx]);
+            const datosMes = esMesPasado ? tcl_historicoMesesTucocel[mesHistoricoIdx] : null;
+
+            if (esMesPasado) {
+                periodoDisplay = datosMes.periodo || datosMes.fechaCierre || "MES ARCHIVADO";
+                fechaCierreDisplay = datosMes.fechaCierre || "";
+
+                // Ventas del mes archivado
+                (datosMes.ventas || []).forEach(c => {
                     (c.ventas || []).forEach(v => {
+                        const cant = v.cantidad || 1;
+                        const sub = (v.precioCOP || 0) * cant;
+                        totalVentasAcum += sub;
+
+                        if (v.tipoCategoria === "TELEFONO" || (v.concepto && v.concepto.toUpperCase().includes("TELÉFONO"))) {
+                            telefonosVendidosDetalle.push({
+                                fecha: c.fecha || fechaCierreDisplay,
+                                modelo: v.concepto.replace(/📱\s*TELÉFONO:\s*/gi, '').trim(),
+                                precioVentaCOP: v.precioVentaCOP || sub,
+                                precioVentaUSD: v.precioVentaUSD || 0,
+                                costoUSD: v.costoUSD || 0,
+                                fleteCOP: v.fleteCOP || 0,
+                                gananciaLimpiaCOP: v.precioCOP || sub
+                            });
+                        }
+
                         let grupo = clasificarConceptoGeneral(v.concepto);
-                        let cant = v.cantidad || 1;
-                        let sub = (v.precioCOP || 0) * cant;
                         if (!mapaConteoProductos[grupo]) {
                             mapaConteoProductos[grupo] = { cant: 0, subtotalCOP: 0 };
                         }
                         mapaConteoProductos[grupo].cant += cant;
                         mapaConteoProductos[grupo].subtotalCOP += sub;
                     });
-                }
-            });
+                });
 
+                // Compras del mes archivado
+                (datosMes.compras || []).forEach(c => {
+                    totalEgresosComprasAcum += (c.costoCOP || 0);
+                    totalFletesComprasCOP += (c.fleteCOP || 0);
+                    comprasDetalleMes.push(c);
+                });
+
+            } else {
+                periodoDisplay = new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase();
+                fechaCierreDisplay = new Date().toLocaleDateString();
+
+                // 1. Recorrer ventas del mes activo
+                tcl_historicoCierres.forEach(c => {
+                    if(c.status !== "ANULADA" && c.liquidadoMes !== true) {
+                        (c.ventas || []).forEach(v => {
+                            const cant = v.cantidad || 1;
+                            const sub = (v.precioCOP || 0) * cant;
+                            totalVentasAcum += sub;
+
+                            if(v.tipoCategoria === "TELEFONO" || (v.concepto && v.concepto.toUpperCase().includes("TELÉFONO"))) {
+                                telefonosVendidosDetalle.push({
+                                    fecha: c.fecha,
+                                    modelo: v.concepto.replace(/📱\s*TELÉFONO:\s*/gi, '').trim(),
+                                    precioVentaCOP: v.precioVentaCOP || sub,
+                                    precioVentaUSD: v.precioVentaUSD || 0,
+                                    costoUSD: v.costoUSD || 0,
+                                    fleteCOP: v.fleteCOP || 0,
+                                    gananciaLimpiaCOP: v.precioCOP || sub
+                                });
+                            }
+
+                            let grupo = clasificarConceptoGeneral(v.concepto);
+                            if (!mapaConteoProductos[grupo]) {
+                                mapaConteoProductos[grupo] = { cant: 0, subtotalCOP: 0 };
+                            }
+                            mapaConteoProductos[grupo].cant += cant;
+                            mapaConteoProductos[grupo].subtotalCOP += sub;
+                        });
+                    }
+                });
+
+                // 2. Recorrer compras del mes activo
+                tcl_comprasHistorico.forEach(c => {
+                    if(c.status !== "ANULADA" && c.liquidadoMes !== true) {
+                        totalEgresosComprasAcum += (c.costoCOP || 0);
+                        totalFletesComprasCOP += (c.fleteCOP || 0);
+                        comprasDetalleMes.push(c);
+                    }
+                });
+            }
+
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+            const gananciaNetaRealCOP = totalVentasAcum - totalEgresosComprasAcum;
+            const gananciaNetaRealUSD = gananciaNetaRealCOP / tCOP;
+
+            // 3. Comparativa comercial
+            let comparativoTextoHtml = "";
+            if (!esMesPasado && tcl_historicoMesesTucocel && tcl_historicoMesesTucocel.length > 0) {
+                const mesAnt = tcl_historicoMesesTucocel[0];
+                const ventasAnt = mesAnt.totalVentasCOP || 1;
+                const difVar = totalVentasAcum - ventasAnt;
+                const pctVar = ((difVar) / ventasAnt) * 100;
+
+                if (pctVar >= 0) {
+                    comparativoTextoHtml = `<div class="p-1.5 bg-emerald-50 border border-emerald-300 text-emerald-950 rounded-lg text-[9.5px] font-mono font-bold flex justify-between items-center">
+                        <span>📈 Crecimiento vs mes anterior: <b>+${pctVar.toFixed(1)}%</b></span>
+                        <span class="text-emerald-800 font-normal">Base anterior: ${fmtMonto(ventasAnt)} COP</span>
+                    </div>`;
+                } else {
+                    comparativoTextoHtml = `<div class="p-1.5 bg-amber-50 border border-amber-300 text-amber-950 rounded-lg text-[9.5px] font-mono font-bold flex justify-between items-center">
+                        <span>📉 Variación vs mes anterior: <b>${pctVar.toFixed(1)}%</b></span>
+                        <span class="text-amber-800 font-normal">Base anterior: ${fmtMonto(ventasAnt)} COP</span>
+                    </div>`;
+                }
+            } else if (esMesPasado && datosMes.rendimientoPct !== undefined) {
+                comparativoTextoHtml = `<div class="p-1.5 bg-slate-100 border border-slate-300 text-slate-800 rounded-lg text-[9.5px] font-mono font-bold flex justify-between items-center">
+                    <span>📊 Rendimiento consolidado de este período: <b>${datosMes.rendimientoPct >= 0 ? '+' : ''}${datosMes.rendimientoPct.toFixed(1)}%</b></span>
+                    <span class="text-slate-600 font-normal">Fecha Cierre: ${fechaCierreDisplay}</span>
+                </div>`;
+            }
+
+            // 4. Filas compactas de teléfonos
+            let filasTelefonosHtml = "";
+            let sumaGananciaTelefonosCOP = 0;
+            if (telefonosVendidosDetalle.length > 0) {
+                telefonosVendidosDetalle.forEach((tel, idx) => {
+                    sumaGananciaTelefonosCOP += tel.gananciaLimpiaCOP;
+                    filasTelefonosHtml += `
+                        <tr class="border-b border-slate-200 text-[9px]">
+                            <td class="py-1 px-1.5 text-center text-slate-500 font-mono">${idx + 1}</td>
+                            <td class="py-1 px-1.5 font-bold text-slate-900 uppercase">${tel.modelo}</td>
+                            <td class="py-1 px-1.5 text-center font-mono text-slate-700">${tel.fecha}</td>
+                            <td class="py-1 px-1.5 text-right font-mono text-slate-700">${tel.costoUSD > 0 ? '$' + tel.costoUSD.toFixed(2) : '-'}</td>
+                            <td class="py-1 px-1.5 text-right font-mono text-amber-800">${tel.fleteCOP > 0 ? fmtMonto(tel.fleteCOP) + ' COP' : '0'}</td>
+                            <td class="py-1 px-1.5 text-right font-mono text-blue-900 font-bold">${tel.precioVentaUSD > 0 ? '$' + tel.precioVentaUSD.toFixed(2) + ' USD' : fmtMonto(tel.precioVentaCOP) + ' COP'}</td>
+                            <td class="py-1 px-1.5 text-right font-mono font-black text-emerald-700">+${fmtMonto(tel.gananciaLimpiaCOP)} COP</td>
+                        </tr>`;
+                });
+            } else {
+                filasTelefonosHtml = `<tr><td colspan="7" class="py-2 text-center italic text-slate-500 text-[9px]">Cero teléfonos registrados en este período.</td></tr>`;
+            }
+
+            // 5. Filas compactas de ventas generales
             let arrayTopVendidos = Object.keys(mapaConteoProductos).map(k => ({
                 concepto: k,
                 cant: mapaConteoProductos[k].cant,
                 subtotalCOP: mapaConteoProductos[k].subtotalCOP
-            })).sort((a, b) => b.cant - a.cant);
+            })).sort((a, b) => b.subtotalCOP - a.subtotalCOP);
 
-            let topVendidosHtml = "";
-            if (arrayTopVendidos.length > 0) {
-                topVendidosHtml = `
-                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
-                        <span class="text-[10px] font-black uppercase text-blue-900 block border-b border-slate-200 pb-1">
-                            <i class="fa-solid fa-ranking-star text-amber-500 mr-1"></i> TOP PRODUCTOS / SERVICIOS MÁS VENDIDOS:
-                        </span>
-                        <div class="space-y-1 max-h-44 overflow-y-auto pr-1">
-                            ${arrayTopVendidos.map(p => `
-                                <div class="flex justify-between items-center text-[10px] py-1 border-b border-slate-100">
-                                    <span class="font-bold text-slate-800">• <strong>${p.cant}x</strong> ${p.concepto}</span>
-                                    <b class="font-mono text-emerald-700">${fmtMonto(p.subtotalCOP)} COP</b>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
+            let filasVentasGeneralesHtml = "";
+            let totalUnidadesTodasVentas = 0;
+            arrayTopVendidos.forEach((p, idx) => {
+                totalUnidadesTodasVentas += p.cant;
+                const porcAporte = totalVentasAcum > 0 ? ((p.subtotalCOP / totalVentasAcum) * 100).toFixed(1) : "0.0";
+                filasVentasGeneralesHtml += `
+                    <tr class="border-b border-slate-200 text-[9px]">
+                        <td class="py-1 px-1.5 text-center text-slate-500 font-mono">${idx + 1}</td>
+                        <td class="py-1 px-1.5 font-bold text-slate-900 uppercase">${p.concepto}</td>
+                        <td class="py-1 px-1.5 text-center font-mono font-bold text-slate-900">${p.cant} und.</td>
+                        <td class="py-1 px-1.5 text-right font-mono font-bold text-slate-900">${fmtMonto(p.subtotalCOP)} COP</td>
+                        <td class="py-1 px-1.5 text-right font-mono text-slate-600">${porcAporte}%</td>
+                    </tr>`;
+            });
+
+            // 6. Filas compactas de compras y fletes
+            let filasComprasResumenHtml = "";
+            if (comprasDetalleMes.length > 0) {
+                comprasDetalleMes.forEach((cmp, idx) => {
+                    const cUSD = cmp.costoUSD || (cmp.costoCOP / tCOP);
+                    const fleteStr = cmp.fleteCOP > 0 ? fmtMonto(cmp.fleteCOP) + ' COP' : '0';
+                    filasComprasResumenHtml += `
+                        <tr class="border-b border-slate-200 text-[9px]">
+                            <td class="py-1 px-1.5 text-center text-slate-500 font-mono">${idx + 1}</td>
+                            <td class="py-1 px-1.5 font-bold text-slate-900 uppercase">${cmp.producto}</td>
+                            <td class="py-1 px-1.5 text-slate-700 uppercase">${cmp.proveedor}</td>
+                            <td class="py-1 px-1.5 text-center font-mono text-slate-700">${cmp.fecha}</td>
+                            <td class="py-1 px-1.5 text-right font-mono text-amber-800">${fleteStr}</td>
+                            <td class="py-1 px-1.5 text-right font-mono font-bold text-slate-900">$${cUSD.toFixed(2)} USD (${fmtMonto(cmp.costoCOP)} COP)</td>
+                        </tr>`;
+                });
+            } else {
+                filasComprasResumenHtml = `<tr><td colspan="6" class="py-2 text-center italic text-slate-500 text-[9px]">Cero compras o facturas de mercancía en este período.</td></tr>`;
             }
 
             const renderBox = document.getElementById('contenido-hoja-blanca-tucocel-render');
             renderBox.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex justify-between border-b pb-2">
-                        <span>Período Auditable:</span>
-                        <strong>${new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase()}</strong>
+                <div class="space-y-3 font-sans">
+                    <!-- ENCABEZADO Y BALANCE COMPACTO Y EJECUTIVO (AHORRO MÁXIMO DE ESPACIO VERTICAL) -->
+                    <div class="border border-slate-900 rounded-xl p-2.5 bg-slate-50 space-y-2">
+                        <div class="flex justify-between items-center border-b border-slate-300 pb-1.5">
+                            <span class="text-[10px] uppercase font-black text-slate-900 tracking-wider">BALANCE CONTABLE — TUCOCEL C.A.</span>
+                            <span class="text-[10px] font-mono font-bold text-slate-700">PERÍODO: ${periodoDisplay}</span>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 font-mono text-center">
+                            <div class="bg-white p-2 rounded-lg border border-slate-200">
+                                <span class="text-[8px] uppercase font-bold text-slate-500 block">1. Total Ventas / Servicios</span>
+                                <b class="text-xs font-black text-slate-950 block">${fmtMonto(totalVentasAcum)} COP</b>
+                                <span class="text-[8px] text-slate-500">($${window.svc_formatDecimalUSD(totalVentasAcum/tCOP)} USD)</span>
+                            </div>
+
+                            <div class="bg-white p-2 rounded-lg border border-slate-200">
+                                <span class="text-[8px] uppercase font-bold text-red-600 block">2. Mercancía + Fletes</span>
+                                <b class="text-xs font-black text-red-600 block">-${fmtMonto(totalEgresosComprasAcum)} COP</b>
+                                <span class="text-[8px] text-slate-500">(-$${window.svc_formatDecimalUSD(totalEgresosComprasAcum/tCOP)} USD)</span>
+                            </div>
+
+                            <div class="bg-white p-2 rounded-lg border ${gananciaNetaRealCOP >= 0 ? 'border-emerald-500 bg-emerald-50/30' : 'border-red-500 bg-red-50/30'}">
+                                <span class="text-[8px] uppercase font-black ${gananciaNetaRealCOP >= 0 ? 'text-emerald-800' : 'text-red-800'} block">3. Ganancia Neta Real</span>
+                                <b class="text-xs font-black ${gananciaNetaRealCOP >= 0 ? 'text-emerald-700' : 'text-red-700'} block">${gananciaNetaRealCOP >= 0 ? '+' : ''}${fmtMonto(gananciaNetaRealCOP)} COP</b>
+                                <span class="text-[8px] font-bold ${gananciaNetaRealCOP >= 0 ? 'text-emerald-700' : 'text-red-700'}">(${gananciaNetaRealCOP >= 0 ? '+' : ''}$${window.svc_formatDecimalUSD(gananciaNetaRealUSD)} USD)</span>
+                            </div>
+                        </div>
+
+                        ${comparativoTextoHtml}
                     </div>
-                    <div class="space-y-1.5 text-xs">
-                        <div class="flex justify-between"><span>(+) Total Ganancia Real Limpia Venta / Servicios:</span> <b class="text-emerald-700">${fmtMonto(totalVentasAcum)} COP</b></div>
-                        <div class="flex justify-between"><span>(-) Total Compras, Inversiones & Facturas:</span> <b class="text-red-600">-${fmtMonto(totalEgresosComprasAcum)} COP</b></div>
-                        <div class="flex justify-between font-bold border-t pt-1 text-slate-950"><span>(=) SALDO NETO COMERCIAL:</span> <b>${fmtMonto(diferenciaCOP)} COP</b></div>
+
+                    <!-- TABLA 1: SMARTPHONES VENDIDOS (DISEÑO ESBELTO) -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center border-b border-slate-900 pb-0.5">
+                            <h4 class="text-[10px] font-black text-slate-950 uppercase tracking-wider">
+                                📱 SMARTPHONES VENDIDOS (${telefonosVendidosDetalle.length} EQUIPOS)
+                            </h4>
+                            <span class="text-[9px] font-mono font-bold text-emerald-800">Ganancia: +${fmtMonto(sumaGananciaTelefonosCOP)} COP</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-[8px] uppercase font-black text-slate-950 bg-slate-100">
+                                        <th class="py-1 px-1.5 text-center">N°</th>
+                                        <th class="py-1 px-1.5">Marca & Modelo</th>
+                                        <th class="py-1 px-1.5 text-center">Fecha</th>
+                                        <th class="py-1 px-1.5 text-right">Costo USD</th>
+                                        <th class="py-1 px-1.5 text-right">Flete COP</th>
+                                        <th class="py-1 px-1.5 text-right">Venta</th>
+                                        <th class="py-1 px-1.5 text-right">Ganancia Neta</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${filasTelefonosHtml}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    ${topVendidosHtml}
-                    ${comparativoBadgeHtml}
-                    ${estadoBadge}
-                    <div class="text-[9px] text-slate-500 italic text-center pt-2">
-                        🔒 Documento generado con firma digital auditada desde la Bóveda Privada de Tucocel C.A.
+
+                    <!-- TABLA 2: TODAS LAS VENTAS Y SERVICIOS -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center border-b border-slate-900 pb-0.5">
+                            <h4 class="text-[10px] font-black text-slate-950 uppercase tracking-wider">
+                                🛍️ DESGLOSE TOTAL DE PRODUCTOS & SERVICIOS (${totalUnidadesTodasVentas} UNIDADES EN TOTAL)
+                            </h4>
+                            <span class="text-[9px] font-mono font-bold text-slate-700">Total: ${fmtMonto(totalVentasAcum)} COP</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-[8px] uppercase font-black text-slate-950 bg-slate-100">
+                                        <th class="py-1 px-1.5 text-center">N°</th>
+                                        <th class="py-1 px-1.5">Producto / Servicio</th>
+                                        <th class="py-1 px-1.5 text-center">Cantidad</th>
+                                        <th class="py-1 px-1.5 text-right">Total Recaudado COP</th>
+                                        <th class="py-1 px-1.5 text-right">% Aporte</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${filasVentasGeneralesHtml}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TABLA 3: COMPRAS DE MERCANCÍA & FLETES -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center border-b border-slate-900 pb-0.5">
+                            <h4 class="text-[10px] font-black text-slate-950 uppercase tracking-wider">
+                                🚚 COMPRAS DE MERCANCÍA, FACTURAS & FLETES (${comprasDetalleMes.length} REGISTROS)
+                            </h4>
+                            <span class="text-[9px] font-mono font-bold text-red-700">Inversión: -${fmtMonto(totalEgresosComprasAcum)} COP</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-[8px] uppercase font-black text-slate-950 bg-slate-100">
+                                        <th class="py-1 px-1.5 text-center">N°</th>
+                                        <th class="py-1 px-1.5">Mercancía</th>
+                                        <th class="py-1 px-1.5">Proveedor</th>
+                                        <th class="py-1 px-1.5 text-center">Fecha</th>
+                                        <th class="py-1 px-1.5 text-right">Flete COP</th>
+                                        <th class="py-1 px-1.5 text-right">Costo Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${filasComprasResumenHtml}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="text-[8px] text-slate-500 italic text-center pt-1.5 border-t border-slate-300 font-mono">
+                        Documento oficial emitido por el Sistema Unificado TUCOCEL C.A. — Cordero, Táchira. Todos los derechos reservados.
                     </div>
                 </div>
             `;
 
             document.getElementById('modal-hoja-blanca-tucocel').classList.remove('hidden');
-        };
-
-        window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
+        };window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
             let totalVentasAcum = 0;
             let totalEgresosComprasAcum = 0;
+            let totalTelefonosVendidos = 0;
+            let gananciaTelefonosCOP = 0;
+            let resumenProductosTxt = "";
+            let mapaConteo = {};
 
-            tcl_historicoCierres.forEach(c => { if(c.status !== "ANULADA" && c.liquidadoMes !== true) totalVentasAcum += (c.totalVentasCOP || 0); });
-            tcl_comprasHistorico.forEach(c => { if(c.status !== "ANULADA" && c.liquidadoMes !== true) totalEgresosComprasAcum += (c.costoCOP || 0); });
+            tcl_historicoCierres.forEach(c => {
+                if(c.status !== "ANULADA" && c.liquidadoMes !== true) {
+                    (c.ventas || []).forEach(v => {
+                        const cant = v.cantidad || 1;
+                        const sub = (v.precioCOP || 0) * cant;
+                        totalVentasAcum += sub;
 
-            const diferenciaCOP = totalVentasAcum - totalEgresosComprasAcum;
+                        if(v.tipoCategoria === "TELEFONO" || (v.concepto && v.concepto.toUpperCase().includes("TELÉFONO"))) {
+                            totalTelefonosVendidos += cant;
+                            gananciaTelefonosCOP += (v.precioCOP || sub);
+                        }
 
-            let msg = `🛍️ *INFORME CONSOLIDADO TUCOCEL C.A.*\n` +
-                      `🏢 *TIENDA & SERVICIOS CORDERO*\n` +
+                        let grupo = clasificarConceptoGeneral(v.concepto);
+                        if(!mapaConteo[grupo]) mapaConteo[grupo] = { cant: 0, total: 0 };
+                        mapaConteo[grupo].cant += cant;
+                        mapaConteo[grupo].total += sub;
+                    });
+                }
+            });
+
+            tcl_comprasHistorico.forEach(c => {
+                if(c.status !== "ANULADA" && c.liquidadoMes !== true) totalEgresosComprasAcum += (c.costoCOP || 0);
+            });
+
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+            const gananciaNetaRealCOP = totalVentasAcum - totalEgresosComprasAcum;
+            const gananciaNetaRealUSD = gananciaNetaRealCOP / tCOP;
+
+            let listaTop = Object.keys(mapaConteo).map(k => ({ concepto: k, cant: mapaConteo[k].cant, total: mapaConteo[k].total })).sort((a,b) => b.total - a.total);
+            listaTop.slice(0, 8).forEach((it, idx) => {
+                resumenProductosTxt += `${idx + 1}. *${it.concepto}* (x${it.cant}) ➔ ${fmtMonto(it.total)} COP\n`;
+            });
+
+            let msg = `🛍️ *INFORME CONTABLE OFICIAL — TUCOCEL C.A.*\n` +
+                      `🏢 *TIENDA & COMUNICACIONES CORDERO*\n` +
+                      `──────────────────────────────\n` +
+                      `📅 *Período:* ${new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase()}\n` +
+                      `💵 *Tasa COP/USD:* ${fmtMonto(tCOP)} COP\n` +
                       `──────────────────────────────\n\n` +
-                      `📊 *TOTAL VENTAS:* ${fmtMonto(totalVentasAcum)} COP\n` +
-                      `📉 *COMPRAS Y FACTURAS:* -${fmtMonto(totalEgresosComprasAcum)} COP\n` +
-                      `💰 *BALANCES Y NETO:* *${fmtMonto(diferenciaCOP)} COP*\n\n` +
-                      `🔒 *DOCUMENTO PRIVADO Y AUDITADO — TUCOCEL C.A.*`;
+                      `📊 *BALANCE FINANCIERO DEL MES:*\n` +
+                      `• *(+) Total Ingresos por Ventas:* *${fmtMonto(totalVentasAcum)} COP* ($${window.svc_formatDecimalUSD(totalVentasAcum/tCOP)} USD)\n` +
+                      `• *(-) Inversión Compras + Fletes:* *-${fmtMonto(totalEgresosComprasAcum)} COP* (-$${window.svc_formatDecimalUSD(totalEgresosComprasAcum/tCOP)} USD)\n` +
+                      `──────────────────────────────\n` +
+                      `💰 *GANANCIA NETA REAL EN CAJA:*\n*${gananciaNetaRealCOP >= 0 ? '+' : ''}${fmtMonto(gananciaNetaRealCOP)} COP* (${gananciaNetaRealCOP >= 0 ? '+' : ''}$${window.svc_formatDecimalUSD(gananciaNetaRealUSD)} USD)\n\n` +
+                      `📱 *SMARTPHONES:* ${totalTelefonosVendidos} Equipos Vendidos (Ganancia: +${fmtMonto(gananciaTelefonosCOP)} COP)\n\n` +
+                      `📦 *RESUMEN DE VENTAS Y SERVICIOS:*\n` +
+                      `${resumenProductosTxt}\n` +
+                      `🔒 *DOCUMENTO AUDITADO — TUCOCEL C.A.*`;
 
-            window.svc_compartirTextoUniversal('Reporte Corporativo', msg);
+            window.svc_compartirTextoUniversal('Informe Contable Tucocel C.A.', msg);
         };
 
         window.tcl_ejecutarCierreMensualTucocel = async function() {
