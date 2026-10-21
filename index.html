@@ -1170,23 +1170,36 @@
                             </div>
 
                             <!-- SEPARACIÓN MATEMÁTICA LIMPIA: COSTO BASE USD + FLETE COP (SIN FALSA GANANCIA) -->
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono">
+                            <!-- BLOQUE MULTIMONEDA: COSTO BASE (USD / COP / BS) + FLETE COP + MÉTODO DE SALIDA -->
+                            <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 font-mono">
                                 <div>
-                                    <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">1. Costo Base Equipo ($USD)</label>
-                                    <input type="number" step="0.01" id="tcl-compra-costo-usd" placeholder="Ej: 115" class="w-full bg-slate-950 border border-amber-500/40 p-2.5 rounded-xl text-amber-400 text-center font-black text-xs focus:outline-none" onkeydown="if(event.key === 'Enter') window.tcl_agregarItemLoteCompra();">
-                                </div>
-                                <div>
-                                    <label class="text-[8px] text-amber-300 uppercase block font-sans mb-1">2. Flete / Traída (COP)</label>
-                                    <input type="text" id="tcl-compra-flete-cop" placeholder="Ej: 15.000" onkeyup="window.svc_maskInputFormatted(this)" class="w-full bg-slate-950 border border-amber-500/30 p-2.5 rounded-xl text-amber-300 text-center font-black text-xs focus:outline-none" onkeydown="if(event.key === 'Enter') window.tcl_agregarItemLoteCompra();">
-                                </div>
-                                <div>
-                                    <label class="text-[8px] text-slate-400 uppercase block font-sans mb-1">3. Salida de Caja</label>
-                                    <select id="tcl-compra-metodo-pago" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-xs focus:outline-none font-bold">
-                                        <option value="EFECTIVO_PESOS">Ef. Pesos</option>
-                                        <option value="EFECTIVO_USD">Ef. USD</option>
-                                        <option value="PAGOMOVIL">Bs Movil</option>
+                                    <label class="text-[8px] text-amber-400 uppercase block font-sans mb-1">1. Moneda Compra</label>
+                                    <select id="tcl-compra-moneda-costo" onchange="window.tcl_conmutarMonedaCompra()" class="w-full bg-slate-950 border border-amber-500/40 p-2.5 rounded-xl text-white text-xs font-bold focus:outline-none">
+                                        <option value="USD" selected>💵 Dólares ($USD)</option>
+                                        <option value="COP">🇨🇴 Pesos (COP)</option>
+                                        <option value="BS">🇻🇪 Bolívares (Bs)</option>
                                     </select>
                                 </div>
+                                <div>
+                                    <label id="lbl-tcl-compra-costo-titulo" class="text-[8px] text-amber-400 uppercase block font-sans mb-1">2. Costo Base ($USD)</label>
+                                    <input type="text" id="tcl-compra-costo-valor" placeholder="Ej: 115" onkeyup="window.tcl_maskCostoCompra(this); window.tcl_recalcularEquivalentesCompraLive();" class="w-full bg-slate-950 border border-amber-500/40 p-2.5 rounded-xl text-amber-400 text-center font-black text-xs focus:outline-none" onkeydown="if(event.key === 'Enter') window.tcl_agregarItemLoteCompra();">
+                                </div>
+                                <div>
+                                    <label class="text-[8px] text-amber-300 uppercase block font-sans mb-1">3. Flete / Traída (COP)</label>
+                                    <input type="text" id="tcl-compra-flete-cop" placeholder="Ej: 15.000" onkeyup="window.svc_maskInputFormatted(this); window.tcl_recalcularEquivalentesCompraLive();" class="w-full bg-slate-950 border border-amber-500/30 p-2.5 rounded-xl text-amber-300 text-center font-black text-xs focus:outline-none" onkeydown="if(event.key === 'Enter') window.tcl_agregarItemLoteCompra();">
+                                </div>
+                                <div>
+                                    <label class="text-[8px] text-slate-400 uppercase block font-sans mb-1">4. Salida de Caja</label>
+                                    <select id="tcl-compra-metodo-pago" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-xs focus:outline-none font-bold">
+                                        <option value="EFECTIVO_PESOS">Ef. Pesos (COP)</option>
+                                        <option value="EFECTIVO_USD">Ef. Dólares ($)</option>
+                                        <option value="PAGOMOVIL">Bs Pago Móvil</option>
+                                        <option value="BINANCE">Binance USDT</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="p-2 bg-slate-950 rounded-xl border border-slate-800 font-mono text-[9.5px] text-center text-slate-400">
+                                <span id="lbl-tcl-compra-equivalente-live">Costo ingresado: $0.00 USD | Flete: 0 COP | Total Inversión: 0 COP ($0.00 USD)</span>
                             </div>
 
                             <button onclick="window.tcl_agregarItemLoteCompra()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs py-3 rounded-xl uppercase tracking-wider shadow transition-all duration-300">➕ Añadir a la Compra / Factura</button>
@@ -4147,22 +4160,82 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
         };
 
         // MÓDULO DE COMPRAS POR LOTE: AÑADIR PRODUCTO A LA LISTA TEMPORAL ACTIVA
+        window.tcl_conmutarMonedaCompra = function() {
+            const moneda = document.getElementById('tcl-compra-moneda-costo').value;
+            const lbl = document.getElementById('lbl-tcl-compra-costo-titulo');
+            const input = document.getElementById('tcl-compra-costo-valor');
+            if (moneda === "USD") {
+                if (lbl) lbl.innerText = "2. Costo Base ($USD)";
+                if (input) input.placeholder = "Ej: 115.00";
+            } else if (moneda === "COP") {
+                if (lbl) lbl.innerText = "2. Costo Base (COP)";
+                if (input) input.placeholder = "Ej: 414.000";
+            } else if (moneda === "BS") {
+                if (lbl) lbl.innerText = "2. Costo Base (Bs)";
+                if (input) input.placeholder = "Ej: 103.500";
+            }
+            window.tcl_recalcularEquivalentesCompraLive();
+        };
+
+        window.tcl_maskCostoCompra = function(input) {
+            const moneda = document.getElementById('tcl-compra-moneda-costo').value;
+            if (moneda === "COP") {
+                window.svc_maskInputFormatted(input);
+            } else {
+                window.svc_maskDecimalRate(input);
+            }
+        };
+
+        window.tcl_recalcularEquivalentesCompraLive = function() {
+            const moneda = document.getElementById('tcl-compra-moneda-costo').value;
+            const rawVal = window.svc_cleanNumber(document.getElementById('tcl-compra-costo-valor')?.value);
+            const fleteCOP = window.svc_cleanNumber(document.getElementById('tcl-compra-flete-cop')?.value);
+            
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+            const tBs = window.svc_cleanRate(document.getElementById('cfg-tasa-bs')?.value) || 4;
+            
+            let baseUSD = 0; let baseCOP = 0; let baseBs = 0;
+
+            if (moneda === "USD") {
+                baseUSD = rawVal;
+                baseCOP = Math.round(rawVal * tCOP);
+                baseBs = Math.round(baseCOP / tBs);
+            } else if (moneda === "COP") {
+                baseCOP = rawVal;
+                baseUSD = rawVal / tCOP;
+                baseBs = Math.round(rawVal / tBs);
+            } else if (moneda === "BS") {
+                baseBs = rawVal;
+                baseCOP = Math.round(rawVal * tBs);
+                baseUSD = baseCOP / tCOP;
+            }
+
+            const fleteUSD = fleteCOP > 0 ? (fleteCOP / tCOP) : 0;
+            const totalUSD = baseUSD + fleteUSD;
+            const totalCOP = baseCOP + fleteCOP;
+
+            const lbl = document.getElementById('lbl-tcl-compra-equivalente-live');
+            if (lbl) {
+                lbl.innerHTML = `Equivalente: <b>$${window.svc_formatDecimalUSD(baseUSD)} USD</b> | <b>${window.svc_formatPoints(baseCOP)} COP</b> | <b>${window.svc_formatPoints(baseBs)} Bs</b><br>` +
+                                `<span class="text-amber-400 font-bold">Total con Flete: $${window.svc_formatDecimalUSD(totalUSD)} USD (${window.svc_formatPoints(totalCOP)} COP)</span>`;
+            }
+
+            return { baseUSD, baseCOP, baseBs, fleteCOP, fleteUSD, totalUSD, totalCOP, moneda };
+        };
+
         window.tcl_agregarItemLoteCompra = function() {
             const cat = document.getElementById('tcl-compra-tipo-cat').value;
             const proveedor = document.getElementById('tcl-compra-proveedor').value.trim().toUpperCase() || "PROVEEDOR GENERAL";
             const producto = cat === "FACTURA" ? "FACTURA EMPRESA / EGRESO GENERAL" : document.getElementById('tcl-compra-producto').value.trim().toUpperCase();
             const imei = cat === "TELEFONIA" ? (document.getElementById('tcl-compra-imei').value.trim() || "N/A") : "N/A";
-            
-            const inCostoUSD = document.getElementById('tcl-compra-costo-usd') || document.getElementById('tcl-compra-costo');
-            const costoBaseUSD = parseFloat(inCostoUSD ? inCostoUSD.value : 0) || 0;
-            const fleteCOP = window.svc_cleanNumber(document.getElementById('tcl-compra-flete-cop') ? document.getElementById('tcl-compra-flete-cop').value : "0");
             const metodoPagoSalida = document.getElementById('tcl-compra-metodo-pago').value;
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
 
-            if(!producto) return alert("⚠️ Ingrese el nombre/modelo del producto.");
-            if(costoBaseUSD <= 0) return alert("⚠️ Ingrese un costo base en dólares ($USD) válido.");
+            const calc = window.tcl_recalcularEquivalentesCompraLive();
 
-            // Autoguardar proveedor y producto en la lista inteligente
+            if(!producto) return alert("⚠️ Ingrese el nombre/modelo del producto.");
+            if(calc.baseUSD <= 0) return alert("⚠️ Ingrese un costo base de compra válido.");
+
             if(proveedor && !tcl_proveedoresGuardados.includes(proveedor)) {
                 tcl_proveedoresGuardados.push(proveedor);
                 window.tcl_actualizarDatalistProveedores();
@@ -4173,35 +4246,31 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                 window.tcl_sincronizarTucocelFirebase();
             }
 
-            // FÓRMULA MATEMÁTICA PURA (SIN MULTIPLICACIONES CRUZADAS NI FALSA GANANCIA)
-            const fleteUSD = fleteCOP > 0 ? (fleteCOP / tCOP) : 0;
-            const costoTotalUSD = costoBaseUSD + fleteUSD;
-            const costoTotalCOP = Math.round(costoBaseUSD * tCOP) + fleteCOP;
-
             const itemCompra = {
                 idTemp: 'cmp-item-' + Date.now() + Math.random().toString(36).substr(2, 4),
                 cat, proveedor, producto, imei,
-                costoBaseUSD: costoBaseUSD,
-                costoBaseCOP: Math.round(costoBaseUSD * tCOP),
-                costoMercanciaUSD: costoBaseUSD,
-                costoMercanciaCOP: Math.round(costoBaseUSD * tCOP),
-                fleteCOP: fleteCOP,
-                fleteUSD: fleteUSD,
-                costoUSD: costoTotalUSD,
-                costoCOP: costoTotalCOP,
-                costoOrig: costoTotalUSD,
-                monedaOrig: "USD",
+                monedaOrig: calc.moneda,
+                costoBaseUSD: calc.baseUSD,
+                costoBaseCOP: calc.baseCOP,
+                costoBaseBs: calc.baseBs,
+                costoMercanciaUSD: calc.baseUSD,
+                costoMercanciaCOP: calc.baseCOP,
+                fleteCOP: calc.fleteCOP,
+                fleteUSD: calc.fleteUSD,
+                costoUSD: calc.totalUSD,
+                costoCOP: calc.totalCOP,
+                costoOrig: calc.moneda === "USD" ? calc.baseUSD : (calc.moneda === "COP" ? calc.baseCOP : calc.baseBs),
                 tasaAplica: tCOP,
                 metodoPagoSalida
             };
 
             tcl_comprasActivasTurno.push(itemCompra);
 
-            // Limpiar campos específicos manteniendo proveedor y flete para agilidad
             document.getElementById('tcl-compra-producto').value = "";
             document.getElementById('tcl-compra-imei').value = "";
-            if (inCostoUSD) inCostoUSD.value = "";
+            document.getElementById('tcl-compra-costo-valor').value = "";
             document.getElementById('tcl-compra-producto').focus();
+            window.tcl_recalcularEquivalentesCompraLive();
 
             window.tcl_sincronizarTucocelFirebase();
             window.tcl_renderizerParticionTucocel();
@@ -6533,4 +6602,3 @@ window.onload = function() {
     </script>
 </body>
 </html>
-
