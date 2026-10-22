@@ -696,7 +696,7 @@
                             <i class="fa-solid fa-boxes-stacked"></i>
                         </div>
                         <div>
-                            <h3 class="text-sm font-black text-white uppercase tracking-wider">INVENTARIO DE TALLER & ACCESORIOS SERVICELL</h3>
+                            <h3 class="text-sm font-black text-white uppercase tracking-wider">INVENTARIO SERVICELL</h3>
                             <p class="text-[10.5px] text-slate-400">Control de stock de repuestos y accesorios. Las ventas descuentan unidades automáticamente; los servicios de mano de obra no consumen stock.</p>
                         </div>
                     </div>
@@ -830,7 +830,7 @@
                     <div class="lg:col-span-7 bg-slate-900/60 border border-slate-800 p-5 rounded-3xl shadow-xl space-y-4">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-800 pb-3">
                             <h4 class="text-xs sm:text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
-                                <i class="fa-solid fa-list-check text-purple-400"></i> Existencias en Taller
+                                <i class="fa-solid fa-list-check text-purple-400"></i> Existencias en Inventario Servicell
                             </h4>
                             <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap">
                                 <select id="inv-filtro-categoria" onchange="window.svc_renderizarInventarioTaller()" class="bg-slate-950 border border-slate-800 text-slate-300 text-[10px] font-bold p-2 rounded-xl focus:outline-none uppercase flex-1 sm:flex-none">
@@ -1087,38 +1087,56 @@
                                 </div>
                             </div>
 
-                            <!-- BLOQUE MULTITASA TELÉFONOS (3 CAMPOS INDEPENDIENTES) -->
+                            <!-- BLOQUE MULTIMONEDA TELÉFONOS (COSTO Y VENTA EN USD / COP / BS) -->
                             <div id="wrapper-bloque-venta-telefono" class="hidden space-y-3 p-3.5 bg-slate-950 border border-blue-500/30 rounded-2xl">
-                                <span class="text-[10px] text-blue-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-mobile-screen-button mr-1"></i> Desglose Multitasa & Ganancia Real Limpia</span>
+                                <span class="text-[10px] text-blue-400 font-black uppercase block tracking-wider">
+                                    <i class="fa-solid fa-mobile-screen-button mr-1"></i> Desglose Multitasa & Ganancia Real Limpia
+                                </span>
                                 
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono">
+                                <!-- LÍNEA 1: COSTO DE ADQUISICIÓN MULTIMONEDA + FLETE -->
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono">
                                     <div>
-                                        <label class="text-[9px] text-slate-300 uppercase block mb-1">1. Costo Compra ($USD)</label>
-                                        <input type="number" step="0.01" id="tcl-v-costo-usd" placeholder="Ej: 105" onkeyup="window.tcl_calcularGananciaTelefonoEnVivo()" onchange="window.tcl_calcularGananciaTelefonoEnVivo()" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-blue-400 font-black text-center focus:outline-none">
-                                    </div>
-                                    <div>
-                                        <label class="text-[9px] text-slate-300 uppercase block mb-1">2. Flete / Motorizado (COP)</label>
-                                        <input type="text" id="tcl-v-flete-cop" placeholder="Ej: 20.000" onkeyup="window.svc_maskInputFormatted(this); window.tcl_calcularGananciaTelefonoEnVivo();" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-amber-400 font-black text-center focus:outline-none">
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono">
-                                    <div>
-                                        <label class="text-[9px] text-slate-300 uppercase block mb-1">3. Moneda Cobrada</label>
-                                        <select id="tcl-v-moneda-venta" onchange="window.tcl_calcularGananciaTelefonoEnVivo()" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white font-bold text-xs focus:outline-none">
+                                        <label class="text-[9px] text-slate-300 uppercase block mb-1">1. Moneda Costo</label>
+                                        <select id="tcl-v-moneda-costo" onchange="window.tcl_conmutarMonedaCostoVentaTel()" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white font-bold text-xs focus:outline-none">
                                             <option value="USD" selected>💵 Dólares ($USD)</option>
-                                            <option value="COP">💵 Pesos (COP)</option>
+                                            <option value="COP">🇨🇴 Pesos (COP)</option>
+                                            <option value="BS">🇻🇪 Bolívares (Bs)</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="text-[9px] text-slate-300 uppercase block mb-1">Monto Venta Cliente</label>
-                                        <input type="text" id="tcl-v-monto-venta" placeholder="Ej: 145" onkeyup="window.tcl_calcularGananciaTelefonoEnVivo()" class="w-full bg-slate-900 border border-emerald-500/40 p-2.5 rounded-xl text-emerald-400 font-black text-center focus:outline-none">
+                                        <label id="lbl-tcl-v-costo-titulo" class="text-[9px] text-slate-300 uppercase block mb-1">Costo Compra ($USD)</label>
+                                        <input type="text" id="tcl-v-costo-valor" placeholder="Ej: 105" onkeyup="window.tcl_maskCostoVentaTel(this); window.tcl_calcularGananciaTelefonoEnVivo();" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-blue-400 font-black text-center focus:outline-none text-xs">
+                                    </div>
+                                    <div>
+                                        <label class="text-[9px] text-slate-300 uppercase block mb-1">2. Flete (COP)</label>
+                                        <input type="text" id="tcl-v-flete-cop" placeholder="Ej: 20.000" onkeyup="window.svc_maskInputFormatted(this); window.tcl_calcularGananciaTelefonoEnVivo();" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-amber-400 font-black text-center focus:outline-none text-xs">
                                     </div>
                                 </div>
 
+                                <!-- LÍNEA 2: COBRO AL CLIENTE EN USD, COP O BOLÍVARES -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono">
+                                    <div>
+                                        <label class="text-[9px] text-slate-300 uppercase block mb-1">3. Moneda Cobrada al Cliente</label>
+                                        <select id="tcl-v-moneda-venta" onchange="window.tcl_conmutarMonedaVentaTel()" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white font-bold text-xs focus:outline-none">
+                                            <option value="USD" selected>💵 Dólares ($USD)</option>
+                                            <option value="COP">🇨🇴 Pesos (COP)</option>
+                                            <option value="BS">🇻🇪 Bolívares (Bs / Pago Móvil)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label id="lbl-tcl-v-monto-titulo" class="text-[9px] text-slate-300 uppercase block mb-1">Monto Cobrado ($USD)</label>
+                                        <input type="text" id="tcl-v-monto-venta" placeholder="Ej: 145" onkeyup="window.tcl_maskVentaTel(this); window.tcl_calcularGananciaTelefonoEnVivo();" class="w-full bg-slate-900 border border-emerald-500/40 p-2.5 rounded-xl text-emerald-400 font-black text-center focus:outline-none text-xs">
+                                    </div>
+                                </div>
+
+                                <!-- CUADRO DE CÁLCULO DE GANANCIA REAL LIMPIA Y CONVERSIONES -->
                                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1 font-mono text-[10px] text-center">
-                                    <span class="block text-[8.5px] text-slate-400 uppercase">Cálculo de Ganancia Real Limpia a Caja</span>
+                                    <span class="block text-[8.5px] text-slate-400 uppercase font-bold">Cálculo de Ganancia Real Limpia a Caja</span>
                                     <div class="flex justify-between items-center pt-1 border-t border-slate-800">
+                                        <span class="text-slate-400">Venta Equivalente:</span>
+                                        <b id="lbl-tcl-venta-equiv-live" class="text-white">$0.00 USD (0 COP / 0 Bs)</b>
+                                    </div>
+                                    <div class="flex justify-between items-center">
                                         <span class="text-slate-400">Flete Convertido:</span>
                                         <b id="lbl-tcl-flete-usd-live" class="text-amber-400">$0.00 USD</b>
                                     </div>
@@ -4007,33 +4025,113 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
             }
         };
 
+        window.tcl_conmutarMonedaCostoVentaTel = function() {
+            const m = document.getElementById('tcl-v-moneda-costo').value;
+            const lbl = document.getElementById('lbl-tcl-v-costo-titulo');
+            const inp = document.getElementById('tcl-v-costo-valor');
+            if (m === "USD") {
+                if (lbl) lbl.innerText = "Costo Compra ($USD)";
+                if (inp) inp.placeholder = "Ej: 105.00";
+            } else if (m === "COP") {
+                if (lbl) lbl.innerText = "Costo Compra (COP)";
+                if (inp) inp.placeholder = "Ej: 378.000";
+            } else if (m === "BS") {
+                if (lbl) lbl.innerText = "Costo Compra (Bs)";
+                if (inp) inp.placeholder = "Ej: 94.500";
+            }
+            window.tcl_calcularGananciaTelefonoEnVivo();
+        };
+
+        window.tcl_conmutarMonedaVentaTel = function() {
+            const m = document.getElementById('tcl-v-moneda-venta').value;
+            const lbl = document.getElementById('lbl-tcl-v-monto-titulo');
+            const inp = document.getElementById('tcl-v-monto-venta');
+            if (m === "USD") {
+                if (lbl) lbl.innerText = "Monto Cobrado ($USD)";
+                if (inp) inp.placeholder = "Ej: 145.00";
+            } else if (m === "COP") {
+                if (lbl) lbl.innerText = "Monto Cobrado (COP)";
+                if (inp) inp.placeholder = "Ej: 522.000";
+            } else if (m === "BS") {
+                if (lbl) lbl.innerText = "Monto Cobrado (Bs)";
+                if (inp) inp.placeholder = "Ej: 130.500";
+            }
+            window.tcl_calcularGananciaTelefonoEnVivo();
+        };
+
+        window.tcl_maskCostoVentaTel = function(input) {
+            const m = document.getElementById('tcl-v-moneda-costo').value;
+            if (m === "COP") window.svc_maskInputFormatted(input);
+            else window.svc_maskDecimalRate(input);
+        };
+
+        window.tcl_maskVentaTel = function(input) {
+            const m = document.getElementById('tcl-v-moneda-venta').value;
+            if (m === "COP") window.svc_maskInputFormatted(input);
+            else window.svc_maskDecimalRate(input);
+        };
+
         window.tcl_calcularGananciaTelefonoEnVivo = function() {
-            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
-            const costoUSD = parseFloat(document.getElementById('tcl-v-costo-usd').value) || 0;
-            const fleteCOP = window.svc_cleanNumber(document.getElementById('tcl-v-flete-cop').value);
-            const monedaVenta = document.getElementById('tcl-v-moneda-venta').value;
-            const montoVentaRaw = window.svc_cleanNumber(document.getElementById('tcl-v-monto-venta').value);
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+            const tBs = window.svc_cleanRate(document.getElementById('cfg-tasa-bs')?.value) || 4;
 
-            const fleteUSD = fleteCOP / tCOP;
+            const mCosto = document.getElementById('tcl-v-moneda-costo')?.value || "USD";
+            const rawCosto = window.svc_cleanNumber(document.getElementById('tcl-v-costo-valor')?.value);
+            const fleteCOP = window.svc_cleanNumber(document.getElementById('tcl-v-flete-cop')?.value);
 
-            let precioVentaUSD = 0;
-            let precioVentaCOP = 0;
+            const mVenta = document.getElementById('tcl-v-moneda-venta')?.value || "USD";
+            const rawVenta = window.svc_cleanNumber(document.getElementById('tcl-v-monto-venta')?.value);
 
-            if (monedaVenta === "USD") {
-                precioVentaUSD = montoVentaRaw;
-                precioVentaCOP = montoVentaRaw * tCOP;
-            } else {
-                precioVentaCOP = montoVentaRaw;
-                precioVentaUSD = montoVentaRaw / tCOP;
+            // 1. Unificar Costo Base a USD y COP
+            let costoUSD = 0;
+            let costoCOP = 0;
+            if (mCosto === "USD") {
+                costoUSD = rawCosto;
+                costoCOP = Math.round(rawCosto * tCOP);
+            } else if (mCosto === "COP") {
+                costoCOP = rawCosto;
+                costoUSD = rawCosto / tCOP;
+            } else if (mCosto === "BS") {
+                costoCOP = Math.round(rawCosto * tBs);
+                costoUSD = costoCOP / tCOP;
             }
 
-            const gananciaRealUSD = precioVentaUSD - costoUSD - fleteUSD;
+            const fleteUSD = fleteCOP > 0 ? (fleteCOP / tCOP) : 0;
+
+            // 2. Unificar Precio de Venta a USD, COP y Bs
+            let ventaUSD = 0;
+            let ventaCOP = 0;
+            let ventaBs = 0;
+
+            if (mVenta === "USD") {
+                ventaUSD = rawVenta;
+                ventaCOP = Math.round(rawVenta * tCOP);
+                ventaBs = Math.round(ventaCOP / tBs);
+            } else if (mVenta === "COP") {
+                ventaCOP = rawVenta;
+                ventaUSD = rawVenta / tCOP;
+                ventaBs = Math.round(rawVenta / tBs);
+            } else if (mVenta === "BS") {
+                ventaBs = rawVenta;
+                ventaCOP = Math.round(rawVenta * tBs);
+                ventaUSD = ventaCOP / tCOP;
+            }
+
+            // 3. Ganancia Neta Real Limpia
+            const gananciaRealUSD = ventaUSD - costoUSD - fleteUSD;
             const gananciaRealCOP = Math.round(gananciaRealUSD * tCOP);
 
+            // Renderizar resultados en pantalla
+            const lblVentaEquiv = document.getElementById('lbl-tcl-venta-equiv-live');
             const lblFleteUSD = document.getElementById('lbl-tcl-flete-usd-live');
             const lblGanancia = document.getElementById('lbl-tcl-ganancia-limpia-live');
 
-            if (lblFleteUSD) lblFleteUSD.innerText = `$${window.svc_formatDecimalUSD(fleteUSD)} USD (${window.svc_formatPoints(fleteCOP)} COP)`;
+            if (lblVentaEquiv) {
+                lblVentaEquiv.innerText = `$${window.svc_formatDecimalUSD(ventaUSD)} USD (${window.svc_formatPoints(ventaCOP)} COP / ${window.svc_formatPoints(ventaBs)} Bs)`;
+            }
+            if (lblFleteUSD) {
+                lblFleteUSD.innerText = `$${window.svc_formatDecimalUSD(fleteUSD)} USD (${window.svc_formatPoints(fleteCOP)} COP)`;
+            }
             if (lblGanancia) {
                 if (gananciaRealUSD >= 0) {
                     lblGanancia.className = "text-emerald-400 font-black";
@@ -4046,13 +4144,16 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
 
             return {
                 costoUSD,
+                costoCOP,
+                mCosto,
                 fleteCOP,
                 fleteUSD,
-                precioVentaUSD,
-                precioVentaCOP,
+                precioVentaUSD: ventaUSD,
+                precioVentaCOP: ventaCOP,
+                precioVentaBs: ventaBs,
+                monedaVenta: mVenta,
                 gananciaRealUSD,
-                gananciaRealCOP,
-                monedaVenta
+                gananciaRealCOP
             };
         };
 
@@ -4092,9 +4193,11 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                     metodo
                 });
 
-                document.getElementById('tcl-v-costo-usd').value = "";
+                const inCostoVal = document.getElementById('tcl-v-costo-valor');
+                if (inCostoVal) inCostoVal.value = "";
                 document.getElementById('tcl-v-flete-cop').value = "";
                 document.getElementById('tcl-v-monto-venta').value = "";
+                window.tcl_calcularGananciaTelefonoEnVivo();
             } else {
                 const cantidad = parseInt(document.getElementById('tcl-input-cantidad').value) || 1;
                 const precioCOP = window.svc_cleanNumber(document.getElementById('tcl-input-precio-cop').value);
@@ -5294,30 +5397,35 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
             window.svc_renderizarInventarioTaller();
         };
 
-        window.svc_editarCategoriaModal = async function(idx) {
+                window.svc_editarCategoriaModal = function(idx) {
             const catActual = svc_categoriasInventario[idx];
-            const nuevaCat = prompt("Modificar nombre de la categoría:", catActual);
-            if(!nuevaCat || !nuevaCat.trim()) return;
-            const norm = nuevaCat.trim().toUpperCase();
+            if (!catActual) return;
+            
+            let prod = svc_inventarioGlobal.find(p => (p.categoria || '').toUpperCase() === catActual.toUpperCase());
+            if (!prod) {
+                prod = {
+                    id: 'inv-' + Date.now(),
+                    codigo: 'ACC-' + Math.floor(100 + Math.random() * 900),
+                    nombre: catActual,
+                    categoria: catActual,
+                    stock: 0,
+                    precioVentaCOP: 0,
+                    costoUnitUSD: 0,
+                    fechaRegistro: new Date().toLocaleDateString()
+                };
+                svc_inventarioGlobal.unshift(prod);
+            }
 
-            // Renombrar en la lista
-            svc_categoriasInventario[idx] = norm;
+            document.getElementById('modal-edit-inv-id').value = prod.id;
+            document.getElementById('modal-edit-inv-nombre').value = prod.nombre;
+            document.getElementById('modal-edit-inv-cat').value = prod.categoria || catActual;
+            document.getElementById('modal-edit-inv-stock').value = prod.stock || 0;
+            document.getElementById('modal-edit-inv-precio-cop').value = window.svc_formatPoints(prod.precioVentaCOP || 0);
+            document.getElementById('modal-edit-inv-costo-usd').value = prod.costoUnitUSD ? prod.costoUnitUSD.toFixed(2) : "0";
 
-            // Actualizar todos los productos que tenían la categoría anterior
-            let contadorActualizados = 0;
-            svc_inventarioGlobal.forEach(p => {
-                if((p.categoria || '').toUpperCase() === catActual.toUpperCase()) {
-                    p.categoria = norm;
-                    contadorActualizados++;
-                }
-            });
-
-            await window.svc_sincronizarConFirebase();
-            window.svc_actualizarDatalistCategoriasInventario();
-            window.svc_renderizarListaCategoriasModal();
-            window.svc_renderizarInventarioTaller();
-            alert(`✅ Categoría actualizada a "${norm}". (${contadorActualizados} producto(s) actualizados).`);
-        };
+            document.getElementById('modal-gestor-categorias-inv').classList.add('hidden');
+            document.getElementById('modal-editar-producto-inv').classList.remove('hidden');
+        };;
 
         window.svc_eliminarCategoriaModal = async function(idx) {
             const catActual = svc_categoriasInventario[idx];
@@ -6602,3 +6710,4 @@ window.onload = function() {
     </script>
 </body>
 </html>
+
