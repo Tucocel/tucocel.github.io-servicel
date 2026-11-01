@@ -3892,6 +3892,16 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                 const bIngresos = localStorage.getItem("svc_backup_ingresos_mercancia");
                 if (bIngresos) svc_historicoIngresosMercancia = JSON.parse(bIngresos);
 
+                // Restaurar arqueo de gaveta persistente
+                const cachedArqUSD = localStorage.getItem("tcl_cached_arq_usd");
+                if (cachedArqUSD !== null && document.getElementById('tcl-arq-usd')) {
+                    document.getElementById('tcl-arq-usd').value = cachedArqUSD;
+                }
+                const cachedArqCOP = localStorage.getItem("tcl_cached_arq_cop");
+                if (cachedArqCOP !== null && document.getElementById('tcl-arq-cop')) {
+                    document.getElementById('tcl-arq-cop').value = cachedArqCOP;
+                }
+
                 console.log("⚡ Respaldo local de contingencia inyectado en memoria.");
             } catch(e) {
                 console.warn("Aviso carga respaldo local:", e);
@@ -3910,9 +3920,31 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
             return Array.from(mapa.values());
         }
 
+        // SEMÁFOROS Y COLAS DE SINCRONIZACIÓN CON FRENADO / COOLDOWN DE SEGURIDAD
+        let svc_bloqueoSincronizacion = false;
+        let svc_colaSincronizacion = false;
+        let tcl_bloqueoSincronizacion = false;
+        let tcl_colaSincronizacion = false;
+
         window.svc_sincronizarConFirebase = async function() {
+            if (svc_bloqueoSincronizacion) {
+                svc_colaSincronizacion = true;
+                return;
+            }
+            svc_bloqueoSincronizacion = true;
+
+            const badgeCloud = document.getElementById('status-conexion-tasas-cloud');
+            if (badgeCloud) {
+                badgeCloud.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping";
+                badgeCloud.title = "Guardando y asegurando en la nube...";
+            }
+
             try {
                 guardarRespaldoLocalContingencia();
+
+                // FRENADO DE SEGURIDAD (Cooldown de 600ms): Da tiempo a la red y evita colisiones por ráfaga
+                await new Promise(r => setTimeout(r, 600));
+
                 await setDoc(doc(db, "tcl_servicell_independent", "comandas_data"), { 
                     comandas: svc_comandasGlobal, 
                     vales: svc_valesGlobal, 
@@ -3927,9 +3959,24 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                     conceptosServicios: svc_conceptosFrecuentes,
                     ultimaModificacion: Date.now()
                 }); 
-                console.log("☁️ [Firestore] Comandas e inventario Servicell sincronizados.");
+                console.log("☁️ [Firestore] Comandas e inventario Servicell sincronizados y blindados con frenado.");
+
+                if (badgeCloud) {
+                    badgeCloud.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse";
+                    badgeCloud.title = "Conexión activa y datos sincronizados con Firebase";
+                }
             } catch(e) {
                 console.error("Error sincronizando Servicell:", e);
+                if (badgeCloud) {
+                    badgeCloud.className = "w-2.5 h-2.5 rounded-full bg-red-500";
+                    badgeCloud.title = "Aviso: Error de red al sincronizar con Firebase";
+                }
+            } finally {
+                svc_bloqueoSincronizacion = false;
+                if (svc_colaSincronizacion) {
+                    svc_colaSincronizacion = false;
+                    window.svc_sincronizarConFirebase();
+                }
             }
         };
 
@@ -3937,9 +3984,25 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
         // MOTOR DE FUNCIONES EXCLUSIVAS DE TUCOCEL C.A. (PARTICIÓN 3)
         // =========================================================
 
-                window.tcl_sincronizarTucocelFirebase = async function() {
+        window.tcl_sincronizarTucocelFirebase = async function() {
+            if (tcl_bloqueoSincronizacion) {
+                tcl_colaSincronizacion = true;
+                return;
+            }
+            tcl_bloqueoSincronizacion = true;
+
+            const badgeCloud = document.getElementById('status-conexion-tasas-cloud');
+            if (badgeCloud) {
+                badgeCloud.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping";
+                badgeCloud.title = "Guardando y asegurando en la nube...";
+            }
+
             try {
                 guardarRespaldoLocalContingencia();
+
+                // FRENADO DE SEGURIDAD (Cooldown de 600ms): Da tiempo a la red y evita colisiones por ráfaga
+                await new Promise(r => setTimeout(r, 600));
+
                 await setDoc(doc(db, "tcl_servicell_independent", "comandas_tucocel_data"), {
                     ventasActivasTurno: tcl_ventasActivasTurno,
                     comprasActivasTurno: tcl_comprasActivasTurno,
@@ -3950,9 +4013,24 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                     conceptosGuardados: tcl_conceptosFrecuentes,
                     ultimaModificacion: Date.now()
                 });
-                console.log("☁️ [Firestore] Ventas y catálogos Tucocel C.A. sincronizados.");
+                console.log("☁️ [Firestore] Ventas y catálogos Tucocel C.A. sincronizados y blindados con frenado.");
+
+                if (badgeCloud) {
+                    badgeCloud.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse";
+                    badgeCloud.title = "Conexión activa y datos sincronizados con Firebase";
+                }
             } catch(e) {
                 console.error("Error sincronizando Tucocel:", e);
+                if (badgeCloud) {
+                    badgeCloud.className = "w-2.5 h-2.5 rounded-full bg-red-500";
+                    badgeCloud.title = "Aviso: Error de red al sincronizar con Firebase";
+                }
+            } finally {
+                tcl_bloqueoSincronizacion = false;
+                if (tcl_colaSincronizacion) {
+                    tcl_colaSincronizacion = false;
+                    window.tcl_sincronizarTucocelFirebase();
+                }
             }
         };
 
@@ -4877,9 +4955,14 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
             if(lblLiveUSD) lblLiveUSD.innerText = `$${window.svc_formatDecimalUSD(totalUSD)}`;
             if(lblLiveBs) lblLiveBs.innerText = `${fmtMonto(totalBs)} Bs`;
 
-            // ARQUEO DE CAJA
-            const usdGaveta = parseFloat(document.getElementById('tcl-arq-usd').value) || 0;
-            const copGaveta = window.svc_cleanNumber(document.getElementById('tcl-arq-cop').value);
+            // ARQUEO DE CAJA CON PERSISTENCIA EN LOCALSTORAGE
+            const rawArqUSD = document.getElementById('tcl-arq-usd')?.value || "0";
+            const rawArqCOP = document.getElementById('tcl-arq-cop')?.value || "";
+            localStorage.setItem("tcl_cached_arq_usd", rawArqUSD);
+            localStorage.setItem("tcl_cached_arq_cop", rawArqCOP);
+
+            const usdGaveta = parseFloat(rawArqUSD) || 0;
+            const copGaveta = window.svc_cleanNumber(rawArqCOP);
             const totalFisicoGaveta = (usdGaveta * tCOP) + copGaveta;
             const diferenciaCOP = totalFisicoGaveta - totalVentasCOP;
 
@@ -4945,6 +5028,8 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
             tcl_ventasActivasTurno = [];
             document.getElementById('tcl-arq-usd').value = "0";
             document.getElementById('tcl-arq-cop').value = "";
+            localStorage.removeItem("tcl_cached_arq_usd");
+            localStorage.removeItem("tcl_cached_arq_cop");
 
             await window.tcl_sincronizarTucocelFirebase();
             document.getElementById('wrapper-tucocel-historico-acordeon').classList.remove('hidden');
@@ -5397,35 +5482,32 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
             window.svc_renderizarInventarioTaller();
         };
 
-                window.svc_editarCategoriaModal = function(idx) {
+                window.svc_editarCategoriaModal = async function(idx) {
             const catActual = svc_categoriasInventario[idx];
             if (!catActual) return;
             
-            let prod = svc_inventarioGlobal.find(p => (p.categoria || '').toUpperCase() === catActual.toUpperCase());
-            if (!prod) {
-                prod = {
-                    id: 'inv-' + Date.now(),
-                    codigo: 'ACC-' + Math.floor(100 + Math.random() * 900),
-                    nombre: catActual,
-                    categoria: catActual,
-                    stock: 0,
-                    precioVentaCOP: 0,
-                    costoUnitUSD: 0,
-                    fechaRegistro: new Date().toLocaleDateString()
-                };
-                svc_inventarioGlobal.unshift(prod);
-            }
+            const nuevoNombre = prompt(`Modificar nombre de la categoría "${catActual}":`, catActual);
+            if (!nuevoNombre || !nuevoNombre.trim()) return;
+            const norm = nuevoNombre.trim().toUpperCase();
+            if (norm === catActual.toUpperCase()) return;
+            if (svc_categoriasInventario.includes(norm)) return alert("Ya existe una categoría con ese nombre.");
 
-            document.getElementById('modal-edit-inv-id').value = prod.id;
-            document.getElementById('modal-edit-inv-nombre').value = prod.nombre;
-            document.getElementById('modal-edit-inv-cat').value = prod.categoria || catActual;
-            document.getElementById('modal-edit-inv-stock').value = prod.stock || 0;
-            document.getElementById('modal-edit-inv-precio-cop').value = window.svc_formatPoints(prod.precioVentaCOP || 0);
-            document.getElementById('modal-edit-inv-costo-usd').value = prod.costoUnitUSD ? prod.costoUnitUSD.toFixed(2) : "0";
+            // Actualizar en la lista de categorías
+            svc_categoriasInventario[idx] = norm;
 
-            document.getElementById('modal-gestor-categorias-inv').classList.add('hidden');
-            document.getElementById('modal-editar-producto-inv').classList.remove('hidden');
-        };;
+            // Actualizar en cascada en todos los productos del inventario
+            svc_inventarioGlobal.forEach(p => {
+                if ((p.categoria || '').toUpperCase() === catActual.toUpperCase()) {
+                    p.categoria = norm;
+                }
+            });
+
+            await window.svc_sincronizarConFirebase();
+            window.svc_actualizarDatalistCategoriasInventario();
+            window.svc_renderizarListaCategoriasModal();
+            window.svc_renderizarInventarioTaller();
+            alert(`✅ Categoría actualizada a "${norm}".`);
+        };
 
         window.svc_eliminarCategoriaModal = async function(idx) {
             const catActual = svc_categoriasInventario[idx];
@@ -6607,11 +6689,16 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                         vales: svc_valesGlobal,
                         semanasLiquidadas: svc_historicoSemanasLiquidadas,
                         mesesServicell: svc_historicoMesesServicell,
+                        comandaActivaTurno: svc_comandaActivaTurno,
                         tecnicos: svc_tecnicosPerfiles,
                         inventario: svc_inventarioGlobal,
-                        categoriasInventario: svc_categoriasInventario
+                        categoriasInventario: svc_categoriasInventario,
+                        historicoIngresosMercancia: svc_historicoIngresosMercancia,
+                        conceptosServicios: svc_conceptosFrecuentes
                     },
                     tucocel: {
+                        ventasActivasTurno: tcl_ventasActivasTurno,
+                        comprasActivasTurno: tcl_comprasActivasTurno,
                         historicoCierres: tcl_historicoCierres,
                         comprasHistorico: tcl_comprasHistorico,
                         historicoMeses: tcl_historicoMesesTucocel,
@@ -6710,4 +6797,3 @@ window.onload = function() {
     </script>
 </body>
 </html>
-
