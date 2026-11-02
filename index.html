@@ -1037,8 +1037,10 @@
                             <p class="text-[10px] text-slate-400">Partición personal independiente. Ningún valor se mezcla con Servicell ni con Finanzas del Taller.</p>
                         </div>
                     </div>
-                    <div class="flex gap-2 w-full sm:w-auto">
-                        <button onclick="window.tcl_abrirVisorHojaBlancaTucocel()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black px-4 py-2.5 rounded-xl uppercase shadow tracking-wider flex items-center justify-center gap-1.5 transition"><i class="fa-solid fa-file-lines text-xs"></i> 📄 Informe Hoja Blanca Tucocel</button>
+                    <div class="flex gap-2 w-full sm:w-auto flex-wrap">
+                        <button onclick="window.tcl_abrirModalGastosTucocel()" class="w-full sm:w-auto bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-black px-4 py-2.5 rounded-xl uppercase shadow tracking-wider flex items-center justify-center gap-1.5 transition"><i class="fa-solid fa-receipt text-xs"></i> 💸 Gastos</button>
+                        <button onclick="window.tcl_abrirModalIngresosExtraTucocel()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black px-4 py-2.5 rounded-xl uppercase shadow tracking-wider flex items-center justify-center gap-1.5 transition"><i class="fa-solid fa-circle-plus text-xs"></i> 💰 Ingresos Extras</button>
+                        <button onclick="window.tcl_abrirVisorHojaBlancaTucocel()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-black px-4 py-2.5 rounded-xl uppercase shadow tracking-wider flex items-center justify-center gap-1.5 transition"><i class="fa-solid fa-file-lines text-xs"></i> 📄 Informe Hoja Blanca Tucocel</button>
                     </div>
                 </div>
 
@@ -1270,6 +1272,28 @@
                                         <b id="tcl-lbl-diferencia-cop" class="text-emerald-400 text-xs">0 COP</b>
                                     </div>
                                 </div>
+
+                                <!-- JUSTIFICACIONES DINÁMICAS DE ARQUEO -->
+                                <div id="wrapper-tcl-motivo-faltante" class="hidden space-y-1 pt-2 border-t border-red-500/30 text-left">
+                                    <label class="text-[8.5px] text-red-400 uppercase font-bold block flex items-center gap-1 font-sans">
+                                        <i class="fa-solid fa-triangle-exclamation"></i> Motivo de la Salida / Gasto de Gaveta (Obligatorio)
+                                    </label>
+                                    <input type="text" id="tcl-arq-motivo-faltante" placeholder="Ej: Almuerzo personal, taxi/flete traída, compras menores..." class="w-full bg-slate-900 border border-red-500/40 p-2 rounded-xl text-white text-xs uppercase font-sans focus:outline-none focus:border-red-400">
+                                    <span class="text-[8px] text-slate-400 font-sans block italic">💡 Este monto se asentará formalmente como Salida / Gasto Menor de Caja del Turno.</span>
+                                </div>
+
+                                <div id="wrapper-tcl-concepto-sobrante" class="hidden space-y-1 pt-2 border-t border-blue-500/30 text-left">
+                                    <label class="text-[8.5px] text-blue-400 uppercase font-bold block flex items-center gap-1 font-sans">
+                                        <i class="fa-solid fa-circle-plus"></i> Concepto de Ingreso Adicional a Caja
+                                    </label>
+                                    <input type="text" id="tcl-arq-concepto-sobrante" placeholder="Ej: Publicidad Publitasa, entrada directa sin ticket..." class="w-full bg-slate-900 border border-blue-500/40 p-2 rounded-xl text-white text-xs uppercase font-sans focus:outline-none focus:border-blue-400">
+                                    <span class="text-[8px] text-slate-400 font-sans block italic">💡 Este excedente se asentará como Ingreso Extraordinario compensatorio de caja.</span>
+                                </div>
+
+                                <!-- AMORTIZACIÓN Y COMPENSACIÓN VISUAL EN VIVO -->
+                                <div id="wrapper-tcl-amortizacion-live" class="p-2 bg-slate-900 rounded-xl border border-slate-800 text-[9px] font-mono text-slate-400 text-center">
+                                    <span id="lbl-tcl-amortizacion-texto">⚖️ <b>Amortización:</b> Gastos: 0 COP | Entradas Extra: 0 COP</span>
+                                </div>
                             </div>
 
                             <div class="border-t border-slate-800 pt-2 grid grid-cols-2 gap-2">
@@ -1389,6 +1413,51 @@
 
                     <div id="wrapper-tucocel-meses-viejos-acordeon" class="hidden p-5 border-t border-slate-800/60 space-y-3">
                         <div id="wrapper-lista-meses-viejos-tucocel" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
+                    </div>
+                </div>
+
+                <!-- BÓVEDA 7: HISTÓRICO DE GASTOS OPERATIVOS, ALQUILER & SALIDAS (MES EN CURSO) -->
+                <div class="bg-slate-900/60 border border-rose-500/30 rounded-3xl overflow-hidden shadow-xl space-y-2">
+                    <button onclick="document.getElementById('wrapper-gastos-historico-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-rose-500/20">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-receipt text-rose-400 text-lg"></i>
+                            <span class="text-xs font-black text-rose-300 uppercase tracking-wider">💸 GASTOS OPERATIVOS, ALQUILER & SALIDAS (MES EN CURSO)</span>
+                        </span>
+                        <span id="badge-cnt-gastos-tucocel" class="text-[10px] font-black bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-1 rounded-xl uppercase">0 Gastos</span>
+                    </button>
+
+                    <div id="wrapper-gastos-historico-acordeon" class="hidden p-5 border-t border-slate-800/60 space-y-3">
+                        <div id="wrapper-lista-gastos-historico-box" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
+                    </div>
+                </div>
+
+                <!-- BÓVEDA 8: GASTOS OPERATIVOS LIQUIDADOS (MESES ANTERIORES) -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-2">
+                    <button onclick="document.getElementById('wrapper-gastos-viejos-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-slate-800">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-box-archive text-rose-500 text-lg"></i>
+                            <span class="text-xs font-black text-rose-400 uppercase tracking-wider">📦 GASTOS LIQUIDADOS (MESES ANTERIORES)</span>
+                        </span>
+                        <span id="badge-cnt-gastos-viejos-tucocel" class="text-[10px] font-black bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-1 rounded-xl uppercase">0 Liquidados</span>
+                    </button>
+
+                    <div id="wrapper-gastos-viejos-acordeon" class="hidden p-5 border-t border-slate-800/60 space-y-3">
+                        <div id="wrapper-lista-gastos-viejos-box" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
+                    </div>
+                </div>
+
+                <!-- BÓVEDA 9: INGRESOS ADICIONALES A CAJA & PUBLICIDAD (MES EN CURSO) -->
+                <div class="bg-slate-900/60 border border-blue-500/30 rounded-3xl overflow-hidden shadow-xl space-y-2">
+                    <button onclick="document.getElementById('wrapper-ingresos-extra-acordeon').classList.toggle('hidden')" class="w-full p-4 bg-slate-900 hover:bg-slate-850 flex justify-between items-center transition border-b border-blue-500/20">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-plus text-blue-400 text-lg"></i>
+                            <span class="text-xs font-black text-blue-300 uppercase tracking-wider">💰 INGRESOS ADICIONALES A CAJA & PUBLICIDAD (MES EN CURSO)</span>
+                        </span>
+                        <span id="badge-cnt-ingresos-extra-tucocel" class="text-[10px] font-black bg-blue-500/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-xl uppercase">0 Extras</span>
+                    </button>
+
+                    <div id="wrapper-ingresos-extra-acordeon" class="hidden p-5 border-t border-slate-800/60 space-y-3">
+                        <div id="wrapper-lista-ingresos-extra-box" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
                     </div>
                 </div>
 
@@ -1665,6 +1734,155 @@
         </div>
     </div>
 
+    <!-- MODAL DEDICADO DE GASTOS OPERATIVOS & ALQUILER TUCOCEL C.A. -->
+    <div id="modal-gastos-tucocel" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md flex items-center justify-center hidden p-4 z-50">
+        <div class="bg-slate-900 border border-rose-500/40 rounded-3xl w-full max-w-lg p-6 space-y-4 shadow-2xl font-mono text-xs">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
+                <h4 class="text-xs font-black text-rose-400 uppercase tracking-wider flex items-center gap-2 font-sans">
+                    <i class="fa-solid fa-receipt"></i> Salidas de Dinero, Gastos & Alquiler
+                </h4>
+                <button onclick="document.getElementById('modal-gastos-tucocel').classList.add('hidden')" class="text-slate-400 hover:text-white text-sm">✖</button>
+            </div>
+
+            <!-- FORMULARIO DE CARGA DE GASTOS -->
+            <div class="space-y-3 font-sans">
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[9px] text-slate-400 uppercase font-bold block mb-1">Categoría de Gasto</label>
+                        <select id="tcl-gasto-categoria" onchange="window.tcl_conmutarCategoriaGastoPersonalizada()" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-xs font-bold focus:outline-none">
+                            <option value="ALQUILER">🏢 Alquiler de Local</option>
+                            <option value="COMIDA" selected>🍽️ Comidas / Almuerzos</option>
+                            <option value="SERVICIOS">💡 Servicios (Luz/Agua/Net)</option>
+                            <option value="FLETES">🚚 Fletes / Logística</option>
+                            <option value="PAPELERIA">📦 Bolsas / Papelería / Aseo</option>
+                            <option value="VARIOS">🛠️ Otros Gastos</option>
+                            <option value="PERSONALIZADA">✏️ Otro Tipo / Escribir Nueva Categoría...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[9px] text-slate-400 uppercase font-bold block mb-1">Moneda de Pago</label>
+                        <select id="tcl-gasto-moneda" onchange="window.tcl_recalcularGastoLive()" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-xs font-bold focus:outline-none">
+                            <option value="COP" selected>🇨🇴 Pesos (COP)</option>
+                            <option value="USD">💵 Dólares ($USD)</option>
+                            <option value="BS">🇻🇪 Bolívares (Bs / Pago Móvil)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- CAMPO PARA TIPO O CATEGORÍA PERSONALIZADA -->
+                <div id="wrapper-tcl-gasto-cat-personalizada" class="hidden">
+                    <label class="text-[9px] text-rose-400 uppercase font-bold block mb-1 flex items-center gap-1">
+                        <i class="fa-solid fa-pen-nib"></i> Escriba el Tipo o Categoría del Gasto
+                    </label>
+                    <input type="text" id="tcl-gasto-categoria-nueva" placeholder="Ej: Impuestos, Reparación aviso, Mantenimiento aire, Viáticos..." class="w-full bg-slate-950 border border-rose-500/40 p-2.5 rounded-xl text-white text-xs uppercase focus:outline-none focus:border-rose-400 font-bold">
+                </div>
+
+                <div>
+                    <label class="text-[9px] text-slate-400 uppercase font-bold block mb-1">Concepto / Motivo de la Salida</label>
+                    <input type="text" id="tcl-gasto-concepto" placeholder="Ej: Almuerzo equipo, canon mensual local, bolsas 4G..." class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-xs uppercase focus:outline-none focus:border-rose-500 font-medium">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 font-mono">
+                    <div>
+                        <label class="text-[8.5px] text-rose-400 uppercase block font-sans mb-1">Monto Salida</label>
+                        <input type="text" id="tcl-gasto-monto" placeholder="0" onkeyup="window.tcl_maskMontoGasto(this); window.tcl_recalcularGastoLive();" class="w-full bg-slate-950 border border-rose-500/40 p-2.5 rounded-xl text-rose-400 text-center font-black text-xs focus:outline-none">
+                    </div>
+                    <div class="flex flex-col justify-center items-center bg-slate-950 p-2 rounded-xl border border-slate-800">
+                        <span class="text-[8px] text-slate-500 uppercase font-sans">Equivalente COP / USD</span>
+                        <b id="lbl-tcl-gasto-equiv" class="text-white text-[11px] font-black">0 COP ($0.00 USD)</b>
+                    </div>
+                </div>
+
+                <button onclick="window.tcl_guardarGastoOperativo()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-black py-3 rounded-xl uppercase text-[10px] tracking-wider shadow transition">
+                    💾 Registrar Gasto Operativo
+                </button>
+            </div>
+
+            <!-- LISTA Y TOTALES DEL MES -->
+            <div class="border-t border-slate-800 pt-3 space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-[9px] uppercase font-bold text-slate-400">Gastos Registrados Este Mes:</span>
+                    <b id="lbl-tcl-total-gastos-modal" class="text-rose-400 font-mono text-xs">0 COP</b>
+                </div>
+                <div id="wrapper-lista-gastos-modal-box" class="space-y-1.5 max-h-40 overflow-y-auto no-scrollbar font-sans text-xs"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DEDICADO DE INGRESOS ADICIONALES A CAJA & PUBLICIDAD TUCOCEL C.A. -->
+    <div id="modal-ingresos-extra-tucocel" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md flex items-center justify-center hidden p-4 z-50">
+        <div class="bg-slate-900 border border-blue-500/40 rounded-3xl w-full max-w-lg p-6 space-y-4 shadow-2xl font-mono text-xs">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
+                <h4 class="text-xs font-black text-blue-400 uppercase tracking-wider flex items-center gap-2 font-sans">
+                    <i class="fa-solid fa-circle-plus"></i> Entradas Adicionales & Publicidad
+                </h4>
+                <button onclick="document.getElementById('modal-ingresos-extra-tucocel').classList.add('hidden')" class="text-slate-400 hover:text-white text-sm">✖</button>
+            </div>
+
+            <!-- FORMULARIO DE CARGA DE INGRESOS EXTRAS -->
+            <div class="space-y-3 font-sans">
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[9px] text-slate-400 uppercase font-bold block mb-1">Categoría de Entrada</label>
+                        <select id="tcl-ingreso-categoria" onchange="window.tcl_conmutarCategoriaIngresoExtraPersonalizada()" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-xs font-bold focus:outline-none">
+                            <option value="PUBLICIDAD" selected>📢 Publicidad / Publitasa</option>
+                            <option value="ENTRADA_DIRECTA">💵 Entrada Directa a Caja</option>
+                            <option value="APORTE_SOCIO">🤝 Aporte de Capital / Socio</option>
+                            <option value="PAGO_NO_FACTURADO">🧾 Pago / Cobro sin Ticket</option>
+                            <option value="VENTA_EXTRA">📦 Venta Extraordinaria</option>
+                            <option value="PERSONALIZADA">✏️ Otra Categoría / Escribir Nueva...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[9px] text-slate-400 uppercase font-bold block mb-1">Moneda Recibida</label>
+                        <select id="tcl-ingreso-moneda" onchange="window.tcl_recalcularIngresoExtraLive()" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-xs font-bold focus:outline-none">
+                            <option value="COP" selected>🇨🇴 Pesos (COP)</option>
+                            <option value="USD">💵 Dólares ($USD)</option>
+                            <option value="BS">🇻🇪 Bolívares (Bs / Pago Móvil)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- CAMPO PARA TIPO O CATEGORÍA PERSONALIZADA -->
+                <div id="wrapper-tcl-ingreso-cat-personalizada" class="hidden">
+                    <label class="text-[9px] text-blue-400 uppercase font-bold block mb-1 flex items-center gap-1">
+                        <i class="fa-solid fa-pen-nib"></i> Escriba el Tipo de Ingreso
+                    </label>
+                    <input type="text" id="tcl-ingreso-categoria-nueva" placeholder="Ej: Streaming, Asesoría, Reembolso..." class="w-full bg-slate-950 border border-blue-500/40 p-2.5 rounded-xl text-white text-xs uppercase focus:outline-none focus:border-blue-400 font-bold">
+                </div>
+
+                <div>
+                    <label class="text-[9px] text-slate-400 uppercase font-bold block mb-1">Concepto / Motivo de la Entrada</label>
+                    <input type="text" id="tcl-ingreso-concepto" placeholder="Ej: Publicidad pantalla Publitasa, abono especial..." class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-xs uppercase focus:outline-none focus:border-blue-500 font-medium">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 font-mono">
+                    <div>
+                        <label class="text-[8.5px] text-blue-400 uppercase block font-sans mb-1">Monto Recibido</label>
+                        <input type="text" id="tcl-ingreso-monto" placeholder="0" onkeyup="window.tcl_maskMontoIngresoExtra(this); window.tcl_recalcularIngresoExtraLive();" class="w-full bg-slate-950 border border-blue-500/40 p-2.5 rounded-xl text-blue-400 text-center font-black text-xs focus:outline-none">
+                    </div>
+                    <div class="flex flex-col justify-center items-center bg-slate-950 p-2 rounded-xl border border-slate-800">
+                        <span class="text-[8px] text-slate-500 uppercase font-sans">Equivalente COP / USD</span>
+                        <b id="lbl-tcl-ingreso-equiv" class="text-white text-[11px] font-black">0 COP ($0.00 USD)</b>
+                    </div>
+                </div>
+
+                <button onclick="window.tcl_guardarIngresoExtraModal()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-3 rounded-xl uppercase text-[10px] tracking-wider shadow transition">
+                    💾 Registrar Entrada Adicional
+                </button>
+            </div>
+
+            <!-- LISTA Y TOTALES DEL MES -->
+            <div class="border-t border-slate-800 pt-3 space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-[9px] uppercase font-bold text-slate-400">Entradas Extras Este Mes:</span>
+                    <b id="lbl-tcl-total-ingresos-modal" class="text-blue-400 font-mono text-xs">+0 COP</b>
+                </div>
+                <div id="wrapper-lista-ingresos-modal-box" class="space-y-1.5 max-h-40 overflow-y-auto no-scrollbar font-sans text-xs"></div>
+            </div>
+        </div>
+    </div>
+
     <footer class="bg-slate-900/20 border-t border-slate-900/60 py-4 text-center text-slate-500 font-mono text-[8px] tracking-widest uppercase font-bold">
         🔒 TUCOCEL C.A. & SERVICELL — SISTEMA DE CONTROL
     </footer>
@@ -1705,6 +1923,8 @@
         let tcl_comprasHistorico = [];
         let tcl_historicoCierres = [];
         let tcl_historicoMesesTucocel = [];
+        let tcl_gastosHistorico = [];
+        let tcl_ingresosExtraHistorico = [];
         let tcl_proveedoresGuardados = ["PROVEEDOR GENERAL", "DISTRIBUIDOR CENTRAL", "MERCADO LIBRE"];
         let tcl_conceptosFrecuentes = ["VIDRIO TEMPLADO", "VIDRIO CERÁMICA", "LÍNEA MOVISTAR 4G", "LÍNEA 4GB", "CARGADOR TIPO C", "CARGADOR V8", "FORRO", "CABLE TIPO C", "AUDÍFONOS", "PANTALLA", "REPARACIÓN PIN"];
         let svc_conceptosFrecuentes = ["REPARACIÓN PIN DE CARGA", "CAMBIO DE PANTALLA", "MANTENIMIENTO GENERAL", "REVISIÓN TÉCNICA", "CAMBIO DE BATERÍA", "SOFTWARE / FLASHEO", "LIMPIEZA DE HUMEDAD"];
@@ -2201,6 +2421,8 @@
                         tcl_historicoMesesTucocel = data.historicoMesesTucocel || [];
                         if(data.proveedoresGuardados) tcl_proveedoresGuardados = data.proveedoresGuardados;
                         if(data.conceptosGuardados) tcl_conceptosFrecuentes = data.conceptosGuardados;
+                        if(data.gastosHistorico) tcl_gastosHistorico = data.gastosHistorico;
+                        if(data.ingresosExtraHistorico) tcl_ingresosExtraHistorico = data.ingresosExtraHistorico;
 
                         guardarRespaldoLocalContingencia();
                         window.tcl_renderizerParticionTucocel();
@@ -2351,6 +2573,12 @@ window.svc_descargarServidorCentral = async function() {
                     }
                     if(docSnapTcl.data().conceptosGuardados) {
                         tcl_conceptosFrecuentes = docSnapTcl.data().conceptosGuardados;
+                    }
+                    if(docSnapTcl.data().gastosHistorico) {
+                        tcl_gastosHistorico = docSnapTcl.data().gastosHistorico;
+                    }
+                    if(docSnapTcl.data().ingresosExtraHistorico) {
+                        tcl_ingresosExtraHistorico = docSnapTcl.data().ingresosExtraHistorico;
                     }
 
                     // RESTAURACIÓN AUTOMÁTICA DE CIERRES Y COMPRAS TUCOCEL DESDE BÓVEDA MENSUAL
@@ -3826,6 +4054,8 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                 localStorage.setItem("tcl_backup_meses_hist", JSON.stringify(tcl_historicoMesesTucocel));
                 localStorage.setItem("tcl_backup_proveedores_guardados", JSON.stringify(tcl_proveedoresGuardados));
                 localStorage.setItem("tcl_backup_conceptos_frecuentes", JSON.stringify(tcl_conceptosFrecuentes));
+                localStorage.setItem("tcl_backup_gastos_hist", JSON.stringify(tcl_gastosHistorico));
+                localStorage.setItem("tcl_backup_ingresos_extra", JSON.stringify(tcl_ingresosExtraHistorico));
                 localStorage.setItem("svc_backup_conceptos_frecuentes", JSON.stringify(svc_conceptosFrecuentes));
 
                 localStorage.setItem("svc_backup_comandas_global", JSON.stringify(svc_comandasGlobal));
@@ -3862,6 +4092,20 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
 
                 const bConc = localStorage.getItem("tcl_backup_conceptos_frecuentes");
                 if (bConc) tcl_conceptosFrecuentes = JSON.parse(bConc);
+                const bGastos = localStorage.getItem("tcl_backup_gastos_hist");
+                if (bGastos) tcl_gastosHistorico = JSON.parse(bGastos);
+                const bIngExtra = localStorage.getItem("tcl_backup_ingresos_extra");
+                if (bIngExtra) tcl_ingresosExtraHistorico = JSON.parse(bIngExtra);
+
+                // Restaurar arqueo en vivo de gaveta
+                const cachedArqUSD = localStorage.getItem("tcl_cached_arq_usd");
+                if (cachedArqUSD !== null && document.getElementById('tcl-arq-usd')) {
+                    document.getElementById('tcl-arq-usd').value = cachedArqUSD;
+                }
+                const cachedArqCOP = localStorage.getItem("tcl_cached_arq_cop");
+                if (cachedArqCOP !== null && document.getElementById('tcl-arq-cop')) {
+                    document.getElementById('tcl-arq-cop').value = cachedArqCOP;
+                }
                 const bSvcConc = localStorage.getItem("svc_backup_conceptos_frecuentes");
                 if (bSvcConc) svc_conceptosFrecuentes = JSON.parse(bSvcConc);
 
@@ -3892,16 +4136,6 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                 const bIngresos = localStorage.getItem("svc_backup_ingresos_mercancia");
                 if (bIngresos) svc_historicoIngresosMercancia = JSON.parse(bIngresos);
 
-                // Restaurar arqueo de gaveta persistente
-                const cachedArqUSD = localStorage.getItem("tcl_cached_arq_usd");
-                if (cachedArqUSD !== null && document.getElementById('tcl-arq-usd')) {
-                    document.getElementById('tcl-arq-usd').value = cachedArqUSD;
-                }
-                const cachedArqCOP = localStorage.getItem("tcl_cached_arq_cop");
-                if (cachedArqCOP !== null && document.getElementById('tcl-arq-cop')) {
-                    document.getElementById('tcl-arq-cop').value = cachedArqCOP;
-                }
-
                 console.log("⚡ Respaldo local de contingencia inyectado en memoria.");
             } catch(e) {
                 console.warn("Aviso carga respaldo local:", e);
@@ -3920,31 +4154,9 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
             return Array.from(mapa.values());
         }
 
-        // SEMÁFOROS Y COLAS DE SINCRONIZACIÓN CON FRENADO / COOLDOWN DE SEGURIDAD
-        let svc_bloqueoSincronizacion = false;
-        let svc_colaSincronizacion = false;
-        let tcl_bloqueoSincronizacion = false;
-        let tcl_colaSincronizacion = false;
-
         window.svc_sincronizarConFirebase = async function() {
-            if (svc_bloqueoSincronizacion) {
-                svc_colaSincronizacion = true;
-                return;
-            }
-            svc_bloqueoSincronizacion = true;
-
-            const badgeCloud = document.getElementById('status-conexion-tasas-cloud');
-            if (badgeCloud) {
-                badgeCloud.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping";
-                badgeCloud.title = "Guardando y asegurando en la nube...";
-            }
-
             try {
                 guardarRespaldoLocalContingencia();
-
-                // FRENADO DE SEGURIDAD (Cooldown de 600ms): Da tiempo a la red y evita colisiones por ráfaga
-                await new Promise(r => setTimeout(r, 600));
-
                 await setDoc(doc(db, "tcl_servicell_independent", "comandas_data"), { 
                     comandas: svc_comandasGlobal, 
                     vales: svc_valesGlobal, 
@@ -3959,30 +4171,19 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                     conceptosServicios: svc_conceptosFrecuentes,
                     ultimaModificacion: Date.now()
                 }); 
-                console.log("☁️ [Firestore] Comandas e inventario Servicell sincronizados y blindados con frenado.");
-
-                if (badgeCloud) {
-                    badgeCloud.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse";
-                    badgeCloud.title = "Conexión activa y datos sincronizados con Firebase";
-                }
+                console.log("☁️ [Firestore] Comandas e inventario Servicell sincronizados.");
             } catch(e) {
                 console.error("Error sincronizando Servicell:", e);
-                if (badgeCloud) {
-                    badgeCloud.className = "w-2.5 h-2.5 rounded-full bg-red-500";
-                    badgeCloud.title = "Aviso: Error de red al sincronizar con Firebase";
-                }
-            } finally {
-                svc_bloqueoSincronizacion = false;
-                if (svc_colaSincronizacion) {
-                    svc_colaSincronizacion = false;
-                    window.svc_sincronizarConFirebase();
-                }
             }
         };
 
         // =========================================================
         // MOTOR DE FUNCIONES EXCLUSIVAS DE TUCOCEL C.A. (PARTICIÓN 3)
         // =========================================================
+
+                // SEMÁFOROS Y COLAS DE SINCRONIZACIÓN CON FRENADO / COOLDOWN DE SEGURIDAD
+        let tcl_bloqueoSincronizacion = false;
+        let tcl_colaSincronizacion = false;
 
         window.tcl_sincronizarTucocelFirebase = async function() {
             if (tcl_bloqueoSincronizacion) {
@@ -3994,13 +4195,13 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
             const badgeCloud = document.getElementById('status-conexion-tasas-cloud');
             if (badgeCloud) {
                 badgeCloud.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping";
-                badgeCloud.title = "Guardando y asegurando en la nube...";
+                badgeCloud.title = "Guardando en la nube...";
             }
 
             try {
                 guardarRespaldoLocalContingencia();
 
-                // FRENADO DE SEGURIDAD (Cooldown de 600ms): Da tiempo a la red y evita colisiones por ráfaga
+                // FRENADO DE SEGURIDAD (Cooldown de 600ms): Estabiliza la red y previene sobreescritura
                 await new Promise(r => setTimeout(r, 600));
 
                 await setDoc(doc(db, "tcl_servicell_independent", "comandas_tucocel_data"), {
@@ -4009,21 +4210,23 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                     comprasHistorico: tcl_comprasHistorico,
                     historicoCierres: tcl_historicoCierres,
                     historicoMesesTucocel: tcl_historicoMesesTucocel,
+                    gastosHistorico: tcl_gastosHistorico,
+                    ingresosExtraHistorico: tcl_ingresosExtraHistorico,
                     proveedoresGuardados: tcl_proveedoresGuardados,
                     conceptosGuardados: tcl_conceptosFrecuentes,
                     ultimaModificacion: Date.now()
                 });
-                console.log("☁️ [Firestore] Ventas y catálogos Tucocel C.A. sincronizados y blindados con frenado.");
+                console.log("☁️ [Firestore] Datos TucoCel C.A. sincronizados con frenado.");
 
                 if (badgeCloud) {
                     badgeCloud.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse";
-                    badgeCloud.title = "Conexión activa y datos sincronizados con Firebase";
+                    badgeCloud.title = "Sincronizado con Firebase";
                 }
             } catch(e) {
                 console.error("Error sincronizando Tucocel:", e);
                 if (badgeCloud) {
                     badgeCloud.className = "w-2.5 h-2.5 rounded-full bg-red-500";
-                    badgeCloud.title = "Aviso: Error de red al sincronizar con Firebase";
+                    badgeCloud.title = "Aviso de red en sincronización";
                 }
             } finally {
                 tcl_bloqueoSincronizacion = false;
@@ -4870,6 +5073,332 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
         };
 
 
+        
+        // =========================================================
+        // MÓDULO DEDICADO DE GASTOS OPERATIVOS, ALQUILER & INGRESOS EXTRAS TUCOCEL C.A.
+        // =========================================================
+        window.tcl_abrirModalGastosTucocel = function() {
+            window.tcl_renderizarListaGastosModal();
+            const modal = document.getElementById('modal-gastos-tucocel');
+            if (modal) modal.classList.remove('hidden');
+        };
+
+        window.tcl_maskMontoGasto = function(input) {
+            const moneda = document.getElementById('tcl-gasto-moneda')?.value || "COP";
+            if (moneda === "COP") window.svc_maskInputFormatted(input);
+            else window.svc_maskDecimalRate(input);
+        };
+
+        window.tcl_recalcularGastoLive = function() {
+            const moneda = document.getElementById('tcl-gasto-moneda')?.value || "COP";
+            const rawVal = window.svc_cleanNumber(document.getElementById('tcl-gasto-monto')?.value);
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+            const tBs = window.svc_cleanRate(document.getElementById('cfg-tasa-bs')?.value) || 4;
+
+            let cop = 0; let usd = 0;
+            if (moneda === "COP") {
+                cop = rawVal; usd = rawVal / tCOP;
+            } else if (moneda === "USD") {
+                usd = rawVal; cop = Math.round(rawVal * tCOP);
+            } else if (moneda === "BS") {
+                cop = Math.round(rawVal * tBs); usd = cop / tCOP;
+            }
+
+            const lbl = document.getElementById('lbl-tcl-gasto-equiv');
+            if (lbl) lbl.innerText = `${fmtMonto(cop)} COP ($${window.svc_formatDecimalUSD(usd)} USD)`;
+            return { cop, usd, moneda, rawVal };
+        };
+
+        window.tcl_conmutarCategoriaGastoPersonalizada = function() {
+            const selectEl = document.getElementById('tcl-gasto-categoria');
+            const wrapEl = document.getElementById('wrapper-tcl-gasto-cat-personalizada');
+            const inputNueva = document.getElementById('tcl-gasto-categoria-nueva');
+            if (!selectEl || !wrapEl) return;
+
+            if (selectEl.value === "PERSONALIZADA") {
+                wrapEl.classList.remove('hidden');
+                if (inputNueva) inputNueva.focus();
+            } else {
+                wrapEl.classList.add('hidden');
+                if (inputNueva) inputNueva.value = "";
+            }
+        };
+
+        window.tcl_guardarGastoOperativo = async function() {
+            let categoria = document.getElementById('tcl-gasto-categoria').value;
+            if (categoria === "PERSONALIZADA") {
+                const catNueva = (document.getElementById('tcl-gasto-categoria-nueva')?.value || '').trim().toUpperCase();
+                if (!catNueva) return alert("⚠️ Ingrese el nombre de la nueva categoría o tipo de gasto.");
+                categoria = catNueva;
+            }
+
+            const concepto = (document.getElementById('tcl-gasto-concepto').value || '').trim().toUpperCase();
+            const calc = window.tcl_recalcularGastoLive();
+
+            if (!concepto) return alert("⚠️ Ingrese el concepto o detalle del gasto.");
+            if (calc.cop <= 0) return alert("⚠️ Ingrese un monto de gasto válido.");
+
+            const nuevoGasto = {
+                idGasto: 'gst-' + Date.now(),
+                fecha: new Date().toLocaleDateString(),
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                categoria,
+                concepto,
+                moneda: calc.moneda,
+                montoOrig: calc.rawVal,
+                montoCOP: calc.cop,
+                montoUSD: calc.usd,
+                origen: 'REGISTRO_MANUAL',
+                liquidadoMes: false
+            };
+
+            tcl_gastosHistorico.unshift(nuevoGasto);
+            document.getElementById('tcl-gasto-concepto').value = "";
+            document.getElementById('tcl-gasto-monto').value = "";
+            if (document.getElementById('tcl-gasto-categoria-nueva')) document.getElementById('tcl-gasto-categoria-nueva').value = "";
+            if (document.getElementById('tcl-gasto-categoria')) document.getElementById('tcl-gasto-categoria').value = "COMIDA";
+            window.tcl_conmutarCategoriaGastoPersonalizada();
+            window.tcl_recalcularGastoLive();
+
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizarListaGastosModal();
+            window.tcl_renderizerParticionTucocel();
+            alert(`✅ Gasto de ${fmtMonto(nuevoGasto.montoCOP)} COP registrado exitosamente.`);
+        };
+
+        window.tcl_renderizarListaGastosModal = function() {
+            const box = document.getElementById('wrapper-lista-gastos-modal-box');
+            const lblTotal = document.getElementById('lbl-tcl-total-gastos-modal');
+            if (!box) return;
+
+            let html = "";
+            let totalMesCOP = 0;
+
+            tcl_gastosHistorico.forEach((g, idx) => {
+                if (g.liquidadoMes !== true) {
+                    totalMesCOP += (g.montoCOP || 0);
+                    html += `
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center text-slate-200">
+                            <div>
+                                <b class="text-white text-xs uppercase">${g.concepto}</b>
+                                <span class="block text-[8.5px] text-slate-400 font-mono">${g.fecha} | Cat: ${g.categoria}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <b class="text-rose-400 font-mono text-xs">-${fmtMonto(g.montoCOP)} COP</b>
+                                <button onclick="window.tcl_eliminarGastoOperativo(${idx})" class="text-slate-500 hover:text-red-400 text-xs px-1">🗑️</button>
+                            </div>
+                        </div>`;
+                }
+            });
+
+            box.innerHTML = html || `<p class="text-center text-slate-500 italic py-3 text-[10px]">Cero gastos activos registrados este mes.</p>`;
+            if (lblTotal) lblTotal.innerText = `-${fmtMonto(totalMesCOP)} COP`;
+        };
+
+        window.tcl_eliminarGastoOperativo = async function(idx) {
+            const g = tcl_gastosHistorico[idx];
+            if (!g) return;
+            if (!confirm(`¿Desea eliminar el gasto "${g.concepto}" de ${fmtMonto(g.montoCOP)} COP?`)) return;
+
+            tcl_gastosHistorico.splice(idx, 1);
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizarListaGastosModal();
+            window.tcl_renderizerParticionTucocel();
+        };
+
+        // =========================================================
+        // MÓDULO MODAL DEDICADO DE INGRESOS ADICIONALES & PUBLICIDAD
+        // =========================================================
+        window.tcl_abrirModalIngresosExtraTucocel = function() {
+            window.tcl_renderizarListaIngresosModal();
+            const modal = document.getElementById('modal-ingresos-extra-tucocel');
+            if (modal) modal.classList.remove('hidden');
+        };
+
+        window.tcl_conmutarCategoriaIngresoExtraPersonalizada = function() {
+            const selectEl = document.getElementById('tcl-ingreso-categoria');
+            const wrapEl = document.getElementById('wrapper-tcl-ingreso-cat-personalizada');
+            const inputNueva = document.getElementById('tcl-ingreso-categoria-nueva');
+            if (!selectEl || !wrapEl) return;
+
+            if (selectEl.value === "PERSONALIZADA") {
+                wrapEl.classList.remove('hidden');
+                if (inputNueva) inputNueva.focus();
+            } else {
+                wrapEl.classList.add('hidden');
+                if (inputNueva) inputNueva.value = "";
+            }
+        };
+
+        window.tcl_maskMontoIngresoExtra = function(input) {
+            const moneda = document.getElementById('tcl-ingreso-moneda')?.value || "COP";
+            if (moneda === "COP") window.svc_maskInputFormatted(input);
+            else window.svc_maskDecimalRate(input);
+        };
+
+        window.tcl_recalcularIngresoExtraLive = function() {
+            const moneda = document.getElementById('tcl-ingreso-moneda')?.value || "COP";
+            const rawVal = window.svc_cleanNumber(document.getElementById('tcl-ingreso-monto')?.value);
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+            const tBs = window.svc_cleanRate(document.getElementById('cfg-tasa-bs')?.value) || 4;
+
+            let cop = 0; let usd = 0;
+            if (moneda === "COP") {
+                cop = rawVal; usd = rawVal / tCOP;
+            } else if (moneda === "USD") {
+                usd = rawVal; cop = Math.round(rawVal * tCOP);
+            } else if (moneda === "BS") {
+                cop = Math.round(rawVal * tBs); usd = cop / tCOP;
+            }
+
+            const lbl = document.getElementById('lbl-tcl-ingreso-equiv');
+            if (lbl) lbl.innerText = `${fmtMonto(cop)} COP ($${window.svc_formatDecimalUSD(usd)} USD)`;
+            return { cop, usd, moneda, rawVal };
+        };
+
+        window.tcl_guardarIngresoExtraModal = async function() {
+            let categoria = document.getElementById('tcl-ingreso-categoria')?.value || "PUBLICIDAD";
+            if (categoria === "PERSONALIZADA") {
+                const catNueva = (document.getElementById('tcl-ingreso-categoria-nueva')?.value || '').trim().toUpperCase();
+                if (!catNueva) return alert("⚠️ Ingrese el nombre de la nueva categoría o tipo de ingreso.");
+                categoria = catNueva;
+            }
+
+            const concepto = (document.getElementById('tcl-ingreso-concepto')?.value || '').trim().toUpperCase();
+            const calc = window.tcl_recalcularIngresoExtraLive();
+
+            if (!concepto) return alert("⚠️ Ingrese el concepto o motivo de la entrada de dinero.");
+            if (calc.cop <= 0) return alert("⚠️ Ingrese un monto de ingreso válido.");
+
+            const nuevoIngreso = {
+                idIngreso: 'ing-extra-' + Date.now(),
+                fecha: new Date().toLocaleDateString(),
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                categoria,
+                concepto,
+                moneda: calc.moneda,
+                montoOrig: calc.rawVal,
+                montoCOP: calc.cop,
+                montoUSD: calc.usd,
+                origen: 'REGISTRO_MANUAL',
+                liquidadoMes: false
+            };
+
+            tcl_ingresosExtraHistorico.unshift(nuevoIngreso);
+            if (document.getElementById('tcl-ingreso-concepto')) document.getElementById('tcl-ingreso-concepto').value = "";
+            if (document.getElementById('tcl-ingreso-monto')) document.getElementById('tcl-ingreso-monto').value = "";
+            if (document.getElementById('tcl-ingreso-categoria-nueva')) document.getElementById('tcl-ingreso-categoria-nueva').value = "";
+            if (document.getElementById('tcl-ingreso-categoria')) document.getElementById('tcl-ingreso-categoria').value = "PUBLICIDAD";
+            window.tcl_conmutarCategoriaIngresoExtraPersonalizada();
+            window.tcl_recalcularIngresoExtraLive();
+
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizarListaIngresosModal();
+            window.tcl_renderizerParticionTucocel();
+            alert(`✅ Entrada de +${fmtMonto(nuevoIngreso.montoCOP)} COP registrada exitosamente.`);
+        };
+
+        window.tcl_renderizarListaIngresosModal = function() {
+            const box = document.getElementById('wrapper-lista-ingresos-modal-box');
+            const lblTotal = document.getElementById('lbl-tcl-total-ingresos-modal');
+            if (!box) return;
+
+            let html = "";
+            let totalMesCOP = 0;
+
+            tcl_ingresosExtraHistorico.forEach((i, idx) => {
+                if (i.liquidadoMes !== true) {
+                    totalMesCOP += (i.montoCOP || 0);
+                    let monedaOrigTxt = i.moneda === "USD" 
+                        ? `$${window.svc_formatDecimalUSD(i.montoOrig)} USD` 
+                        : (i.moneda === "BS" ? `${fmtMonto(i.montoOrig)} Bs` : `${fmtMonto(i.montoCOP)} COP`);
+
+                    html += `
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center text-slate-200">
+                            <div>
+                                <b class="text-white text-xs uppercase">${i.concepto}</b>
+                                <span class="block text-[8.5px] text-slate-400 font-mono">${i.fecha} | Cat: <span class="text-blue-400 font-bold">${i.categoria || 'EXTRA'}</span> (${monedaOrigTxt})</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <b class="text-blue-400 font-mono text-xs">+${fmtMonto(i.montoCOP)} COP</b>
+                                <button onclick="window.tcl_eliminarIngresoExtra(${idx})" class="text-slate-500 hover:text-red-400 text-xs px-1">🗑️</button>
+                            </div>
+                        </div>`;
+                }
+            });
+
+            box.innerHTML = html || `<p class="text-center text-slate-500 italic py-3 text-[10px]">Cero entradas adicionales activas registradas este mes.</p>`;
+            if (lblTotal) lblTotal.innerText = `+${fmtMonto(totalMesCOP)} COP`;
+        };
+
+        window.tcl_eliminarIngresoExtra = async function(idx) {
+            const ing = tcl_ingresosExtraHistorico[idx];
+            if (!ing) return;
+            if (!confirm(`¿Desea eliminar este ingreso extra de ${fmtMonto(ing.montoCOP)} COP?`)) return;
+
+            tcl_ingresosExtraHistorico.splice(idx, 1);
+            await window.tcl_sincronizarTucocelFirebase();
+            window.tcl_renderizerParticionTucocel();
+        };
+
+        window.tcl_renderizarGastosEIngresosBovedas = function() {
+            const boxGastosAct = document.getElementById('wrapper-lista-gastos-historico-box');
+            const boxGastosViejos = document.getElementById('wrapper-lista-gastos-viejos-box');
+            const boxIngExtra = document.getElementById('wrapper-lista-ingresos-extra-box');
+            const badgeGastosAct = document.getElementById('badge-cnt-gastos-tucocel');
+            const badgeGastosViejos = document.getElementById('badge-cnt-gastos-viejos-tucocel');
+            const badgeIngExtra = document.getElementById('badge-cnt-ingresos-extra-tucocel');
+
+            let htmlGAct = ""; let cntGAct = 0;
+            let htmlGViejos = ""; let cntGViejos = 0;
+            let htmlIng = ""; let cntIng = 0;
+
+            tcl_gastosHistorico.forEach((g, idx) => {
+                let card = `
+                    <div class="p-2.5 bg-slate-950 border border-slate-800 rounded-xl flex justify-between items-center text-xs font-mono">
+                        <div>
+                            <b class="text-white block uppercase">${g.concepto}</b>
+                            <span class="text-[9px] text-slate-400">${g.fecha} (${g.hora || ''}) | Cat: <span class="text-rose-400 font-bold">${g.categoria}</span></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <b class="text-rose-400 font-black">-${fmtMonto(g.montoCOP)} COP</b>
+                            <button onclick="window.tcl_eliminarGastoOperativo(${idx})" class="text-slate-500 hover:text-red-400 text-xs px-1">🗑️</button>
+                        </div>
+                    </div>`;
+
+                if (g.liquidadoMes === true) {
+                    cntGViejos++; htmlGViejos += card;
+                } else {
+                    cntGAct++; htmlGAct += card;
+                }
+            });
+
+            tcl_ingresosExtraHistorico.forEach((ing, idx) => {
+                if (ing.liquidadoMes !== true) {
+                    cntIng++;
+                    htmlIng += `
+                        <div class="p-2.5 bg-slate-950 border border-slate-800 rounded-xl flex justify-between items-center text-xs font-mono">
+                            <div>
+                                <b class="text-white block uppercase">${ing.concepto}</b>
+                                <span class="text-[9px] text-slate-400">${ing.fecha} (${ing.hora || ''})</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <b class="text-blue-400 font-black">+${fmtMonto(ing.montoCOP)} COP</b>
+                                <button onclick="window.tcl_eliminarIngresoExtra(${idx})" class="text-slate-500 hover:text-red-400 text-xs px-1">🗑️</button>
+                            </div>
+                        </div>`;
+                }
+            });
+
+            if (boxGastosAct) boxGastosAct.innerHTML = htmlGAct || `<p class="text-center text-slate-500 italic py-3 text-[10px]">Cero gastos activos registrados este mes.</p>`;
+            if (boxGastosViejos) boxGastosViejos.innerHTML = htmlGViejos || `<p class="text-center text-slate-500 italic py-3 text-[10px]">Cero gastos archivados de meses anteriores.</p>`;
+            if (boxIngExtra) boxIngExtra.innerHTML = htmlIng || `<p class="text-center text-slate-500 italic py-3 text-[10px]">Cero ingresos adicionales registrados este mes.</p>`;
+
+            if (badgeGastosAct) badgeGastosAct.innerText = `${cntGAct} Gastos`;
+            if (badgeGastosViejos) badgeGastosViejos.innerText = `${cntGViejos} Liquidados`;
+            if (badgeIngExtra) badgeIngExtra.innerText = `${cntIng} Extras`;
+        };
+
         window.tcl_renderizerParticionTucocel = function() {
   
             if (typeof window.tcl_actualizarDatalistsConceptos === 'function') window.tcl_actualizarDatalistsConceptos();          const boxLista = document.getElementById('tcl-lista-items-viva-box');
@@ -4955,7 +5484,7 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
             if(lblLiveUSD) lblLiveUSD.innerText = `$${window.svc_formatDecimalUSD(totalUSD)}`;
             if(lblLiveBs) lblLiveBs.innerText = `${fmtMonto(totalBs)} Bs`;
 
-            // ARQUEO DE CAJA CON PERSISTENCIA EN LOCALSTORAGE
+            // ARQUEO DE CAJA CON JUSTIFICACIONES Y AMORTIZACIÓN EN VIVO
             const rawArqUSD = document.getElementById('tcl-arq-usd')?.value || "0";
             const rawArqCOP = document.getElementById('tcl-arq-cop')?.value || "";
             localStorage.setItem("tcl_cached_arq_usd", rawArqUSD);
@@ -4969,6 +5498,8 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
             const lblEsperado = document.getElementById('tcl-lbl-esperado-cop');
             const lblDiferencia = document.getElementById('tcl-lbl-diferencia-cop');
             const boxStatus = document.getElementById('tcl-box-diferencia-status');
+            const wrapFaltante = document.getElementById('wrapper-tcl-motivo-faltante');
+            const wrapSobrante = document.getElementById('wrapper-tcl-concepto-sobrante');
 
             if(lblEsperado) lblEsperado.innerText = `${fmtMonto(totalVentasCOP)} COP`;
 
@@ -4977,15 +5508,37 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
                     boxStatus.className = "bg-emerald-950/60 p-2 rounded-xl border border-emerald-500/40 text-center";
                     lblDiferencia.className = "text-emerald-400 text-xs font-black";
                     lblDiferencia.innerText = `🟢 CUADRADO (0 COP)`;
+                    if(wrapFaltante) wrapFaltante.classList.add('hidden');
+                    if(wrapSobrante) wrapSobrante.classList.add('hidden');
                 } else if(diferenciaCOP > 0) {
                     boxStatus.className = "bg-blue-950/60 p-2 rounded-xl border border-blue-500/40 text-center";
                     lblDiferencia.className = "text-blue-400 text-xs font-black";
                     lblDiferencia.innerText = `🔵 SOBRANTE: +${fmtMonto(diferenciaCOP)} COP`;
+                    if(wrapFaltante) wrapFaltante.classList.add('hidden');
+                    if(wrapSobrante) wrapSobrante.classList.remove('hidden');
                 } else {
                     boxStatus.className = "bg-red-950/60 p-2 rounded-xl border border-red-500/40 text-center";
                     lblDiferencia.className = "text-red-400 text-xs font-black";
                     lblDiferencia.innerText = `🔴 FALTANTE: ${fmtMonto(diferenciaCOP)} COP`;
+                    if(wrapFaltante) wrapFaltante.classList.remove('hidden');
+                    if(wrapSobrante) wrapSobrante.classList.add('hidden');
                 }
+            }
+
+            // Cálculo en vivo de Amortización (Gastos vs Ingresos Extra)
+            let totGastosActivos = 0;
+            tcl_gastosHistorico.forEach(g => { if(g.liquidadoMes !== true) totGastosActivos += (g.montoCOP || 0); });
+            let totIngresosExtrasActivos = 0;
+            tcl_ingresosExtraHistorico.forEach(i => { if(i.liquidadoMes !== true) totIngresosExtrasActivos += (i.montoCOP || 0); });
+
+            const lblAmort = document.getElementById('lbl-tcl-amortizacion-texto');
+            if(lblAmort) {
+                let pctAmort = totGastosActivos > 0 ? Math.min(100, Math.round((totIngresosExtrasActivos / totGastosActivos) * 100)) : 100;
+                lblAmort.innerHTML = `⚖️ <b>Amortización:</b> Gastos: <b class="text-rose-400">-${fmtMonto(totGastosActivos)} COP</b> | Entradas Extra: <b class="text-blue-400">+${fmtMonto(totIngresosExtrasActivos)} COP</b> (Amortizado: <b>${pctAmort}%</b>)`;
+            }
+
+            if(typeof window.tcl_renderizarGastosEIngresosBovedas === 'function') {
+                window.tcl_renderizarGastosEIngresosBovedas();
             }
 
             window.tcl_renderizerListaComprasHistorico();
@@ -5001,14 +5554,66 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
             let totalVentasCOP = 0;
             tcl_ventasActivasTurno.forEach(v => { totalVentasCOP += (v.precioCOP * v.cantidad); });
 
-            const usdGaveta = parseFloat(document.getElementById('tcl-arq-usd').value) || 0;
-            const copGaveta = window.svc_cleanNumber(document.getElementById('tcl-arq-cop').value);
-            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
+            const usdGaveta = parseFloat(document.getElementById('tcl-arq-usd')?.value) || 0;
+            const copGaveta = window.svc_cleanNumber(document.getElementById('tcl-arq-cop')?.value);
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
 
             const totalFisicoGaveta = (usdGaveta * tCOP) + copGaveta;
             const diferenciaCOP = totalFisicoGaveta - totalVentasCOP;
-
             const folioKey = `CIERRE-${String(tcl_historicoCierres.length + 1).padStart(3, '0')}`;
+
+            let motivoFaltanteFinal = "";
+            let conceptoSobranteFinal = "";
+
+            // 1. TRATAMIENTO DE FALTANTE: ASENTAR COMO SALIDA DE CAJA / GASTO MENOR DEL TURNO
+            if (diferenciaCOP < 0) {
+                const inpFalt = document.getElementById('tcl-arq-motivo-faltante');
+                motivoFaltanteFinal = (inpFalt ? inpFalt.value : "").trim();
+                if (!motivoFaltanteFinal) {
+                    motivoFaltanteFinal = prompt(`⚠️ Hay un faltante de -${fmtMonto(Math.abs(diferenciaCOP))} COP en gaveta.\nIngrese el Motivo de la Salida / Gasto (Obligatorio, ej: Almuerzos, taxi flete, compras menores):`);
+                }
+                if (!motivoFaltanteFinal || !motivoFaltanteFinal.trim()) {
+                    return alert("🛑 Debe indicar el motivo de la salida de dinero para poder cerrar el turno.");
+                }
+
+                tcl_gastosHistorico.unshift({
+                    idGasto: 'gst-auto-' + Date.now(),
+                    fecha: new Date().toLocaleDateString(),
+                    hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    categoria: 'SALIDA_CAJA_TURNO',
+                    concepto: `SALIDA DE CAJA (CUADRE #${folioKey}): ${motivoFaltanteFinal.toUpperCase()}`,
+                    moneda: 'COP',
+                    montoOrig: Math.abs(diferenciaCOP),
+                    montoCOP: Math.abs(diferenciaCOP),
+                    montoUSD: Math.abs(diferenciaCOP) / tCOP,
+                    origen: 'ARQUEO_DIARIO',
+                    idFolioCierre: folioKey,
+                    liquidadoMes: false
+                });
+            }
+
+            // 2. TRATAMIENTO DE SOBRANTE: ASENTAR COMO INGRESO ADICIONAL A CAJA / PUBLICIDAD
+            if (diferenciaCOP > 0) {
+                const inpSobr = document.getElementById('tcl-arq-concepto-sobrante');
+                conceptoSobranteFinal = (inpSobr ? inpSobr.value : "").trim();
+                if (!conceptoSobranteFinal) {
+                    conceptoSobranteFinal = prompt(`🟢 Hay un excedente de +${fmtMonto(diferenciaCOP)} COP en gaveta.\nIngrese el Concepto de la Entrada Extra (Ej: Publicidad Publitasa, entrada directa sin ticket):`) || "INGRESO ADICIONAL A CAJA";
+                }
+
+                tcl_ingresosExtraHistorico.unshift({
+                    idIngreso: 'ing-extra-' + Date.now(),
+                    fecha: new Date().toLocaleDateString(),
+                    hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    concepto: `INGRESO EXTRA (CUADRE #${folioKey}): ${conceptoSobranteFinal.toUpperCase()}`,
+                    moneda: 'COP',
+                    montoOrig: diferenciaCOP,
+                    montoCOP: diferenciaCOP,
+                    montoUSD: diferenciaCOP / tCOP,
+                    origen: 'ARQUEO_DIARIO',
+                    idFolioCierre: folioKey,
+                    liquidadoMes: false
+                });
+            }
 
             const registroCierre = {
                 idFolio: folioKey,
@@ -5020,14 +5625,18 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
                 copGaveta,
                 totalFisicoGaveta,
                 diferenciaCOP,
+                motivoFaltante: motivoFaltanteFinal,
+                conceptoSobrante: conceptoSobranteFinal,
                 status: "ACTIVO"
             };
 
             tcl_historicoCierres.unshift(registroCierre);
 
             tcl_ventasActivasTurno = [];
-            document.getElementById('tcl-arq-usd').value = "0";
-            document.getElementById('tcl-arq-cop').value = "";
+            if(document.getElementById('tcl-arq-usd')) document.getElementById('tcl-arq-usd').value = "0";
+            if(document.getElementById('tcl-arq-cop')) document.getElementById('tcl-arq-cop').value = "";
+            if(document.getElementById('tcl-arq-motivo-faltante')) document.getElementById('tcl-arq-motivo-faltante').value = "";
+            if(document.getElementById('tcl-arq-concepto-sobrante')) document.getElementById('tcl-arq-concepto-sobrante').value = "";
             localStorage.removeItem("tcl_cached_arq_usd");
             localStorage.removeItem("tcl_cached_arq_cop");
 
@@ -5036,7 +5645,7 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
             window.tcl_renderizerParticionTucocel();
 
             if(modo === 'GUARDAR') {
-                alert(`✅ Cierre de Venta Tucocel #${folioKey.slice(-6)} guardado en Bóveda Personal.`);
+                alert(`✅ Cierre de Venta #${folioKey} registrado exitosamente con cuadre contable justificado.`);
             } else if(modo === 'TICKET') {
                 window.tcl_imprimirTicketTucocel(folioKey);
             }
@@ -5482,32 +6091,35 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
             window.svc_renderizarInventarioTaller();
         };
 
-                window.svc_editarCategoriaModal = async function(idx) {
+                window.svc_editarCategoriaModal = function(idx) {
             const catActual = svc_categoriasInventario[idx];
             if (!catActual) return;
             
-            const nuevoNombre = prompt(`Modificar nombre de la categoría "${catActual}":`, catActual);
-            if (!nuevoNombre || !nuevoNombre.trim()) return;
-            const norm = nuevoNombre.trim().toUpperCase();
-            if (norm === catActual.toUpperCase()) return;
-            if (svc_categoriasInventario.includes(norm)) return alert("Ya existe una categoría con ese nombre.");
+            let prod = svc_inventarioGlobal.find(p => (p.categoria || '').toUpperCase() === catActual.toUpperCase());
+            if (!prod) {
+                prod = {
+                    id: 'inv-' + Date.now(),
+                    codigo: 'ACC-' + Math.floor(100 + Math.random() * 900),
+                    nombre: catActual,
+                    categoria: catActual,
+                    stock: 0,
+                    precioVentaCOP: 0,
+                    costoUnitUSD: 0,
+                    fechaRegistro: new Date().toLocaleDateString()
+                };
+                svc_inventarioGlobal.unshift(prod);
+            }
 
-            // Actualizar en la lista de categorías
-            svc_categoriasInventario[idx] = norm;
+            document.getElementById('modal-edit-inv-id').value = prod.id;
+            document.getElementById('modal-edit-inv-nombre').value = prod.nombre;
+            document.getElementById('modal-edit-inv-cat').value = prod.categoria || catActual;
+            document.getElementById('modal-edit-inv-stock').value = prod.stock || 0;
+            document.getElementById('modal-edit-inv-precio-cop').value = window.svc_formatPoints(prod.precioVentaCOP || 0);
+            document.getElementById('modal-edit-inv-costo-usd').value = prod.costoUnitUSD ? prod.costoUnitUSD.toFixed(2) : "0";
 
-            // Actualizar en cascada en todos los productos del inventario
-            svc_inventarioGlobal.forEach(p => {
-                if ((p.categoria || '').toUpperCase() === catActual.toUpperCase()) {
-                    p.categoria = norm;
-                }
-            });
-
-            await window.svc_sincronizarConFirebase();
-            window.svc_actualizarDatalistCategoriasInventario();
-            window.svc_renderizarListaCategoriasModal();
-            window.svc_renderizarInventarioTaller();
-            alert(`✅ Categoría actualizada a "${norm}".`);
-        };
+            document.getElementById('modal-gestor-categorias-inv').classList.add('hidden');
+            document.getElementById('modal-editar-producto-inv').classList.remove('hidden');
+        };;
 
         window.svc_eliminarCategoriaModal = async function(idx) {
             const catActual = svc_categoriasInventario[idx];
@@ -6128,9 +6740,15 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
 window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
             let totalVentasAcum = 0;
             let totalEgresosComprasAcum = 0;
+            let totalGastosAcum = 0;
+            let totalIngresosExtraAcum = 0;
+
             let telefonosVendidosDetalle = [];
             let mapaConteoProductos = {};
             let comprasDetalleMes = [];
+            let gastosDetalleMes = [];
+            let ingresosExtraDetalleMes = [];
+
             let totalFletesComprasCOP = 0;
             let periodoDisplay = "";
             let fechaCierreDisplay = "";
@@ -6142,12 +6760,16 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 periodoDisplay = datosMes.periodo || datosMes.fechaCierre || "MES ARCHIVADO";
                 fechaCierreDisplay = datosMes.fechaCierre || "";
 
+                totalVentasAcum = datosMes.totalVentasCOP || 0;
+                totalEgresosComprasAcum = datosMes.totalComprasCOP || 0;
+                totalGastosAcum = datosMes.totalGastosCOP || 0;
+                totalIngresosExtraAcum = datosMes.totalIngresosExtraCOP || 0;
+
                 // Ventas del mes archivado
                 (datosMes.ventas || []).forEach(c => {
                     (c.ventas || []).forEach(v => {
                         const cant = v.cantidad || 1;
                         const sub = (v.precioCOP || 0) * cant;
-                        totalVentasAcum += sub;
 
                         if (v.tipoCategoria === "TELEFONO" || (v.concepto && v.concepto.toUpperCase().includes("TELÉFONO"))) {
                             telefonosVendidosDetalle.push({
@@ -6172,10 +6794,13 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
 
                 // Compras del mes archivado
                 (datosMes.compras || []).forEach(c => {
-                    totalEgresosComprasAcum += (c.costoCOP || 0);
                     totalFletesComprasCOP += (c.fleteCOP || 0);
                     comprasDetalleMes.push(c);
                 });
+
+                // Gastos del mes archivado
+                gastosDetalleMes = datosMes.gastos || [];
+                ingresosExtraDetalleMes = datosMes.ingresosExtra || [];
 
             } else {
                 periodoDisplay = new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase();
@@ -6219,13 +6844,32 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                         comprasDetalleMes.push(c);
                     }
                 });
+
+                // 3. Recorrer gastos operativos y salidas de caja del mes activo
+                tcl_gastosHistorico.forEach(g => {
+                    if(g.liquidadoMes !== true) {
+                        totalGastosAcum += (g.montoCOP || 0);
+                        gastosDetalleMes.push(g);
+                    }
+                });
+
+                // 4. Recorrer ingresos adicionales y publicidad del mes activo
+                tcl_ingresosExtraHistorico.forEach(i => {
+                    if(i.liquidadoMes !== true) {
+                        totalIngresosExtraAcum += (i.montoCOP || 0);
+                        ingresosExtraDetalleMes.push(i);
+                    }
+                });
             }
 
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
-            const gananciaNetaRealCOP = totalVentasAcum - totalEgresosComprasAcum;
-            const gananciaNetaRealUSD = gananciaNetaRealCOP / tCOP;
 
-            // 3. Comparativa comercial
+            // FÓRMULA CONTABLE EXACTA TUCOCEL C.A.
+            // (=) Utilidad Neta Real = (Ventas + Ingresos Extras) - (Compras Mercancía/Fletes + Gastos Operativos/Salidas)
+            const utilidadNetaRealCOP = (totalVentasAcum + totalIngresosExtraAcum) - (totalEgresosComprasAcum + totalGastosAcum);
+            const utilidadNetaRealUSD = utilidadNetaRealCOP / tCOP;
+
+            // Comparativa comercial vs mes anterior
             let comparativoTextoHtml = "";
             if (!esMesPasado && tcl_historicoMesesTucocel && tcl_historicoMesesTucocel.length > 0) {
                 const mesAnt = tcl_historicoMesesTucocel[0];
@@ -6235,12 +6879,12 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
 
                 if (pctVar >= 0) {
                     comparativoTextoHtml = `<div class="p-1.5 bg-emerald-50 border border-emerald-300 text-emerald-950 rounded-lg text-[9.5px] font-mono font-bold flex justify-between items-center">
-                        <span>📈 Crecimiento vs mes anterior: <b>+${pctVar.toFixed(1)}%</b></span>
+                        <span>📈 Crecimiento en Ventas vs mes anterior: <b>+${pctVar.toFixed(1)}%</b></span>
                         <span class="text-emerald-800 font-normal">Base anterior: ${fmtMonto(ventasAnt)} COP</span>
                     </div>`;
                 } else {
                     comparativoTextoHtml = `<div class="p-1.5 bg-amber-50 border border-amber-300 text-amber-950 rounded-lg text-[9.5px] font-mono font-bold flex justify-between items-center">
-                        <span>📉 Variación vs mes anterior: <b>${pctVar.toFixed(1)}%</b></span>
+                        <span>📉 Variación en Ventas vs mes anterior: <b>${pctVar.toFixed(1)}%</b></span>
                         <span class="text-amber-800 font-normal">Base anterior: ${fmtMonto(ventasAnt)} COP</span>
                     </div>`;
                 }
@@ -6251,7 +6895,18 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 </div>`;
             }
 
-            // 4. Filas consolidadas de teléfonos (Agrupados por Modelo general, NO divididos por día)
+            // Amortización / Compensación
+            let amortizacionTextoHtml = "";
+            if (totalGastosAcum > 0 || totalIngresosExtraAcum > 0) {
+                const pctAmort = totalGastosAcum > 0 ? Math.min(100, Math.round((totalIngresosExtraAcum / totalGastosAcum) * 100)) : 100;
+                amortizacionTextoHtml = `
+                    <div class="p-1.5 bg-blue-50 border border-blue-200 text-blue-950 rounded-lg text-[9.5px] font-mono flex justify-between items-center">
+                        <span>⚖️ <b>Amortización de Caja:</b> Ingresos Extras (+${fmtMonto(totalIngresosExtraAcum)} COP) cubren el <b>${pctAmort}%</b> de los Gastos Menores (-${fmtMonto(totalGastosAcum)} COP).</span>
+                        <span class="text-blue-800 font-bold">Balance Gastos/Extras: ${totalIngresosExtraAcum - totalGastosAcum >= 0 ? '+' : ''}${fmtMonto(totalIngresosExtraAcum - totalGastosAcum)} COP</span>
+                    </div>`;
+            }
+
+            // Filas consolidadas de teléfonos
             let mapaSmartphonesConsolidados = {};
             let totalEquiposVendidos = 0;
             let sumaGananciaTelefonosCOP = 0;
@@ -6317,7 +6972,7 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 filasTelefonosHtml = `<tr><td colspan="7" class="py-2 text-center italic text-slate-500 text-[9px]">Cero teléfonos registrados en este período.</td></tr>`;
             }
 
-            // 5. Filas compactas de ventas generales
+            // Filas de ventas generales
             let arrayTopVendidos = Object.keys(mapaConteoProductos).map(k => ({
                 concepto: k,
                 cant: mapaConteoProductos[k].cant,
@@ -6339,7 +6994,7 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                     </tr>`;
             });
 
-            // 6. Filas individuales desglosadas de compras y fletes (desempaquetadas equipo por equipo, SIN comprimir en "LOTE")
+            // Filas de compras
             let filasComprasResumenHtml = "";
             let listaComprasPlana = [];
 
@@ -6367,7 +7022,6 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                             });
                         });
                     } else if (cmp.producto && cmp.producto.includes("FACTURA LOTE") && cmp.producto.includes(":")) {
-                        // Desempaquetado de contingencia para registros antiguos guardados con el texto 'FACTURA LOTE'
                         const contenidoLote = cmp.producto.split(":")[1].trim();
                         const subItems = contenidoLote.split(/,\s*(?![^()]*\))/);
                         const cantSub = subItems.length || 1;
@@ -6435,37 +7089,117 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 filasComprasResumenHtml = `<tr><td colspan="7" class="py-2 text-center italic text-slate-500 text-[9px]">Cero compras o facturas de mercancía en este período.</td></tr>`;
             }
 
+            // Filas de Gastos Operativos & Salidas de Caja
+            let filasGastosHtml = "";
+            if (gastosDetalleMes.length > 0) {
+                gastosDetalleMes.forEach((g, idx) => {
+                    let etiquetaOrigen = (g.origen === "ARQUEO_DIARIO") 
+                        ? `<span class="text-[7.5px] bg-red-100 text-red-700 px-1 py-0.5 rounded font-mono font-bold ml-1">Gaveta</span>` 
+                        : `<span class="text-[7.5px] bg-slate-200 text-slate-700 px-1 py-0.5 rounded font-mono font-bold ml-1">Manual</span>`;
+
+                    let montoOrigTxt = g.moneda === "USD" 
+                        ? `$${window.svc_formatDecimalUSD(g.montoOrig)} USD` 
+                        : (g.moneda === "BS" ? `${fmtMonto(g.montoOrig)} Bs` : `${fmtMonto(g.montoCOP)} COP`);
+
+                    filasGastosHtml += `
+                        <tr class="border-b border-slate-200 text-[9px]">
+                            <td class="py-1 px-1.5 text-center text-slate-500 font-mono">${idx + 1}</td>
+                            <td class="py-1 px-1.5 font-mono text-slate-700 whitespace-nowrap">${g.fecha} ${g.hora || ''}</td>
+                            <td class="py-1 px-1.5 font-bold text-slate-900 uppercase">${g.categoria || 'VARIOS'}${etiquetaOrigen}</td>
+                            <td class="py-1 px-1.5 text-slate-800 uppercase font-medium">${g.concepto}</td>
+                            <td class="py-1 px-1.5 text-right font-mono text-slate-700">${montoOrigTxt}</td>
+                            <td class="py-1 px-1.5 text-right font-mono font-black text-rose-700">-${fmtMonto(g.montoCOP)} COP</td>
+                        </tr>`;
+                });
+            } else {
+                filasGastosHtml = `<tr><td colspan="6" class="py-2 text-center italic text-slate-500 text-[9px]">Cero gastos operativos o salidas de caja registrados en este período.</td></tr>`;
+            }
+
+            // Filas de Ingresos Extras & Publicidad
+            let bloqueIngresosExtraHtml = "";
+            if (ingresosExtraDetalleMes.length > 0) {
+                let filasIngExtra = "";
+                ingresosExtraDetalleMes.forEach((ing, idx) => {
+                    filasIngExtra += `
+                        <tr class="border-b border-slate-200 text-[9px]">
+                            <td class="py-1 px-1.5 text-center text-slate-500 font-mono">${idx + 1}</td>
+                            <td class="py-1 px-1.5 font-mono text-slate-700 whitespace-nowrap">${ing.fecha} ${ing.hora || ''}</td>
+                            <td class="py-1 px-1.5 font-bold text-slate-900 uppercase">${ing.concepto}</td>
+                            <td class="py-1 px-1.5 text-right font-mono font-black text-blue-700">+${fmtMonto(ing.montoCOP)} COP</td>
+                        </tr>`;
+                });
+
+                bloqueIngresosExtraHtml = `
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center border-b border-slate-900 pb-0.5">
+                            <h4 class="text-[10px] font-black text-slate-950 uppercase tracking-wider">
+                                💰 INGRESOS ADICIONALES A CAJA & PUBLICIDAD (${ingresosExtraDetalleMes.length} ENTRADAS)
+                            </h4>
+                            <span class="text-[9px] font-mono font-bold text-blue-700">Total Ingresos Extra: +${fmtMonto(totalIngresosExtraAcum)} COP</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-[8px] uppercase font-black text-slate-950 bg-slate-100">
+                                        <th class="py-1 px-1.5 text-center">N°</th>
+                                        <th class="py-1 px-1.5">Fecha / Hora</th>
+                                        <th class="py-1 px-1.5">Concepto / Motivo de Entrada</th>
+                                        <th class="py-1 px-1.5 text-right">Monto Recibido COP</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${filasIngExtra}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>`;
+            }
+
             const renderBox = document.getElementById('contenido-hoja-blanca-tucocel-render');
             renderBox.innerHTML = `
                 <div class="space-y-3 font-sans">
-                    <!-- ENCABEZADO Y BALANCE COMPACTO Y EJECUTIVO (AHORRO MÁXIMO DE ESPACIO VERTICAL) -->
+                    <!-- ENCABEZADO Y BALANCE COMPACTO Y EJECUTIVO CON LOS 5 RENGLONES FINANCIEROS -->
                     <div class="border border-slate-900 rounded-xl p-2.5 bg-slate-50 space-y-2">
                         <div class="flex justify-between items-center border-b border-slate-300 pb-1.5">
                             <span class="text-[10px] uppercase font-black text-slate-900 tracking-wider">BALANCE CONTABLE — TUCOCEL C.A.</span>
                             <span class="text-[10px] font-mono font-bold text-slate-700">PERÍODO: ${periodoDisplay}</span>
                         </div>
 
-                        <div class="grid grid-cols-3 gap-2 font-mono text-center">
+                        <!-- GRID 5 TARJETAS CON LA FÓRMULA OFICIAL COMPLETA -->
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 font-mono text-center">
                             <div class="bg-white p-2 rounded-lg border border-slate-200">
-                                <span class="text-[8px] uppercase font-bold text-slate-500 block">1. Total Ventas / Servicios</span>
+                                <span class="text-[7.5px] uppercase font-bold text-slate-500 block">(+) 1. Ventas Mostrador</span>
                                 <b class="text-xs font-black text-slate-950 block">${fmtMonto(totalVentasAcum)} COP</b>
-                                <span class="text-[8px] text-slate-500">($${window.svc_formatDecimalUSD(totalVentasAcum/tCOP)} USD)</span>
+                                <span class="text-[7.5px] text-slate-500">($${window.svc_formatDecimalUSD(totalVentasAcum/tCOP)} USD)</span>
                             </div>
 
                             <div class="bg-white p-2 rounded-lg border border-slate-200">
-                                <span class="text-[8px] uppercase font-bold text-red-600 block">2. Mercancía + Fletes</span>
-                                <b class="text-xs font-black text-red-600 block">-${fmtMonto(totalEgresosComprasAcum)} COP</b>
-                                <span class="text-[8px] text-slate-500">(-$${window.svc_formatDecimalUSD(totalEgresosComprasAcum/tCOP)} USD)</span>
+                                <span class="text-[7.5px] uppercase font-bold text-blue-600 block">(+) 2. Ingresos Extras</span>
+                                <b class="text-xs font-black text-blue-600 block">+${fmtMonto(totalIngresosExtraAcum)} COP</b>
+                                <span class="text-[7.5px] text-slate-500">(+$${window.svc_formatDecimalUSD(totalIngresosExtraAcum/tCOP)} USD)</span>
                             </div>
 
-                            <div class="bg-white p-2 rounded-lg border ${gananciaNetaRealCOP >= 0 ? 'border-emerald-500 bg-emerald-50/30' : 'border-red-500 bg-red-50/30'}">
-                                <span class="text-[8px] uppercase font-black ${gananciaNetaRealCOP >= 0 ? 'text-emerald-800' : 'text-red-800'} block">3. Ganancia Neta Real</span>
-                                <b class="text-xs font-black ${gananciaNetaRealCOP >= 0 ? 'text-emerald-700' : 'text-red-700'} block">${gananciaNetaRealCOP >= 0 ? '+' : ''}${fmtMonto(gananciaNetaRealCOP)} COP</b>
-                                <span class="text-[8px] font-bold ${gananciaNetaRealCOP >= 0 ? 'text-emerald-700' : 'text-red-700'}">(${gananciaNetaRealCOP >= 0 ? '+' : ''}$${window.svc_formatDecimalUSD(gananciaNetaRealUSD)} USD)</span>
+                            <div class="bg-white p-2 rounded-lg border border-slate-200">
+                                <span class="text-[7.5px] uppercase font-bold text-amber-700 block">(-) 3. Mercancía + Fletes</span>
+                                <b class="text-xs font-black text-amber-700 block">-${fmtMonto(totalEgresosComprasAcum)} COP</b>
+                                <span class="text-[7.5px] text-slate-500">(-$${window.svc_formatDecimalUSD(totalEgresosComprasAcum/tCOP)} USD)</span>
+                            </div>
+
+                            <div class="bg-white p-2 rounded-lg border border-slate-200">
+                                <span class="text-[7.5px] uppercase font-bold text-rose-600 block">(-) 4. Gastos & Alquiler</span>
+                                <b class="text-xs font-black text-rose-600 block">-${fmtMonto(totalGastosAcum)} COP</b>
+                                <span class="text-[7.5px] text-slate-500">(-$${window.svc_formatDecimalUSD(totalGastosAcum/tCOP)} USD)</span>
+                            </div>
+
+                            <div class="col-span-2 sm:col-span-1 bg-white p-2 rounded-lg border-2 ${utilidadNetaRealCOP >= 0 ? 'border-emerald-500 bg-emerald-50/40 text-emerald-950' : 'border-red-500 bg-red-50/40 text-red-950'}">
+                                <span class="text-[7.5px] uppercase font-black block">(=) Utilidad Neta Real</span>
+                                <b class="text-xs font-black ${utilidadNetaRealCOP >= 0 ? 'text-emerald-700' : 'text-red-700'} block">${utilidadNetaRealCOP >= 0 ? '+' : ''}${fmtMonto(utilidadNetaRealCOP)} COP</b>
+                                <span class="text-[7.5px] font-bold ${utilidadNetaRealCOP >= 0 ? 'text-emerald-700' : 'text-red-700'}">(${utilidadNetaRealCOP >= 0 ? '+' : ''}$${window.svc_formatDecimalUSD(utilidadNetaRealUSD)} USD)</span>
                             </div>
                         </div>
 
                         ${comparativoTextoHtml}
+                        ${amortizacionTextoHtml}
                     </div>
 
                     <!-- TABLA 1: SMARTPHONES VENDIDOS (CONSOLIDADO GENERAL POR MODELO) -->
@@ -6550,6 +7284,36 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                         </div>
                     </div>
 
+                    <!-- TABLA 4: GASTOS OPERATIVOS, ALQUILER & SALIDAS DE CAJA (DESGLOSE INDIVIDUAL AUDITABLE) -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center border-b border-slate-900 pb-0.5">
+                            <h4 class="text-[10px] font-black text-slate-950 uppercase tracking-wider">
+                                💸 GASTOS OPERATIVOS, ALQUILER & SALIDAS DE CAJA (${gastosDetalleMes.length} REGISTROS)
+                            </h4>
+                            <span class="text-[9px] font-mono font-bold text-rose-700">Total Salidas: -${fmtMonto(totalGastosAcum)} COP</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-[8px] uppercase font-black text-slate-950 bg-slate-100">
+                                        <th class="py-1 px-1.5 text-center">N°</th>
+                                        <th class="py-1 px-1.5">Fecha / Hora</th>
+                                        <th class="py-1 px-1.5">Categoría / Tipo</th>
+                                        <th class="py-1 px-1.5">Concepto / Motivo de la Salida</th>
+                                        <th class="py-1 px-1.5 text-right">Monto Original</th>
+                                        <th class="py-1 px-1.5 text-right">Deducción en COP</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${filasGastosHtml}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TABLA 5: INGRESOS EXTRAS Y PUBLICIDAD (SI EXISTEN) -->
+                    ${bloqueIngresosExtraHtml}
+
                     <div class="text-[8px] text-slate-500 italic text-center pt-1.5 border-t border-slate-300 font-mono">
                         Documento oficial emitido por el Sistema Unificado TUCOCEL C.A. — Cordero, Táchira. Todos los derechos reservados.
                     </div>
@@ -6557,12 +7321,16 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
             `;
 
             document.getElementById('modal-hoja-blanca-tucocel').classList.remove('hidden');
-        };window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
+        };
+window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
             let totalVentasAcum = 0;
             let totalEgresosComprasAcum = 0;
+            let totalGastosAcum = 0;
+            let totalIngresosExtraAcum = 0;
             let totalTelefonosVendidos = 0;
             let gananciaTelefonosCOP = 0;
             let resumenProductosTxt = "";
+            let resumenGastosTxt = "";
             let mapaConteo = {};
 
             tcl_historicoCierres.forEach(c => {
@@ -6589,13 +7357,31 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 if(c.status !== "ANULADA" && c.liquidadoMes !== true) totalEgresosComprasAcum += (c.costoCOP || 0);
             });
 
+            tcl_gastosHistorico.forEach(g => {
+                if(g.liquidadoMes !== true) {
+                    totalGastosAcum += (g.montoCOP || 0);
+                }
+            });
+
+            tcl_ingresosExtraHistorico.forEach(i => {
+                if(i.liquidadoMes !== true) {
+                    totalIngresosExtraAcum += (i.montoCOP || 0);
+                }
+            });
+
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
-            const gananciaNetaRealCOP = totalVentasAcum - totalEgresosComprasAcum;
-            const gananciaNetaRealUSD = gananciaNetaRealCOP / tCOP;
+            const utilidadNetaRealCOP = (totalVentasAcum + totalIngresosExtraAcum) - (totalEgresosComprasAcum + totalGastosAcum);
+            const utilidadNetaRealUSD = utilidadNetaRealCOP / tCOP;
 
             let listaTop = Object.keys(mapaConteo).map(k => ({ concepto: k, cant: mapaConteo[k].cant, total: mapaConteo[k].total })).sort((a,b) => b.total - a.total);
             listaTop.slice(0, 8).forEach((it, idx) => {
                 resumenProductosTxt += `${idx + 1}. *${it.concepto}* (x${it.cant}) ➔ ${fmtMonto(it.total)} COP\n`;
+            });
+
+            // Top gastos del mes
+            const gastosActivos = tcl_gastosHistorico.filter(g => g.liquidadoMes !== true);
+            gastosActivos.slice(0, 6).forEach((g, idx) => {
+                resumenGastosTxt += `• *${g.concepto}* [${g.categoria}] ➔ -${fmtMonto(g.montoCOP)} COP\n`;
             });
 
             let msg = `🛍️ *INFORME CONTABLE OFICIAL — TUCOCEL C.A.*\n` +
@@ -6605,31 +7391,40 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                       `💵 *Tasa COP/USD:* ${fmtMonto(tCOP)} COP\n` +
                       `──────────────────────────────\n\n` +
                       `📊 *BALANCE FINANCIERO DEL MES:*\n` +
-                      `• *(+) Total Ingresos por Ventas:* *${fmtMonto(totalVentasAcum)} COP* ($${window.svc_formatDecimalUSD(totalVentasAcum/tCOP)} USD)\n` +
+                      `• *(+) Total Ventas / Mostrador:* *${fmtMonto(totalVentasAcum)} COP* ($${window.svc_formatDecimalUSD(totalVentasAcum/tCOP)} USD)\n` +
+                      `• *(+) Ingresos Extras / Publicidad:* *+${fmtMonto(totalIngresosExtraAcum)} COP* (+${window.svc_formatDecimalUSD(totalIngresosExtraAcum/tCOP)} USD)\n` +
                       `• *(-) Inversión Compras + Fletes:* *-${fmtMonto(totalEgresosComprasAcum)} COP* (-$${window.svc_formatDecimalUSD(totalEgresosComprasAcum/tCOP)} USD)\n` +
+                      `• *(-) Gastos Operativos & Alquiler:* *-${fmtMonto(totalGastosAcum)} COP* (-$${window.svc_formatDecimalUSD(totalGastosAcum/tCOP)} USD)\n` +
                       `──────────────────────────────\n` +
-                      `💰 *GANANCIA NETA REAL EN CAJA:*\n*${gananciaNetaRealCOP >= 0 ? '+' : ''}${fmtMonto(gananciaNetaRealCOP)} COP* (${gananciaNetaRealCOP >= 0 ? '+' : ''}$${window.svc_formatDecimalUSD(gananciaNetaRealUSD)} USD)\n\n` +
+                      `💰 *UTILIDAD NETA REAL EN MANO:*\n*${utilidadNetaRealCOP >= 0 ? '+' : ''}${fmtMonto(utilidadNetaRealCOP)} COP* (${utilidadNetaRealCOP >= 0 ? '+' : ''}$${window.svc_formatDecimalUSD(utilidadNetaRealUSD)} USD)\n\n` +
                       `📱 *SMARTPHONES:* ${totalTelefonosVendidos} Equipos Vendidos (Ganancia: +${fmtMonto(gananciaTelefonosCOP)} COP)\n\n` +
                       `📦 *RESUMEN DE VENTAS Y SERVICIOS:*\n` +
-                      `${resumenProductosTxt}\n` +
+                      `${resumenProductosTxt || '• Cero ventas cargadas\n'}\n` +
+                      `💸 *DETALLE DE GASTOS Y SALIDAS:*\n` +
+                      `${resumenGastosTxt || '• Cero gastos cargados\n'}\n` +
                       `🔒 *DOCUMENTO AUDITADO — TUCOCEL C.A.*`;
 
             window.svc_compartirTextoUniversal('Informe Contable Tucocel C.A.', msg);
         };
 
         window.tcl_ejecutarCierreMensualTucocel = async function() {
-            if(!confirm("🛑 ¿Desea ejecutar el CIERRE MENSUAL de Tucocel C.A.?\n\nLos cierres y compras del mes activo pasarán a la sección de 'LIQUIDADOS (MESES ANTERIORES)' y la caja activa del mes volverá a $0 COP sin perder ningún registro.")) return;
+            if(!confirm("🛑 ¿Desea ejecutar el CIERRE MENSUAL de Tucocel C.A.?\n\nLos cierres, compras y gastos del mes activo pasarán a la sección de 'LIQUIDADOS (MESES ANTERIORES)' y la caja activa del mes volverá a $0 COP sin perder ningún registro.")) return;
 
             let totalVentasAcum = 0;
             let totalEgresosComprasAcum = 0;
+            let totalGastosAcum = 0;
+            let totalIngresosExtraAcum = 0;
+
             let ventasMesActivo = [];
             let comprasMesActivo = [];
+            let gastosMesActivo = [];
+            let ingresosExtraMesActivo = [];
 
             tcl_historicoCierres.forEach(c => { 
                 if(c.status !== "ANULADA" && c.liquidadoMes !== true) {
                     totalVentasAcum += (c.totalVentasCOP || 0);
                     ventasMesActivo.push({ ...c });
-                    c.liquidadoMes = true; // Blindaje: se marca como liquidado en lugar de vaciar el arreglo
+                    c.liquidadoMes = true;
                 }
             });
 
@@ -6637,7 +7432,23 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 if(c.status !== "ANULADA" && c.liquidadoMes !== true) {
                     totalEgresosComprasAcum += (c.costoCOP || 0);
                     comprasMesActivo.push({ ...c });
-                    c.liquidadoMes = true; // Blindaje: se marca como liquidada
+                    c.liquidadoMes = true;
+                }
+            });
+
+            tcl_gastosHistorico.forEach(g => {
+                if(g.liquidadoMes !== true) {
+                    totalGastosAcum += (g.montoCOP || 0);
+                    gastosMesActivo.push({ ...g });
+                    g.liquidadoMes = true;
+                }
+            });
+
+            tcl_ingresosExtraHistorico.forEach(i => {
+                if(i.liquidadoMes !== true) {
+                    totalIngresosExtraAcum += (i.montoCOP || 0);
+                    ingresosExtraMesActivo.push({ ...i });
+                    i.liquidadoMes = true;
                 }
             });
 
@@ -6647,16 +7458,23 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 rendPct = ((totalVentasAcum - ventasAnt) / ventasAnt) * 100;
             }
 
+            const utilidadNetaMesCOP = (totalVentasAcum + totalIngresosExtraAcum) - (totalEgresosComprasAcum + totalGastosAcum);
+
             const cierreMesObj = {
                 idMes: 'mes-tcl-' + Date.now(),
                 periodo: new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase(),
                 fechaCierre: new Date().toLocaleDateString(),
                 totalVentasCOP: totalVentasAcum,
                 totalComprasCOP: totalEgresosComprasAcum,
-                gananciaLimpiaCOP: totalVentasAcum - totalEgresosComprasAcum,
+                totalGastosCOP: totalGastosAcum,
+                totalIngresosExtraCOP: totalIngresosExtraAcum,
+                gananciaLimpiaCOP: utilidadNetaMesCOP,
+                utilidadNetaRealCOP: utilidadNetaMesCOP,
                 rendimientoPct: rendPct,
                 ventas: ventasMesActivo,
-                compras: comprasMesActivo
+                compras: comprasMesActivo,
+                gastos: gastosMesActivo,
+                ingresosExtra: ingresosExtraMesActivo
             };
 
             tcl_historicoMesesTucocel.unshift(cierreMesObj);
@@ -6668,7 +7486,7 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
             document.getElementById('modal-hoja-blanca-tucocel').classList.add('hidden');
             document.getElementById('wrapper-tucocel-viejos-acordeon').classList.remove('hidden');
             window.tcl_renderizerParticionTucocel();
-            alert(`✅ Cierre Mensual ejecutado exitosamente.\nRendimiento Registrado: ${rendPct >= 0 ? '+' : ''}${rendPct.toFixed(1)}% vs Mes Anterior.\nLa caja activa de Tucocel C.A. se ha reiniciado a $0 COP.`);
+            alert(`✅ Cierre Mensual ejecutado exitosamente.\nUtilidad Neta del Mes: ${fmtMonto(utilidadNetaMesCOP)} COP.\nLa caja activa de Tucocel C.A. se ha reiniciado a $0 COP.`);
         };
 
         
@@ -6689,16 +7507,11 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                         vales: svc_valesGlobal,
                         semanasLiquidadas: svc_historicoSemanasLiquidadas,
                         mesesServicell: svc_historicoMesesServicell,
-                        comandaActivaTurno: svc_comandaActivaTurno,
                         tecnicos: svc_tecnicosPerfiles,
                         inventario: svc_inventarioGlobal,
-                        categoriasInventario: svc_categoriasInventario,
-                        historicoIngresosMercancia: svc_historicoIngresosMercancia,
-                        conceptosServicios: svc_conceptosFrecuentes
+                        categoriasInventario: svc_categoriasInventario
                     },
                     tucocel: {
-                        ventasActivasTurno: tcl_ventasActivasTurno,
-                        comprasActivasTurno: tcl_comprasActivasTurno,
                         historicoCierres: tcl_historicoCierres,
                         comprasHistorico: tcl_comprasHistorico,
                         historicoMeses: tcl_historicoMesesTucocel,
