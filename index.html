@@ -1152,9 +1152,10 @@
                             <div class="space-y-1">
                                 <label class="text-[10px] text-slate-400 uppercase block mb-1">Método de Pago</label>
                                 <select id="tcl-input-metodo" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white focus:outline-none font-bold">
-                                    <option value="PESOS" selected>💵 Pesos Efectivo</option>
-                                    <option value="DOLAR">💵 Dólares Efectivo</option>
-                                    <option value="PAGOMOVIL">📲 Bolívares / Pago Móvil</option>
+                                    <option value="PESOS" selected>💵 Pesos Efectivo (Afecta Gaveta Física)</option>
+                                    <option value="NEQUI">📲 Nequi (Digital / Cuenta Bancaria)</option>
+                                    <option value="PAGOMOVIL">📲 Bolívares / Pago Móvil (Digital)</option>
+                                    <option value="DOLAR">💵 Dólares Efectivo (Afecta Gaveta Física)</option>
                                 </select>
                             </div>
                             <button onclick="window.tcl_agregarLineaVentaTucocel()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3.5 rounded-xl uppercase tracking-wider shadow transition-all duration-300">➕ Añadir a la Venta de Tucocel</button>
@@ -1251,6 +1252,18 @@
                             <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-3 font-mono">
                                 <span class="text-[10px] text-emerald-400 font-black uppercase block tracking-wider"><i class="fa-solid fa-vault mr-1"></i> Arqueo & Cuadre Físico de Gaveta</span>
                                 
+                                <!-- CANALES DE RECAUDACIÓN: DIGITAL VS EFECTIVO GAVETA -->
+                                <div class="grid grid-cols-2 gap-2 text-[10px] bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                                    <div>
+                                        <span class="text-[8px] text-slate-400 block uppercase font-sans">Total Facturado Hoy:</span>
+                                        <b id="tcl-lbl-facturado-total-box" class="text-white font-mono font-black text-xs">0 COP</b>
+                                    </div>
+                                    <div>
+                                        <span class="text-[8px] text-purple-400 block uppercase font-sans">📲 Digital (Nequi/Bs):</span>
+                                        <b id="tcl-lbl-digital-total-box" class="text-purple-300 font-mono font-black text-xs">0 COP</b>
+                                    </div>
+                                </div>
+
                                 <div class="grid grid-cols-2 gap-2 text-xs">
                                     <div>
                                         <label class="text-[8px] text-slate-400 uppercase block font-sans mb-1">Dólares ($) en Gaveta</label>
@@ -1262,13 +1275,18 @@
                                     </div>
                                 </div>
 
+                                <!-- GUÍA INTELIGENTE: CUÁNTOS PESOS DEBE HABER TRAS METER LOS DÓLARES -->
+                                <div id="tcl-box-guia-pesos-gaveta" class="p-1.5 bg-slate-900/90 rounded-xl text-center text-[9px] text-slate-300 border border-slate-800 font-mono">
+                                    <span id="tcl-lbl-guia-pesos-texto">💵 Meta Físico en Gaveta: 0 COP</span>
+                                </div>
+
                                 <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-900 text-center">
                                     <div class="bg-slate-900 p-2 rounded-xl border border-slate-800">
-                                        <span class="block text-[8px] text-slate-500 uppercase font-sans">Venta Esperada</span>
-                                        <b id="tcl-lbl-esperado-cop" class="text-white text-xs">0 COP</b>
+                                        <span class="block text-[8px] text-slate-500 uppercase font-sans">Efectivo Esperado Gaveta</span>
+                                        <b id="tcl-lbl-esperado-cop" class="text-amber-400 text-xs font-black">0 COP</b>
                                     </div>
                                     <div id="tcl-box-diferencia-status" class="bg-slate-900 p-2 rounded-xl border border-slate-800">
-                                        <span class="block text-[8px] text-slate-500 uppercase font-sans">Diagnóstico Cuadre</span>
+                                        <span class="block text-[8px] text-slate-500 uppercase font-sans">Diagnóstico Gaveta</span>
                                         <b id="tcl-lbl-diferencia-cop" class="text-emerald-400 text-xs">0 COP</b>
                                     </div>
                                 </div>
@@ -5400,8 +5418,8 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
         };
 
         window.tcl_renderizerParticionTucocel = function() {
-  
-            if (typeof window.tcl_actualizarDatalistsConceptos === 'function') window.tcl_actualizarDatalistsConceptos();          const boxLista = document.getElementById('tcl-lista-items-viva-box');
+            if (typeof window.tcl_actualizarDatalistsConceptos === 'function') window.tcl_actualizarDatalistsConceptos();
+            const boxLista = document.getElementById('tcl-lista-items-viva-box');
             const lblCnt = document.getElementById('tcl-lbl-cnt-items');
             const lblLiveCOP = document.getElementById('tcl-live-cop');
             const lblLiveUSD = document.getElementById('tcl-live-usd');
@@ -5413,16 +5431,43 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
             let totalVentasCOP = 0;
             let totalUnidadesVentas = 0;
 
+            let totalEfectivoCOP = 0;
+            let totalNequiCOP = 0;
+            let totalPagoMovilCOP = 0;
+            let totalDigitalCOP = 0;
+
             tcl_ventasActivasTurno.forEach((item, index) => {
                 let cant = item.cantidad || 1;
                 totalUnidadesVentas += cant;
                 let sub = item.precioCOP * cant;
                 totalVentasCOP += sub;
+
+                const met = (item.metodo || 'PESOS').toUpperCase();
+                let badgeMetodo = "";
+                if (met === "NEQUI") {
+                    totalNequiCOP += sub;
+                    totalDigitalCOP += sub;
+                    badgeMetodo = `<span class="text-[8px] bg-purple-950/80 text-purple-300 border border-purple-500/30 px-1.5 py-0.5 rounded font-mono font-bold">📲 NEQUI</span>`;
+                } else if (met === "PAGOMOVIL" || met === "BS") {
+                    totalPagoMovilCOP += sub;
+                    totalDigitalCOP += sub;
+                    badgeMetodo = `<span class="text-[8px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded font-mono font-bold">📲 PAGO MÓVIL</span>`;
+                } else if (met === "DOLAR") {
+                    totalEfectivoCOP += sub;
+                    badgeMetodo = `<span class="text-[8px] bg-blue-950/80 text-blue-300 border border-blue-500/30 px-1.5 py-0.5 rounded font-mono font-bold">💵 DÓLARES</span>`;
+                } else {
+                    totalEfectivoCOP += sub;
+                    badgeMetodo = `<span class="text-[8px] bg-amber-950/80 text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded font-mono font-bold">💵 EFECTIVO PESOS</span>`;
+                }
+
                 htmlItems += `
                     <div class="p-2 bg-slate-950 border border-slate-800 rounded-xl flex justify-between items-center text-white font-bold">
                         <div>
                             <span class="block text-xs">${item.concepto} (x${cant})</span>
-                            <span class="text-[9px] text-blue-400 uppercase">🛍️ VENTA (${item.metodo})</span>
+                            <div class="flex items-center gap-1.5 mt-0.5">
+                                <span class="text-[8.5px] text-blue-400 uppercase">🛍️ VENTA</span>
+                                ${badgeMetodo}
+                            </div>
                         </div>
                         <div class="flex items-center gap-3">
                             <span class="font-mono text-xs text-emerald-400 font-black">${fmtMonto(sub)} COP</span>
@@ -5474,8 +5519,8 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
 
             window.tcl_actualizarDatalistProveedores();
 
-            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
-            const tBs = window.svc_cleanRate(document.getElementById('cfg-tasa-bs').value) || 4;
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+            const tBs = window.svc_cleanRate(document.getElementById('cfg-tasa-bs')?.value) || 4;
 
             let totalUSD = totalVentasCOP / tCOP;
             let totalBs = totalVentasCOP / tBs;
@@ -5484,7 +5529,13 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
             if(lblLiveUSD) lblLiveUSD.innerText = `$${window.svc_formatDecimalUSD(totalUSD)}`;
             if(lblLiveBs) lblLiveBs.innerText = `${fmtMonto(totalBs)} Bs`;
 
-            // ARQUEO DE CAJA CON JUSTIFICACIONES Y AMORTIZACIÓN EN VIVO
+            // ACTUALIZACIÓN DE CANALES EN EL ARQUEO
+            const lblFacturadoBox = document.getElementById('tcl-lbl-facturado-total-box');
+            const lblDigitalBox = document.getElementById('tcl-lbl-digital-total-box');
+            if(lblFacturadoBox) lblFacturadoBox.innerText = `${fmtMonto(totalVentasCOP)} COP`;
+            if(lblDigitalBox) lblDigitalBox.innerText = `${fmtMonto(totalDigitalCOP)} COP`;
+
+            // ARQUEO DE CAJA FÍSICA: SEPARA EFECTIVO FÍSICO DE TRANSFERENCIAS
             const rawArqUSD = document.getElementById('tcl-arq-usd')?.value || "0";
             const rawArqCOP = document.getElementById('tcl-arq-cop')?.value || "";
             localStorage.setItem("tcl_cached_arq_usd", rawArqUSD);
@@ -5493,7 +5544,20 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
             const usdGaveta = parseFloat(rawArqUSD) || 0;
             const copGaveta = window.svc_cleanNumber(rawArqCOP);
             const totalFisicoGaveta = (usdGaveta * tCOP) + copGaveta;
-            const diferenciaCOP = totalFisicoGaveta - totalVentasCOP;
+
+            // LA CLAVE MATEMÁTICA: La diferencia se calcula contra totalEfectivoCOP, NO contra totalVentasCOP
+            const diferenciaCOP = totalFisicoGaveta - totalEfectivoCOP;
+
+            // Guía inteligente: Cuántos pesos físicos debe haber tras ingresar los dólares en gaveta
+            const pesosEsperadosTrasUSD = Math.max(0, totalEfectivoCOP - Math.round(usdGaveta * tCOP));
+            const lblGuiaPesos = document.getElementById('tcl-lbl-guia-pesos-texto');
+            if (lblGuiaPesos) {
+                if (usdGaveta > 0) {
+                    lblGuiaPesos.innerHTML = `💵 Con <b>$${usdGaveta} USD</b> (${fmtMonto(Math.round(usdGaveta * tCOP))} COP), debe haber en billetes de Pesos: <b class="text-amber-400">${fmtMonto(pesosEsperadosTrasUSD)} COP</b>`;
+                } else {
+                    lblGuiaPesos.innerHTML = `💵 Efectivo total que debe haber en gaveta: <b class="text-amber-400">${fmtMonto(totalEfectivoCOP)} COP</b>`;
+                }
+            }
 
             const lblEsperado = document.getElementById('tcl-lbl-esperado-cop');
             const lblDiferencia = document.getElementById('tcl-lbl-diferencia-cop');
@@ -5501,7 +5565,7 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
             const wrapFaltante = document.getElementById('wrapper-tcl-motivo-faltante');
             const wrapSobrante = document.getElementById('wrapper-tcl-concepto-sobrante');
 
-            if(lblEsperado) lblEsperado.innerText = `${fmtMonto(totalVentasCOP)} COP`;
+            if(lblEsperado) lblEsperado.innerText = `${fmtMonto(totalEfectivoCOP)} COP`;
 
             if(lblDiferencia && boxStatus) {
                 if(diferenciaCOP === 0) {
@@ -5552,14 +5616,33 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
             }
 
             let totalVentasCOP = 0;
-            tcl_ventasActivasTurno.forEach(v => { totalVentasCOP += (v.precioCOP * v.cantidad); });
+            let totalEfectivoCOP = 0;
+            let totalDigitalCOP = 0;
+            let totalNequiCOP = 0;
+            let totalPagoMovilCOP = 0;
+
+            tcl_ventasActivasTurno.forEach(v => {
+                const sub = (v.precioCOP * v.cantidad);
+                totalVentasCOP += sub;
+                const met = (v.metodo || 'PESOS').toUpperCase();
+                if (met === "NEQUI") {
+                    totalNequiCOP += sub;
+                    totalDigitalCOP += sub;
+                } else if (met === "PAGOMOVIL" || met === "BS") {
+                    totalPagoMovilCOP += sub;
+                    totalDigitalCOP += sub;
+                } else {
+                    totalEfectivoCOP += sub;
+                }
+            });
 
             const usdGaveta = parseFloat(document.getElementById('tcl-arq-usd')?.value) || 0;
             const copGaveta = window.svc_cleanNumber(document.getElementById('tcl-arq-cop')?.value);
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
 
             const totalFisicoGaveta = (usdGaveta * tCOP) + copGaveta;
-            const diferenciaCOP = totalFisicoGaveta - totalVentasCOP;
+            // EL CUADRE FÍSICO DE GAVETA SE EVALÚA ESTRICTAMENTE CONTRA EL EFECTIVO ESPERADO (PESOS + DÓLARES)
+            const diferenciaCOP = totalFisicoGaveta - totalEfectivoCOP;
             const folioKey = `CIERRE-${String(tcl_historicoCierres.length + 1).padStart(3, '0')}`;
 
             let motivoFaltanteFinal = "";
@@ -5570,7 +5653,8 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
                 const inpFalt = document.getElementById('tcl-arq-motivo-faltante');
                 motivoFaltanteFinal = (inpFalt ? inpFalt.value : "").trim();
                 if (!motivoFaltanteFinal) {
-                    motivoFaltanteFinal = prompt(`⚠️ Hay un faltante de -${fmtMonto(Math.abs(diferenciaCOP))} COP en gaveta.\nIngrese el Motivo de la Salida / Gasto (Obligatorio, ej: Almuerzos, taxi flete, compras menores):`);
+                    motivoFaltanteFinal = prompt(`⚠️ Hay un faltante físico en gaveta de -${fmtMonto(Math.abs(diferenciaCOP))} COP.
+Ingrese el Motivo de la Salida / Gasto (Obligatorio, ej: Almuerzos, taxi flete, compras menores):`);
                 }
                 if (!motivoFaltanteFinal || !motivoFaltanteFinal.trim()) {
                     return alert("🛑 Debe indicar el motivo de la salida de dinero para poder cerrar el turno.");
@@ -5597,7 +5681,8 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
                 const inpSobr = document.getElementById('tcl-arq-concepto-sobrante');
                 conceptoSobranteFinal = (inpSobr ? inpSobr.value : "").trim();
                 if (!conceptoSobranteFinal) {
-                    conceptoSobranteFinal = prompt(`🟢 Hay un excedente de +${fmtMonto(diferenciaCOP)} COP en gaveta.\nIngrese el Concepto de la Entrada Extra (Ej: Publicidad Publitasa, entrada directa sin ticket):`) || "INGRESO ADICIONAL A CAJA";
+                    conceptoSobranteFinal = prompt(`🟢 Hay un excedente físico en gaveta de +${fmtMonto(diferenciaCOP)} COP.
+Ingrese el Concepto de la Entrada Extra (Ej: Publicidad Publitasa, entrada directa sin ticket):`) || "INGRESO ADICIONAL A CAJA";
                 }
 
                 tcl_ingresosExtraHistorico.unshift({
@@ -5621,13 +5706,18 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
                 hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 ventas: [...tcl_ventasActivasTurno],
                 totalVentasCOP,
+                totalEfectivoCOP,
+                totalDigitalCOP,
+                totalNequiCOP,
+                totalPagoMovilCOP,
                 usdGaveta,
                 copGaveta,
                 totalFisicoGaveta,
                 diferenciaCOP,
                 motivoFaltante: motivoFaltanteFinal,
                 conceptoSobrante: conceptoSobranteFinal,
-                status: "ACTIVO"
+                status: "ACTIVO",
+                liquidadoMes: false
             };
 
             tcl_historicoCierres.unshift(registroCierre);
@@ -5758,8 +5848,18 @@ Volverá a estar activo en el mes en curso para recalcular la caja y la Hoja Bla
         window.tcl_imprimirTicketTucocel = function(key) {
             const match = tcl_historicoCierres.find(x => x.idFolio === key); if(!match) return;
             let itemsTxt = "";
+            let efecTxt = 0;
+            let neqTxt = 0;
+            let pmTxt = 0;
+
             match.ventas.forEach(v => {
-                itemsTxt += `${v.concepto.padEnd(25, ' ')} ${fmtMonto(v.precioCOP * v.cantidad)} COP\n`;
+                const sub = (v.precioCOP * v.cantidad);
+                const met = (v.metodo || 'PESOS').toUpperCase();
+                if (met === "NEQUI") neqTxt += sub;
+                else if (met === "PAGOMOVIL" || met === "BS") pmTxt += sub;
+                else efecTxt += sub;
+                itemsTxt += `${v.concepto.padEnd(25, ' ')} ${fmtMonto(sub)} COP (${met})
+`;
             });
 
             document.getElementById('contenedor-impresion-termica-fijo').innerHTML = `
@@ -5773,8 +5873,12 @@ Fecha / Hora   : ${match.fecha} - ${match.hora}
 DESCRIPCIÓN                   SUBTOTAL
 ------------------------------------------
 ${itemsTxt}------------------------------------------
-Total Ventas   : ${fmtMonto(match.totalVentasCOP)} COP
-Gaveta Físico  : $${match.usdGaveta} USD + ${fmtMonto(match.copGaveta)} COP
+Total Facturado: ${fmtMonto(match.totalVentasCOP)} COP
+• Efectivo Fís : ${fmtMonto(match.totalEfectivoCOP !== undefined ? match.totalEfectivoCOP : efecTxt)} COP
+• Nequi Digital: ${fmtMonto(match.totalNequiCOP !== undefined ? match.totalNequiCOP : neqTxt)} COP
+• Pago Móvil Bs: ${fmtMonto(match.totalPagoMovilCOP !== undefined ? match.totalPagoMovilCOP : pmTxt)} COP
+------------------------------------------
+Gaveta Físico  : $${match.usdGaveta} USD + ${fmtMonto(match.copGaveta)} COP (${fmtMonto(match.totalFisicoGaveta)} COP)
 Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
 ══════════════════════════════════════════
      🔒 DOCUMENTO PRIVADO TUCOCEL C.A.
