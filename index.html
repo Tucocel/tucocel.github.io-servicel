@@ -1163,13 +1163,20 @@
 
                         <!-- FORMULARIO 2: CARGA DE COMPRAS / FACTURAS DE MERCANCÍA POR LOTE (ÁMBAR - OCULTO INICIALMENTE) -->
                         <div id="wrapper-form-compras-tucocel" class="hidden space-y-3 text-xs font-bold">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                                 <div>
                                     <label class="text-[9px] text-amber-400 uppercase block mb-1">Categoría de Ítem</label>
                                     <select id="tcl-compra-tipo-cat" onchange="window.tcl_conmutarCamposCompraCat()" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white font-bold focus:outline-none">
                                         <option value="TELEFONIA" selected>📱 Telefonía (Requiere IMEI)</option>
                                         <option value="ACCESORIOS">🎧 Accesorios / Especiales</option>
                                         <option value="FACTURA">📄 Solo Factura / Egreso General</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-[9px] text-amber-400 uppercase block mb-1">Finalidad de la Compra</label>
+                                    <select id="tcl-compra-finalidad" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white font-bold focus:outline-none text-[11px]">
+                                        <option value="REPOSICION" selected>🔄 Reposición por Venta (No resta gaveta)</option>
+                                        <option value="STOCK">📦 Inversión Nueva Stock (Resta gaveta)</option>
                                     </select>
                                 </div>
                                 <div>
@@ -1446,6 +1453,11 @@
                     </button>
 
                     <div id="wrapper-gastos-historico-acordeon" class="hidden p-5 border-t border-slate-800/60 space-y-3">
+                        <div class="flex justify-end">
+                            <button onclick="window.tcl_purgarGastosAutomaticosArqueo()" type="button" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[10px] font-black px-3 py-1.5 rounded-xl uppercase tracking-wider transition flex items-center gap-1.5 shadow" title="Eliminar salidas automáticas de descuadre acumuladas">
+                                🧹 Limpiar Cuadres Automáticos
+                            </button>
+                        </div>
                         <div id="wrapper-lista-gastos-historico-box" class="space-y-3 max-h-96 overflow-y-auto no-scrollbar pr-1"></div>
                     </div>
                 </div>
@@ -1819,9 +1831,14 @@
 
             <!-- LISTA Y TOTALES DEL MES -->
             <div class="border-t border-slate-800 pt-3 space-y-2">
-                <div class="flex justify-between items-center">
-                    <span class="text-[9px] uppercase font-bold text-slate-400">Gastos Registrados Este Mes:</span>
-                    <b id="lbl-tcl-total-gastos-modal" class="text-rose-400 font-mono text-xs">0 COP</b>
+                <div class="flex justify-between items-center gap-2">
+                    <span class="text-[9px] uppercase font-bold text-slate-400">Gastos Este Mes:</span>
+                    <div class="flex items-center gap-2">
+                        <button onclick="window.tcl_purgarGastosAutomaticosArqueo()" type="button" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[9px] font-black px-2.5 py-1 rounded-xl uppercase tracking-wider transition flex items-center gap-1 shadow" title="Eliminar salidas automáticas de descuadre acumuladas">
+                            🧹 Limpiar Cuadres Automáticos
+                        </button>
+                        <b id="lbl-tcl-total-gastos-modal" class="text-rose-400 font-mono text-xs">0 COP</b>
+                    </div>
                 </div>
                 <div id="wrapper-lista-gastos-modal-box" class="space-y-1.5 max-h-40 overflow-y-auto no-scrollbar font-sans text-xs"></div>
             </div>
@@ -4535,18 +4552,22 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
             const wrapImei = document.getElementById('wrapper-campo-imei');
             const lblProd = document.getElementById('lbl-tcl-compra-prod');
             const wrapProd = document.getElementById('wrapper-bloque-campos-producto');
+            const finSelect = document.getElementById('tcl-compra-finalidad');
 
             if(cat === "TELEFONIA") {
                 if(wrapProd) wrapProd.classList.remove('hidden');
                 if(wrapImei) wrapImei.classList.remove('hidden');
                 if(lblProd) lblProd.innerText = "Marca / Modelo Dispositivo";
+                if(finSelect) finSelect.value = "REPOSICION"; // Por defecto reposición inmediata por venta
             } else if(cat === "ACCESORIOS") {
                 if(wrapProd) wrapProd.classList.remove('hidden');
                 if(wrapImei) wrapImei.classList.add('hidden');
                 if(lblProd) lblProd.innerText = "Producto / Descripción Accesorio";
+                if(finSelect) finSelect.value = "STOCK"; // Accesorios se compran como inversión de stock
             } else if(cat === "FACTURA") {
                 if(wrapProd) wrapProd.classList.add('hidden');
                 if(wrapImei) wrapImei.classList.add('hidden');
+                if(finSelect) finSelect.value = "STOCK";
             }
         };
 
@@ -4693,9 +4714,11 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
                 window.tcl_sincronizarTucocelFirebase();
             }
 
+            const finalidad = document.getElementById('tcl-compra-finalidad') ? document.getElementById('tcl-compra-finalidad').value : (cat === 'TELEFONIA' ? 'REPOSICION' : 'STOCK');
+
             const itemCompra = {
                 idTemp: 'cmp-item-' + Date.now() + Math.random().toString(36).substr(2, 4),
-                cat, proveedor, producto, imei,
+                cat, finalidad, proveedor, producto, imei,
                 monedaOrig: calc.moneda,
                 costoBaseUSD: calc.baseUSD,
                 costoBaseCOP: calc.baseCOP,
@@ -4764,11 +4787,14 @@ window.tcl_eliminarItemLoteCompraAlVuelo = function(idx) {
             const metodoSalida = tcl_comprasActivasTurno[0].metodoPagoSalida || "EFECTIVO_PESOS";
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop').value) || 3600;
 
+            const finalidadResumen = tcl_comprasActivasTurno[0].finalidad || (catResumen === 'TELEFONIA' ? 'REPOSICION' : 'STOCK');
+
             const nuevaFacturaCompra = {
                 idCompra: `COMPRA-${String(tcl_comprasHistorico.length + 1).padStart(3, '0')}`,
                 fecha: new Date().toLocaleDateString(),
                 hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 cat: catResumen,
+                finalidad: finalidadResumen,
                 proveedor: proveedorPrincipal,
                 producto: productoResumen,
                 imei: imeiResumen,
@@ -5185,6 +5211,30 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
                 wrapEl.classList.add('hidden');
                 if (inputNueva) inputNueva.value = "";
             }
+        };
+
+                window.tcl_purgarGastosAutomaticosArqueo = async function() {
+            const antesGastos = tcl_gastosHistorico.length;
+            tcl_gastosHistorico = tcl_gastosHistorico.filter(g => 
+                g.origen !== 'ARQUEO_DIARIO' && 
+                g.categoria !== 'SALIDA_CAJA_TURNO' && 
+                !(g.concepto && g.concepto.includes('SALIDA DE CAJA (CUADRE')) &&
+                !g.idFolioCierre
+            );
+            const borradosGastos = antesGastos - tcl_gastosHistorico.length;
+
+            const antesIngresos = tcl_ingresosExtraHistorico.length;
+            tcl_ingresosExtraHistorico = tcl_ingresosExtraHistorico.filter(i => 
+                i.origen !== 'ARQUEO_DIARIO' && 
+                !(i.concepto && i.concepto.includes('INGRESO EXTRA (CUADRE')) &&
+                !i.idFolioCierre
+            );
+            const borradosIngresos = antesIngresos - tcl_ingresosExtraHistorico.length;
+
+            await window.tcl_sincronizarTucocelFirebase();
+            if(typeof window.tcl_renderizarListaGastosModal === 'function') window.tcl_renderizarListaGastosModal();
+            window.tcl_renderizerParticionTucocel();
+            alert(`🧹 ¡Saneamiento de caja completado!\n\nSe eliminaron ${borradosGastos} salidas automáticas de descuadre y ${borradosIngresos} entradas automáticas.\n\nTus ventas, compras y gastos reales están 100% intactos y tu gaveta física ahora refleja el dinero real.`);
         };
 
         window.tcl_guardarGastoOperativo = async function() {
@@ -5693,56 +5743,15 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
             let motivoFaltanteFinal = "";
             let conceptoSobranteFinal = "";
 
-            // 1. TRATAMIENTO DE FALTANTE: ASENTAR COMO SALIDA DE CAJA / GASTO MENOR DEL TURNO
+            // 1. REGISTRO INFORMATIVO DE DIFERENCIA (SIN CREAR FALSOS GASTOS AUTOMÁTICOS)
             if (diferenciaCOP < 0) {
                 const inpFalt = document.getElementById('tcl-arq-motivo-faltante');
                 motivoFaltanteFinal = (inpFalt ? inpFalt.value : "").trim();
-                if (!motivoFaltanteFinal) {
-                    motivoFaltanteFinal = prompt(`⚠️ Hay un faltante físico en gaveta de -${fmtMonto(Math.abs(diferenciaCOP))} COP.
-Ingrese el Motivo de la Salida / Gasto (Obligatorio, ej: Almuerzos, taxi flete, compras menores):`);
-                }
-                if (!motivoFaltanteFinal || !motivoFaltanteFinal.trim()) {
-                    return alert("🛑 Debe indicar el motivo de la salida de dinero para poder cerrar el turno.");
-                }
-
-                tcl_gastosHistorico.unshift({
-                    idGasto: 'gst-auto-' + Date.now(),
-                    fecha: new Date().toLocaleDateString(),
-                    hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    categoria: 'SALIDA_CAJA_TURNO',
-                    concepto: `SALIDA DE CAJA (CUADRE #${folioKey}): ${motivoFaltanteFinal.toUpperCase()}`,
-                    moneda: 'COP',
-                    montoOrig: Math.abs(diferenciaCOP),
-                    montoCOP: Math.abs(diferenciaCOP),
-                    montoUSD: Math.abs(diferenciaCOP) / tCOP,
-                    origen: 'ARQUEO_DIARIO',
-                    idFolioCierre: folioKey,
-                    liquidadoMes: false
-                });
-            }
-
-            // 2. TRATAMIENTO DE SOBRANTE: ASENTAR COMO INGRESO ADICIONAL A CAJA / PUBLICIDAD
-            if (diferenciaCOP > 0) {
+                // Ya NO se agrega automáticamente a tcl_gastosHistorico para no inflar salidas ni falsear la gaveta de pesos
+            } else if (diferenciaCOP > 0) {
                 const inpSobr = document.getElementById('tcl-arq-concepto-sobrante');
                 conceptoSobranteFinal = (inpSobr ? inpSobr.value : "").trim();
-                if (!conceptoSobranteFinal) {
-                    conceptoSobranteFinal = prompt(`🟢 Hay un excedente físico en gaveta de +${fmtMonto(diferenciaCOP)} COP.
-Ingrese el Concepto de la Entrada Extra (Ej: Publicidad Publitasa, entrada directa sin ticket):`) || "INGRESO ADICIONAL A CAJA";
-                }
-
-                tcl_ingresosExtraHistorico.unshift({
-                    idIngreso: 'ing-extra-' + Date.now(),
-                    fecha: new Date().toLocaleDateString(),
-                    hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    concepto: `INGRESO EXTRA (CUADRE #${folioKey}): ${conceptoSobranteFinal.toUpperCase()}`,
-                    moneda: 'COP',
-                    montoOrig: diferenciaCOP,
-                    montoCOP: diferenciaCOP,
-                    montoUSD: diferenciaCOP / tCOP,
-                    origen: 'ARQUEO_DIARIO',
-                    idFolioCierre: folioKey,
-                    liquidadoMes: false
-                });
+                // Ya NO se agrega a tcl_ingresosExtraHistorico para mantener la pureza de las cuentas reales
             }
 
             const registroCierre = {
@@ -7015,9 +7024,9 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                     }
                 });
 
-                // 3. Recorrer gastos operativos y salidas de caja del mes activo
+                // 3. Recorrer gastos operativos y salidas de caja del mes activo (excluyendo salidas falsas de arqueo)
                 tcl_gastosHistorico.forEach(g => {
-                    if(g.liquidadoMes !== true) {
+                    if(g.liquidadoMes !== true && g.origen !== 'ARQUEO_DIARIO' && g.categoria !== 'SALIDA_CAJA_TURNO' && !(g.concepto && g.concepto.includes('SALIDA DE CAJA (CUADRE')) && !g.idFolioCierre) {
                         totalGastosAcum += (g.montoCOP || 0);
                         gastosDetalleMes.push(g);
                     }
@@ -7075,8 +7084,16 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 }
             });
 
-            // 3. Compras de mercancía (salidas de dinero)
+            // 3. Compras de mercancía (salidas de dinero de gaveta física)
             comprasDetalleMes.forEach(cmp => {
+                // BLINDAJE CONTABLE: Si la compra es de TELEFONÍA o está clasificada como REPOSICIÓN por venta,
+                // NO resta de la gaveta física porque el equipo se pagó directamente con el dinero del cliente
+                // y en las comandas de venta ya se acreditó únicamente la ganancia neta limpia.
+                const esReposicionVenta = (cmp.finalidad === 'REPOSICION') || (cmp.cat === 'TELEFONIA' && cmp.finalidad !== 'STOCK');
+                if (esReposicionVenta) {
+                    return; // No descuenta gaveta física para evitar el doble descuento de 87.100 COP
+                }
+
                 const salida = (cmp.metodoPagoSalida || 'EFECTIVO_PESOS').toUpperCase();
                 const costoUSD = cmp.costoBaseUSD || cmp.costoUSD || 0;
                 const fleteCOP = cmp.fleteCOP || 0;
@@ -7452,8 +7469,9 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
 
                         <!-- RESUMEN DE UTILIDAD REAL -->
                         <div class="p-2 rounded-xl border-2 ${utilidadNetaRealCOP >= 0 ? 'bg-emerald-50 border-emerald-400 text-emerald-950' : 'bg-rose-50 border-rose-400 text-rose-950'} font-bold text-center space-y-0.5">
-                            <span class="text-[8px] uppercase tracking-wider block font-black">💰 UTILIDAD NETA REAL EN MANO (VENTAS CON GANANCIA LIMPIA + EXTRAS - GASTOS)</span>
-                            <span class="text-xs sm:text-sm font-black font-mono text-emerald-700">${utilidadNetaRealCOP >= 0 ? '+' : ''}${fmtMonto(utilidadNetaRealCOP)} COP (${utilidadNetaRealUSD >= 0 ? '+$' : '-$'}${window.svc_formatDecimalUSD(Math.abs(utilidadNetaRealUSD))} USD)</span>
+                            <span class="text-[8px] uppercase tracking-wider block font-black text-emerald-950">💰 UTILIDAD NETA REAL DEL MES (GANANCIA LIMPIA + EXTRAS - GASTOS)</span>
+                            <span class="text-xs sm:text-sm font-black font-mono text-emerald-700 block">${utilidadNetaRealCOP >= 0 ? '+' : ''}${fmtMonto(utilidadNetaRealCOP)} COP</span>
+                            <span class="text-[8px] text-emerald-800 font-sans block mt-0.5 font-normal">(Equivalente referencial: ${utilidadNetaRealUSD >= 0 ? '$' : '-$'}${window.svc_formatDecimalUSD(Math.abs(utilidadNetaRealUSD))} USD — Ganancia global contable, no billetes físicos de gaveta)</span>
                         </div>
 
                         ${comparativoTextoHtml}
@@ -7636,6 +7654,12 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
                 if(cmp.status !== "ANULADA" && cmp.liquidadoMes !== true) {
                     totalEgresosComprasAcum += (cmp.costoCOP || 0);
 
+                    // BLINDAJE CONTABLE: Reposición de telefonía por venta no descuenta gaveta física
+                    const esReposicionVenta = (cmp.finalidad === 'REPOSICION') || (cmp.cat === 'TELEFONIA' && cmp.finalidad !== 'STOCK');
+                    if (esReposicionVenta) {
+                        return; // No resta de la gaveta física
+                    }
+
                     const salida = (cmp.metodoPagoSalida || 'EFECTIVO_PESOS').toUpperCase();
                     const costoUSD = cmp.costoBaseUSD || cmp.costoUSD || 0;
                     const fleteCOP = cmp.fleteCOP || 0;
@@ -7652,7 +7676,7 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
             });
 
             tcl_gastosHistorico.forEach(g => {
-                if(g.liquidadoMes !== true) {
+                if(g.liquidadoMes !== true && g.origen !== 'ARQUEO_DIARIO' && g.categoria !== 'SALIDA_CAJA_TURNO' && !(g.concepto && g.concepto.includes('SALIDA DE CAJA (CUADRE')) && !g.idFolioCierre) {
                     totalGastosAcum += (g.montoCOP || 0);
 
                     const m = (g.moneda || 'COP').toUpperCase();
@@ -7726,7 +7750,33 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
         };
 
         window.tcl_ejecutarCierreMensualTucocel = async function() {
-            if(!confirm("🛑 ¿Desea ejecutar el CIERRE MENSUAL de Tucocel C.A.?\n\nLos cierres, compras y gastos del mes activo pasarán a la sección de 'LIQUIDADOS (MESES ANTERIORES)' y la caja activa del mes volverá a $0 COP sin perder ningún registro.")) return;
+            if(!confirm("🛑 ¿Desea ejecutar el CIERRE MENSUAL de Tucocel C.A.?\n\nLos movimientos del mes activo pasarán a la sección de 'LIQUIDADOS (MESES ANTERIORES)' y la caja activa volverá a $0 COP sin perder ningún registro.")) return;
+
+            // DETECCIÓN INTELIGENTE DE CIERRE RETARDADO (DÍAS 1 A 5 DEL NUEVO MES)
+            const hoy = new Date();
+            const diaHoy = hoy.getDate();
+            const mesActualNum = hoy.getMonth() + 1; // 1-12
+            const anioActual = hoy.getFullYear();
+
+            function esFechaDeMesAnterior(fechaStr) {
+                if (!fechaStr) return false;
+                const partes = fechaStr.split(/[-/]/);
+                if (partes.length < 3) return false;
+                const d = parseInt(partes[0], 10);
+                const m = parseInt(partes[1], 10);
+                const y = parseInt(partes[2], 10);
+                if (y < anioActual) return true;
+                if (y === anioActual && m < mesActualNum) return true;
+                return false;
+            }
+
+            let soloMesAnterior = false;
+            const tieneMovimientosMesNuevo = tcl_historicoCierres.some(c => c.liquidadoMes !== true && !esFechaDeMesAnterior(c.fecha));
+            const tieneMovimientosMesViejo = tcl_historicoCierres.some(c => c.liquidadoMes !== true && esFechaDeMesAnterior(c.fecha));
+
+            if (diaHoy <= 5 && tieneMovimientosMesNuevo && tieneMovimientosMesViejo) {
+                soloMesAnterior = confirm("📅 CIERRE DE MES INTELIGENTE:\n\nSe detectaron ventas registradas en este nuevo mes junto con registros del mes anterior.\n\n¿Desea archivar ÚNICAMENTE los registros del mes anterior y mantener las ventas de este nuevo mes activas en el tablero?\n\n• Aceptar: Archiva solo el mes anterior (Recomendado).\n• Cancelar: Cierra absolutamente todo a $0.");
+            }
 
             let totalVentasAcum = 0;
             let totalEgresosComprasAcum = 0;
@@ -7740,6 +7790,7 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
 
             tcl_historicoCierres.forEach(c => { 
                 if(c.status !== "ANULADA" && c.liquidadoMes !== true) {
+                    if (soloMesAnterior && !esFechaDeMesAnterior(c.fecha)) return;
                     totalVentasAcum += (c.totalVentasCOP || 0);
                     ventasMesActivo.push({ ...c });
                     c.liquidadoMes = true;
@@ -7748,6 +7799,7 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
 
             tcl_comprasHistorico.forEach(c => { 
                 if(c.status !== "ANULADA" && c.liquidadoMes !== true) {
+                    if (soloMesAnterior && !esFechaDeMesAnterior(c.fecha)) return;
                     totalEgresosComprasAcum += (c.costoCOP || 0);
                     comprasMesActivo.push({ ...c });
                     c.liquidadoMes = true;
@@ -7755,7 +7807,8 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
             });
 
             tcl_gastosHistorico.forEach(g => {
-                if(g.liquidadoMes !== true) {
+                if(g.liquidadoMes !== true && g.origen !== 'ARQUEO_DIARIO' && g.categoria !== 'SALIDA_CAJA_TURNO' && !(g.concepto && g.concepto.includes('SALIDA DE CAJA (CUADRE')) && !g.idFolioCierre) {
+                    if (soloMesAnterior && !esFechaDeMesAnterior(g.fecha)) return;
                     totalGastosAcum += (g.montoCOP || 0);
                     gastosMesActivo.push({ ...g });
                     g.liquidadoMes = true;
@@ -7763,7 +7816,8 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
             });
 
             tcl_ingresosExtraHistorico.forEach(i => {
-                if(i.liquidadoMes !== true) {
+                if(i.liquidadoMes !== true && i.origen !== 'ARQUEO_DIARIO' && !(i.concepto && i.concepto.includes('INGRESO EXTRA (CUADRE')) && !i.idFolioCierre) {
+                    if (soloMesAnterior && !esFechaDeMesAnterior(i.fecha)) return;
                     totalIngresosExtraAcum += (i.montoCOP || 0);
                     ingresosExtraMesActivo.push({ ...i });
                     i.liquidadoMes = true;
@@ -7778,9 +7832,15 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
 
             const utilidadNetaMesCOP = (totalVentasAcum + totalIngresosExtraAcum) - (totalEgresosComprasAcum + totalGastosAcum);
 
+            let nombrePeriodoCierre = new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase();
+            if (soloMesAnterior) {
+                const mesPasadoFecha = new Date(anioActual, mesActualNum - 2, 1);
+                nombrePeriodoCierre = mesPasadoFecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase();
+            }
+
             const cierreMesObj = {
                 idMes: 'mes-tcl-' + Date.now(),
-                periodo: new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase(),
+                periodo: nombrePeriodoCierre,
                 fechaCierre: new Date().toLocaleDateString(),
                 totalVentasCOP: totalVentasAcum,
                 totalComprasCOP: totalEgresosComprasAcum,
