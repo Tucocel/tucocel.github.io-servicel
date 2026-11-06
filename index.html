@@ -1182,7 +1182,8 @@
                             <div id="wrapper-bloque-campos-producto" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 <div>
                                     <label id="lbl-tcl-compra-prod" class="text-[9px] text-amber-400 uppercase block mb-1">Marca / Modelo</label>
-                                    <input type="text" id="tcl-compra-producto" placeholder="Ej: MODELO DISPOSITIVO" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white uppercase focus:outline-none" onkeydown="if(event.key === 'Enter') window.tcl_agregarItemLoteCompra();">
+                                    <input type="text" id="tcl-compra-producto" list="lista-modelos-compras-tucocel" placeholder="Ej: REDMI 15C 4/256..." class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-white uppercase focus:outline-none focus:border-amber-500 font-bold text-xs" oninput="window.tcl_alSeleccionarModeloCompraAuto(this.value)" onchange="window.tcl_alSeleccionarModeloCompraAuto(this.value)" onkeydown="if(event.key === 'Enter') window.tcl_agregarItemLoteCompra();">
+                                    <datalist id="lista-modelos-compras-tucocel"></datalist>
                                 </div>
                                 <div id="wrapper-campo-imei">
                                     <label class="text-[9px] text-amber-400 uppercase block mb-1">Código IMEI</label>
@@ -4625,6 +4626,50 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
             return { baseUSD, baseCOP, baseBs, fleteCOP, fleteUSD, totalUSD, totalCOP, moneda };
         };
 
+        window.tcl_alSeleccionarModeloCompraAuto = function(modeloIngresado) {
+            if (!modeloIngresado) return;
+            const modeloLimpio = modeloIngresado.trim().toUpperCase();
+
+            let matchCompra = null;
+            for (let c of tcl_comprasHistorico) {
+                if (c.status !== "ANULADA") {
+                    if (c.itemsLote && c.itemsLote.length > 0) {
+                        const subMatch = c.itemsLote.find(it => it.producto && it.producto.trim().toUpperCase() === modeloLimpio);
+                        if (subMatch) { matchCompra = subMatch; break; }
+                    } else if (c.producto && c.producto.trim().toUpperCase() === modeloLimpio) {
+                        matchCompra = c;
+                        break;
+                    }
+                }
+            }
+
+            if (matchCompra) {
+                const inProv = document.getElementById('tcl-compra-proveedor');
+                const inCosto = document.getElementById('tcl-compra-costo-valor');
+                const inFlete = document.getElementById('tcl-compra-flete-cop');
+                const selMoneda = document.getElementById('tcl-compra-moneda-costo');
+
+                if (inProv && (!inProv.value || inProv.value === "PROVEEDOR GENERAL")) {
+                    inProv.value = matchCompra.proveedor || "";
+                }
+                if (inCosto && !inCosto.value) {
+                    const costoBase = matchCompra.costoBaseUSD || matchCompra.costoMercanciaUSD || matchCompra.costoUSD || 0;
+                    if (costoBase > 0) {
+                        if (selMoneda) selMoneda.value = "USD";
+                        window.tcl_conmutarMonedaCompra();
+                        inCosto.value = costoBase.toFixed(2);
+                    }
+                }
+                if (inFlete && (!inFlete.value || inFlete.value === "0")) {
+                    const fletePrevio = matchCompra.fleteCOP || 0;
+                    if (fletePrevio > 0) {
+                        inFlete.value = window.svc_formatPoints(fletePrevio);
+                    }
+                }
+                window.tcl_recalcularEquivalentesCompraLive();
+            }
+        };
+
         window.tcl_agregarItemLoteCompra = function() {
             const cat = document.getElementById('tcl-compra-tipo-cat').value;
             const proveedor = document.getElementById('tcl-compra-proveedor').value.trim().toUpperCase() || "PROVEEDOR GENERAL";
@@ -6808,6 +6853,27 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
                 dlTcl.innerHTML = tcl_conceptosFrecuentes.map(x => `<option value="${x}">`).join('');
             }
 
+            const dlModelos = document.getElementById('lista-modelos-compras-tucocel');
+            if (dlModelos) {
+                let setModelos = new Set();
+                tcl_comprasHistorico.forEach(c => {
+                    if (c.status !== "ANULADA") {
+                        if (c.itemsLote && c.itemsLote.length > 0) {
+                            c.itemsLote.forEach(it => { if (it.producto) setModelos.add(it.producto.trim().toUpperCase()); });
+                        } else if (c.producto && !c.producto.includes("FACTURA LOTE")) {
+                            setModelos.add(c.producto.trim().toUpperCase());
+                        }
+                    }
+                });
+                tcl_comprasActivasTurno.forEach(it => { if (it.producto) setModelos.add(it.producto.trim().toUpperCase()); });
+                tcl_conceptosFrecuentes.forEach(x => { 
+                    if (x.includes("REDMI") || x.includes("NOTE") || x.includes("SAMSUNG") || x.includes("XIAOMI") || x.includes("TECNO") || x.includes("INFINIX")) {
+                        setModelos.add(x.trim().toUpperCase()); 
+                    }
+                });
+                dlModelos.innerHTML = Array.from(setModelos).map(m => `<option value="${m}">`).join('');
+            }
+
             // Datalist de Servicell: muestra los servicios base y TODOS los productos del inventario con su stock en tiempo real
             const dlSvc = document.getElementById('lista-conceptos-servicell');
             if (dlSvc) {
@@ -6966,11 +7032,85 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 });
             }
 
+                        // --- CORRECCIÓN CONTABLE Y FLUJO DE CAJA FÍSICO REAL ---
+            let dineroUSD_Entradas = 0;
+            let dineroUSD_Salidas = 0;
+            let dineroCOP_Entradas = 0;
+            let dineroCOP_Salidas = 0;
+            let digitalNequiCOP = 0;
+            let digitalPagoMovilCOP = 0;
+
+            const tCOP_calc = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+            const listaCierresParaReporte = esMesPasado ? (datosMes.ventas || []) : tcl_historicoCierres.filter(c => c.status !== "ANULADA" && c.liquidadoMes !== true);
+
+            // 1. Entradas por ventas
+            listaCierresParaReporte.forEach(c => {
+                (c.ventas || []).forEach(v => {
+                    const cant = v.cantidad || 1;
+                    const subCOP = (v.precioCOP || 0) * cant;
+                    const met = (v.metodo || 'PESOS').toUpperCase();
+
+                    if (met === "DOLAR" || v.monedaVenta === "USD") {
+                        const usdMonto = v.precioVentaUSD ? (v.precioVentaUSD * cant) : (subCOP / tCOP_calc);
+                        dineroUSD_Entradas += usdMonto;
+                    } else if (met === "NEQUI") {
+                        digitalNequiCOP += subCOP;
+                    } else if (met === "PAGOMOVIL" || met === "BS") {
+                        digitalPagoMovilCOP += subCOP;
+                    } else {
+                        dineroCOP_Entradas += subCOP;
+                    }
+                });
+            });
+
+            // 2. Ingresos extras
+            ingresosExtraDetalleMes.forEach(i => {
+                const m = (i.moneda || 'COP').toUpperCase();
+                if (m === "USD") {
+                    dineroUSD_Entradas += (i.montoUSD || (i.montoOrig || 0));
+                } else if (m === "BS") {
+                    digitalPagoMovilCOP += (i.montoCOP || 0);
+                } else {
+                    dineroCOP_Entradas += (i.montoCOP || (i.montoOrig || 0));
+                }
+            });
+
+            // 3. Compras de mercancía (salidas de dinero)
+            comprasDetalleMes.forEach(cmp => {
+                const salida = (cmp.metodoPagoSalida || 'EFECTIVO_PESOS').toUpperCase();
+                const costoUSD = cmp.costoBaseUSD || cmp.costoUSD || 0;
+                const fleteCOP = cmp.fleteCOP || 0;
+
+                if (salida === "EFECTIVO_USD") {
+                    dineroUSD_Salidas += costoUSD;
+                    if (fleteCOP > 0) dineroCOP_Salidas += fleteCOP;
+                } else if (salida === "PAGOMOVIL" || salida === "BINANCE") {
+                    if (fleteCOP > 0) dineroCOP_Salidas += fleteCOP;
+                } else {
+                    dineroCOP_Salidas += (cmp.costoCOP || 0);
+                }
+            });
+
+            // 4. Gastos operativos y alquiler
+            gastosDetalleMes.forEach(g => {
+                const m = (g.moneda || 'COP').toUpperCase();
+                if (m === "USD") {
+                    dineroUSD_Salidas += (g.montoUSD || (g.montoOrig || 0));
+                } else {
+                    dineroCOP_Salidas += (g.montoCOP || (g.montoOrig || 0));
+                }
+            });
+
+            // Saldo en billetes que debe haber en caja física
+            const debeHaberUSD = dineroUSD_Entradas - dineroUSD_Salidas;
+            const debeHaberCOP = dineroCOP_Entradas - dineroCOP_Salidas;
+
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
 
             // FÓRMULA CONTABLE EXACTA TUCOCEL C.A.
             // (=) Utilidad Neta Real = (Ventas + Ingresos Extras) - (Compras Mercancía/Fletes + Gastos Operativos/Salidas)
-            const utilidadNetaRealCOP = (totalVentasAcum + totalIngresosExtraAcum) - (totalEgresosComprasAcum + totalGastosAcum);
+            // Utilidad neta real limpia: (Ventas que ya traen ganancia limpia de teléfonos + Extras) - Gastos operativos y alquiler
+            const utilidadNetaRealCOP = (totalVentasAcum + totalIngresosExtraAcum) - totalGastosAcum;
             const utilidadNetaRealUSD = utilidadNetaRealCOP / tCOP;
 
             // Comparativa comercial vs mes anterior
@@ -7269,37 +7409,51 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                             <span class="text-[10px] font-mono font-bold text-slate-700">PERÍODO: ${periodoDisplay}</span>
                         </div>
 
-                        <!-- GRID 5 TARJETAS CON LA FÓRMULA OFICIAL COMPLETA -->
-                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 font-mono text-center">
-                            <div class="bg-white p-2 rounded-lg border border-slate-200">
-                                <span class="text-[7.5px] uppercase font-bold text-slate-500 block">(+) 1. Ventas Mostrador</span>
-                                <b class="text-xs font-black text-slate-950 block">${fmtMonto(totalVentasAcum)} COP</b>
-                                <span class="text-[7.5px] text-slate-500">($${window.svc_formatDecimalUSD(totalVentasAcum/tCOP)} USD)</span>
+                        <!-- CUADRO DUAL DE GAVETAS FÍSICAS INDEPENDIENTES CON SALDOS EXACTOS -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 font-mono text-center">
+                            <!-- GAVETA DÓLARES -->
+                            <div class="bg-white p-2.5 rounded-xl border-2 border-blue-500/60 shadow-sm space-y-1.5">
+                                <span class="text-[9px] uppercase font-black text-blue-700 block tracking-wider">💵 GAVETA FÍSICA EN DÓLARES ($USD)</span>
+                                <div class="text-[8.5px] text-slate-600 space-y-0.5 text-left border-b border-slate-200 pb-1.5">
+                                    <div class="flex justify-between"><span>(+) Entradas Ventas/Extras en USD:</span> <b class="text-blue-600">+$${window.svc_formatDecimalUSD(dineroUSD_Entradas)}</b></div>
+                                    <div class="flex justify-between"><span>(-) Compras/Gastos en USD:</span> <b class="text-rose-600">-$${window.svc_formatDecimalUSD(dineroUSD_Salidas)}</b></div>
+                                </div>
+                                <div class="pt-0.5">
+                                    <span class="text-[8px] text-slate-500 uppercase block font-bold">Total que debe haber en Dólares:</span>
+                                    <b class="text-sm sm:text-base font-black ${debeHaberUSD >= 0 ? 'text-blue-700' : 'text-red-600'}">$${window.svc_formatDecimalUSD(debeHaberUSD)} USD</b>
+                                </div>
                             </div>
 
-                            <div class="bg-white p-2 rounded-lg border border-slate-200">
-                                <span class="text-[7.5px] uppercase font-bold text-blue-600 block">(+) 2. Ingresos Extras</span>
-                                <b class="text-xs font-black text-blue-600 block">+${fmtMonto(totalIngresosExtraAcum)} COP</b>
-                                <span class="text-[7.5px] text-slate-500">(+$${window.svc_formatDecimalUSD(totalIngresosExtraAcum/tCOP)} USD)</span>
+                            <!-- GAVETA PESOS -->
+                            <div class="bg-white p-2.5 rounded-xl border-2 border-amber-500/60 shadow-sm space-y-1.5">
+                                <span class="text-[9px] uppercase font-black text-amber-700 block tracking-wider">🇨🇴 GAVETA FÍSICA EN PESOS (COP)</span>
+                                <div class="text-[8.5px] text-slate-600 space-y-0.5 text-left border-b border-slate-200 pb-1.5">
+                                    <div class="flex justify-between"><span>(+) Entradas Ventas/Extras en COP:</span> <b class="text-emerald-600">+${fmtMonto(dineroCOP_Entradas)} COP</b></div>
+                                    <div class="flex justify-between"><span>(-) Compras/Gastos en COP:</span> <b class="text-rose-600">-${fmtMonto(dineroCOP_Salidas)} COP</b></div>
+                                </div>
+                                <div class="pt-0.5">
+                                    <span class="text-[8px] text-slate-500 uppercase block font-bold">Total que debe haber en Pesos:</span>
+                                    <b class="text-sm sm:text-base font-black ${debeHaberCOP >= 0 ? 'text-amber-700' : 'text-red-600'}">${fmtMonto(debeHaberCOP)} COP</b>
+                                </div>
                             </div>
+                        </div>
 
-                            <div class="bg-white p-2 rounded-lg border border-slate-200">
-                                <span class="text-[7.5px] uppercase font-bold text-amber-700 block">(-) 3. Mercancía + Fletes</span>
-                                <b class="text-xs font-black text-amber-700 block">-${fmtMonto(totalEgresosComprasAcum)} COP</b>
-                                <span class="text-[7.5px] text-slate-500">(-$${window.svc_formatDecimalUSD(totalEgresosComprasAcum/tCOP)} USD)</span>
+                        <!-- FONDOS DIGITALES / BANCOS SEPARADOS -->
+                        <div class="grid grid-cols-2 gap-2 text-center font-mono text-[9px] bg-slate-100 p-2 rounded-xl border border-slate-200">
+                            <div>
+                                <span class="text-slate-500 uppercase block font-bold text-[7.5px]">📲 Recaudado en Nequi:</span>
+                                <b class="text-purple-700 font-black">${fmtMonto(digitalNequiCOP)} COP</b>
                             </div>
+                            <div>
+                                <span class="text-slate-500 uppercase block font-bold text-[7.5px]">📲 Recaudado en Pago Móvil:</span>
+                                <b class="text-emerald-700 font-black">${fmtMonto(digitalPagoMovilCOP)} COP (${fmtMonto(Math.round(digitalPagoMovilCOP / (window.svc_cleanRate(document.getElementById('cfg-tasa-bs')?.value) || 4)))} Bs)</b>
+                            </div>
+                        </div>
 
-                            <div class="bg-white p-2 rounded-lg border border-slate-200">
-                                <span class="text-[7.5px] uppercase font-bold text-rose-600 block">(-) 4. Gastos & Alquiler</span>
-                                <b class="text-xs font-black text-rose-600 block">-${fmtMonto(totalGastosAcum)} COP</b>
-                                <span class="text-[7.5px] text-slate-500">(-$${window.svc_formatDecimalUSD(totalGastosAcum/tCOP)} USD)</span>
-                            </div>
-
-                            <div class="col-span-2 sm:col-span-1 bg-white p-2 rounded-lg border-2 ${utilidadNetaRealCOP >= 0 ? 'border-emerald-500 bg-emerald-50/40 text-emerald-950' : 'border-red-500 bg-red-50/40 text-red-950'}">
-                                <span class="text-[7.5px] uppercase font-black block">(=) Utilidad Neta Real</span>
-                                <b class="text-xs font-black ${utilidadNetaRealCOP >= 0 ? 'text-emerald-700' : 'text-red-700'} block">${utilidadNetaRealCOP >= 0 ? '+' : ''}${fmtMonto(utilidadNetaRealCOP)} COP</b>
-                                <span class="text-[7.5px] font-bold ${utilidadNetaRealCOP >= 0 ? 'text-emerald-700' : 'text-red-700'}">(${utilidadNetaRealCOP >= 0 ? '+' : ''}$${window.svc_formatDecimalUSD(utilidadNetaRealUSD)} USD)</span>
-                            </div>
+                        <!-- RESUMEN DE UTILIDAD REAL -->
+                        <div class="p-2 rounded-xl border-2 ${utilidadNetaRealCOP >= 0 ? 'bg-emerald-50 border-emerald-400 text-emerald-950' : 'bg-rose-50 border-rose-400 text-rose-950'} font-bold text-center space-y-0.5">
+                            <span class="text-[8px] uppercase tracking-wider block font-black">💰 UTILIDAD NETA REAL EN MANO (VENTAS CON GANANCIA LIMPIA + EXTRAS - GASTOS)</span>
+                            <span class="text-xs sm:text-sm font-black font-mono text-emerald-700">${utilidadNetaRealCOP >= 0 ? '+' : ''}${fmtMonto(utilidadNetaRealCOP)} COP (${utilidadNetaRealUSD >= 0 ? '+$' : '-$'}${window.svc_formatDecimalUSD(Math.abs(utilidadNetaRealUSD))} USD)</span>
                         </div>
 
                         ${comparativoTextoHtml}
@@ -7437,12 +7591,33 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
             let resumenGastosTxt = "";
             let mapaConteo = {};
 
+            let dineroUSD_Entradas = 0;
+            let dineroUSD_Salidas = 0;
+            let dineroCOP_Entradas = 0;
+            let dineroCOP_Salidas = 0;
+            let digitalNequiCOP = 0;
+            let digitalPagoMovilCOP = 0;
+
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+
             tcl_historicoCierres.forEach(c => {
                 if(c.status !== "ANULADA" && c.liquidadoMes !== true) {
                     (c.ventas || []).forEach(v => {
                         const cant = v.cantidad || 1;
                         const sub = (v.precioCOP || 0) * cant;
                         totalVentasAcum += sub;
+
+                        const met = (v.metodo || 'PESOS').toUpperCase();
+                        if (met === "DOLAR" || v.monedaVenta === "USD") {
+                            const usdMonto = v.precioVentaUSD ? (v.precioVentaUSD * cant) : (sub / tCOP);
+                            dineroUSD_Entradas += usdMonto;
+                        } else if (met === "NEQUI") {
+                            digitalNequiCOP += sub;
+                        } else if (met === "PAGOMOVIL" || met === "BS") {
+                            digitalPagoMovilCOP += sub;
+                        } else {
+                            dineroCOP_Entradas += sub;
+                        }
 
                         if(v.tipoCategoria === "TELEFONO" || (v.concepto && v.concepto.toUpperCase().includes("TELÉFONO"))) {
                             totalTelefonosVendidos += cant;
@@ -7457,24 +7632,57 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
                 }
             });
 
-            tcl_comprasHistorico.forEach(c => {
-                if(c.status !== "ANULADA" && c.liquidadoMes !== true) totalEgresosComprasAcum += (c.costoCOP || 0);
+            tcl_comprasHistorico.forEach(cmp => {
+                if(cmp.status !== "ANULADA" && cmp.liquidadoMes !== true) {
+                    totalEgresosComprasAcum += (cmp.costoCOP || 0);
+
+                    const salida = (cmp.metodoPagoSalida || 'EFECTIVO_PESOS').toUpperCase();
+                    const costoUSD = cmp.costoBaseUSD || cmp.costoUSD || 0;
+                    const fleteCOP = cmp.fleteCOP || 0;
+
+                    if (salida === "EFECTIVO_USD") {
+                        dineroUSD_Salidas += costoUSD;
+                        if (fleteCOP > 0) dineroCOP_Salidas += fleteCOP;
+                    } else if (salida === "PAGOMOVIL" || salida === "BINANCE") {
+                        if (fleteCOP > 0) dineroCOP_Salidas += fleteCOP;
+                    } else {
+                        dineroCOP_Salidas += (cmp.costoCOP || 0);
+                    }
+                }
             });
 
             tcl_gastosHistorico.forEach(g => {
                 if(g.liquidadoMes !== true) {
                     totalGastosAcum += (g.montoCOP || 0);
+
+                    const m = (g.moneda || 'COP').toUpperCase();
+                    if (m === "USD") {
+                        dineroUSD_Salidas += (g.montoUSD || (g.montoOrig || 0));
+                    } else {
+                        dineroCOP_Salidas += (g.montoCOP || (g.montoOrig || 0));
+                    }
                 }
             });
 
             tcl_ingresosExtraHistorico.forEach(i => {
                 if(i.liquidadoMes !== true) {
                     totalIngresosExtraAcum += (i.montoCOP || 0);
+
+                    const m = (i.moneda || 'COP').toUpperCase();
+                    if (m === "USD") {
+                        dineroUSD_Entradas += (i.montoUSD || (i.montoOrig || 0));
+                    } else if (m === "BS") {
+                        digitalPagoMovilCOP += (i.montoCOP || 0);
+                    } else {
+                        dineroCOP_Entradas += (i.montoCOP || (i.montoOrig || 0));
+                    }
                 }
             });
 
-            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
-            const utilidadNetaRealCOP = (totalVentasAcum + totalIngresosExtraAcum) - (totalEgresosComprasAcum + totalGastosAcum);
+            const debeHaberUSD = dineroUSD_Entradas - dineroUSD_Salidas;
+            const debeHaberCOP = dineroCOP_Entradas - dineroCOP_Salidas;
+
+            const utilidadNetaRealCOP = (totalVentasAcum + totalIngresosExtraAcum) - totalGastosAcum;
             const utilidadNetaRealUSD = utilidadNetaRealCOP / tCOP;
 
             let listaTop = Object.keys(mapaConteo).map(k => ({ concepto: k, cant: mapaConteo[k].cant, total: mapaConteo[k].total })).sort((a,b) => b.total - a.total);
@@ -7482,7 +7690,6 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
                 resumenProductosTxt += `${idx + 1}. *${it.concepto}* (x${it.cant}) ➔ ${fmtMonto(it.total)} COP\n`;
             });
 
-            // Top gastos del mes
             const gastosActivos = tcl_gastosHistorico.filter(g => g.liquidadoMes !== true);
             gastosActivos.slice(0, 6).forEach((g, idx) => {
                 resumenGastosTxt += `• *${g.concepto}* [${g.categoria}] ➔ -${fmtMonto(g.montoCOP)} COP\n`;
@@ -7494,13 +7701,20 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
                       `📅 *Período:* ${new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase()}\n` +
                       `💵 *Tasa COP/USD:* ${fmtMonto(tCOP)} COP\n` +
                       `──────────────────────────────\n\n` +
+                      `📦 *DISPONIBILIDAD EN GAVETA FÍSICA (EFECTIVO EN MANO):*\n` +
+                      `💵 *Dólares en Gaveta:* *${debeHaberUSD >= 0 ? '$' + window.svc_formatDecimalUSD(debeHaberUSD) + ' USD' : '-$' + window.svc_formatDecimalUSD(Math.abs(debeHaberUSD)) + ' USD'}*\n` +
+                      `🇨🇴 *Pesos en Gaveta:* *${fmtMonto(debeHaberCOP)} COP*\n\n` +
+                      `📲 *CANALES DIGITALES (BANCOS):*\n` +
+                      `• Nequi: ${fmtMonto(digitalNequiCOP)} COP\n` +
+                      `• Pago Móvil: ${fmtMonto(digitalPagoMovilCOP)} COP\n` +
+                      `──────────────────────────────\n\n` +
                       `📊 *BALANCE FINANCIERO DEL MES:*\n` +
                       `• *(+) Total Ventas / Mostrador:* *${fmtMonto(totalVentasAcum)} COP* ($${window.svc_formatDecimalUSD(totalVentasAcum/tCOP)} USD)\n` +
                       `• *(+) Ingresos Extras / Publicidad:* *+${fmtMonto(totalIngresosExtraAcum)} COP* (+${window.svc_formatDecimalUSD(totalIngresosExtraAcum/tCOP)} USD)\n` +
                       `• *(-) Inversión Compras + Fletes:* *-${fmtMonto(totalEgresosComprasAcum)} COP* (-$${window.svc_formatDecimalUSD(totalEgresosComprasAcum/tCOP)} USD)\n` +
                       `• *(-) Gastos Operativos & Alquiler:* *-${fmtMonto(totalGastosAcum)} COP* (-$${window.svc_formatDecimalUSD(totalGastosAcum/tCOP)} USD)\n` +
                       `──────────────────────────────\n` +
-                      `💰 *UTILIDAD NETA REAL EN MANO:*\n*${utilidadNetaRealCOP >= 0 ? '+' : ''}${fmtMonto(utilidadNetaRealCOP)} COP* (${utilidadNetaRealCOP >= 0 ? '+' : ''}$${window.svc_formatDecimalUSD(utilidadNetaRealUSD)} USD)\n\n` +
+                      `💰 *UTILIDAD NETA REAL EN MANO:*\n*${utilidadNetaRealCOP >= 0 ? '+' : ''}${fmtMonto(utilidadNetaRealCOP)} COP* (${utilidadNetaRealUSD >= 0 ? '+' : ''}$${window.svc_formatDecimalUSD(utilidadNetaRealUSD)} USD)\n\n` +
                       `📱 *SMARTPHONES:* ${totalTelefonosVendidos} Equipos Vendidos (Ganancia: +${fmtMonto(gananciaTelefonosCOP)} COP)\n\n` +
                       `📦 *RESUMEN DE VENTAS Y SERVICIOS:*\n` +
                       `${resumenProductosTxt || '• Cero ventas cargadas\n'}\n` +
