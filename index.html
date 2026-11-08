@@ -7052,24 +7052,82 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
             const tCOP_calc = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
             const listaCierresParaReporte = esMesPasado ? (datosMes.ventas || []) : tcl_historicoCierres.filter(c => c.status !== "ANULADA" && c.liquidadoMes !== true);
 
-            // 1. Entradas por ventas
-            listaCierresParaReporte.forEach(c => {
-                (c.ventas || []).forEach(v => {
-                    const cant = v.cantidad || 1;
-                    const subCOP = (v.precioCOP || 0) * cant;
-                    const met = (v.metodo || 'PESOS').toUpperCase();
+            // 1. Recorrer cierres diarios para recaudación física (Dólares y Pesos según el arqueo del usuario)
+            let filasArqueosDiariosHtml = "";
+            let sumaCierresUSD = 0;
+            let sumaCierresCOP = 0;
+            let sumaCierresDigital = 0;
 
-                    if (met === "DOLAR" || v.monedaVenta === "USD") {
-                        const usdMonto = v.precioVentaUSD ? (v.precioVentaUSD * cant) : (subCOP / tCOP_calc);
-                        dineroUSD_Entradas += usdMonto;
-                    } else if (met === "NEQUI") {
-                        digitalNequiCOP += subCOP;
-                    } else if (met === "PAGOMOVIL" || met === "BS") {
-                        digitalPagoMovilCOP += subCOP;
-                    } else {
-                        dineroCOP_Entradas += subCOP;
+            listaCierresParaReporte.forEach((c, idxCierre) => {
+                let cierreUSD = 0;
+                let cierreCOP = 0;
+                let cierreNequi = 0;
+                let cierrePagoMovil = 0;
+
+                // Nequi y Pago Móvil del cierre
+                if (c.totalNequiCOP !== undefined) {
+                    cierreNequi = (c.totalNequiCOP || 0);
+                } else {
+                    (c.ventas || []).forEach(v => {
+                        if ((v.metodo || '').toUpperCase() === 'NEQUI') cierreNequi += ((v.precioCOP || 0) * (v.cantidad || 1));
+                    });
+                }
+                if (c.totalPagoMovilCOP !== undefined) {
+                    cierrePagoMovil = (c.totalPagoMovilCOP || 0);
+                } else {
+                    (c.ventas || []).forEach(v => {
+                        const m = (v.metodo || '').toUpperCase();
+                        if (m === 'PAGOMOVIL' || m === 'BS') cierrePagoMovil += ((v.precioCOP || 0) * (v.cantidad || 1));
+                    });
+                }
+                digitalNequiCOP += cierreNequi;
+                digitalPagoMovilCOP += cierrePagoMovil;
+
+                // Dinero físico de mostrador según arqueo real contado por el usuario:
+                if ((c.usdGaveta !== undefined && c.usdGaveta !== null && parseFloat(c.usdGaveta) > 0) || 
+                    (c.copGaveta !== undefined && c.copGaveta !== null && parseFloat(c.copGaveta) > 0)) {
+                    cierreUSD = parseFloat(c.usdGaveta || 0);
+                    cierreCOP = parseFloat(c.copGaveta || 0);
+                    // Si copGaveta no se llenó pero había efectivo y usdGaveta:
+                    if (cierreCOP === 0 && (c.totalEfectivoCOP || 0) > 0 && cierreUSD > 0) {
+                        cierreCOP = Math.max(0, (c.totalEfectivoCOP || 0) - Math.round(cierreUSD * (c.tasaAplica || tCOP_calc)));
                     }
-                });
+                } else if (c.totalEfectivoCOP !== undefined && c.totalEfectivoCOP > 0) {
+                    cierreCOP = c.totalEfectivoCOP;
+                } else {
+                    (c.ventas || []).forEach(v => {
+                        const cant = v.cantidad || 1;
+                        const subCOP = (v.precioCOP || 0) * cant;
+                        const met = (v.metodo || 'PESOS').toUpperCase();
+                        if (met === "DOLAR") {
+                            cierreUSD += (subCOP / tCOP_calc);
+                        } else if (met !== "NEQUI" && met !== "PAGOMOVIL" && met !== "BS") {
+                            cierreCOP += subCOP;
+                        }
+                    });
+                }
+
+                dineroUSD_Entradas += cierreUSD;
+                dineroCOP_Entradas += cierreCOP;
+
+                sumaCierresUSD += cierreUSD;
+                sumaCierresCOP += cierreCOP;
+                sumaCierresDigital += (cierreNequi + cierrePagoMovil);
+
+                let diagStr = "🟢 CUADRADO";
+                if(c.diferenciaCOP > 0) diagStr = `🔵 +${fmtMonto(c.diferenciaCOP)} COP`;
+                if(c.diferenciaCOP < 0) diagStr = `🔴 ${fmtMonto(c.diferenciaCOP)} COP`;
+
+                filasArqueosDiariosHtml += `
+                    <tr class="border-b border-slate-200 text-[9px]">
+                        <td class="py-1 px-1.5 text-center text-slate-500 font-mono">${idxCierre + 1}</td>
+                        <td class="py-1 px-1.5 font-bold text-slate-900">${c.fecha} <span class="text-[8px] text-slate-500">${c.hora || ''}</span></td>
+                        <td class="py-1 px-1.5 text-right font-mono text-slate-900 font-bold">${fmtMonto(c.totalVentasCOP || 0)} COP</td>
+                        <td class="py-1 px-1.5 text-right font-mono text-blue-700 font-bold">$${window.svc_formatDecimalUSD(cierreUSD)} USD</td>
+                        <td class="py-1 px-1.5 text-right font-mono text-amber-800 font-bold">${fmtMonto(cierreCOP)} COP</td>
+                        <td class="py-1 px-1.5 text-right font-mono text-purple-700">${fmtMonto(cierreNequi + cierrePagoMovil)} COP</td>
+                        <td class="py-1 px-1.5 text-center font-mono font-bold text-[8.5px]">${diagStr}</td>
+                    </tr>`;
             });
 
             // 2. Ingresos extras
@@ -7478,6 +7536,34 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                         ${amortizacionTextoHtml}
                     </div>
 
+                    <!-- TABLA 0: ARQUEOS Y CIERRES DIARIOS EN GAVETA (DEL 02 AL 07 Y MES EN CURSO) -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center border-b border-slate-900 pb-0.5">
+                            <h4 class="text-[10px] font-black text-slate-950 uppercase tracking-wider">
+                                📅 ARQUEOS Y CIERRES DIARIOS EN GAVETA (${listaCierresParaReporte.length} TURNOS AUDITADOS)
+                            </h4>
+                            <span class="text-[9px] font-mono font-bold text-slate-700">Físico Total Declarado: $${window.svc_formatDecimalUSD(sumaCierresUSD)} USD + ${fmtMonto(sumaCierresCOP)} COP</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-[8px] uppercase font-black text-slate-950 bg-slate-100">
+                                        <th class="py-1 px-1.5 text-center">N°</th>
+                                        <th class="py-1 px-1.5">Fecha / Turno</th>
+                                        <th class="py-1 px-1.5 text-right">Venta Turno</th>
+                                        <th class="py-1 px-1.5 text-right">Dólares Gaveta</th>
+                                        <th class="py-1 px-1.5 text-right">Pesos Gaveta</th>
+                                        <th class="py-1 px-1.5 text-right">Digital</th>
+                                        <th class="py-1 px-1.5 text-center">Arqueo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${filasArqueosDiariosHtml || '<tr><td colspan="7" class="py-2 text-center italic text-slate-500 text-[9px]">Cero cierres diarios registrados en este período.</td></tr>'}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <!-- TABLA 1: SMARTPHONES VENDIDOS (CONSOLIDADO GENERAL POR MODELO) -->
                     <div class="space-y-1">
                         <div class="flex justify-between items-center border-b border-slate-900 pb-0.5">
@@ -7625,18 +7711,6 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
                         const sub = (v.precioCOP || 0) * cant;
                         totalVentasAcum += sub;
 
-                        const met = (v.metodo || 'PESOS').toUpperCase();
-                        if (met === "DOLAR" || v.monedaVenta === "USD") {
-                            const usdMonto = v.precioVentaUSD ? (v.precioVentaUSD * cant) : (sub / tCOP);
-                            dineroUSD_Entradas += usdMonto;
-                        } else if (met === "NEQUI") {
-                            digitalNequiCOP += sub;
-                        } else if (met === "PAGOMOVIL" || met === "BS") {
-                            digitalPagoMovilCOP += sub;
-                        } else {
-                            dineroCOP_Entradas += sub;
-                        }
-
                         if(v.tipoCategoria === "TELEFONO" || (v.concepto && v.concepto.toUpperCase().includes("TELÉFONO"))) {
                             totalTelefonosVendidos += cant;
                             gananciaTelefonosCOP += (v.precioCOP || sub);
@@ -7647,6 +7721,32 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
                         mapaConteo[grupo].cant += cant;
                         mapaConteo[grupo].total += sub;
                     });
+
+                    // Nequi y Pago Móvil del cierre
+                    if (c.totalNequiCOP !== undefined) digitalNequiCOP += (c.totalNequiCOP || 0);
+                    if (c.totalPagoMovilCOP !== undefined) digitalPagoMovilCOP += (c.totalPagoMovilCOP || 0);
+
+                    // Dinero físico de gaveta declarado en arqueo:
+                    if ((c.usdGaveta !== undefined && c.usdGaveta !== null && parseFloat(c.usdGaveta) > 0) || 
+                        (c.copGaveta !== undefined && c.copGaveta !== null && parseFloat(c.copGaveta) > 0)) {
+                        let cUSD = parseFloat(c.usdGaveta || 0);
+                        let cCOP = parseFloat(c.copGaveta || 0);
+                        if (cCOP === 0 && (c.totalEfectivoCOP || 0) > 0 && cUSD > 0) {
+                            cCOP = Math.max(0, (c.totalEfectivoCOP || 0) - Math.round(cUSD * (c.tasaAplica || tCOP)));
+                        }
+                        dineroUSD_Entradas += cUSD;
+                        dineroCOP_Entradas += cCOP;
+                    } else if (c.totalEfectivoCOP !== undefined && c.totalEfectivoCOP > 0) {
+                        dineroCOP_Entradas += c.totalEfectivoCOP;
+                    } else {
+                        (c.ventas || []).forEach(v => {
+                            const cant = v.cantidad || 1;
+                            const sub = (v.precioCOP || 0) * cant;
+                            const met = (v.metodo || 'PESOS').toUpperCase();
+                            if (met === "DOLAR") dineroUSD_Entradas += (sub / tCOP);
+                            else if (met !== "NEQUI" && met !== "PAGOMOVIL" && met !== "BS") dineroCOP_Entradas += sub;
+                        });
+                    }
                 }
             });
 
