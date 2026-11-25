@@ -1697,70 +1697,87 @@
         </div>
     </div>
 
-    <!-- MODAL DE EDICIÓN FLOTANTE DE COMPRA / FACTURA TUCOCEL -->
-    <div id="modal-editar-compra-tucocel" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center hidden p-4 z-50">
-        <div class="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl font-mono text-xs">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
-                <h4 class="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5 font-sans">
-                    <i class="fa-solid fa-pen-to-square"></i> Modificar Compra / Factura
-                </h4>
-                <button onclick="document.getElementById('modal-editar-compra-tucocel').classList.add('hidden')" class="text-slate-400 hover:text-white text-sm">✖</button>
+    <!-- MODAL DE EDICIÓN FLOTANTE DE COMPRA / FACTURA TUCOCEL (SOPORTE MULTI-ÍTEM POR TARJETAS) -->
+    <div id="modal-editar-compra-tucocel" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md flex items-center justify-center hidden p-3 sm:p-4 z-50">
+        <div class="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-xs">
+            <!-- CABECERA FIJA -->
+            <div class="flex justify-between items-center border-b border-slate-800 px-5 py-3.5 bg-slate-900 shrink-0">
+                <div>
+                    <h4 class="text-xs sm:text-sm font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5 font-sans">
+                        <i class="fa-solid fa-pen-to-square"></i> Modificar Compra / Factura
+                    </h4>
+                    <span id="modal-edit-cmp-subtitulo" class="text-[9.5px] text-slate-400 font-mono block mt-0.5">Cargando factura...</span>
+                </div>
+                <button onclick="document.getElementById('modal-editar-compra-tucocel').classList.add('hidden')" class="text-slate-400 hover:text-white text-base px-2 py-1 rounded-lg hover:bg-slate-800 transition">✖</button>
             </div>
 
             <input type="hidden" id="modal-edit-cmp-id">
 
-            <div class="space-y-3 font-sans font-bold">
-                <div class="grid grid-cols-2 gap-2">
+            <!-- CUERPO DESPLAZABLE -->
+            <div class="overflow-y-auto p-4 sm:p-5 space-y-4 no-scrollbar flex-1 font-sans">
+                <!-- DATOS GENERALES DE LA FACTURA -->
+                <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 space-y-2.5 font-bold">
+                    <span class="text-[9px] text-amber-400 uppercase tracking-wider font-black block border-b border-slate-800 pb-1">
+                        📄 Datos Generales de la Factura
+                    </span>
                     <div>
-                        <label class="text-[9px] text-amber-400 uppercase block mb-1">Categoría</label>
-                        <select id="modal-edit-cmp-cat" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white font-bold text-xs focus:outline-none">
-                            <option value="TELEFONIA">📱 Telefonía</option>
-                            <option value="ACCESORIOS">🎧 Accesorios</option>
-                            <option value="FACTURA">📄 Factura / Egreso</option>
-                            <option value="LOTE MIXTO">📦 Lote Mixto</option>
-                        </select>
+                        <label class="text-[9px] text-slate-400 uppercase block mb-1">Proveedor / Empresa</label>
+                        <input type="text" id="modal-edit-cmp-proveedor" list="lista-proveedores-datalist" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white uppercase text-xs focus:outline-none focus:border-amber-500">
                     </div>
-                    <div>
-                        <label class="text-[9px] text-amber-400 uppercase block mb-1">Proveedor / Empresa</label>
-                        <input type="text" id="modal-edit-cmp-proveedor" list="lista-proveedores-datalist" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white uppercase text-xs focus:outline-none">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="text-[9px] text-slate-400 uppercase block mb-1">Marca / Modelo / Producto</label>
-                    <input type="text" id="modal-edit-cmp-producto" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white uppercase text-xs focus:outline-none focus:border-amber-500">
-                </div>
-
-                <div>
-                    <label class="text-[9px] text-slate-400 uppercase block mb-1">Código IMEI (si aplica)</label>
-                    <input type="text" id="modal-edit-cmp-imei" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white font-mono text-xs focus:outline-none focus:border-amber-500">
-                </div>
-
-                <div class="grid grid-cols-2 gap-2 font-mono">
-                    <div>
-                        <label class="text-[8.5px] text-amber-400 uppercase block font-sans mb-1">Costo Base ($USD)</label>
-                        <input type="number" step="0.01" id="modal-edit-cmp-costo-usd" oninput="window.tcl_recalcularTotalesModalEditarCompra()" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-amber-400 text-center font-black text-xs focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="text-[8.5px] text-amber-300 uppercase block font-sans mb-1">Flete / Traída (COP)</label>
-                        <input type="text" id="modal-edit-cmp-flete-cop" onkeyup="window.svc_maskInputFormatted(this); window.tcl_recalcularTotalesModalEditarCompra();" class="w-full bg-slate-950 border border-amber-500/30 p-2.5 rounded-xl text-amber-300 text-center font-black text-xs focus:outline-none">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[9px] text-slate-400 uppercase block mb-1">Finalidad de la Compra</label>
+                            <select id="modal-edit-cmp-finalidad" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white font-bold text-[11px] focus:outline-none">
+                                <option value="REPOSICION">🔄 Reposición por Venta (No resta gaveta)</option>
+                                <option value="STOCK">📦 Inversión Nueva Stock (Resta gaveta)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[9px] text-slate-400 uppercase block mb-1">Salida de Caja / Pago</label>
+                            <select id="modal-edit-cmp-metodo-pago" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-white font-bold text-[11px] focus:outline-none">
+                                <option value="EFECTIVO_PESOS">💵 Ef. Pesos (COP)</option>
+                                <option value="EFECTIVO_USD">💵 Ef. Dólares ($USD)</option>
+                                <option value="PAGOMOVIL">📲 Bs Pago Móvil</option>
+                                <option value="BINANCE">🟡 Binance (USDT)</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800 font-mono text-[10px] space-y-1">
+                <!-- LISTA INDIVIDUAL DE EQUIPOS / ÍTEMS EN LA FACTURA -->
+                <div class="space-y-2.5">
+                    <div class="flex justify-between items-center">
+                        <span id="modal-edit-cmp-items-titulo" class="text-[10px] font-black text-white uppercase tracking-wider">
+                            📦 Equipos / Productos en esta Factura (0)
+                        </span>
+                        <button onclick="window.tcl_agregarItemEnModalEditarCompra()" type="button" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[9px] font-black px-2.5 py-1 rounded-xl uppercase transition">
+                            ➕ Añadir Ítem
+                        </button>
+                    </div>
+                    <div id="modal-edit-cmp-items-list" class="space-y-2.5"></div>
+                </div>
+            </div>
+
+            <!-- PIE FIJO CON TOTALES EN VIVO Y BOTONES -->
+            <div class="border-t border-slate-800 p-4 bg-slate-950/90 space-y-3 shrink-0">
+                <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800 font-mono text-[10px] space-y-1">
                     <div class="flex justify-between text-slate-400">
-                        <span>Flete Convertido:</span>
-                        <b id="modal-edit-cmp-lbl-flete-usd" class="text-amber-300">$0.00 USD</b>
+                        <span>Total Base Mercancía:</span>
+                        <b id="modal-edit-cmp-lbl-base-usd" class="text-white">$0,00 USD</b>
                     </div>
-                    <div class="flex justify-between text-white font-bold border-t border-slate-900 pt-1">
-                        <span>Costo Total Adquisición:</span>
-                        <b id="modal-edit-cmp-lbl-costo-total" class="text-amber-400">$0.00 USD (0 COP)</b>
+                    <div class="flex justify-between text-slate-400">
+                        <span>Total Fletes Convertidos:</span>
+                        <b id="modal-edit-cmp-lbl-flete-usd" class="text-amber-300">$0,00 USD (0 COP)</b>
+                    </div>
+                    <div class="flex justify-between text-white font-bold border-t border-slate-800 pt-1 text-[11px]">
+                        <span>Costo Total Factura:</span>
+                        <b id="modal-edit-cmp-lbl-costo-total" class="text-amber-400">$0,00 USD (0 COP)</b>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2 pt-2 font-sans">
-                    <button onclick="document.getElementById('modal-editar-compra-tucocel').classList.add('hidden')" type="button" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl uppercase text-[10px]">Cancelar</button>
-                    <button onclick="window.tcl_guardarCambiosModalEditarCompra()" type="button" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-2.5 rounded-xl uppercase text-[10px] shadow">Guardar Cambios</button>
+                <div class="grid grid-cols-2 gap-2 font-sans">
+                    <button onclick="document.getElementById('modal-editar-compra-tucocel').classList.add('hidden')" type="button" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl uppercase text-[10px] transition">Cancelar</button>
+                    <button onclick="window.tcl_guardarCambiosModalEditarCompra()" type="button" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3 rounded-xl uppercase text-[10px] shadow transition">💾 Guardar Cambios</button>
                 </div>
             </div>
         </div>
@@ -4844,36 +4861,203 @@ window.tcl_eliminarItemLoteCompraAlVuelo = function(idx) {
         // =========================================================
         // MODAL DE EDICIÓN FLOTANTE DE COMPRAS (CRUD COMPLETO)
         // =========================================================
+        let tcl_editItemsLoteTemp = [];
+
         window.tcl_abrirModalEditarCompra = function(idCompra) {
             const c = tcl_comprasHistorico.find(x => x.idCompra === idCompra);
             if (!c) return alert("No se encontró el registro de compra.");
 
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || (c.tasaAplica || 3600);
-            const costoBaseUSD = c.costoBaseUSD !== undefined ? c.costoBaseUSD : (c.costoMercanciaUSD !== undefined ? c.costoMercanciaUSD : ((c.costoUSD || 0) - (c.fleteUSD || 0)));
-            const fleteCOP = c.fleteCOP || 0;
 
             document.getElementById('modal-edit-cmp-id').value = c.idCompra;
-            document.getElementById('modal-edit-cmp-cat').value = c.cat || "TELEFONIA";
             document.getElementById('modal-edit-cmp-proveedor').value = c.proveedor || "";
-            document.getElementById('modal-edit-cmp-producto').value = c.producto || "";
-            document.getElementById('modal-edit-cmp-imei').value = (c.imei && c.imei !== "N/A") ? c.imei : "";
-            document.getElementById('modal-edit-cmp-costo-usd').value = costoBaseUSD ? costoBaseUSD.toFixed(2) : "";
-            document.getElementById('modal-edit-cmp-flete-cop').value = fleteCOP > 0 ? window.svc_formatPoints(fleteCOP) : "0";
+            const finVal = c.finalidad || (c.cat === 'TELEFONIA' ? 'REPOSICION' : 'STOCK');
+            const selFin = document.getElementById('modal-edit-cmp-finalidad');
+            if (selFin) selFin.value = finVal;
+            const selMet = document.getElementById('modal-edit-cmp-metodo-pago');
+            if (selMet) selMet.value = c.metodoPagoSalida || 'EFECTIVO_PESOS';
 
+            // Construir lista editable de ítems individuales
+            tcl_editItemsLoteTemp = [];
+            if (c.itemsLote && c.itemsLote.length > 0) {
+                c.itemsLote.forEach(it => {
+                    const baseUSD = it.costoBaseUSD !== undefined ? it.costoBaseUSD : (it.costoMercanciaUSD !== undefined ? it.costoMercanciaUSD : ((it.costoUSD || 0) - (it.fleteUSD || 0)));
+                    tcl_editItemsLoteTemp.push({
+                        cat: it.cat || c.cat || 'TELEFONIA',
+                        producto: it.producto || '',
+                        imei: (it.imei && it.imei !== 'N/A') ? it.imei : '',
+                        costoBaseUSD: parseFloat(baseUSD) || 0,
+                        fleteCOP: parseFloat(it.fleteCOP) || 0
+                    });
+                });
+            } else {
+                const baseUSD = c.costoBaseUSD !== undefined ? c.costoBaseUSD : (c.costoMercanciaUSD !== undefined ? c.costoMercanciaUSD : ((c.costoUSD || 0) - (c.fleteUSD || 0)));
+                tcl_editItemsLoteTemp.push({
+                    cat: c.cat || 'TELEFONIA',
+                    producto: c.producto || '',
+                    imei: (c.imei && c.imei !== 'N/A') ? c.imei : '',
+                    costoBaseUSD: parseFloat(baseUSD) || 0,
+                    fleteCOP: parseFloat(c.fleteCOP) || 0
+                });
+            }
+
+            const subEl = document.getElementById('modal-edit-cmp-subtitulo');
+            if (subEl) subEl.innerText = `${c.idCompra} · Fecha: ${c.fecha || ''} ${c.hora || ''}`;
+
+            window.tcl_renderizarItemsModalEditarCompra();
             window.tcl_recalcularTotalesModalEditarCompra();
             document.getElementById('modal-editar-compra-tucocel').classList.remove('hidden');
         };
 
+        window.tcl_renderizarItemsModalEditarCompra = function() {
+            const box = document.getElementById('modal-edit-cmp-items-list');
+            const lblTit = document.getElementById('modal-edit-cmp-items-titulo');
+            if (!box) return;
+
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+            if (lblTit) lblTit.innerText = `📦 Equipos / Productos en esta Factura (${tcl_editItemsLoteTemp.length})`;
+
+            let html = "";
+            tcl_editItemsLoteTemp.forEach((it, idx) => {
+                const esAnomalo = (it.costoBaseUSD || 0) > 1500;
+                const fleteUSD = (it.fleteCOP || 0) > 0 ? ((it.fleteCOP || 0) / tCOP) : 0;
+                const subUSD = (it.costoBaseUSD || 0) + fleteUSD;
+                const subCOP = Math.round((it.costoBaseUSD || 0) * tCOP) + (it.fleteCOP || 0);
+                const valBaseStr = it.costoBaseUSD ? String(Number(it.costoBaseUSD.toFixed(2))) : "";
+                const valFleteStr = it.fleteCOP > 0 ? window.svc_formatPoints(it.fleteCOP) : "0";
+
+                const safeProd = (it.producto || '').replace(/"/g, '&quot;');
+                const safeImei = (it.imei || '').replace(/"/g, '&quot;');
+
+                html += `
+                    <div id="edit-cmp-card-${idx}" class="p-3 rounded-2xl border ${esAnomalo ? 'bg-rose-950/30 border-rose-500/70' : 'bg-slate-950 border-slate-800'} space-y-2.5">
+                        <div class="flex justify-between items-center gap-2 border-b border-slate-800/80 pb-1.5">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-lg font-mono font-black text-[10px]">#${idx + 1}</span>
+                                <select onchange="window.tcl_actualizarCampoItemEditCompra(${idx}, 'cat', this.value)" class="bg-slate-900 border border-slate-800 text-slate-200 text-[10px] font-bold px-2 py-1 rounded-lg focus:outline-none">
+                                    <option value="TELEFONIA" ${it.cat === 'TELEFONIA' ? 'selected' : ''}>📱 Telefonía</option>
+                                    <option value="ACCESORIOS" ${it.cat === 'ACCESORIOS' ? 'selected' : ''}>🎧 Accesorios</option>
+                                    <option value="FACTURA" ${it.cat === 'FACTURA' ? 'selected' : ''}>📄 Factura</option>
+                                </select>
+                                <span id="edit-cmp-warn-${idx}" class="${esAnomalo ? '' : 'hidden'} text-[9px] bg-rose-600 text-white px-2 py-0.5 rounded-lg font-black uppercase">⚠️ Revisar decimal</span>
+                            </div>
+                            ${tcl_editItemsLoteTemp.length > 1 ? `<button onclick="window.tcl_eliminarItemEnModalEditarCompra(${idx})" type="button" title="Quitar este equipo del lote" class="text-rose-400 hover:text-white hover:bg-rose-600/30 px-2 py-1 rounded-lg text-[10px] font-bold transition">🗑️ Quitar</button>` : ''}
+                        </div>
+
+                        <div class="space-y-2 font-bold">
+                            <div>
+                                <label class="text-[8.5px] text-slate-400 uppercase block mb-0.5">Marca / Modelo / Producto</label>
+                                <input type="text" value="${safeProd}" oninput="window.tcl_actualizarCampoItemEditCompra(${idx}, 'producto', this.value)" placeholder="Ej: MOTOROLA G06 4/256" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-white uppercase text-xs focus:outline-none focus:border-amber-500">
+                            </div>
+
+                            <div>
+                                <label class="text-[8.5px] text-slate-400 uppercase block mb-0.5">Código IMEI (opcional)</label>
+                                <input type="text" value="${safeImei}" oninput="window.tcl_actualizarCampoItemEditCompra(${idx}, 'imei', this.value)" placeholder="Ej: 3607" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-slate-200 font-mono text-xs focus:outline-none focus:border-amber-500">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 font-mono">
+                                <div>
+                                    <label class="text-[8.5px] ${esAnomalo ? 'text-rose-400 font-black' : 'text-amber-400'} uppercase block font-sans mb-0.5">Costo Base ($USD)</label>
+                                    <input type="text" inputmode="decimal" id="edit-cmp-costo-${idx}" value="${valBaseStr}" oninput="window.svc_maskDecimalRate(this); window.tcl_actualizarCampoItemEditCompra(${idx}, 'costoBaseUSD', this.value)" placeholder="Ej: 148" class="w-full bg-slate-900 border ${esAnomalo ? 'border-rose-500 text-rose-300' : 'border-slate-800 text-amber-400'} p-2 rounded-xl text-center font-black text-xs focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="text-[8.5px] text-amber-300 uppercase block font-sans mb-0.5">Flete (COP)</label>
+                                    <input type="text" inputmode="numeric" value="${valFleteStr}" onkeyup="window.svc_maskInputFormatted(this); window.tcl_actualizarCampoItemEditCompra(${idx}, 'fleteCOP', this.value)" placeholder="Ej: 20.000" class="w-full bg-slate-900 border border-slate-800 p-2 rounded-xl text-amber-300 text-center font-black text-xs focus:outline-none">
+                                </div>
+                            </div>
+
+                            <div id="edit-cmp-sub-${idx}" class="text-[9.5px] font-mono text-slate-400 text-right pt-1 border-t border-slate-900">
+                                Subtotal ítem: <b class="text-white">$${window.svc_formatDecimalUSD(subUSD)} USD</b> (${fmtMonto(subCOP)} COP)
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            box.innerHTML = html;
+        };
+
+        window.tcl_actualizarCampoItemEditCompra = function(idx, campo, valor) {
+            const it = tcl_editItemsLoteTemp[idx];
+            if (!it) return;
+
+            if (campo === 'producto') {
+                it.producto = String(valor || '').toUpperCase();
+            } else if (campo === 'imei') {
+                it.imei = String(valor || '').trim();
+            } else if (campo === 'cat') {
+                it.cat = valor;
+            } else if (campo === 'costoBaseUSD') {
+                it.costoBaseUSD = window.svc_cleanRate(valor);
+            } else if (campo === 'fleteCOP') {
+                it.fleteCOP = window.svc_cleanNumber(valor);
+            }
+
+            // Actualizar subtotal y alerta visual de la tarjeta sin perder el foco del teclado
+            const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+            const fUSD = it.fleteCOP > 0 ? (it.fleteCOP / tCOP) : 0;
+            const subUSD = (it.costoBaseUSD || 0) + fUSD;
+            const subCOP = Math.round((it.costoBaseUSD || 0) * tCOP) + (it.fleteCOP || 0);
+            const subEl = document.getElementById(`edit-cmp-sub-${idx}`);
+            if (subEl) {
+                subEl.innerHTML = `Subtotal ítem: <b class="text-white">$${window.svc_formatDecimalUSD(subUSD)} USD</b> (${fmtMonto(subCOP)} COP)`;
+            }
+
+            const esAnomalo = (it.costoBaseUSD || 0) > 1500;
+            const cardEl = document.getElementById(`edit-cmp-card-${idx}`);
+            const warnEl = document.getElementById(`edit-cmp-warn-${idx}`);
+            const inpCosto = document.getElementById(`edit-cmp-costo-${idx}`);
+            if (cardEl) {
+                cardEl.className = `p-3 rounded-2xl border ${esAnomalo ? 'bg-rose-950/30 border-rose-500/70' : 'bg-slate-950 border-slate-800'} space-y-2.5`;
+            }
+            if (warnEl) warnEl.classList.toggle('hidden', !esAnomalo);
+            if (inpCosto) {
+                inpCosto.className = `w-full bg-slate-900 border ${esAnomalo ? 'border-rose-500 text-rose-300' : 'border-slate-800 text-amber-400'} p-2 rounded-xl text-center font-black text-xs focus:outline-none`;
+            }
+
+            window.tcl_recalcularTotalesModalEditarCompra();
+        };
+
+        window.tcl_agregarItemEnModalEditarCompra = function() {
+            tcl_editItemsLoteTemp.push({
+                cat: 'TELEFONIA',
+                producto: '',
+                imei: '',
+                costoBaseUSD: 0,
+                fleteCOP: 0
+            });
+            window.tcl_renderizarItemsModalEditarCompra();
+            window.tcl_recalcularTotalesModalEditarCompra();
+        };
+
+        window.tcl_eliminarItemEnModalEditarCompra = function(idx) {
+            if (tcl_editItemsLoteTemp.length <= 1) return alert("La factura debe tener al menos un ítem.");
+            if (!confirm(`¿Quitar el ítem #${idx + 1} (${tcl_editItemsLoteTemp[idx].producto || 'Sin nombre'}) de esta factura?`)) return;
+            tcl_editItemsLoteTemp.splice(idx, 1);
+            window.tcl_renderizarItemsModalEditarCompra();
+            window.tcl_recalcularTotalesModalEditarCompra();
+        };
+
         window.tcl_recalcularTotalesModalEditarCompra = function() {
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
-            const cBase = parseFloat(document.getElementById('modal-edit-cmp-costo-usd').value) || 0;
-            const fCOP = window.svc_cleanNumber(document.getElementById('modal-edit-cmp-flete-cop').value);
-            const fUSD = fCOP > 0 ? (fCOP / tCOP) : 0;
-            const totalUSD = cBase + fUSD;
-            const totalCOP = Math.round(cBase * tCOP) + fCOP;
+            let sumBaseUSD = 0;
+            let sumFleteCOP = 0;
 
-            document.getElementById('modal-edit-cmp-lbl-flete-usd').innerText = `$${window.svc_formatDecimalUSD(fUSD)} USD (${window.svc_formatPoints(fCOP)} COP)`;
-            document.getElementById('modal-edit-cmp-lbl-costo-total').innerText = `$${window.svc_formatDecimalUSD(totalUSD)} USD (${window.svc_formatPoints(totalCOP)} COP)`;
+            tcl_editItemsLoteTemp.forEach(it => {
+                sumBaseUSD += (parseFloat(it.costoBaseUSD) || 0);
+                sumFleteCOP += (parseFloat(it.fleteCOP) || 0);
+            });
+
+            const fUSD = sumFleteCOP > 0 ? (sumFleteCOP / tCOP) : 0;
+            const totalUSD = sumBaseUSD + fUSD;
+            const totalCOP = Math.round(sumBaseUSD * tCOP) + sumFleteCOP;
+
+            const lblBase = document.getElementById('modal-edit-cmp-lbl-base-usd');
+            const lblFlete = document.getElementById('modal-edit-cmp-lbl-flete-usd');
+            const lblTotal = document.getElementById('modal-edit-cmp-lbl-costo-total');
+
+            if (lblBase) lblBase.innerText = `$${window.svc_formatDecimalUSD(sumBaseUSD)} USD`;
+            if (lblFlete) lblFlete.innerText = `$${window.svc_formatDecimalUSD(fUSD)} USD (${window.svc_formatPoints(sumFleteCOP)} COP)`;
+            if (lblTotal) lblTotal.innerText = `$${window.svc_formatDecimalUSD(totalUSD)} USD (${window.svc_formatPoints(totalCOP)} COP)`;
         };
 
         window.tcl_guardarCambiosModalEditarCompra = async function() {
@@ -4881,51 +5065,100 @@ window.tcl_eliminarItemLoteCompraAlVuelo = function(idx) {
             const c = tcl_comprasHistorico.find(x => x.idCompra === id);
             if (!c) return;
 
-            const producto = document.getElementById('modal-edit-cmp-producto').value.trim().toUpperCase();
-            const proveedor = document.getElementById('modal-edit-cmp-proveedor').value.trim().toUpperCase() || "PROVEEDOR GENERAL";
-            const cat = document.getElementById('modal-edit-cmp-cat').value;
-            const imei = (cat === "TELEFONIA") ? (document.getElementById('modal-edit-cmp-imei').value.trim() || "N/A") : "N/A";
-            const cBaseUSD = parseFloat(document.getElementById('modal-edit-cmp-costo-usd').value) || 0;
-            const fCOP = window.svc_cleanNumber(document.getElementById('modal-edit-cmp-flete-cop').value);
+            const proveedor = (document.getElementById('modal-edit-cmp-proveedor').value || '').trim().toUpperCase() || "PROVEEDOR GENERAL";
+            const finalidad = document.getElementById('modal-edit-cmp-finalidad')?.value || 'REPOSICION';
+            const metodoPagoSalida = document.getElementById('modal-edit-cmp-metodo-pago')?.value || 'EFECTIVO_PESOS';
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || (c.tasaAplica || 3600);
 
-            if (!producto || cBaseUSD <= 0) return alert("Complete el producto y un costo base en USD válido.");
+            if (tcl_editItemsLoteTemp.length === 0) return alert("⚠️ Debe haber al menos un ítem en la factura.");
 
-            const fUSD = fCOP > 0 ? (fCOP / tCOP) : 0;
-            const totalUSD = cBaseUSD + fUSD;
-            const totalCOP = Math.round(cBaseUSD * tCOP) + fCOP;
+            for (let i = 0; i < tcl_editItemsLoteTemp.length; i++) {
+                const it = tcl_editItemsLoteTemp[i];
+                if (!it.producto || !it.producto.trim()) {
+                    return alert(`⚠️ Complete el nombre/modelo del ítem #${i + 1}.`);
+                }
+                if ((parseFloat(it.costoBaseUSD) || 0) <= 0) {
+                    return alert(`⚠️ Ingrese un costo base en USD válido para el ítem #${i + 1} (${it.producto}).`);
+                }
+            }
 
-            c.producto = producto;
+            let totalBaseUSD = 0;
+            let totalFleteCOP = 0;
+            let totalUSD = 0;
+            let totalCOP = 0;
+            let categoriasSet = new Set();
+            let nuevosItemsLote = [];
+
+            tcl_editItemsLoteTemp.forEach((it, idx) => {
+                const bUSD = parseFloat(it.costoBaseUSD) || 0;
+                const bCOP = Math.round(bUSD * tCOP);
+                const fCOP = parseFloat(it.fleteCOP) || 0;
+                const fUSD = fCOP > 0 ? (fCOP / tCOP) : 0;
+                const itTotUSD = bUSD + fUSD;
+                const itTotCOP = bCOP + fCOP;
+                const imeiClean = (it.cat === 'TELEFONIA' && it.imei && it.imei.trim()) ? it.imei.trim() : 'N/A';
+
+                totalBaseUSD += bUSD;
+                totalFleteCOP += fCOP;
+                totalUSD += itTotUSD;
+                totalCOP += itTotCOP;
+                categoriasSet.add(it.cat || 'TELEFONIA');
+
+                nuevosItemsLote.push({
+                    idTemp: 'cmp-item-edit-' + Date.now() + '-' + idx,
+                    cat: it.cat || 'TELEFONIA',
+                    finalidad,
+                    proveedor,
+                    producto: it.producto.trim().toUpperCase(),
+                    imei: imeiClean,
+                    monedaOrig: 'USD',
+                    costoBaseUSD: bUSD,
+                    costoBaseCOP: bCOP,
+                    costoMercanciaUSD: bUSD,
+                    costoMercanciaCOP: bCOP,
+                    fleteCOP: fCOP,
+                    fleteUSD: fUSD,
+                    costoUSD: itTotUSD,
+                    costoCOP: itTotCOP,
+                    costoOrig: bUSD,
+                    tasaAplica: tCOP,
+                    metodoPagoSalida
+                });
+            });
+
+            c.cat = categoriasSet.size === 1 ? Array.from(categoriasSet)[0] : "COMPRA MÚLTIPLE";
+            c.finalidad = finalidad;
+            c.metodoPagoSalida = metodoPagoSalida;
             c.proveedor = proveedor;
-            c.cat = cat;
-            c.imei = imei;
-            c.costoBaseUSD = cBaseUSD;
-            c.costoBaseCOP = Math.round(cBaseUSD * tCOP);
-            c.costoMercanciaUSD = cBaseUSD;
-            c.costoMercanciaCOP = Math.round(cBaseUSD * tCOP);
-            c.fleteCOP = fCOP;
-            c.fleteUSD = fUSD;
+            c.producto = nuevosItemsLote.length === 1
+                ? nuevosItemsLote[0].producto
+                : nuevosItemsLote.map(x => x.producto).join(' + ');
+            c.imei = nuevosItemsLote.length === 1
+                ? nuevosItemsLote[0].imei
+                : (nuevosItemsLote.map(x => x.imei).filter(x => x && x !== 'N/A').join(', ') || 'N/A');
+            c.costoBaseUSD = totalBaseUSD;
+            c.costoBaseCOP = Math.round(totalBaseUSD * tCOP);
+            c.costoMercanciaUSD = totalBaseUSD;
+            c.costoMercanciaCOP = Math.round(totalBaseUSD * tCOP);
+            c.fleteCOP = totalFleteCOP;
+            c.fleteUSD = totalFleteCOP > 0 ? (totalFleteCOP / tCOP) : 0;
             c.costoUSD = totalUSD;
             c.costoCOP = totalCOP;
             c.costoOrig = totalUSD;
-
-            if (c.itemsLote && c.itemsLote.length === 1) {
-                c.itemsLote[0].producto = producto;
-                c.itemsLote[0].proveedor = proveedor;
-                c.itemsLote[0].imei = imei;
-                c.itemsLote[0].costoBaseUSD = cBaseUSD;
-                c.itemsLote[0].costoBaseCOP = Math.round(cBaseUSD * tCOP);
-                c.itemsLote[0].fleteCOP = fCOP;
-                c.itemsLote[0].fleteUSD = fUSD;
-                c.itemsLote[0].costoUSD = totalUSD;
-                c.itemsLote[0].costoCOP = totalCOP;
-            }
+            c.itemsLote = nuevosItemsLote;
 
             await window.tcl_sincronizarTucocelFirebase();
             document.getElementById('modal-editar-compra-tucocel').classList.add('hidden');
             window.tcl_renderizerListaComprasHistorico();
             window.tcl_renderizerParticionTucocel();
-            alert("✅ Compra actualizada y recalculada con éxito.");
+
+            // Si la Hoja Blanca está abierta, refrescarla automáticamente
+            const modalHB = document.getElementById('modal-hoja-blanca-tucocel');
+            if (modalHB && !modalHB.classList.contains('hidden')) {
+                window.tcl_abrirVisorHojaBlancaTucocel();
+            }
+
+            alert(`✅ Factura ${c.idCompra} actualizada (${nuevosItemsLote.length} ítems · Total: $${window.svc_formatDecimalUSD(totalUSD)} USD).`);
         };
 
         window.tcl_anularCompraHistorica = async function(id) {
