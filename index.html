@@ -1155,6 +1155,7 @@
                                     <option value="PESOS" selected>💵 Pesos Efectivo (Afecta Gaveta Física)</option>
                                     <option value="NEQUI">📲 Nequi (Digital / Cuenta Bancaria)</option>
                                     <option value="PAGOMOVIL">📲 Bolívares / Pago Móvil (Digital)</option>
+                                    <option value="BINANCE">🟡 Binance (USDT Digital)</option>
                                     <option value="DOLAR">💵 Dólares Efectivo (Afecta Gaveta Física)</option>
                                 </select>
                             </div>
@@ -1794,7 +1795,8 @@
                         <label class="text-[9px] text-slate-400 uppercase font-bold block mb-1">Moneda de Pago</label>
                         <select id="tcl-gasto-moneda" onchange="window.tcl_recalcularGastoLive()" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-xs font-bold focus:outline-none">
                             <option value="COP" selected>🇨🇴 Pesos (COP)</option>
-                            <option value="USD">💵 Dólares ($USD)</option>
+                            <option value="USD">💵 Dólares ($USD Efectivo)</option>
+                            <option value="USDT">🟡 Binance (USDT Digital)</option>
                             <option value="BS">🇻🇪 Bolívares (Bs / Pago Móvil)</option>
                         </select>
                     </div>
@@ -1873,7 +1875,8 @@
                         <label class="text-[9px] text-slate-400 uppercase font-bold block mb-1">Moneda Recibida</label>
                         <select id="tcl-ingreso-moneda" onchange="window.tcl_recalcularIngresoExtraLive()" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white text-xs font-bold focus:outline-none">
                             <option value="COP" selected>🇨🇴 Pesos (COP)</option>
-                            <option value="USD">💵 Dólares ($USD)</option>
+                            <option value="USD">💵 Dólares ($USD Efectivo)</option>
+                            <option value="USDT">🟡 Binance (USDT Digital)</option>
                             <option value="BS">🇻🇪 Bolívares (Bs / Pago Móvil)</option>
                         </select>
                     </div>
@@ -1980,6 +1983,13 @@
             if(!val) return 0;
             let str = String(val).replace(',', '.');
             return parseFloat(str) || 0;
+        };
+
+        // Lector seguro por moneda: evita que 148.00 USD se convierta en 14.800 USD
+        window.svc_parseByCurrency = function(val, moneda) {
+            const m = (moneda || 'COP').toUpperCase();
+            if (m === 'COP') return window.svc_cleanNumber(val);
+            return window.svc_cleanRate(val);
         };
 
         window.svc_formatPoints = function(v) {
@@ -4393,11 +4403,11 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
             const tBs = window.svc_cleanRate(document.getElementById('cfg-tasa-bs')?.value) || 4;
 
             const mCosto = document.getElementById('tcl-v-moneda-costo')?.value || "USD";
-            const rawCosto = window.svc_cleanNumber(document.getElementById('tcl-v-costo-valor')?.value);
+            const rawCosto = window.svc_parseByCurrency(document.getElementById('tcl-v-costo-valor')?.value, mCosto);
             const fleteCOP = window.svc_cleanNumber(document.getElementById('tcl-v-flete-cop')?.value);
 
             const mVenta = document.getElementById('tcl-v-moneda-venta')?.value || "USD";
-            const rawVenta = window.svc_cleanNumber(document.getElementById('tcl-v-monto-venta')?.value);
+            const rawVenta = window.svc_parseByCurrency(document.getElementById('tcl-v-monto-venta')?.value, mVenta);
 
             // 1. Unificar Costo Base a USD y COP
             let costoUSD = 0;
@@ -4612,7 +4622,7 @@ Quedó registrada en el HISTÓRICO DE SEMANAS CERRADAS con el Folio #${registroS
 
         window.tcl_recalcularEquivalentesCompraLive = function() {
             const moneda = document.getElementById('tcl-compra-moneda-costo').value;
-            const rawVal = window.svc_cleanNumber(document.getElementById('tcl-compra-costo-valor')?.value);
+            const rawVal = window.svc_parseByCurrency(document.getElementById('tcl-compra-costo-valor')?.value, moneda);
             const fleteCOP = window.svc_cleanNumber(document.getElementById('tcl-compra-flete-cop')?.value);
             
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
@@ -5180,14 +5190,14 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
 
         window.tcl_recalcularGastoLive = function() {
             const moneda = document.getElementById('tcl-gasto-moneda')?.value || "COP";
-            const rawVal = window.svc_cleanNumber(document.getElementById('tcl-gasto-monto')?.value);
+            const rawVal = window.svc_parseByCurrency(document.getElementById('tcl-gasto-monto')?.value, moneda);
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
             const tBs = window.svc_cleanRate(document.getElementById('cfg-tasa-bs')?.value) || 4;
 
             let cop = 0; let usd = 0;
             if (moneda === "COP") {
                 cop = rawVal; usd = rawVal / tCOP;
-            } else if (moneda === "USD") {
+            } else if (moneda === "USD" || moneda === "USDT" || moneda === "BINANCE") {
                 usd = rawVal; cop = Math.round(rawVal * tCOP);
             } else if (moneda === "BS") {
                 cop = Math.round(rawVal * tBs); usd = cop / tCOP;
@@ -5351,14 +5361,14 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
 
         window.tcl_recalcularIngresoExtraLive = function() {
             const moneda = document.getElementById('tcl-ingreso-moneda')?.value || "COP";
-            const rawVal = window.svc_cleanNumber(document.getElementById('tcl-ingreso-monto')?.value);
+            const rawVal = window.svc_parseByCurrency(document.getElementById('tcl-ingreso-monto')?.value, moneda);
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
             const tBs = window.svc_cleanRate(document.getElementById('cfg-tasa-bs')?.value) || 4;
 
             let cop = 0; let usd = 0;
             if (moneda === "COP") {
                 cop = rawVal; usd = rawVal / tCOP;
-            } else if (moneda === "USD") {
+            } else if (moneda === "USD" || moneda === "USDT" || moneda === "BINANCE") {
                 usd = rawVal; cop = Math.round(rawVal * tCOP);
             } else if (moneda === "BS") {
                 cop = Math.round(rawVal * tBs); usd = cop / tCOP;
@@ -5547,6 +5557,9 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
                     totalPagoMovilCOP += sub;
                     totalDigitalCOP += sub;
                     badgeMetodo = `<span class="text-[8px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded font-mono font-bold">📲 PAGO MÓVIL</span>`;
+                } else if (met === "BINANCE" || met === "USDT") {
+                    totalDigitalCOP += sub;
+                    badgeMetodo = `<span class="text-[8px] bg-yellow-950/80 text-yellow-300 border border-yellow-500/30 px-1.5 py-0.5 rounded font-mono font-bold">🟡 BINANCE USDT</span>`;
                 } else if (met === "DOLAR") {
                     totalEfectivoCOP += sub;
                     badgeMetodo = `<span class="text-[8px] bg-blue-950/80 text-blue-300 border border-blue-500/30 px-1.5 py-0.5 rounded font-mono font-bold">💵 DÓLARES</span>`;
@@ -5715,6 +5728,7 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
             let totalDigitalCOP = 0;
             let totalNequiCOP = 0;
             let totalPagoMovilCOP = 0;
+            let totalBinanceCOP = 0;
 
             tcl_ventasActivasTurno.forEach(v => {
                 const sub = (v.precioCOP * v.cantidad);
@@ -5725,6 +5739,9 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
                     totalDigitalCOP += sub;
                 } else if (met === "PAGOMOVIL" || met === "BS") {
                     totalPagoMovilCOP += sub;
+                    totalDigitalCOP += sub;
+                } else if (met === "BINANCE" || met === "USDT") {
+                    totalBinanceCOP += sub;
                     totalDigitalCOP += sub;
                 } else {
                     totalEfectivoCOP += sub;
@@ -5764,6 +5781,7 @@ Volverá a estar activa en el mes en curso para el cálculo de egresos en Hoja B
                 totalDigitalCOP,
                 totalNequiCOP,
                 totalPagoMovilCOP,
+                totalBinanceCOP,
                 usdGaveta,
                 copGaveta,
                 totalFisicoGaveta,
@@ -6902,23 +6920,33 @@ Cuadre Gaveta  : ${fmtMonto(match.diferenciaCOP)} COP
         };
 
         // AGRUPADOR INTELIGENTE DE PRODUCTOS PARA REPORTE DE FIN DE MES
-        function clasificarConceptoGeneral(concepto) {
+        function clasificarConceptoGeneral(concepto, tipoCategoria = '') {
             let s = (concepto || '').toUpperCase().trim();
+            if ((tipoCategoria || '').toUpperCase() === 'TELEFONO') return 'EQUIPOS SMARTPHONES';
+            if (s.includes('TELÉFONO') || s.includes('TELEFONO') || s.includes('📱')) return 'EQUIPOS SMARTPHONES';
             if (s.includes('VIDRIO')) return 'VIDRIOS TEMPLADOS / PROTECTORES';
             if (s.includes('4G') || s.includes('4GB') || s.includes('LINEA') || s.includes('LÍNEA')) return 'LÍNEAS MOVISTAR 4G / 4GB';
             if (s.includes('CARGADOR') && (s.includes('TIPO C') || s.includes('TIPO-C') || s.includes('TYPE C'))) return 'CARGADORES TIPO C';
             if (s.includes('CARGADOR') && s.includes('V8')) return 'CARGADORES V8';
+            if (s.includes('CARGADOR') && s.includes('IPHONE')) return 'CARGADORES IPHONE';
             if (s.includes('CARGADOR')) return 'CARGADORES (OTROS)';
             if (s.includes('FORRO') || s.includes('FUNDA')) return 'FORROS / FUNDAS';
             if (s.includes('AUDIFONO') || s.includes('AUDÍFONO')) return 'AUDÍFONOS';
             if (s.includes('PIN') || s.includes('PIN DE CARGA')) return 'REPARACIÓN PINES DE CARGA';
             if (s.includes('PANTALLA')) return 'REEMPLAZO DE PANTALLAS';
-            if (s.includes('TELÉFONO') || s.includes('TELEFONO')) return 'EQUIPOS SMARTPHONES';
+            // Detección de marcas de smartphones si no es accesorio ni repuesto
+            if (/(HONOR|REDMI|POCO|MOTOROLA|MOTO|SAMSUNG|INFINIX|TECNO|XIAOMI|IPHONE|REALME|SPARK|ZTE|NOKIA)/.test(s)) {
+                return 'EQUIPOS SMARTPHONES';
+            }
             return s; // Nombre tal cual
         }
 window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
             let totalVentasAcum = 0;
             let totalEgresosComprasAcum = 0;
+            let totalComprasStockCOP = 0;
+            let totalComprasReposicionCOP = 0;
+            let cntComprasStock = 0;
+            let cntComprasReposicion = 0;
             let totalGastosAcum = 0;
             let totalIngresosExtraAcum = 0;
 
@@ -6934,6 +6962,9 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
 
             const esMesPasado = (mesHistoricoIdx !== null && tcl_historicoMesesTucocel[mesHistoricoIdx]);
             const datosMes = esMesPasado ? tcl_historicoMesesTucocel[mesHistoricoIdx] : null;
+            const datosMesAnterior = esMesPasado
+                ? (tcl_historicoMesesTucocel[mesHistoricoIdx + 1] || null)
+                : ((tcl_historicoMesesTucocel && tcl_historicoMesesTucocel.length > 0) ? tcl_historicoMesesTucocel[0] : null);
 
             if (esMesPasado) {
                 periodoDisplay = datosMes.periodo || datosMes.fechaCierre || "MES ARCHIVADO";
@@ -6944,7 +6975,6 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 totalGastosAcum = datosMes.totalGastosCOP || 0;
                 totalIngresosExtraAcum = datosMes.totalIngresosExtraCOP || 0;
 
-                // Ventas del mes archivado
                 (datosMes.ventas || []).forEach(c => {
                     (c.ventas || []).forEach(v => {
                         const cant = v.cantidad || 1;
@@ -6962,7 +6992,7 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                             });
                         }
 
-                        let grupo = clasificarConceptoGeneral(v.concepto);
+                        let grupo = clasificarConceptoGeneral(v.concepto, v.tipoCategoria);
                         if (!mapaConteoProductos[grupo]) {
                             mapaConteoProductos[grupo] = { cant: 0, subtotalCOP: 0 };
                         }
@@ -6971,13 +7001,11 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                     });
                 });
 
-                // Compras del mes archivado
                 (datosMes.compras || []).forEach(c => {
                     totalFletesComprasCOP += (c.fleteCOP || 0);
                     comprasDetalleMes.push(c);
                 });
 
-                // Gastos del mes archivado
                 gastosDetalleMes = datosMes.gastos || [];
                 ingresosExtraDetalleMes = datosMes.ingresosExtra || [];
 
@@ -7005,7 +7033,7 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                                 });
                             }
 
-                            let grupo = clasificarConceptoGeneral(v.concepto);
+                            let grupo = clasificarConceptoGeneral(v.concepto, v.tipoCategoria);
                             if (!mapaConteoProductos[grupo]) {
                                 mapaConteoProductos[grupo] = { cant: 0, subtotalCOP: 0 };
                             }
@@ -7041,18 +7069,49 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 });
             }
 
-                        // --- CORRECCIÓN CONTABLE Y FLUJO DE CAJA FÍSICO REAL ---
+            // --- BASELINE DEL MES ANTERIOR PARA COMPARATIVAS DE TELÉFONOS, ACCESORIOS Y COMPRAS ---
+            let mapaConteoMesAnt = {};
+            let totalEquiposMesAnt = 0;
+            let gananciaTelefonosMesAnt = 0;
+            let totalUnidadesMesAnt = 0;
+            let totalComprasCantMesAnt = 0;
+            if (datosMesAnterior) {
+                (datosMesAnterior.ventas || []).forEach(c => {
+                    (c.ventas || []).forEach(v => {
+                        const cant = v.cantidad || 1;
+                        const sub = (v.precioCOP || 0) * cant;
+                        totalUnidadesMesAnt += cant;
+                        if (v.tipoCategoria === "TELEFONO" || (v.concepto && v.concepto.toUpperCase().includes("TELÉFONO"))) {
+                            totalEquiposMesAnt += cant;
+                            gananciaTelefonosMesAnt += (v.precioCOP || sub);
+                        }
+                        let grupoAnt = clasificarConceptoGeneral(v.concepto, v.tipoCategoria);
+                        if (!mapaConteoMesAnt[grupoAnt]) mapaConteoMesAnt[grupoAnt] = { cant: 0, subtotalCOP: 0 };
+                        mapaConteoMesAnt[grupoAnt].cant += cant;
+                        mapaConteoMesAnt[grupoAnt].subtotalCOP += sub;
+                    });
+                });
+                (datosMesAnterior.compras || []).forEach(cmp => {
+                    if (cmp.itemsLote && cmp.itemsLote.length > 0) totalComprasCantMesAnt += cmp.itemsLote.length;
+                    else totalComprasCantMesAnt += 1;
+                });
+            }
+
+            // --- CORRECCIÓN CONTABLE Y FLUJO DE CAJA FÍSICO REAL + BILLETERA BINANCE USDT ---
             let dineroUSD_Entradas = 0;
             let dineroUSD_Salidas = 0;
             let dineroCOP_Entradas = 0;
             let dineroCOP_Salidas = 0;
             let digitalNequiCOP = 0;
             let digitalPagoMovilCOP = 0;
+            let digitalBinanceUSD_Entradas = 0;
+            let digitalBinanceUSD_Salidas = 0;
 
             const tCOP_calc = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
+            const tBs_calc = window.svc_cleanRate(document.getElementById('cfg-tasa-bs')?.value) || 4;
             const listaCierresParaReporte = esMesPasado ? (datosMes.ventas || []) : tcl_historicoCierres.filter(c => c.status !== "ANULADA" && c.liquidadoMes !== true);
 
-            // 1. Recorrer cierres diarios para recaudación física (Dólares y Pesos según el arqueo del usuario)
+            // 1. Recorrer cierres diarios para recaudación física (Dólares y Pesos según el arqueo del usuario) + Canales Digitales
             let filasArqueosDiariosHtml = "";
             let sumaCierresUSD = 0;
             let sumaCierresCOP = 0;
@@ -7063,8 +7122,8 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 let cierreCOP = 0;
                 let cierreNequi = 0;
                 let cierrePagoMovil = 0;
+                let cierreBinanceCOP = 0;
 
-                // Nequi y Pago Móvil del cierre
                 if (c.totalNequiCOP !== undefined) {
                     cierreNequi = (c.totalNequiCOP || 0);
                 } else {
@@ -7080,15 +7139,26 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                         if (m === 'PAGOMOVIL' || m === 'BS') cierrePagoMovil += ((v.precioCOP || 0) * (v.cantidad || 1));
                     });
                 }
+                if (c.totalBinanceCOP !== undefined) {
+                    cierreBinanceCOP = (c.totalBinanceCOP || 0);
+                } else {
+                    (c.ventas || []).forEach(v => {
+                        const m = (v.metodo || '').toUpperCase();
+                        if (m === 'BINANCE' || m === 'USDT') cierreBinanceCOP += ((v.precioCOP || 0) * (v.cantidad || 1));
+                    });
+                }
+
                 digitalNequiCOP += cierreNequi;
                 digitalPagoMovilCOP += cierrePagoMovil;
+                if (cierreBinanceCOP > 0) {
+                    digitalBinanceUSD_Entradas += (cierreBinanceCOP / (c.tasaAplica || tCOP_calc));
+                }
 
                 // Dinero físico de mostrador según arqueo real contado por el usuario:
-                if ((c.usdGaveta !== undefined && c.usdGaveta !== null && parseFloat(c.usdGaveta) > 0) || 
+                if ((c.usdGaveta !== undefined && c.usdGaveta !== null && parseFloat(c.usdGaveta) > 0) ||
                     (c.copGaveta !== undefined && c.copGaveta !== null && parseFloat(c.copGaveta) > 0)) {
                     cierreUSD = parseFloat(c.usdGaveta || 0);
                     cierreCOP = parseFloat(c.copGaveta || 0);
-                    // Si copGaveta no se llenó pero había efectivo y usdGaveta:
                     if (cierreCOP === 0 && (c.totalEfectivoCOP || 0) > 0 && cierreUSD > 0) {
                         cierreCOP = Math.max(0, (c.totalEfectivoCOP || 0) - Math.round(cierreUSD * (c.tasaAplica || tCOP_calc)));
                     }
@@ -7101,7 +7171,7 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                         const met = (v.metodo || 'PESOS').toUpperCase();
                         if (met === "DOLAR") {
                             cierreUSD += (subCOP / tCOP_calc);
-                        } else if (met !== "NEQUI" && met !== "PAGOMOVIL" && met !== "BS") {
+                        } else if (met !== "NEQUI" && met !== "PAGOMOVIL" && met !== "BS" && met !== "BINANCE" && met !== "USDT") {
                             cierreCOP += subCOP;
                         }
                     });
@@ -7112,7 +7182,7 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
 
                 sumaCierresUSD += cierreUSD;
                 sumaCierresCOP += cierreCOP;
-                sumaCierresDigital += (cierreNequi + cierrePagoMovil);
+                sumaCierresDigital += (cierreNequi + cierrePagoMovil + cierreBinanceCOP);
 
                 let diagStr = "🟢 CUADRADO";
                 if(c.diferenciaCOP > 0) diagStr = `🔵 +${fmtMonto(c.diferenciaCOP)} COP`;
@@ -7125,7 +7195,7 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                         <td class="py-1 px-1.5 text-right font-mono text-slate-900 font-bold">${fmtMonto(c.totalVentasCOP || 0)} COP</td>
                         <td class="py-1 px-1.5 text-right font-mono text-blue-700 font-bold">$${window.svc_formatDecimalUSD(cierreUSD)} USD</td>
                         <td class="py-1 px-1.5 text-right font-mono text-amber-800 font-bold">${fmtMonto(cierreCOP)} COP</td>
-                        <td class="py-1 px-1.5 text-right font-mono text-purple-700">${fmtMonto(cierreNequi + cierrePagoMovil)} COP</td>
+                        <td class="py-1 px-1.5 text-right font-mono text-purple-700">${fmtMonto(cierreNequi + cierrePagoMovil + cierreBinanceCOP)} COP</td>
                         <td class="py-1 px-1.5 text-center font-mono font-bold text-[8.5px]">${diagStr}</td>
                     </tr>`;
             });
@@ -7135,6 +7205,8 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 const m = (i.moneda || 'COP').toUpperCase();
                 if (m === "USD") {
                     dineroUSD_Entradas += (i.montoUSD || (i.montoOrig || 0));
+                } else if (m === "USDT" || m === "BINANCE") {
+                    digitalBinanceUSD_Entradas += (i.montoUSD || (i.montoOrig || 0));
                 } else if (m === "BS") {
                     digitalPagoMovilCOP += (i.montoCOP || 0);
                 } else {
@@ -7142,15 +7214,17 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 }
             });
 
-            // 3. Compras de mercancía (salidas de dinero de gaveta física)
+            // 3. Compras de mercancía (separando Reposición vs Stock Nuevo + salida Binance)
             comprasDetalleMes.forEach(cmp => {
-                // BLINDAJE CONTABLE: Si la compra es de TELEFONÍA o está clasificada como REPOSICIÓN por venta,
-                // NO resta de la gaveta física porque el equipo se pagó directamente con el dinero del cliente
-                // y en las comandas de venta ya se acreditó únicamente la ganancia neta limpia.
                 const esReposicionVenta = (cmp.finalidad === 'REPOSICION') || (cmp.cat === 'TELEFONIA' && cmp.finalidad !== 'STOCK');
                 if (esReposicionVenta) {
-                    return; // No descuenta gaveta física para evitar el doble descuento de 87.100 COP
+                    totalComprasReposicionCOP += (cmp.costoCOP || 0);
+                    cntComprasReposicion += (cmp.itemsLote && cmp.itemsLote.length > 0) ? cmp.itemsLote.length : 1;
+                    return; // No descuenta gaveta física
                 }
+
+                totalComprasStockCOP += (cmp.costoCOP || 0);
+                cntComprasStock += (cmp.itemsLote && cmp.itemsLote.length > 0) ? cmp.itemsLote.length : 1;
 
                 const salida = (cmp.metodoPagoSalida || 'EFECTIVO_PESOS').toUpperCase();
                 const costoUSD = cmp.costoBaseUSD || cmp.costoUSD || 0;
@@ -7159,7 +7233,10 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 if (salida === "EFECTIVO_USD") {
                     dineroUSD_Salidas += costoUSD;
                     if (fleteCOP > 0) dineroCOP_Salidas += fleteCOP;
-                } else if (salida === "PAGOMOVIL" || salida === "BINANCE") {
+                } else if (salida === "BINANCE" || salida === "USDT") {
+                    digitalBinanceUSD_Salidas += costoUSD;
+                    if (fleteCOP > 0) dineroCOP_Salidas += fleteCOP;
+                } else if (salida === "PAGOMOVIL") {
                     if (fleteCOP > 0) dineroCOP_Salidas += fleteCOP;
                 } else {
                     dineroCOP_Salidas += (cmp.costoCOP || 0);
@@ -7171,28 +7248,149 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 const m = (g.moneda || 'COP').toUpperCase();
                 if (m === "USD") {
                     dineroUSD_Salidas += (g.montoUSD || (g.montoOrig || 0));
+                } else if (m === "USDT" || m === "BINANCE") {
+                    digitalBinanceUSD_Salidas += (g.montoUSD || (g.montoOrig || 0));
+                } else if (m === "BS") {
+                    // Pago móvil no descuenta billetes físicos COP
                 } else {
                     dineroCOP_Salidas += (g.montoCOP || (g.montoOrig || 0));
                 }
             });
 
-            // Saldo en billetes que debe haber en caja física
+            // Saldos finales
             const debeHaberUSD = dineroUSD_Entradas - dineroUSD_Salidas;
             const debeHaberCOP = dineroCOP_Entradas - dineroCOP_Salidas;
+            const saldoBinanceUSDT = digitalBinanceUSD_Entradas - digitalBinanceUSD_Salidas;
 
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
-
-            // FÓRMULA CONTABLE EXACTA TUCOCEL C.A.
-            // (=) Utilidad Neta Real = (Ventas + Ingresos Extras) - (Compras Mercancía/Fletes + Gastos Operativos/Salidas)
-            // Utilidad neta real limpia: (Ventas que ya traen ganancia limpia de teléfonos + Extras) - Gastos operativos y alquiler
             const utilidadNetaRealCOP = (totalVentasAcum + totalIngresosExtraAcum) - totalGastosAcum;
             const utilidadNetaRealUSD = utilidadNetaRealCOP / tCOP;
 
+            // --- ANALIZADOR DE VARIACIÓN DE PRECIOS POR MODELO EN COMPRAS (CRONOLÓGICO) ---
+            let listaComprasPlana = [];
+            let historialPreciosModelo = {}; // { MODELO: [ {fecha, precioUSD} ] }
+            let alertasMontoAnomalo = [];
+
+            if (comprasDetalleMes.length > 0) {
+                // Orden cronológico (del más viejo al más nuevo) para detectar subidas/bajadas reales
+                const comprasCrono = [...comprasDetalleMes].reverse();
+                comprasCrono.forEach(cmp => {
+                    const esRep = (cmp.finalidad === 'REPOSICION') || (cmp.cat === 'TELEFONIA' && cmp.finalidad !== 'STOCK');
+                    const extraerItems = [];
+
+                    if (cmp.itemsLote && cmp.itemsLote.length > 0) {
+                        cmp.itemsLote.forEach(it => {
+                            const itBaseUSD = it.costoBaseUSD !== undefined ? it.costoBaseUSD : (it.costoMercanciaUSD !== undefined ? it.costoMercanciaUSD : ((it.costoUSD || 0) - (it.fleteUSD || 0)));
+                            const itFleteCOP = it.fleteCOP !== undefined ? it.fleteCOP : 0;
+                            const itFleteUSD = it.fleteUSD !== undefined ? it.fleteUSD : (itFleteCOP / tCOP);
+                            const itTotalUSD = it.costoUSD || (itBaseUSD + itFleteUSD);
+                            const itTotalCOP = it.costoCOP || Math.round((itBaseUSD * tCOP) + itFleteCOP);
+                            const itImei = (it.imei && it.imei !== 'N/A' && !it.imei.includes('IMEIs')) ? it.imei : '-';
+                            extraerItems.push({
+                                producto: it.producto || cmp.producto,
+                                proveedor: it.proveedor || cmp.proveedor,
+                                fecha: cmp.fecha,
+                                imei: itImei,
+                                costoBaseUSD: itBaseUSD,
+                                fleteCOP: itFleteCOP,
+                                fleteUSD: itFleteUSD,
+                                costoUSD: itTotalUSD,
+                                costoCOP: itTotalCOP,
+                                esReposicion: esRep,
+                                cat: it.cat || cmp.cat
+                            });
+                        });
+                    } else if (cmp.producto && cmp.producto.includes("FACTURA LOTE") && cmp.producto.includes(":")) {
+                        const contenidoLote = cmp.producto.split(":")[1].trim();
+                        const subItems = contenidoLote.split(/,\s*(?![^()]*\))/);
+                        const cantSub = subItems.length || 1;
+                        const baseUnitUSD = (cmp.costoBaseUSD !== undefined ? cmp.costoBaseUSD : (cmp.costoUSD || 0)) / cantSub;
+                        const fleteUnitCOP = (cmp.fleteCOP || 0) / cantSub;
+
+                        subItems.forEach(rawItem => {
+                            let itemTxt = rawItem.trim();
+                            let imeiVal = "-";
+                            let imeiMatch = itemTxt.match(/\(IMEI:\s*([^)]+)\)/i);
+                            if (imeiMatch) {
+                                imeiVal = imeiMatch[1].trim();
+                                itemTxt = itemTxt.replace(/\(IMEI:\s*[^)]+\)/i, '').trim();
+                            }
+                            extraerItems.push({
+                                producto: itemTxt,
+                                proveedor: cmp.proveedor,
+                                fecha: cmp.fecha,
+                                imei: imeiVal,
+                                costoBaseUSD: baseUnitUSD,
+                                fleteCOP: fleteUnitCOP,
+                                fleteUSD: fleteUnitCOP / tCOP,
+                                costoUSD: baseUnitUSD + (fleteUnitCOP / tCOP),
+                                costoCOP: Math.round(baseUnitUSD * tCOP) + fleteUnitCOP,
+                                esReposicion: esRep,
+                                cat: cmp.cat
+                            });
+                        });
+                    } else {
+                        const cBaseUSD = cmp.costoBaseUSD !== undefined ? cmp.costoBaseUSD : (cmp.costoMercanciaUSD !== undefined ? cmp.costoMercanciaUSD : ((cmp.costoUSD || 0) - (cmp.fleteUSD || 0)));
+                        const fleteCOPVal = cmp.fleteCOP || 0;
+                        const fleteUSDVal = cmp.fleteUSD !== undefined ? cmp.fleteUSD : (fleteCOPVal / tCOP);
+                        const cTotalUSD = cmp.costoUSD || (cBaseUSD + fleteUSDVal);
+                        const cTotalCOP = cmp.costoCOP || Math.round((cBaseUSD * tCOP) + fleteCOPVal);
+                        const imeiStr = (cmp.imei && cmp.imei !== 'N/A' && !cmp.imei.includes('IMEIs')) ? cmp.imei : '-';
+                        extraerItems.push({
+                            producto: cmp.producto,
+                            proveedor: cmp.proveedor,
+                            fecha: cmp.fecha,
+                            imei: imeiStr,
+                            costoBaseUSD: cBaseUSD,
+                            fleteCOP: fleteCOPVal,
+                            fleteUSD: fleteUSDVal,
+                            costoUSD: cTotalUSD,
+                            costoCOP: cTotalCOP,
+                            esReposicion: esRep,
+                            cat: cmp.cat
+                        });
+                    }
+
+                    extraerItems.forEach(item => {
+                        listaComprasPlana.push(item);
+                        const modKey = (item.producto || '').replace(/\s+/g, ' ').trim().toUpperCase();
+                        if (item.costoBaseUSD > 1500) {
+                            alertasMontoAnomalo.push(`${modKey} ($${window.svc_formatDecimalUSD(item.costoBaseUSD)} USD)`);
+                        } else if (item.costoBaseUSD > 0 && modKey) {
+                            if (!historialPreciosModelo[modKey]) historialPreciosModelo[modKey] = [];
+                            historialPreciosModelo[modKey].push({ fecha: item.fecha, precioUSD: item.costoBaseUSD });
+                        }
+                    });
+                });
+                // Mostrar más recientes primero en la tabla
+                listaComprasPlana.reverse();
+            }
+
+            // Calcular tendencias por modelo (subió / bajó / estable)
+            let tendenciasModelos = {};
+            let resumenTendenciasLista = [];
+            Object.keys(historialPreciosModelo).forEach(mod => {
+                const arr = historialPreciosModelo[mod];
+                if (arr.length >= 2) {
+                    const primero = arr[0].precioUSD;
+                    const ultimo = arr[arr.length - 1].precioUSD;
+                    const diff = ultimo - primero;
+                    if (diff > 0.05) {
+                        tendenciasModelos[mod] = { tipo: 'SUBIO', diff, primero, ultimo, badge: `<span class="inline-block text-[7.5px] bg-rose-100 text-rose-800 px-1.5 py-0.5 rounded font-bold mt-0.5">📈 Subió +$${window.svc_formatDecimalUSD(diff)} ($${window.svc_formatDecimalUSD(primero)} → $${window.svc_formatDecimalUSD(ultimo)})</span>` };
+                        resumenTendenciasLista.push(`📈 <b>${mod}</b> subió +$${window.svc_formatDecimalUSD(diff)} ($${window.svc_formatDecimalUSD(primero)} → $${window.svc_formatDecimalUSD(ultimo)})`);
+                    } else if (diff < -0.05) {
+                        tendenciasModelos[mod] = { tipo: 'BAJO', diff, primero, ultimo, badge: `<span class="inline-block text-[7.5px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold mt-0.5">📉 Bajó -$${window.svc_formatDecimalUSD(Math.abs(diff))} ($${window.svc_formatDecimalUSD(primero)} → $${window.svc_formatDecimalUSD(ultimo)})</span>` };
+                        resumenTendenciasLista.push(`📉 <b>${mod}</b> bajó -$${window.svc_formatDecimalUSD(Math.abs(diff))} ($${window.svc_formatDecimalUSD(primero)} → $${window.svc_formatDecimalUSD(ultimo)})`);
+                    } else {
+                        tendenciasModelos[mod] = { tipo: 'ESTABLE', diff: 0, primero, ultimo, badge: `<span class="inline-block text-[7.5px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-bold mt-0.5">➖ Precio estable ($${window.svc_formatDecimalUSD(ultimo)})</span>` };
+                    }
+                }
+            });
+
             // Comparativa comercial vs mes anterior
             let comparativoTextoHtml = "";
-            if (!esMesPasado && tcl_historicoMesesTucocel && tcl_historicoMesesTucocel.length > 0) {
-                const mesAnt = tcl_historicoMesesTucocel[0];
-                const ventasAnt = mesAnt.totalVentasCOP || 1;
+            if (!esMesPasado && datosMesAnterior) {
+                const ventasAnt = datosMesAnterior.totalVentasCOP || 1;
                 const difVar = totalVentasAcum - ventasAnt;
                 const pctVar = ((difVar) / ventasAnt) * 100;
 
@@ -7220,12 +7418,12 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                 const pctAmort = totalGastosAcum > 0 ? Math.min(100, Math.round((totalIngresosExtraAcum / totalGastosAcum) * 100)) : 100;
                 amortizacionTextoHtml = `
                     <div class="p-1.5 bg-blue-50 border border-blue-200 text-blue-950 rounded-lg text-[9.5px] font-mono flex justify-between items-center">
-                        <span>⚖️ <b>Amortización de Caja:</b> Ingresos Extras (+${fmtMonto(totalIngresosExtraAcum)} COP) cubren el <b>${pctAmort}%</b> de los Gastos Menores (-${fmtMonto(totalGastosAcum)} COP).</span>
-                        <span class="text-blue-800 font-bold">Balance Gastos/Extras: ${totalIngresosExtraAcum - totalGastosAcum >= 0 ? '+' : ''}${fmtMonto(totalIngresosExtraAcum - totalGastosAcum)} COP</span>
+                        <span>⚖️ <b>Amortización de Caja:</b> Ingresos Extras (+${fmtMonto(totalIngresosExtraAcum)} COP) cubren el <b>${pctAmort}%</b> de los Gastos (-${fmtMonto(totalGastosAcum)} COP).</span>
+                        <span class="text-blue-800 font-bold">Balance: ${totalIngresosExtraAcum - totalGastosAcum >= 0 ? '+' : ''}${fmtMonto(totalIngresosExtraAcum - totalGastosAcum)} COP</span>
                     </div>`;
             }
 
-            // Filas consolidadas de teléfonos
+            // Filas consolidadas de teléfonos (con costo unitario y variación de precio)
             let mapaSmartphonesConsolidados = {};
             let totalEquiposVendidos = 0;
             let sumaGananciaTelefonosCOP = 0;
@@ -7269,139 +7467,155 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
             let filasTelefonosHtml = "";
             if (listaSmartphonesConsolidados.length > 0) {
                 listaSmartphonesConsolidados.forEach((tel, idx) => {
-                    const cUSD = tel.costoBaseUSD;
+                    const unitCostoUSD = tel.cant > 0 ? (tel.costoBaseUSD / tel.cant) : tel.costoBaseUSD;
+                    const unitVentaUSD = tel.cant > 0 ? (tel.precioVentaUSD / tel.cant) : tel.precioVentaUSD;
                     const fCOP = tel.fleteCOP;
-                    const vUSD = tel.precioVentaUSD;
-                    const vCOP = tel.precioVentaCOP;
                     const gCOP = tel.gananciaLimpiaCOP;
                     const gUSD = tel.gananciaRealUSD || (gCOP / tCOP);
+                    const tendBadge = tendenciasModelos[tel.modelo] ? `<br>${tendenciasModelos[tel.modelo].badge}` : '';
 
                     filasTelefonosHtml += `
                         <tr class="border-b border-slate-200 text-[9px]">
-                            <td class="py-1 px-1.5 text-center text-slate-500 font-mono">${idx + 1}</td>
-                            <td class="py-1 px-1.5 font-bold text-slate-900 uppercase">${tel.modelo}</td>
-                            <td class="py-1 px-1.5 text-center font-mono font-bold text-slate-950">${tel.cant} und.</td>
-                            <td class="py-1 px-1.5 text-right font-mono text-slate-700">$${window.svc_formatDecimalUSD(cUSD)} USD</td>
-                            <td class="py-1 px-1.5 text-right font-mono text-amber-800">${fCOP > 0 ? fmtMonto(fCOP) + ' COP' : '0 COP'}</td>
-                            <td class="py-1 px-1.5 text-right font-mono text-blue-900 font-bold">${vUSD > 0 ? '$' + window.svc_formatDecimalUSD(vUSD) + ' USD' : fmtMonto(vCOP) + ' COP'}</td>
-                            <td class="py-1 px-1.5 text-right font-mono font-black text-emerald-700">+${fmtMonto(gCOP)} COP<br><span class="text-[8px] text-emerald-600 font-bold">(+$${window.svc_formatDecimalUSD(gUSD)} USD)</span></td>
+                            <td class="py-1.5 px-1.5 text-center text-slate-500 font-mono">${idx + 1}</td>
+                            <td class="py-1.5 px-1.5 font-bold text-slate-900 uppercase">${tel.modelo}${tendBadge}</td>
+                            <td class="py-1.5 px-1.5 text-center font-mono font-bold text-slate-950">${tel.cant} und.</td>
+                            <td class="py-1.5 px-1.5 text-right font-mono text-slate-700">$${window.svc_formatDecimalUSD(unitCostoUSD)} c/u${tel.cant > 1 ? `<br><span class="text-[7.5px] text-slate-500">Tot: $${window.svc_formatDecimalUSD(tel.costoBaseUSD)}</span>` : ''}</td>
+                            <td class="py-1.5 px-1.5 text-right font-mono text-amber-800">${fCOP > 0 ? fmtMonto(fCOP) + ' COP' : '0 COP'}</td>
+                            <td class="py-1.5 px-1.5 text-right font-mono text-blue-900 font-bold">${unitVentaUSD > 0 ? '$' + window.svc_formatDecimalUSD(unitVentaUSD) + ' c/u' : fmtMonto(tel.precioVentaCOP) + ' COP'}</td>
+                            <td class="py-1.5 px-1.5 text-right font-mono font-black text-emerald-700">+${fmtMonto(gCOP)} COP<br><span class="text-[7.5px] text-emerald-600 font-bold">(+$${window.svc_formatDecimalUSD(gUSD)} USD)</span></td>
                         </tr>`;
                 });
             } else {
                 filasTelefonosHtml = `<tr><td colspan="7" class="py-2 text-center italic text-slate-500 text-[9px]">Cero teléfonos registrados en este período.</td></tr>`;
             }
 
-            // Filas de ventas generales
+            // Filas de ventas generales + Comparativa inline vs mes anterior + Datos para Semáforo Ejecutivo
             let arrayTopVendidos = Object.keys(mapaConteoProductos).map(k => ({
                 concepto: k,
                 cant: mapaConteoProductos[k].cant,
-                subtotalCOP: mapaConteoProductos[k].subtotalCOP
+                subtotalCOP: mapaConteoProductos[k].subtotalCOP,
+                cantAnt: mapaConteoMesAnt[k] ? mapaConteoMesAnt[k].cant : 0,
+                subtotalAnt: mapaConteoMesAnt[k] ? mapaConteoMesAnt[k].subtotalCOP : 0
             })).sort((a, b) => b.subtotalCOP - a.subtotalCOP);
 
+            let itemsCrecieron = [];
+            let itemsBajaron = [];
             let filasVentasGeneralesHtml = "";
             let totalUnidadesTodasVentas = 0;
+
             arrayTopVendidos.forEach((p, idx) => {
                 totalUnidadesTodasVentas += p.cant;
                 const porcAporte = totalVentasAcum > 0 ? ((p.subtotalCOP / totalVentasAcum) * 100).toFixed(1) : "0.0";
+
+                let compBadgeHtml = "";
+                if (datosMesAnterior) {
+                    const diffCant = p.cant - p.cantAnt;
+                    if (p.cantAnt === 0) {
+                        compBadgeHtml = `<span class="block text-[7.5px] text-blue-700 font-bold">🔵 Nuevo este mes</span>`;
+                        itemsCrecieron.push({ concepto: p.concepto, diffCant: p.cant, texto: `<b>${p.concepto}</b> (${p.cant} und., nuevo)` });
+                    } else if (diffCant > 0) {
+                        compBadgeHtml = `<span class="block text-[7.5px] text-emerald-700 font-bold">🟢 +${diffCant} vs mes ant. (${p.cantAnt})</span>`;
+                        itemsCrecieron.push({ concepto: p.concepto, diffCant, texto: `<b>${p.concepto}</b> (+${diffCant} und.: ${p.cantAnt} → ${p.cant})` });
+                    } else if (diffCant < 0) {
+                        compBadgeHtml = `<span class="block text-[7.5px] text-rose-700 font-bold">🔴 ${diffCant} vs mes ant. (${p.cantAnt})</span>`;
+                        itemsBajaron.push({ concepto: p.concepto, diffCant, texto: `<b>${p.concepto}</b> (${diffCant} und.: ${p.cantAnt} → ${p.cant})` });
+                    } else {
+                        compBadgeHtml = `<span class="block text-[7.5px] text-slate-500">➖ Igual (${p.cantAnt})</span>`;
+                    }
+                }
+
                 filasVentasGeneralesHtml += `
                     <tr class="border-b border-slate-200 text-[9px]">
-                        <td class="py-1 px-1.5 text-center text-slate-500 font-mono">${idx + 1}</td>
-                        <td class="py-1 px-1.5 font-bold text-slate-900 uppercase">${p.concepto}</td>
-                        <td class="py-1 px-1.5 text-center font-mono font-bold text-slate-900">${p.cant} und.</td>
-                        <td class="py-1 px-1.5 text-right font-mono font-bold text-slate-900">${fmtMonto(p.subtotalCOP)} COP</td>
-                        <td class="py-1 px-1.5 text-right font-mono text-slate-600">${porcAporte}%</td>
+                        <td class="py-1.5 px-1.5 text-center text-slate-500 font-mono">${idx + 1}</td>
+                        <td class="py-1.5 px-1.5 font-bold text-slate-900 uppercase">${p.concepto}</td>
+                        <td class="py-1.5 px-1.5 text-center font-mono font-bold text-slate-900">${p.cant} und.${compBadgeHtml}</td>
+                        <td class="py-1.5 px-1.5 text-right font-mono font-bold text-slate-900">${fmtMonto(p.subtotalCOP)} COP</td>
+                        <td class="py-1.5 px-1.5 text-right font-mono text-slate-600">${porcAporte}%</td>
                     </tr>`;
             });
 
-            // Filas de compras
-            let filasComprasResumenHtml = "";
-            let listaComprasPlana = [];
-
-            if (comprasDetalleMes.length > 0) {
-                comprasDetalleMes.forEach(cmp => {
-                    if (cmp.itemsLote && cmp.itemsLote.length > 0) {
-                        cmp.itemsLote.forEach(it => {
-                            const itBaseUSD = it.costoBaseUSD !== undefined ? it.costoBaseUSD : (it.costoMercanciaUSD !== undefined ? it.costoMercanciaUSD : ((it.costoUSD || 0) - (it.fleteUSD || 0)));
-                            const itFleteCOP = it.fleteCOP !== undefined ? it.fleteCOP : 0;
-                            const itFleteUSD = it.fleteUSD !== undefined ? it.fleteUSD : (itFleteCOP / tCOP);
-                            const itTotalUSD = it.costoUSD || (itBaseUSD + itFleteUSD);
-                            const itTotalCOP = it.costoCOP || Math.round((itBaseUSD * tCOP) + itFleteCOP);
-                            const itImei = (it.imei && it.imei !== 'N/A' && !it.imei.includes('IMEIs')) ? it.imei : '-';
-
-                            listaComprasPlana.push({
-                                producto: it.producto || cmp.producto,
-                                proveedor: it.proveedor || cmp.proveedor,
-                                fecha: cmp.fecha,
-                                imei: itImei,
-                                costoBaseUSD: itBaseUSD,
-                                fleteCOP: itFleteCOP,
-                                fleteUSD: itFleteUSD,
-                                costoUSD: itTotalUSD,
-                                costoCOP: itTotalCOP
-                            });
-                        });
-                    } else if (cmp.producto && cmp.producto.includes("FACTURA LOTE") && cmp.producto.includes(":")) {
-                        const contenidoLote = cmp.producto.split(":")[1].trim();
-                        const subItems = contenidoLote.split(/,\s*(?![^()]*\))/);
-                        const cantSub = subItems.length || 1;
-                        const baseUnitUSD = (cmp.costoBaseUSD !== undefined ? cmp.costoBaseUSD : (cmp.costoUSD || 0)) / cantSub;
-                        const fleteUnitCOP = (cmp.fleteCOP || 0) / cantSub;
-
-                        subItems.forEach(rawItem => {
-                            let itemTxt = rawItem.trim();
-                            let imeiVal = "-";
-                            let imeiMatch = itemTxt.match(/\(IMEI:\s*([^)]+)\)/i);
-                            if (imeiMatch) {
-                                imeiVal = imeiMatch[1].trim();
-                                itemTxt = itemTxt.replace(/\(IMEI:\s*[^)]+\)/i, '').trim();
-                            }
-                            const itTotalUSD = baseUnitUSD + (fleteUnitCOP / tCOP);
-                            const itTotalCOP = Math.round(baseUnitUSD * tCOP) + fleteUnitCOP;
-
-                            listaComprasPlana.push({
-                                producto: itemTxt,
-                                proveedor: cmp.proveedor,
-                                fecha: cmp.fecha,
-                                imei: imeiVal,
-                                costoBaseUSD: baseUnitUSD,
-                                fleteCOP: fleteUnitCOP,
-                                fleteUSD: fleteUnitCOP / tCOP,
-                                costoUSD: itTotalUSD,
-                                costoCOP: itTotalCOP
-                            });
-                        });
-                    } else {
-                        const cBaseUSD = cmp.costoBaseUSD !== undefined ? cmp.costoBaseUSD : (cmp.costoMercanciaUSD !== undefined ? cmp.costoMercanciaUSD : ((cmp.costoUSD || 0) - (cmp.fleteUSD || 0)));
-                        const fleteCOPVal = cmp.fleteCOP || 0;
-                        const fleteUSDVal = cmp.fleteUSD !== undefined ? cmp.fleteUSD : (fleteCOPVal / tCOP);
-                        const cTotalUSD = cmp.costoUSD || (cBaseUSD + fleteUSDVal);
-                        const cTotalCOP = cmp.costoCOP || Math.round((cBaseUSD * tCOP) + fleteCOPVal);
-                        const imeiStr = (cmp.imei && cmp.imei !== 'N/A' && !cmp.imei.includes('IMEIs')) ? cmp.imei : '-';
-
-                        listaComprasPlana.push({
-                            producto: cmp.producto,
-                            proveedor: cmp.proveedor,
-                            fecha: cmp.fecha,
-                            imei: imeiStr,
-                            costoBaseUSD: cBaseUSD,
-                            fleteCOP: fleteCOPVal,
-                            fleteUSD: fleteUSDVal,
-                            costoUSD: cTotalUSD,
-                            costoCOP: cTotalCOP
-                        });
+            // También detectar rubros que se vendieron el mes anterior pero van en 0 este mes
+            if (datosMesAnterior) {
+                Object.keys(mapaConteoMesAnt).forEach(kAnt => {
+                    if (!mapaConteoProductos[kAnt] && mapaConteoMesAnt[kAnt].cant >= 2) {
+                        itemsBajaron.push({ concepto: kAnt, diffCant: -mapaConteoMesAnt[kAnt].cant, texto: `<b>${kAnt}</b> (0 este mes vs ${mapaConteoMesAnt[kAnt].cant} mes ant.)` });
                     }
                 });
+            }
 
+            itemsCrecieron.sort((a, b) => b.diffCant - a.diffCant);
+            itemsBajaron.sort((a, b) => a.diffCant - b.diffCant);
+
+            // --- CONSTRUIR SEMÁFORO EJECUTIVO DE 3 LÍNEAS ---
+            let lineaCrecio = itemsCrecieron.length > 0
+                ? itemsCrecieron.slice(0, 3).map(x => x.texto).join(' · ')
+                : (datosMesAnterior ? 'Sin crecimientos registrados aún frente al mes anterior.' : 'Se activará al cerrar el primer mes como base comparativa.');
+            let lineaBajo = itemsBajaron.length > 0
+                ? itemsBajaron.slice(0, 3).map(x => x.texto).join(' · ')
+                : (datosMesAnterior ? 'Ningún rubro presenta caída respecto al mes anterior.' : 'Sin caídas detectadas.');
+            let lineaPrecios = resumenTendenciasLista.length > 0
+                ? resumenTendenciasLista.slice(0, 3).join(' · ')
+                : 'Sin variaciones de precio entre compras repetidas del mismo modelo este mes.';
+
+            let alertaAnomaliaHtml = alertasMontoAnomalo.length > 0
+                ? `<div class="p-1.5 bg-rose-100 border border-rose-400 text-rose-950 rounded-lg text-[8.5px] font-mono">
+                    ⚠️ <b>REVISAR MONTOS ANÓMALOS EN COMPRAS:</b> ${alertasMontoAnomalo.join(', ')}. (Use el botón ✏️ Editar en el Historial de Compras para corregir decimales antiguos).
+                   </div>`
+                : '';
+
+            let semaforoEjecutivoHtml = `
+                <div class="bg-slate-900 text-slate-100 rounded-xl p-2.5 space-y-1 text-[8.5px] font-sans border border-slate-700">
+                    <div class="text-[9px] font-black uppercase tracking-wider text-amber-400 border-b border-slate-700 pb-1">
+                        🚦 SEMÁFORO EJECUTIVO DEL MES (RESUMEN RÁPIDO)
+                    </div>
+                    <div class="leading-snug"><span class="text-emerald-400 font-bold">🚀 Lo que más creció:</span> ${lineaCrecio}</div>
+                    <div class="leading-snug"><span class="text-rose-400 font-bold">⚠️ Lo que bajó:</span> ${lineaBajo}</div>
+                    <div class="leading-snug"><span class="text-blue-300 font-bold">📊 Costos en telefonía:</span> ${lineaPrecios}</div>
+                </div>
+                ${alertaAnomaliaHtml}`;
+
+            // Comparativa encabezados Smartphones, Ventas Generales y Compras
+            let compTelHeader = "";
+            if (datosMesAnterior) {
+                const diffTel = totalEquiposVendidos - totalEquiposMesAnt;
+                const colTel = diffTel >= 0 ? 'text-emerald-700' : 'text-rose-700';
+                compTelHeader = `<span class="text-[8px] font-mono ${colTel} ml-1">(${diffTel >= 0 ? '+' : ''}${diffTel} vs ${totalEquiposMesAnt} mes ant.)</span>`;
+            }
+
+            let compAccHeader = "";
+            if (datosMesAnterior && totalUnidadesMesAnt > 0) {
+                const pctAcc = Math.round(((totalUnidadesTodasVentas - totalUnidadesMesAnt) / totalUnidadesMesAnt) * 100);
+                const colAcc = pctAcc >= 0 ? 'text-emerald-700' : 'text-rose-700';
+                compAccHeader = `<span class="text-[8px] font-mono ${colAcc} ml-1">(${pctAcc >= 0 ? '+' : ''}${pctAcc}% vs ${totalUnidadesMesAnt} und. mes ant.)</span>`;
+            }
+
+            let compCmpHeader = "";
+            if (datosMesAnterior) {
+                const diffCmp = listaComprasPlana.length - totalComprasCantMesAnt;
+                compCmpHeader = `<span class="text-[8px] font-mono text-slate-600 ml-1">(${diffCmp >= 0 ? '+' : ''}${diffCmp} vs ${totalComprasCantMesAnt} mes ant.)</span>`;
+            }
+
+            // Filas de compras (con badge Reposición/Stock + alerta de variación o monto anómalo)
+            let filasComprasResumenHtml = "";
+            if (listaComprasPlana.length > 0) {
                 listaComprasPlana.forEach((item, idx) => {
+                    const modKey = (item.producto || '').replace(/\s+/g, ' ').trim().toUpperCase();
+                    const tagTipo = item.esReposicion
+                        ? `<span class="inline-block text-[7px] bg-blue-100 text-blue-800 px-1 rounded font-bold ml-1">Reposición</span>`
+                        : `<span class="inline-block text-[7px] bg-amber-100 text-amber-900 px-1 rounded font-bold ml-1">Stock</span>`;
+                    const tagAnom = item.costoBaseUSD > 1500
+                        ? `<br><span class="inline-block text-[7.5px] bg-rose-100 text-rose-800 px-1 rounded font-black">⚠️ Revisar decimal</span>`
+                        : (tendenciasModelos[modKey] ? `<br>${tendenciasModelos[modKey].badge}` : '');
+
                     filasComprasResumenHtml += `
-                        <tr class="border-b border-slate-200 text-[9px]">
-                            <td class="py-1 px-1.5 text-center text-slate-500 font-mono">${idx + 1}</td>
-                            <td class="py-1 px-1.5 font-bold text-slate-900 uppercase">${item.producto}</td>
-                            <td class="py-1 px-1.5 text-slate-700 uppercase">${item.proveedor}</td>
-                            <td class="py-1 px-1.5 text-center font-mono text-slate-600">${item.imei}</td>
-                            <td class="py-1 px-1.5 text-right font-mono text-slate-900 font-bold">$${window.svc_formatDecimalUSD(item.costoBaseUSD)}</td>
-                            <td class="py-1 px-1.5 text-right font-mono text-amber-800 font-bold">${item.fleteCOP > 0 ? fmtMonto(item.fleteCOP) + ' COP' : '0'}</td>
-                            <td class="py-1 px-1.5 text-right font-mono font-black text-slate-950">$${window.svc_formatDecimalUSD(item.costoUSD)} USD<br><span class="text-[8px] text-slate-600 font-normal">(${fmtMonto(item.costoCOP)} COP)</span></td>
+                        <tr class="border-b border-slate-200 text-[9px] ${item.costoBaseUSD > 1500 ? 'bg-rose-50' : ''}">
+                            <td class="py-1.5 px-1.5 text-center text-slate-500 font-mono">${idx + 1}</td>
+                            <td class="py-1.5 px-1.5 font-bold text-slate-900 uppercase">${item.producto}${tagTipo}${tagAnom}</td>
+                            <td class="py-1.5 px-1.5 text-slate-700 uppercase">${item.proveedor}</td>
+                            <td class="py-1.5 px-1.5 text-center font-mono text-slate-600">${item.imei}</td>
+                            <td class="py-1.5 px-1.5 text-right font-mono text-slate-900 font-bold">$${window.svc_formatDecimalUSD(item.costoBaseUSD)}</td>
+                            <td class="py-1.5 px-1.5 text-right font-mono text-amber-800 font-bold">${item.fleteCOP > 0 ? fmtMonto(item.fleteCOP) + ' COP' : '0'}</td>
+                            <td class="py-1.5 px-1.5 text-right font-mono font-black text-slate-950">$${window.svc_formatDecimalUSD(item.costoUSD)} USD<br><span class="text-[7.5px] text-slate-600 font-normal">(${fmtMonto(item.costoCOP)} COP)</span></td>
                         </tr>`;
                 });
             } else {
@@ -7412,12 +7626,12 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
             let filasGastosHtml = "";
             if (gastosDetalleMes.length > 0) {
                 gastosDetalleMes.forEach((g, idx) => {
-                    let etiquetaOrigen = (g.origen === "ARQUEO_DIARIO") 
-                        ? `<span class="text-[7.5px] bg-red-100 text-red-700 px-1 py-0.5 rounded font-mono font-bold ml-1">Gaveta</span>` 
+                    let etiquetaOrigen = (g.origen === "ARQUEO_DIARIO")
+                        ? `<span class="text-[7.5px] bg-red-100 text-red-700 px-1 py-0.5 rounded font-mono font-bold ml-1">Gaveta</span>`
                         : `<span class="text-[7.5px] bg-slate-200 text-slate-700 px-1 py-0.5 rounded font-mono font-bold ml-1">Manual</span>`;
 
-                    let montoOrigTxt = g.moneda === "USD" 
-                        ? `$${window.svc_formatDecimalUSD(g.montoOrig)} USD` 
+                    let montoOrigTxt = (g.moneda === "USD" || g.moneda === "USDT" || g.moneda === "BINANCE")
+                        ? `$${window.svc_formatDecimalUSD(g.montoOrig)} ${g.moneda}`
                         : (g.moneda === "BS" ? `${fmtMonto(g.montoOrig)} Bs` : `${fmtMonto(g.montoCOP)} COP`);
 
                     filasGastosHtml += `
@@ -7477,16 +7691,15 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
             const renderBox = document.getElementById('contenido-hoja-blanca-tucocel-render');
             renderBox.innerHTML = `
                 <div class="space-y-3 font-sans">
-                    <!-- ENCABEZADO Y BALANCE COMPACTO Y EJECUTIVO CON LOS 5 RENGLONES FINANCIEROS -->
-                    <div class="border border-slate-900 rounded-xl p-2.5 bg-slate-50 space-y-2">
+                    <!-- ENCABEZADO Y BALANCE EJECUTIVO -->
+                    <div class="border border-slate-900 rounded-xl p-2.5 bg-slate-50 space-y-2.5">
                         <div class="flex justify-between items-center border-b border-slate-300 pb-1.5">
                             <span class="text-[10px] uppercase font-black text-slate-900 tracking-wider">BALANCE CONTABLE — TUCOCEL C.A.</span>
                             <span class="text-[10px] font-mono font-bold text-slate-700">PERÍODO: ${periodoDisplay}</span>
                         </div>
 
-                        <!-- CUADRO DUAL DE GAVETAS FÍSICAS INDEPENDIENTES CON SALDOS EXACTOS -->
+                        <!-- CUADRO DUAL DE GAVETAS FÍSICAS INDEPENDIENTES -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 font-mono text-center">
-                            <!-- GAVETA DÓLARES -->
                             <div class="bg-white p-2.5 rounded-xl border-2 border-blue-500/60 shadow-sm space-y-1.5">
                                 <span class="text-[9px] uppercase font-black text-blue-700 block tracking-wider">💵 GAVETA FÍSICA EN DÓLARES ($USD)</span>
                                 <div class="text-[8.5px] text-slate-600 space-y-0.5 text-left border-b border-slate-200 pb-1.5">
@@ -7499,12 +7712,11 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                                 </div>
                             </div>
 
-                            <!-- GAVETA PESOS -->
                             <div class="bg-white p-2.5 rounded-xl border-2 border-amber-500/60 shadow-sm space-y-1.5">
                                 <span class="text-[9px] uppercase font-black text-amber-700 block tracking-wider">🇨🇴 GAVETA FÍSICA EN PESOS (COP)</span>
                                 <div class="text-[8.5px] text-slate-600 space-y-0.5 text-left border-b border-slate-200 pb-1.5">
                                     <div class="flex justify-between"><span>(+) Entradas Ventas/Extras en COP:</span> <b class="text-emerald-600">+${fmtMonto(dineroCOP_Entradas)} COP</b></div>
-                                    <div class="flex justify-between"><span>(-) Compras/Gastos en COP:</span> <b class="text-rose-600">-${fmtMonto(dineroCOP_Salidas)} COP</b></div>
+                                    <div class="flex justify-between"><span>(-) Compras Stock/Gastos en COP:</span> <b class="text-rose-600">-${fmtMonto(dineroCOP_Salidas)} COP</b></div>
                                 </div>
                                 <div class="pt-0.5">
                                     <span class="text-[8px] text-slate-500 uppercase block font-bold">Total que debe haber en Pesos:</span>
@@ -7513,15 +7725,21 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                             </div>
                         </div>
 
-                        <!-- FONDOS DIGITALES / BANCOS SEPARADOS -->
-                        <div class="grid grid-cols-2 gap-2 text-center font-mono text-[9px] bg-slate-100 p-2 rounded-xl border border-slate-200">
-                            <div>
-                                <span class="text-slate-500 uppercase block font-bold text-[7.5px]">📲 Recaudado en Nequi:</span>
-                                <b class="text-purple-700 font-black">${fmtMonto(digitalNequiCOP)} COP</b>
+                        <!-- FONDOS DIGITALES / BILLETERAS (3 CANALES: NEQUI | PAGO MÓVIL | BINANCE USDT) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center font-mono text-[9px] bg-slate-100 p-2 rounded-xl border border-slate-200">
+                            <div class="bg-white/80 p-1.5 rounded-lg border border-purple-200">
+                                <span class="text-slate-500 uppercase block font-bold text-[7.5px]">📲 Nequi (Digital):</span>
+                                <b class="text-purple-700 font-black text-[10px]">${fmtMonto(digitalNequiCOP)} COP</b>
                             </div>
-                            <div>
-                                <span class="text-slate-500 uppercase block font-bold text-[7.5px]">📲 Recaudado en Pago Móvil:</span>
-                                <b class="text-emerald-700 font-black">${fmtMonto(digitalPagoMovilCOP)} COP (${fmtMonto(Math.round(digitalPagoMovilCOP / (window.svc_cleanRate(document.getElementById('cfg-tasa-bs')?.value) || 4)))} Bs)</b>
+                            <div class="bg-white/80 p-1.5 rounded-lg border border-emerald-200">
+                                <span class="text-slate-500 uppercase block font-bold text-[7.5px]">📲 Pago Móvil (Bs):</span>
+                                <b class="text-emerald-700 font-black text-[10px]">${fmtMonto(digitalPagoMovilCOP)} COP</b>
+                                <span class="block text-[7.5px] text-emerald-600">(${fmtMonto(Math.round(digitalPagoMovilCOP / tBs_calc))} Bs)</span>
+                            </div>
+                            <div class="bg-white/80 p-1.5 rounded-lg border border-amber-300">
+                                <span class="text-slate-600 uppercase block font-bold text-[7.5px]">🟡 Binance (USDT):</span>
+                                <b class="font-black text-[10px] ${saldoBinanceUSDT >= 0 ? 'text-amber-700' : 'text-rose-600'}">${saldoBinanceUSDT >= 0 ? '' : '-'}$${window.svc_formatDecimalUSD(Math.abs(saldoBinanceUSDT))} USDT</b>
+                                <span class="block text-[7px] text-slate-500">+${window.svc_formatDecimalUSD(digitalBinanceUSD_Entradas)} / -${window.svc_formatDecimalUSD(digitalBinanceUSD_Salidas)}</span>
                             </div>
                         </div>
 
@@ -7532,17 +7750,19 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                             <span class="text-[8px] text-emerald-800 font-sans block mt-0.5 font-normal">(Equivalente referencial: ${utilidadNetaRealUSD >= 0 ? '$' : '-$'}${window.svc_formatDecimalUSD(Math.abs(utilidadNetaRealUSD))} USD — Ganancia global contable, no billetes físicos de gaveta)</span>
                         </div>
 
+                        <!-- SEMÁFORO EJECUTIVO -->
+                        ${semaforoEjecutivoHtml}
                         ${comparativoTextoHtml}
                         ${amortizacionTextoHtml}
                     </div>
 
-                    <!-- TABLA 0: ARQUEOS Y CIERRES DIARIOS EN GAVETA (DEL 02 AL 07 Y MES EN CURSO) -->
+                    <!-- TABLA 0: ARQUEOS Y CIERRES DIARIOS EN GAVETA -->
                     <div class="space-y-1">
-                        <div class="flex justify-between items-center border-b border-slate-900 pb-0.5">
+                        <div class="flex flex-wrap justify-between items-center border-b border-slate-900 pb-0.5 gap-1">
                             <h4 class="text-[10px] font-black text-slate-950 uppercase tracking-wider">
                                 📅 ARQUEOS Y CIERRES DIARIOS EN GAVETA (${listaCierresParaReporte.length} TURNOS AUDITADOS)
                             </h4>
-                            <span class="text-[9px] font-mono font-bold text-slate-700">Físico Total Declarado: $${window.svc_formatDecimalUSD(sumaCierresUSD)} USD + ${fmtMonto(sumaCierresCOP)} COP</span>
+                            <span class="text-[9px] font-mono font-bold text-slate-700">Declarado: $${window.svc_formatDecimalUSD(sumaCierresUSD)} USD + ${fmtMonto(sumaCierresCOP)} COP</span>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
@@ -7564,25 +7784,25 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                         </div>
                     </div>
 
-                    <!-- TABLA 1: SMARTPHONES VENDIDOS (CONSOLIDADO GENERAL POR MODELO) -->
+                    <!-- TABLA 1: SMARTPHONES VENDIDOS (CON COSTO UNITARIO Y TENDENCIA DE PRECIOS) -->
                     <div class="space-y-1">
-                        <div class="flex justify-between items-center border-b border-slate-900 pb-0.5">
+                        <div class="flex flex-wrap justify-between items-center border-b border-slate-900 pb-0.5 gap-1">
                             <h4 class="text-[10px] font-black text-slate-950 uppercase tracking-wider">
-                                📱 SMARTPHONES VENDIDOS (${totalEquiposVendidos} EQUIPOS EN TOTAL)
+                                📱 SMARTPHONES VENDIDOS (${totalEquiposVendidos} EQUIPOS) ${compTelHeader}
                             </h4>
-                            <span class="text-[9px] font-mono font-black text-emerald-800">Ganancia Neta Total: +${fmtMonto(sumaGananciaTelefonosCOP)} COP</span>
+                            <span class="text-[9px] font-mono font-black text-emerald-800">Ganancia Neta: +${fmtMonto(sumaGananciaTelefonosCOP)} COP</span>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="border-b border-slate-800 text-[8px] uppercase font-black text-slate-950 bg-slate-100">
                                         <th class="py-1 px-1.5 text-center">N°</th>
-                                        <th class="py-1 px-1.5">Marca & Modelo</th>
-                                        <th class="py-1 px-1.5 text-center">Cantidad</th>
-                                        <th class="py-1 px-1.5 text-right">Costo Base ($USD)</th>
-                                        <th class="py-1 px-1.5 text-right">Flete Traída (COP)</th>
-                                        <th class="py-1 px-1.5 text-right">Venta Total</th>
-                                        <th class="py-1 px-1.5 text-right">Ganancia Neta Real</th>
+                                        <th class="py-1 px-1.5">Marca & Modelo / Variación</th>
+                                        <th class="py-1 px-1.5 text-center">Cant.</th>
+                                        <th class="py-1 px-1.5 text-right">Costo Unit. ($USD)</th>
+                                        <th class="py-1 px-1.5 text-right">Flete (COP)</th>
+                                        <th class="py-1 px-1.5 text-right">Venta Unit.</th>
+                                        <th class="py-1 px-1.5 text-right">Ganancia Neta</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -7592,11 +7812,11 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                         </div>
                     </div>
 
-                    <!-- TABLA 2: TODAS LAS VENTAS Y SERVICIOS -->
+                    <!-- TABLA 2: TODAS LAS VENTAS Y SERVICIOS (CON COMPARATIVA INLINE VS MES ANTERIOR) -->
                     <div class="space-y-1">
-                        <div class="flex justify-between items-center border-b border-slate-900 pb-0.5">
+                        <div class="flex flex-wrap justify-between items-center border-b border-slate-900 pb-0.5 gap-1">
                             <h4 class="text-[10px] font-black text-slate-950 uppercase tracking-wider">
-                                🛍️ DESGLOSE TOTAL DE PRODUCTOS & SERVICIOS (${totalUnidadesTodasVentas} UNIDADES EN TOTAL)
+                                🛍️ VENTAS & ACCESORIOS (${totalUnidadesTodasVentas} UND.) ${compAccHeader}
                             </h4>
                             <span class="text-[9px] font-mono font-bold text-slate-700">Total: ${fmtMonto(totalVentasAcum)} COP</span>
                         </div>
@@ -7606,8 +7826,8 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                                     <tr class="border-b border-slate-800 text-[8px] uppercase font-black text-slate-950 bg-slate-100">
                                         <th class="py-1 px-1.5 text-center">N°</th>
                                         <th class="py-1 px-1.5">Producto / Servicio</th>
-                                        <th class="py-1 px-1.5 text-center">Cantidad</th>
-                                        <th class="py-1 px-1.5 text-right">Total Recaudado COP</th>
+                                        <th class="py-1 px-1.5 text-center">Cantidad vs Mes Ant.</th>
+                                        <th class="py-1 px-1.5 text-right">Recaudado COP</th>
                                         <th class="py-1 px-1.5 text-right">% Aporte</th>
                                     </tr>
                                 </thead>
@@ -7618,25 +7838,29 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                         </div>
                     </div>
 
-                    <!-- TABLA 3: COMPRAS DE MERCANCÍA & FLETES -->
+                    <!-- TABLA 3: COMPRAS DE MERCANCÍA (SEPARADO STOCK NUEVO VS REPOSICIÓN) -->
                     <div class="space-y-1">
-                        <div class="flex justify-between items-center border-b border-slate-900 pb-0.5">
+                        <div class="flex flex-wrap justify-between items-center border-b border-slate-900 pb-0.5 gap-1">
                             <h4 class="text-[10px] font-black text-slate-950 uppercase tracking-wider">
-                                🚚 COMPRAS DE MERCANCÍA, FACTURAS & FLETES (${listaComprasPlana.length} EQUIPOS / PRODUCTOS)
+                                🚚 COMPRAS DE MERCANCÍA & FLETES (${listaComprasPlana.length} ÍTEMS) ${compCmpHeader}
                             </h4>
-                            <span class="text-[9px] font-mono font-bold text-red-700">Inversión: -${fmtMonto(totalEgresosComprasAcum)} COP</span>
+                            <div class="text-[8.5px] font-mono text-right">
+                                <span class="text-amber-800 font-bold">Stock Nuevo (${cntComprasStock}): -${fmtMonto(totalComprasStockCOP)} COP</span>
+                                <span class="text-slate-400 mx-1">|</span>
+                                <span class="text-blue-700 font-bold">Reposición (${cntComprasReposicion}): ${fmtMonto(totalComprasReposicionCOP)} COP</span>
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="border-b border-slate-800 text-[8px] uppercase font-black text-slate-950 bg-slate-100">
                                         <th class="py-1 px-1.5 text-center">N°</th>
-                                        <th class="py-1 px-1.5">Marca / Modelo / Ítem</th>
+                                        <th class="py-1 px-1.5">Marca / Modelo / Tipo</th>
                                         <th class="py-1 px-1.5">Proveedor</th>
-                                        <th class="py-1 px-1.5 text-center">Código IMEI</th>
-                                        <th class="py-1 px-1.5 text-right">Costo Base ($USD)</th>
+                                        <th class="py-1 px-1.5 text-center">IMEI</th>
+                                        <th class="py-1 px-1.5 text-right">Costo ($USD)</th>
                                         <th class="py-1 px-1.5 text-right">Flete (COP)</th>
-                                        <th class="py-1 px-1.5 text-right">Costo Total Real</th>
+                                        <th class="py-1 px-1.5 text-right">Total Real</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -7646,7 +7870,7 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                         </div>
                     </div>
 
-                    <!-- TABLA 4: GASTOS OPERATIVOS, ALQUILER & SALIDAS DE CAJA (DESGLOSE INDIVIDUAL AUDITABLE) -->
+                    <!-- TABLA 4: GASTOS OPERATIVOS, ALQUILER & SALIDAS DE CAJA -->
                     <div class="space-y-1">
                         <div class="flex justify-between items-center border-b border-slate-900 pb-0.5">
                             <h4 class="text-[10px] font-black text-slate-950 uppercase tracking-wider">
@@ -7673,7 +7897,7 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
                         </div>
                     </div>
 
-                    <!-- TABLA 5: INGRESOS EXTRAS Y PUBLICIDAD (SI EXISTEN) -->
+                    <!-- TABLA 5: INGRESOS EXTRAS Y PUBLICIDAD -->
                     ${bloqueIngresosExtraHtml}
 
                     <div class="text-[8px] text-slate-500 italic text-center pt-1.5 border-t border-slate-300 font-mono">
@@ -7684,9 +7908,11 @@ window.tcl_abrirVisorHojaBlancaTucocel = function(mesHistoricoIdx = null) {
 
             document.getElementById('modal-hoja-blanca-tucocel').classList.remove('hidden');
         };
-window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
+
+        window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
             let totalVentasAcum = 0;
-            let totalEgresosComprasAcum = 0;
+            let totalComprasStockCOP = 0;
+            let totalComprasReposicionCOP = 0;
             let totalGastosAcum = 0;
             let totalIngresosExtraAcum = 0;
             let totalTelefonosVendidos = 0;
@@ -7701,6 +7927,8 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
             let dineroCOP_Salidas = 0;
             let digitalNequiCOP = 0;
             let digitalPagoMovilCOP = 0;
+            let digitalBinanceUSD_Entradas = 0;
+            let digitalBinanceUSD_Salidas = 0;
 
             const tCOP = window.svc_cleanNumber(document.getElementById('cfg-tasa-cop')?.value) || 3600;
 
@@ -7716,18 +7944,19 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
                             gananciaTelefonosCOP += (v.precioCOP || sub);
                         }
 
-                        let grupo = clasificarConceptoGeneral(v.concepto);
+                        let grupo = clasificarConceptoGeneral(v.concepto, v.tipoCategoria);
                         if(!mapaConteo[grupo]) mapaConteo[grupo] = { cant: 0, total: 0 };
                         mapaConteo[grupo].cant += cant;
                         mapaConteo[grupo].total += sub;
                     });
 
-                    // Nequi y Pago Móvil del cierre
                     if (c.totalNequiCOP !== undefined) digitalNequiCOP += (c.totalNequiCOP || 0);
                     if (c.totalPagoMovilCOP !== undefined) digitalPagoMovilCOP += (c.totalPagoMovilCOP || 0);
+                    if (c.totalBinanceCOP !== undefined && c.totalBinanceCOP > 0) {
+                        digitalBinanceUSD_Entradas += (c.totalBinanceCOP / (c.tasaAplica || tCOP));
+                    }
 
-                    // Dinero físico de gaveta declarado en arqueo:
-                    if ((c.usdGaveta !== undefined && c.usdGaveta !== null && parseFloat(c.usdGaveta) > 0) || 
+                    if ((c.usdGaveta !== undefined && c.usdGaveta !== null && parseFloat(c.usdGaveta) > 0) ||
                         (c.copGaveta !== undefined && c.copGaveta !== null && parseFloat(c.copGaveta) > 0)) {
                         let cUSD = parseFloat(c.usdGaveta || 0);
                         let cCOP = parseFloat(c.copGaveta || 0);
@@ -7744,7 +7973,7 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
                             const sub = (v.precioCOP || 0) * cant;
                             const met = (v.metodo || 'PESOS').toUpperCase();
                             if (met === "DOLAR") dineroUSD_Entradas += (sub / tCOP);
-                            else if (met !== "NEQUI" && met !== "PAGOMOVIL" && met !== "BS") dineroCOP_Entradas += sub;
+                            else if (met !== "NEQUI" && met !== "PAGOMOVIL" && met !== "BS" && met !== "BINANCE" && met !== "USDT") dineroCOP_Entradas += sub;
                         });
                     }
                 }
@@ -7752,13 +7981,12 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
 
             tcl_comprasHistorico.forEach(cmp => {
                 if(cmp.status !== "ANULADA" && cmp.liquidadoMes !== true) {
-                    totalEgresosComprasAcum += (cmp.costoCOP || 0);
-
-                    // BLINDAJE CONTABLE: Reposición de telefonía por venta no descuenta gaveta física
                     const esReposicionVenta = (cmp.finalidad === 'REPOSICION') || (cmp.cat === 'TELEFONIA' && cmp.finalidad !== 'STOCK');
                     if (esReposicionVenta) {
-                        return; // No resta de la gaveta física
+                        totalComprasReposicionCOP += (cmp.costoCOP || 0);
+                        return;
                     }
+                    totalComprasStockCOP += (cmp.costoCOP || 0);
 
                     const salida = (cmp.metodoPagoSalida || 'EFECTIVO_PESOS').toUpperCase();
                     const costoUSD = cmp.costoBaseUSD || cmp.costoUSD || 0;
@@ -7767,7 +7995,10 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
                     if (salida === "EFECTIVO_USD") {
                         dineroUSD_Salidas += costoUSD;
                         if (fleteCOP > 0) dineroCOP_Salidas += fleteCOP;
-                    } else if (salida === "PAGOMOVIL" || salida === "BINANCE") {
+                    } else if (salida === "BINANCE" || salida === "USDT") {
+                        digitalBinanceUSD_Salidas += costoUSD;
+                        if (fleteCOP > 0) dineroCOP_Salidas += fleteCOP;
+                    } else if (salida === "PAGOMOVIL") {
                         if (fleteCOP > 0) dineroCOP_Salidas += fleteCOP;
                     } else {
                         dineroCOP_Salidas += (cmp.costoCOP || 0);
@@ -7778,11 +8009,12 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
             tcl_gastosHistorico.forEach(g => {
                 if(g.liquidadoMes !== true && g.origen !== 'ARQUEO_DIARIO' && g.categoria !== 'SALIDA_CAJA_TURNO' && !(g.concepto && g.concepto.includes('SALIDA DE CAJA (CUADRE')) && !g.idFolioCierre) {
                     totalGastosAcum += (g.montoCOP || 0);
-
                     const m = (g.moneda || 'COP').toUpperCase();
                     if (m === "USD") {
                         dineroUSD_Salidas += (g.montoUSD || (g.montoOrig || 0));
-                    } else {
+                    } else if (m === "USDT" || m === "BINANCE") {
+                        digitalBinanceUSD_Salidas += (g.montoUSD || (g.montoOrig || 0));
+                    } else if (m !== "BS") {
                         dineroCOP_Salidas += (g.montoCOP || (g.montoOrig || 0));
                     }
                 }
@@ -7791,10 +8023,11 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
             tcl_ingresosExtraHistorico.forEach(i => {
                 if(i.liquidadoMes !== true) {
                     totalIngresosExtraAcum += (i.montoCOP || 0);
-
                     const m = (i.moneda || 'COP').toUpperCase();
                     if (m === "USD") {
                         dineroUSD_Entradas += (i.montoUSD || (i.montoOrig || 0));
+                    } else if (m === "USDT" || m === "BINANCE") {
+                        digitalBinanceUSD_Entradas += (i.montoUSD || (i.montoOrig || 0));
                     } else if (m === "BS") {
                         digitalPagoMovilCOP += (i.montoCOP || 0);
                     } else {
@@ -7805,6 +8038,7 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
 
             const debeHaberUSD = dineroUSD_Entradas - dineroUSD_Salidas;
             const debeHaberCOP = dineroCOP_Entradas - dineroCOP_Salidas;
+            const saldoBinanceUSDT = digitalBinanceUSD_Entradas - digitalBinanceUSD_Salidas;
 
             const utilidadNetaRealCOP = (totalVentasAcum + totalIngresosExtraAcum) - totalGastosAcum;
             const utilidadNetaRealUSD = utilidadNetaRealCOP / tCOP;
@@ -7814,12 +8048,12 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
                 resumenProductosTxt += `${idx + 1}. *${it.concepto}* (x${it.cant}) ➔ ${fmtMonto(it.total)} COP\n`;
             });
 
-            const gastosActivos = tcl_gastosHistorico.filter(g => g.liquidadoMes !== true);
-            gastosActivos.slice(0, 6).forEach((g, idx) => {
+            const gastosActivos = tcl_gastosHistorico.filter(g => g.liquidadoMes !== true && g.origen !== 'ARQUEO_DIARIO');
+            gastosActivos.slice(0, 6).forEach((g) => {
                 resumenGastosTxt += `• *${g.concepto}* [${g.categoria}] ➔ -${fmtMonto(g.montoCOP)} COP\n`;
             });
 
-            let msg = `🛍️ *INFORME CONTABLE OFICIAL — TUCOCEL C.A.*\n` +
+            let msg = `🛍️ *INFORME EJECUTIVO — TUCOCEL C.A.*\n` +
                       `🏢 *TIENDA & COMUNICACIONES CORDERO*\n` +
                       `──────────────────────────────\n` +
                       `📅 *Período:* ${new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase()}\n` +
@@ -7828,17 +8062,19 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
                       `📦 *DISPONIBILIDAD EN GAVETA FÍSICA (EFECTIVO EN MANO):*\n` +
                       `💵 *Dólares en Gaveta:* *${debeHaberUSD >= 0 ? '$' + window.svc_formatDecimalUSD(debeHaberUSD) + ' USD' : '-$' + window.svc_formatDecimalUSD(Math.abs(debeHaberUSD)) + ' USD'}*\n` +
                       `🇨🇴 *Pesos en Gaveta:* *${fmtMonto(debeHaberCOP)} COP*\n\n` +
-                      `📲 *CANALES DIGITALES (BANCOS):*\n` +
+                      `📲 *CANALES DIGITALES (BILLETERAS):*\n` +
                       `• Nequi: ${fmtMonto(digitalNequiCOP)} COP\n` +
                       `• Pago Móvil: ${fmtMonto(digitalPagoMovilCOP)} COP\n` +
+                      `• Binance (USDT): ${saldoBinanceUSDT >= 0 ? '' : '-'}$${window.svc_formatDecimalUSD(Math.abs(saldoBinanceUSDT))} USDT\n` +
                       `──────────────────────────────\n\n` +
                       `📊 *BALANCE FINANCIERO DEL MES:*\n` +
-                      `• *(+) Total Ventas / Mostrador:* *${fmtMonto(totalVentasAcum)} COP* ($${window.svc_formatDecimalUSD(totalVentasAcum/tCOP)} USD)\n` +
-                      `• *(+) Ingresos Extras / Publicidad:* *+${fmtMonto(totalIngresosExtraAcum)} COP* (+${window.svc_formatDecimalUSD(totalIngresosExtraAcum/tCOP)} USD)\n` +
-                      `• *(-) Inversión Compras + Fletes:* *-${fmtMonto(totalEgresosComprasAcum)} COP* (-$${window.svc_formatDecimalUSD(totalEgresosComprasAcum/tCOP)} USD)\n` +
-                      `• *(-) Gastos Operativos & Alquiler:* *-${fmtMonto(totalGastosAcum)} COP* (-$${window.svc_formatDecimalUSD(totalGastosAcum/tCOP)} USD)\n` +
+                      `• *(+) Total Ventas / Mostrador:* *${fmtMonto(totalVentasAcum)} COP*\n` +
+                      `• *(+) Ingresos Extras / Publicidad:* *+${fmtMonto(totalIngresosExtraAcum)} COP*\n` +
+                      `• *(-) Compras Stock Nuevo:* *-${fmtMonto(totalComprasStockCOP)} COP*\n` +
+                      `• *(i) Reposición Telefonía:* ${fmtMonto(totalComprasReposicionCOP)} COP\n` +
+                      `• *(-) Gastos Operativos & Alquiler:* *-${fmtMonto(totalGastosAcum)} COP*\n` +
                       `──────────────────────────────\n` +
-                      `💰 *UTILIDAD NETA REAL EN MANO:*\n*${utilidadNetaRealCOP >= 0 ? '+' : ''}${fmtMonto(utilidadNetaRealCOP)} COP* (${utilidadNetaRealUSD >= 0 ? '+' : ''}$${window.svc_formatDecimalUSD(utilidadNetaRealUSD)} USD)\n\n` +
+                      `💰 *UTILIDAD NETA REAL DEL MES:*\n*${utilidadNetaRealCOP >= 0 ? '+' : ''}${fmtMonto(utilidadNetaRealCOP)} COP* (Ref: $${window.svc_formatDecimalUSD(utilidadNetaRealUSD)} USD)\n\n` +
                       `📱 *SMARTPHONES:* ${totalTelefonosVendidos} Equipos Vendidos (Ganancia: +${fmtMonto(gananciaTelefonosCOP)} COP)\n\n` +
                       `📦 *RESUMEN DE VENTAS Y SERVICIOS:*\n` +
                       `${resumenProductosTxt || '• Cero ventas cargadas\n'}\n` +
@@ -7846,7 +8082,7 @@ window.tcl_enviarWhatsAppHojaBlancaTucocel = function() {
                       `${resumenGastosTxt || '• Cero gastos cargados\n'}\n` +
                       `🔒 *DOCUMENTO AUDITADO — TUCOCEL C.A.*`;
 
-            window.svc_compartirTextoUniversal('Informe Contable Tucocel C.A.', msg);
+            window.svc_compartirTextoUniversal('Informe Ejecutivo Tucocel C.A.', msg);
         };
 
         window.tcl_ejecutarCierreMensualTucocel = async function() {
